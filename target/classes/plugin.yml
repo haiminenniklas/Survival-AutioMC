@@ -38,3 +38,9 @@ commands:
   gamemode:
     description: Pelimuoto
     aliases: [gm]
+  msg:
+    description: Yksityisviestit
+    aliases: [tell, whisper, viesti]
+  r:
+    description: Vastaa viestiin
+    aliases: [vastaa]

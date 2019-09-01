@@ -23,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 
 public final class Main extends JavaPlugin implements Listener {
 
@@ -30,6 +31,8 @@ public final class Main extends JavaPlugin implements Listener {
     public static Main getInstance() {
         return Main.instance;
     }
+
+    public static final HashMap<Player, Player> messages = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -306,6 +309,67 @@ public final class Main extends JavaPlugin implements Listener {
                         }
 
                     }
+
+                }
+
+            } else if(command.getLabel().equalsIgnoreCase("msg")) {
+
+                if(args.length < 2) {
+
+                    player.sendMessage("§c§lAutio §7» Käytä §c/msg <pelaaja> <viesti>");
+
+                } else if(args.length >= 2) {
+
+                    Player target = Bukkit.getPlayer(args[0]);
+                    if(target == null) {
+                        player.sendMessage("§c§lAutio §7» Pelaajaa ei löydetty");
+                        return false;
+                    }
+
+                    StringBuilder sb = new StringBuilder();
+                    for(int i = 1; i < args.length; i++) {
+                        sb.append(args[i] + " ");
+                    }
+
+                    messages.put(player, target);
+                    messages.put(target, player);
+                    target.sendMessage("§c" + player.getName() + " §7-> §c Sinä §7» §f" + sb.toString().trim());
+                    player.sendMessage("§c Sinä §7-> §c" + target.getName() + " §7» §f" + sb.toString().trim());
+
+
+                }
+
+            } else if(command.getLabel().equalsIgnoreCase("r")) {
+
+                if(args.length < 1) {
+
+                    player.sendMessage("§c§lAutio §7» Käytä §c/r <viesti>");
+
+                } else if(args.length >= 1) {
+
+                    if(!messages.containsKey(player)){
+                        player.sendMessage("§c§lAutio §7» Ei ketään kenelle lähettää");
+                        return false;
+                    }
+
+                    StringBuilder sb = new StringBuilder();
+                    for(int i = 0; i < args.length; i++) {
+                        sb.append(args[i] + " ");
+                    }
+
+                    Player target = messages.get(player);
+
+                    if(target == null) {
+                        player.sendMessage("§c§lAutio §7» Pelaajaa ei löydetty");
+                        return false;
+                    }
+
+                    messages.put(player, target);
+                    messages.put(target, player);
+
+                    target.sendMessage("§c" + player.getName() + " §7-> §c Sinä §7» §f" + sb.toString().trim());
+                    player.sendMessage("§c Sinä §7-> §c" + target.getName() + " §7» §f" + sb.toString().trim());
+
 
                 }
 
