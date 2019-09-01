@@ -36,9 +36,6 @@ public final class Main extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-
-        // Hello, World
-
         // Some setupping
 
         Main.instance = this;
@@ -267,13 +264,13 @@ public final class Main extends JavaPlugin implements Listener {
                             return false;
                         }
 
-                        float speed = (float) value / 10;
+                        float speed = value / 10;
                         if(!player.isFlying()) {
                             player.setWalkSpeed(speed);
-                            player.sendMessage("§cKävelynopeys nyt " + value + "(" + speed + ")");
+                            player.sendMessage("§cKävelynopeys nyt " + value + " (" + speed + ")");
                         } else {
                             player.setFlySpeed(speed);
-                            player.sendMessage("§cLentonopeus nyt " + value + "(" + speed + ")");
+                            player.sendMessage("§cLentonopeus nyt " + value + " (" + speed + ")");
                         }
 
                     }
