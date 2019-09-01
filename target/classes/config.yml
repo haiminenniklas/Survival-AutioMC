@@ -1,0 +1,32 @@
+version: 1.0
+
+mysql:
+  enabled: true
+  user: root
+  password: wVKACGjtoyWYYkIc
+  address: 95.216.155.199
+
+enderpearl-cooldown: 16
+
+vault-sizes:
+  default: 9
+  premium: 27
+  premiumplus: 54
+
+chest-protect:
+  default: 20
+
+spawn:
+  x: 0
+  y: 64
+  z: 0
+  yaw: '0.0'
+  pitch: '0.0'
+  world: 'world'
+
+other:
+  links:
+    discord: 'http://autiomc.eu/discord'
+    web-full: 'http://www.autiomc.eu'
+    web: 'www.autiomc.eu'
+    store: 'http://autiomc.eu/kauppa'

@@ -1,0 +1,34 @@
+name: AutioMC
+version: ${project.version}
+main: me.tr.survival.main.Main
+description: Survival for AutioMC
+api-version: 1.13
+
+commands:
+  bal:
+    description: Balance
+    aliases: [balance, raha, rahatilanne, money]
+  save:
+    description: Tallenna
+    aliases: [tallenna]
+  profile:
+    description: Statistiikat
+    aliases: [stats, tilastot, tiedot]
+  home:
+    description: Koti
+    aliases: [koti]
+  arvo:
+    description: Arvojen hallinta
+    aliases: [rank]
+  spawn:
+    description: Vie Spawnille
+  setspawn:
+    description: Aseta Spawn
+  level:
+    description: Hallinnoi Leveleitä
+    aliases: [lvl]
+  ping:
+    description: Viive
+    aliases: [viive]
+  speed:
+    description: Lentonopeus
