@@ -12,10 +12,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -271,6 +268,41 @@ public final class Main extends JavaPlugin implements Listener {
                         } else {
                             player.setFlySpeed(speed);
                             player.sendMessage("§cLentonopeus nyt " + value + " (" + speed + ")");
+                        }
+
+                    }
+
+                }
+
+            } else if(command.getLabel().equalsIgnoreCase("Settings")) {
+                Settings.panel(player);
+            } else if(command.getLabel().equalsIgnoreCase("gamemode")) {
+
+                if(player.isOp()) {
+                    if(args.length < 1) {
+
+                        if(player.getGameMode() != GameMode.SURVIVAL) {
+                            player.setGameMode(GameMode.SURVIVAL);
+                            player.sendMessage("§cPelimuoto Survival");
+                        } else if(player.getGameMode() == GameMode.SURVIVAL) {
+                            player.setGameMode(GameMode.CREATIVE);
+                            player.sendMessage("§cPelimuoto Creative");
+                        }
+
+                    } else if(args.length >= 1) {
+
+                        if(args[0].equalsIgnoreCase("s") || args[0].equalsIgnoreCase("survival")
+                            || args[0].equalsIgnoreCase("0")) {
+
+                            player.setGameMode(GameMode.SURVIVAL);
+                            player.sendMessage("§cPelimuoto Survival");
+
+                        } else if(args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("creative") ||
+                            args[0].equalsIgnoreCase("1")) {
+
+                            player.setGameMode(GameMode.CREATIVE);
+                            player.sendMessage("§cPelimuoto Creative");
+
                         }
 
                     }

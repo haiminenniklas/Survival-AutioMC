@@ -32,3 +32,9 @@ commands:
     aliases: [viive]
   speed:
     description: Lentonopeus
+  settings:
+    description: Asetukset
+    aliases: [asetukset]
+  gamemode:
+    description: Pelimuoto
+    aliases: [gm]
