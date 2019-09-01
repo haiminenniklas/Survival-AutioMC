@@ -6,6 +6,7 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.AutoBroadcaster;
 import me.tr.survival.main.other.EnderpearlCooldown;
+import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Level;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -287,6 +288,7 @@ public final class Main extends JavaPlugin implements Listener {
                         if(player.getGameMode() != GameMode.SURVIVAL) {
                             player.setGameMode(GameMode.SURVIVAL);
                             player.sendMessage("§cPelimuoto Survival");
+                            Util.heal(player);
                         } else if(player.getGameMode() == GameMode.SURVIVAL) {
                             player.setGameMode(GameMode.CREATIVE);
                             player.sendMessage("§cPelimuoto Creative");
@@ -299,6 +301,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                             player.setGameMode(GameMode.SURVIVAL);
                             player.sendMessage("§cPelimuoto Survival");
+                            Util.heal(player);
 
                         } else if(args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("creative") ||
                             args[0].equalsIgnoreCase("1")) {
