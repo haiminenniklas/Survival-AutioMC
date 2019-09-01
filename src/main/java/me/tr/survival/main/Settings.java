@@ -19,7 +19,28 @@ public class Settings {
                 "§7§m--------------------",
                 "§7Tila: §c§lEI PÄÄLLÄ",
                 " ",
-                "§7Klikkaa vaihtaaksesi asetusta!",
+                "§7§oKun tämä asetus on päällä, sivulle tulee näkyville",
+                "§7§oikkuna, jossa on näkyvillä hyödyllistä informaatiota",
+                "",
+                "§cKlikkaa vaihtaaksesi asetusta!",
+                "§7§m--------------------"
+        ))) {
+
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                clicker.sendMessage("§cEi vielä toimi");
+            }
+        });
+
+        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§cYksityinen tila", Arrays.asList(
+                "§7§m--------------------",
+                "§7Tila: §c§lEI PÄÄLLÄ",
+                " ",
+                "§7§oKun tämä asetus on päällä, et näe enää yksityisviestejä",
+                "§7§omuilta pelaajilta",
+                "",
+                "§cKlikkaa vaihtaaksesi asetusta!",
                 "§7§m--------------------"
         ))) {
 
@@ -34,22 +55,10 @@ public class Settings {
                 "§7§m--------------------",
                 "§7Tila: §c§lEI PÄÄLLÄ",
                 " ",
-                "§7Klikkaa vaihtaaksesi asetusta!",
-                "§7§m--------------------"
-        ))) {
-
-            @Override
-            public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
-                clicker.sendMessage("§cEi vielä toimi");
-            }
-        });
-
-        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§cJoku", Arrays.asList(
-                "§7§m--------------------",
-                "§7Tila: §c§lEI PÄÄLLÄ",
-                " ",
-                "§7Klikkaa vaihtaaksesi asetusta!",
+                "§7§oKun tämä asetus on päällä, et näe enää chat-viestejä",
+                "§7§omuilta pelaajilta",
+                "",
+                "§cKlikkaa vaihtaaksesi asetusta!",
                 "§7§m--------------------"
         ))) {
 

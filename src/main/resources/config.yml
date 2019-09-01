@@ -30,3 +30,4 @@ other:
     web-full: 'http://www.autiomc.eu'
     web: 'www.autiomc.eu'
     store: 'http://autiomc.eu/kauppa'
+  chat-format-prefix: '&c&lAutio &7»'

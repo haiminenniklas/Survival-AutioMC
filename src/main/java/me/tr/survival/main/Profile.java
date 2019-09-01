@@ -94,7 +94,7 @@ public class Profile {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.sendMessage("§cEi vielä toimi");
+                Settings.panel(clicker);
             }
         });
 
