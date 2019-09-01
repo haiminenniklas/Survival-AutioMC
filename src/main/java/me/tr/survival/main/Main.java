@@ -37,6 +37,8 @@ public final class Main extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
+        // Hello, World
+
         // Some setupping
 
         Main.instance = this;
