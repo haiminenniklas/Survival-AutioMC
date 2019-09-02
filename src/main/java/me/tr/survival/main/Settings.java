@@ -53,9 +53,9 @@ public class Settings {
 
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.PAPER, 1, "§cChat", Arrays.asList(
                 "§7§m--------------------",
-                "§7Tila: §c§lEI PÄÄLLÄ",
+                "§7Tila: §a§lPÄÄLLÄ",
                 " ",
-                "§7§oKun tämä asetus on päällä, et näe enää chat-viestejä",
+                "§7§oKun tämä asetus on pois päältä, et näe enää chat-viestejä",
                 "§7§omuilta pelaajilta",
                 "",
                 "§cKlikkaa vaihtaaksesi asetusta!",
