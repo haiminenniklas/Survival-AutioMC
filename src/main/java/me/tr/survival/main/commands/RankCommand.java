@@ -1,5 +1,6 @@
 package me.tr.survival.main.commands;
 
+import me.tr.survival.main.Chat;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import org.bukkit.Bukkit;
@@ -20,20 +21,20 @@ public class RankCommand implements CommandExecutor {
 
             if(!player.isOp()) {
 
-                player.sendMessage("§c§lAutio §7» Arvosi on: " + Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
+                Chat.sendMessage(player, "Arvosi on: " + Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
 
             } else {
 
                 if(args.length == 0 || (args.length >= 1 && args[0].equalsIgnoreCase("help"))) {
 
-                    player.sendMessage("§c/rank get <player>");
-                    player.sendMessage("§c/rank set <player> <rank>");
+                    Chat.sendMessage(player, "/rank get <player>");
+                    Chat.sendMessage(player, "/rank set <player> <rank>");
 
                 } else if(args.length == 2 && args[0].equalsIgnoreCase("get")) {
 
                     OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
 
-                    player.sendMessage("§cPelaajan " + target.getName() + " rank: " + Ranks.getRank(target.getUniqueId()));
+                    Chat.sendMessage(player, "Pelaajan " + target.getName() + " rank: " + Ranks.getRank(target.getUniqueId()));
 
                 } else if(args.length == 3) {
 
@@ -46,7 +47,7 @@ public class RankCommand implements CommandExecutor {
                         }
 
                         PlayerData.set(target.getUniqueId(), "rank", rank);
-                        player.sendMessage("§cPelaajan " + target.getName() + " rankki vaihdettu!");
+                        Chat.sendMessage(player, "Pelaajan " + target.getName() + " rankki vaihdettu!");
 
                     }
 

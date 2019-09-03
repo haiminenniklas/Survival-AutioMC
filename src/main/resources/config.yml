@@ -24,6 +24,13 @@ spawn:
   pitch: '0.0'
   world: 'world'
 
+effects:
+  teleport:
+    enabled: true
+    sound: ENTITY_ENDERMAN_TELEPORT
+  quit:
+    enabled: true
+
 other:
   links:
     discord: 'http://autiomc.eu/discord'

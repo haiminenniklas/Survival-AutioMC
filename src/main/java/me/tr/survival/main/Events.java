@@ -8,16 +8,14 @@ import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
@@ -130,6 +128,19 @@ public class Events implements Listener {
         Player player = (Player) e.getPlayer();
         if(e.getView().getTitle().contains("§r") && Gui.getGui(player) != null) {
             Gui.getGui(player).close(player);
+        }
+
+    }
+
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent e) {
+
+        Player player = e.getPlayer();
+        FileConfiguration config = Main.getInstance().getConfig();
+
+        if(config.getBoolean("sound-effects.teleport.enabled")) {
+            player.getWorld().playSound(player.getLocation(),
+                    Sound.valueOf(config.getString("sound-effects.teleport.sound")), 1, 1);
         }
 
     }
