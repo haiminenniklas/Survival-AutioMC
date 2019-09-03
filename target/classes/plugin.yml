@@ -44,3 +44,16 @@ commands:
   r:
     description: Vastaa viestiin
     aliases: [vastaa]
+  sethome:
+    description: Aseta koti
+  heal:
+    description: Paranna pelaaja
+  time:
+    description: Hallitse pelin aikaa
+    aliases: [aika]
+  fly:
+    description: Lento
+    aliases: [lento]
+  enchant:
+    description: Lumoa itemi
+    aliases: [lumoa, lumous]

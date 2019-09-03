@@ -54,3 +54,6 @@ commands:
   fly:
     description: Lento
     aliases: [lento]
+  enchant:
+    description: Lumoa itemi
+    aliases: [lumoa, lumous]

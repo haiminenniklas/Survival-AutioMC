@@ -69,6 +69,16 @@ public class Util {
         return item;
     }
 
+    public static ItemStack makeEnchanted(ItemStack item, ItemMeta old_meta, Enchant... enchantments){
+        item.setItemMeta(old_meta);
+        ItemMeta meta = item.getItemMeta();
+        for(Enchant ench : enchantments){
+            meta.addEnchant(ench.getEnchantment(), ench.getLevel(), true);
+        }
+        item.setItemMeta(meta);
+        return item;
+    }
+
     public static ItemStack makeEnchanted(Material mat, int amount, String displayName, List<String> lore, Enchant... enchantments){
         ItemStack item = new ItemStack(mat, amount);
         ItemMeta meta = item.getItemMeta();

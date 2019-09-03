@@ -88,6 +88,15 @@ public class Events implements Listener {
             e.setFormat("§70 " + Ranks.getPrefix(Ranks.getRank(uuid)) + " §7" + player.getName() + ":§r " + e.getMessage());
         }
 
+        if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {
+            e.setCancelled(true);
+            for(Player online : Bukkit.getOnlinePlayers()) {
+                if(Ranks.isStaff(online.getUniqueId())) {
+                    online.sendMessage("§7§l(§c§lYLLÄPITO§7§l) §c" + player.getName() + " §7» §f" + e.getMessage().substring(1));
+                }
+            }
+        }
+
     }
 
     @EventHandler

@@ -5,6 +5,7 @@ import me.tr.survival.main.commands.RankCommand;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.AutoBroadcaster;
+import me.tr.survival.main.other.Enchant;
 import me.tr.survival.main.other.EnderpearlCooldown;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.Times;
@@ -19,8 +20,10 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -116,7 +119,7 @@ public final class Main extends JavaPlugin implements Listener {
                                     value = Integer.parseInt(args[2]);
                                 } catch(NumberFormatException ex) {
                                     Chat.sendMessage(player, "Käytä numeroita!");
-                                    return false;
+                                    return true;
                                 }
 
                                 if(args[0].equalsIgnoreCase("add")) {
@@ -195,7 +198,7 @@ public final class Main extends JavaPlugin implements Listener {
                         Player target = Bukkit.getPlayer(args[0]);
                         if(target == null) {
                             Chat.sendMessage(player, "Pelaajaa ei löydetty");
-                            return false;
+                            return true;
                         }
                         Main.teleportToSpawn(target);
                         Chat.sendMessage(player, "Pelaaja §c" + target.getName() + " §7vietiin spawnille!");
@@ -228,7 +231,7 @@ public final class Main extends JavaPlugin implements Listener {
                             value = Integer.parseInt(args[2]);
                         } catch(NumberFormatException ex){
                             Chat.sendMessage(player, "Käytä numeroita");
-                            return false;
+                            return true;
                         }
 
                         if(args[0].equalsIgnoreCase("set")) {
@@ -245,7 +248,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                             if(!target.isOnline()) {
                                 Chat.sendMessage(player, "Tämä toimintoo vain jos §c" + target.getName() + " §7on paikalla!");
-                                return false;
+                                return true;
                             }
 
                             Level.addXP(target.getPlayer(), value);
@@ -265,7 +268,7 @@ public final class Main extends JavaPlugin implements Listener {
                     Player target = Bukkit.getPlayer(args[0]);
                     if(target == null) {
                         Chat.sendMessage(player, "Pelaajaa ei löydetty!");
-                        return false;
+                        return true;
                     }
                     Chat.sendMessage(player, "Pelaajan §c" + target.getName() +  " §7viive: §c" + getPing(target) + "ms");
 
@@ -286,12 +289,12 @@ public final class Main extends JavaPlugin implements Listener {
                             value = Float.parseFloat(args[0]);
                         } catch(NumberFormatException ex){
                             player.sendMessage("§cKäytä numeroita");
-                            return false;
+                            return true;
                         }
 
                         if(value > 10) {
                             player.sendMessage("§cNopeus max. 10");
-                            return false;
+                            return true;
                         }
 
                         float speed = value / 10;
@@ -355,7 +358,7 @@ public final class Main extends JavaPlugin implements Listener {
                     Player target = Bukkit.getPlayer(args[0]);
                     if(target == null) {
                         Chat.sendMessage(player, "Pelaajaa ei löydetty");
-                        return false;
+                        return true;
                     }
 
                     StringBuilder sb = new StringBuilder();
@@ -381,7 +384,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                     if(!messages.containsKey(player)){
                         Chat.sendMessage(player, "Ei ketään kenelle lähettää");
-                        return false;
+                        return true;
                     }
 
                     StringBuilder sb = new StringBuilder();
@@ -393,7 +396,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                     if(target == null) {
                         Chat.sendMessage(player, "Pelaajaa ei löydetty");
-                        return false;
+                        return true;
                     }
 
                     messages.put(player, target);
@@ -442,7 +445,7 @@ public final class Main extends JavaPlugin implements Listener {
                         Player target = Bukkit.getPlayer(args[0]);
                         if(target == null) {
                             Chat.sendMessage(player, "Pelaajaa ei löydetty!");
-                            return false;
+                            return true;
                         }
                         Util.heal(target);
                         Chat.sendMessage(player, "Paransit pelaajan §c" + target.getName() + "§7!");
@@ -506,7 +509,7 @@ public final class Main extends JavaPlugin implements Listener {
                         Player target = Bukkit.getPlayer(args[0]);
                         if(target == null) {
                             Chat.sendMessage(player, "Pelaajaa ei löydetty!");
-                            return false;
+                            return true;
                         }
                         if(!target.getAllowFlight()) {
                             target.setAllowFlight(true);
@@ -522,11 +525,51 @@ public final class Main extends JavaPlugin implements Listener {
                     }
                 }
 
+            } else if(command.getLabel().equalsIgnoreCase("enchant")) {
+
+                if(player.isOp()) {
+
+                    if(args.length < 2) {
+                        Chat.sendMessage(player, "Käytä: §c/lumoa <lumous> <taso>");
+                    } else {
+
+                        if(player.getInventory().getItemInMainHand() == null) {
+                            Chat.sendMessage(player, "Sinulla pitää olla esine kädessä!");
+                            return true;
+                        }
+
+                        int level;
+                        try {
+                            level = Integer.parseInt(args[1]);
+                        } catch(NumberFormatException ex) {
+                            Chat.sendMessage(player, "Käytä numeroita levelissä!");
+                            return true;
+                        }
+
+                        Enchantment enchantment = Enchantment.getByName(args[0]);
+                        if(enchantment == null) {
+                            Chat.sendMessage(player, "Lumousta ei löytynyt tuolla nimellä...");
+                            return true;
+                        }
+
+                        Enchant enchant = new Enchant(enchantment, level);
+                        ItemStack item = player.getInventory().getItemInMainHand();
+
+                        ItemStack newItem = Util.makeEnchanted(item, enchant);
+                        player.getInventory().remove(item);
+                        player.getInventory().addItem(newItem);
+
+                        Chat.sendMessage(player, "Esine lumottu!");
+
+                    }
+
+                }
+
             }
 
         }
 
-        return false;
+        return true;
     }
 
     public static int getPing(Player player) {

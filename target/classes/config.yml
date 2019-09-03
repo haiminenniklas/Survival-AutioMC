@@ -24,9 +24,17 @@ spawn:
   pitch: '0.0'
   world: 'world'
 
+effects:
+  teleport:
+    enabled: true
+    sound: ENTITY_ENDERMAN_TELEPORT
+  quit:
+    enabled: true
+
 other:
   links:
     discord: 'http://autiomc.eu/discord'
     web-full: 'http://www.autiomc.eu'
     web: 'www.autiomc.eu'
     store: 'http://autiomc.eu/kauppa'
+  chat-format-prefix: '&c&lAutio &7»'

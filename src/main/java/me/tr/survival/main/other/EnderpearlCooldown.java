@@ -3,6 +3,7 @@ package me.tr.survival.main.other;
 import java.util.HashMap;
 import java.util.UUID;
 
+import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,7 +32,7 @@ public class EnderpearlCooldown implements Listener {
             if(item.getType() == Material.ENDER_PEARL){
                 if (cooldown.containsKey(uuid)) {
                     e.setCancelled(true);
-                    player.sendMessage("§c§lAutio §7» Odota vielä §c" + cooldown.get(uuid) + "s tehdäksesi tuon uudestaan!!");
+                    Chat.sendMessage(player, "Odota vielä §c" + cooldown.get(uuid) + "s tehdäksesi tuon uudestaan!!");
                     return;
                 } else {
 
