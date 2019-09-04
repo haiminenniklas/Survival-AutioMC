@@ -62,3 +62,5 @@ commands:
     aliases: [crystals, kristallit]
   rtp:
     description: RTP
+  autio:
+    description: Autio

@@ -41,7 +41,7 @@ public class RTP {
 
         int newY = player.getWorld().getHighestBlockYAt(newX, newZ);
 
-        player.teleport(new Location(player.getWorld(), newX, newZ, newY));
+        player.teleport(new Location(player.getWorld(), newX, newY, newZ));
         Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
 
         cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));

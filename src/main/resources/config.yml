@@ -48,8 +48,8 @@ random-tp:
   cooldown-in-minutes: 3
 
 tablist:
-  header: '\n§7-- &c&lAutioMC §7--\n'
-  footer: '\n §cplay.autiomc.eu §7- §cwww.autiomc.eu §7- §ckauppa.autiomc.eu \n'
+  header: '§7-- &c&lAutioMC §7--'
+  footer: '§cplay.autiomc.eu §7| §cwww.autiomc.eu §7| §ckauppa.autiomc.eu'
 
 auto-broadcaster:
   messages:

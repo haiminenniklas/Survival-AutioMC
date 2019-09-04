@@ -156,7 +156,9 @@ public class Events implements Listener {
         FileConfiguration config = Main.getInstance().getConfig();
 
         if(config.getBoolean("effects.teleport.enabled")) {
-            player.getWorld().playSound(player.getLocation(),
+            player.getWorld().playSound(e.getTo(),
+                    Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
+            player.getWorld().playSound(e.getFrom(),
                     Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
         }
 

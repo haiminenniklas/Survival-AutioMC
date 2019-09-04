@@ -626,6 +626,19 @@ public final class Main extends JavaPlugin implements Listener {
 
             } else if(command.getLabel().equalsIgnoreCase("rtp")) {
                 RTP.teleport(player);
+            } else if(command.getLabel().equalsIgnoreCase("autio")) {
+
+                if(player.isOp()) {
+                    if(args.length < 1) {
+                        Chat.sendMessage(player, "/autio reload");
+                    } else {
+                        if(args[0].equalsIgnoreCase("reload")) {
+                            reloadConfig();
+                            Chat.sendMessage(player, "Config uudelleenladattu!");
+                        }
+                    }
+                }
+
             }
 
         }
