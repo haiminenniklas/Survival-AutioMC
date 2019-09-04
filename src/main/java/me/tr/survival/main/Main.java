@@ -412,7 +412,9 @@ public final class Main extends JavaPlugin implements Listener {
 
             } else if(command.getLabel().equalsIgnoreCase("sethome")) {
 
-                if(!PlayerData.isLoaded(uuid)) {
+                Homes.panel(player);
+
+               /* if(!PlayerData.isLoaded(uuid)) {
                     PlayerData.loadNull(uuid, false);
                 }
 
@@ -436,7 +438,7 @@ public final class Main extends JavaPlugin implements Listener {
                         break;
                     }
 
-                }
+                } */
 
             } else if(command.getLabel().equalsIgnoreCase("heal")) {
                 if(player.isOp()) {

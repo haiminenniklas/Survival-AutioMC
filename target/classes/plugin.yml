@@ -16,7 +16,7 @@ commands:
     aliases: [stats, tilastot, tiedot]
   home:
     description: Koti
-    aliases: [koti]
+    aliases: [koti, homes, delhome]
   arvo:
     description: Arvojen hallinta
     aliases: [rank]
@@ -60,3 +60,5 @@ commands:
   crystal:
     description: Kristallit
     aliases: [crystals, kristallit]
+  rtp:
+    description: RTP

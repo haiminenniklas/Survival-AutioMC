@@ -124,18 +124,12 @@ public class Events implements Listener {
 
         if(!player.isOp()) e.setCancelled(true);
 
-
-        System.out.println(1);
         if(Gui.getGui(player) != null) {
             System.out.println(Gui.getGui(player).getTitle());
-            System.out.println(2);
             Gui gui = Gui.getGui(player);
             if(e.getCurrentItem() != null) {
-                System.out.println(3);
                 for(Button b : gui.getButtons()) {
-                    System.out.println("(4) " + b.item.getItemMeta().getDisplayName());
                     if(b.item.clone().equals(e.getCurrentItem())) {
-                        System.out.println(5);
                         b.onClick(player, e.getClick());
                     }
                 }
@@ -163,7 +157,7 @@ public class Events implements Listener {
 
         if(config.getBoolean("effects.teleport.enabled")) {
             player.getWorld().playSound(player.getLocation(),
-                    Sound.valueOf(config.getString("sound-effects.teleport.sound")), 1, 1);
+                    Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
         }
 
     }

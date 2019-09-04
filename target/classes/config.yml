@@ -27,7 +27,7 @@ spawn:
 effects:
   teleport:
     enabled: true
-    sound: ENTITY_ENDERMAN_TELEPORT
+    sound: 'ENTITY_ENDERMAN_TELEPORT'
   quit:
     enabled: true
 
