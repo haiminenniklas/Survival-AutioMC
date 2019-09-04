@@ -8,8 +8,10 @@ import me.tr.survival.main.other.AutoBroadcaster;
 import me.tr.survival.main.other.Enchant;
 import me.tr.survival.main.other.EnderpearlCooldown;
 import me.tr.survival.main.other.Util;
+import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.Times;
 import me.tr.survival.main.util.data.Balance;
+import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.data.Homes;
 import me.tr.survival.main.util.data.Level;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -288,7 +290,7 @@ public final class Main extends JavaPlugin implements Listener {
                         try {
                             value = Float.parseFloat(args[0]);
                         } catch(NumberFormatException ex){
-                            player.sendMessage("§cKäytä numeroita");
+                            Chat.sendMessage(player, "Käytä numeroita");
                             return true;
                         }
 
@@ -300,10 +302,10 @@ public final class Main extends JavaPlugin implements Listener {
                         float speed = value / 10;
                         if(!player.isFlying()) {
                             player.setWalkSpeed(speed);
-                            player.sendMessage("§cKävelynopeys nyt " + value + " (" + speed + ")");
+                            Chat.sendMessage(player, "Kävelynopeys nyt " + value + " (" + speed + ")");
                         } else {
                             player.setFlySpeed(speed);
-                            player.sendMessage("§cLentonopeus nyt " + value + " (" + speed + ")");
+                            Chat.sendMessage(player, "Lentonopeus nyt " + value + " (" + speed + ")");
                         }
 
                     }
@@ -319,11 +321,11 @@ public final class Main extends JavaPlugin implements Listener {
 
                         if(player.getGameMode() != GameMode.SURVIVAL) {
                             player.setGameMode(GameMode.SURVIVAL);
-                            player.sendMessage("§cPelimuoto Survival");
+                            Chat.sendMessage(player, "Pelimuoto Survival");
                             Util.heal(player);
                         } else if(player.getGameMode() == GameMode.SURVIVAL) {
                             player.setGameMode(GameMode.CREATIVE);
-                            player.sendMessage("§cPelimuoto Creative");
+                            Chat.sendMessage(player, "Pelimuoto Creative");
                         }
 
                     } else if(args.length >= 1) {
@@ -332,14 +334,14 @@ public final class Main extends JavaPlugin implements Listener {
                             || args[0].equalsIgnoreCase("0")) {
 
                             player.setGameMode(GameMode.SURVIVAL);
-                            player.sendMessage("§cPelimuoto Survival");
+                            Chat.sendMessage(player, "Pelimuoto Survival");
                             Util.heal(player);
 
                         } else if(args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("creative") ||
                             args[0].equalsIgnoreCase("1")) {
 
                             player.setGameMode(GameMode.CREATIVE);
-                            player.sendMessage("§cPelimuoto Creative");
+                            Chat.sendMessage(player, "Pelimuoto Creative");
 
                         }
 
@@ -565,6 +567,63 @@ public final class Main extends JavaPlugin implements Listener {
 
                 }
 
+            } else if(command.getLabel().equalsIgnoreCase("crystal")) {
+
+                if(player.isOp()) {
+
+                    if(args.length < 1) {
+
+                        Chat.sendMessage(player, "/crystals add <player> <value>");
+                        Chat.sendMessage(player, "/crystals get <player>");
+                        Chat.sendMessage(player, "/crystals set <player> <value>");
+
+                    } else {
+
+                        if(args.length >= 2) {
+
+                            OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+                            if(!PlayerData.isLoaded(target.getUniqueId())) {
+                                PlayerData.loadNull(target.getUniqueId(), false);
+                            }
+
+                            if(args.length >= 3) {
+
+                                int value;
+                                try {
+                                    value = Integer.parseInt(args[2]);
+                                } catch (NumberFormatException ex){
+                                    Chat.sendMessage(player, "Käytä numeroita!");
+                                    return true;
+                                }
+
+                                if(args[0].equalsIgnoreCase("add")) {
+
+                                    Crystals.add(target.getUniqueId(), value);
+                                    Chat.sendMessage(player, "Lisätty §c" + value +  " §7kristallia pelaajalle §c" + target.getName());
+
+                                } else if(args[0].equalsIgnoreCase("set")) {
+
+                                    Crystals.set(target.getUniqueId(), value);
+                                    Chat.sendMessage(player, "Pelaajalle §c" + target.getName() + " §7asetettu §c" + value + " §7kristallia!");
+
+                                }
+
+                            } else {
+
+                                if(args[0].equalsIgnoreCase("get")) {
+                                    Chat.sendMessage(player, "Pelaajan §c" + target.getName() + "§7 kristallit: §c" + Crystals.get(target.getUniqueId()));
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            } else if(command.getLabel().equalsIgnoreCase("rtp")) {
+                RTP.teleport(player);
             }
 
         }

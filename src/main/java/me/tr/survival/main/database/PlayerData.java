@@ -65,6 +65,7 @@ public class PlayerData {
                 data.put("money", result.getInt("money"));
                 data.put("rank", result.getString("rank"));
                 data.put("joined", result.getString("joined"));
+                data.put("crystals", result.getInt("crystals"));
                 data.put("save", true);
 
                 // User's Home Data

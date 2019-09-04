@@ -16,16 +16,14 @@ public class AutoBroadcaster {
             Bukkit.broadcastMessage(getMessages()[random]);
 
             Bukkit.broadcastMessage("§7§m-----------------------------");
-        }, 20, 20 * 60 * 2);
+        }, 20, 20 * 60 * Main.getInstance().getConfig().getInt("auto-broadcaster.interval-in-minutes"));
 
         return task;
     }
 
     public static String[] getMessages() {
 
-        return new String[] {
-                "§7Lorem ipsum dolor sit amet",
-        };
+        return (String[]) Main.getInstance().getConfig().getStringList("auto-broadcaster.messages").toArray();
 
     }
 

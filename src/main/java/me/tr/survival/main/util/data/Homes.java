@@ -33,20 +33,23 @@ public class Homes {
 
         HashMap<String, Object> data = PlayerData.getData(player.getUniqueId());
         if(String.valueOf(data.get("first_home")) != "null" && data.get("first_home") != null) {
-            this.homes.add(Homes.parse(player.getUniqueId(), (String) data.get("first_home")));
+            Home home = Homes.parse(player.getUniqueId(), (String) data.get("first_home"));
+            this.homes.add(home);
         } else {
             this.homes.add(null);
         }
 
         if(String.valueOf(data.get("second_home")) != "null" && data.get("second_home") != null) {
-            this.homes.add(Homes.parse(player.getUniqueId(), (String) data.get("second_home")));
+            Home home = Homes.parse(player.getUniqueId(), (String) data.get("second_home"));
+            this.homes.add(home);
         } else {
             this.homes.add(null);
         }
 
 
         if(String.valueOf(data.get("third_home")) != "null" && data.get("third_home") != null) {
-            this.homes.add(Homes.parse(player.getUniqueId(), (String) data.get("third_home")));
+            Home home = Homes.parse(player.getUniqueId(), (String) data.get("third_home"));
+            this.homes.add(home);
         } else {
             this.homes.add(null);
         }
@@ -64,6 +67,11 @@ public class Homes {
     }
 
     public static Home parse(UUID owner, String text) {
+
+        if(text.equalsIgnoreCase("null")) {
+            return null;
+        }
+
         String[] values = text.split(";");
 
         return new Home(owner, Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]), values[3]);

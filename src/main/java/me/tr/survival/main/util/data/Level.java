@@ -66,6 +66,31 @@ public class Level {
         return "§7[" + ChatColor.GRAY + level + "§7]";
 
     }
+    
+    public static String formatChat(int level) {
+        if(level <= 10){
+            return "" + ChatColor.GRAY + level + "";
+        } else if(level > 10 && level <= 30){
+            return "" + ChatColor.GREEN + level + "";
+        } else if(level > 30 && level <= 40){
+            return "" + ChatColor.BLUE + level + "";
+        } else if(level > 40 && level <= 50){
+            return "" + ChatColor.LIGHT_PURPLE + level + "";
+        } else if(level > 50 && level <= 60){
+            return "" + ChatColor.YELLOW + level + "";
+        } else if(level > 60 && level <= 70){
+            return "" + ChatColor.GOLD + level + "";
+        } else if(level > 70 && level <= 80){
+            return "" + ChatColor.AQUA + level + "";
+        } else if(level > 80 && level <= 99){
+            return "" + ChatColor.RED + level + "";
+        } else if(level > 99){
+            return "" + ChatColor.RED + ChatColor.BOLD + level + "";
+        }
+
+        return "" + ChatColor.GRAY + level + "";
+    }
+        
 
     public static int getXP(UUID player){
         return Integer.parseInt(PlayerData.getValue(player, "xp").toString());

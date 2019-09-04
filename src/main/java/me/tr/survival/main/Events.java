@@ -7,6 +7,7 @@ import me.tr.survival.main.other.events.LevelUpEvent;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -41,6 +42,8 @@ public class Events implements Listener {
     public void onJoin(PlayerJoinEvent e) {
 
         Player player = e.getPlayer();
+        FileConfiguration config = Main.getInstance().getConfig();
+
         player.sendMessage("§7§m--------------------------");
         player.sendMessage("§7Tervetuloa §c§lAutioMC§7-palvelimelle!");
         player.sendMessage(" ");
@@ -51,12 +54,21 @@ public class Events implements Listener {
         player.sendMessage("§7§m--------------------------");
 
         if(Ranks.isVIP(player.getUniqueId()) || Ranks.isStaff(player.getUniqueId())) {
-            e.setJoinMessage("§c§lPelaaja " + player.getName() + " liittyi!");
+            e.setJoinMessage(
+                    ChatColor.translateAlternateColorCodes('&',
+                            Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
         } else {
             e.setJoinMessage(null);
         }
 
-        Main.teleportToSpawn(e.getPlayer());
+        if(!player.hasPlayedBefore()) {
+            Main.teleportToSpawn(e.getPlayer());
+        }
+
+        player.setPlayerListHeaderFooter(
+                ChatColor.translateAlternateColorCodes('&', config.getString("tablist.header")),
+                ChatColor.translateAlternateColorCodes('&', config.getString("tablist.footer"))
+        );
 
     }
 
@@ -69,7 +81,9 @@ public class Events implements Listener {
         Main.getInstance().getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> PlayerData.savePlayer(player.getUniqueId()));
 
         if(Ranks.isVIP(player.getUniqueId()) || Ranks.isStaff(player.getUniqueId())) {
-            e.setQuitMessage("§c§lPelaaja " + player.getName() + " poistui!");
+            e.setQuitMessage(
+                    ChatColor.translateAlternateColorCodes('&',
+                            Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
         } else {
             e.setQuitMessage(null);
         }
@@ -147,7 +161,7 @@ public class Events implements Listener {
         Player player = e.getPlayer();
         FileConfiguration config = Main.getInstance().getConfig();
 
-        if(config.getBoolean("sound-effects.teleport.enabled")) {
+        if(config.getBoolean("effects.teleport.enabled")) {
             player.getWorld().playSound(player.getLocation(),
                     Sound.valueOf(config.getString("sound-effects.teleport.sound")), 1, 1);
         }

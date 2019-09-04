@@ -57,3 +57,6 @@ commands:
   enchant:
     description: Lumoa itemi
     aliases: [lumoa, lumous]
+  crystal:
+    description: Kristallit
+    aliases: [crystals, kristallit]
