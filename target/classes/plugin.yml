@@ -67,3 +67,6 @@ commands:
   seen:
     description: Pelaajan vanhat osoitteet
     aliases: [history]
+  disguise:
+    description: Vaihda skiniä
+    aliases: [piiloudu]

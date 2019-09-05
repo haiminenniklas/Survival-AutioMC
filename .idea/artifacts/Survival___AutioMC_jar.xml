@@ -3,6 +3,7 @@
     <output-path>D:/AutioMC survival 1.14/plugins</output-path>
     <root id="archive" name="Survival - AutioMC.jar">
       <element id="module-output" name="AutioMC-Survival" />
+      <element id="file-copy" path="D:/AutioMC survival 1.14/spigot.jar" />
     </root>
   </artifact>
 </component>

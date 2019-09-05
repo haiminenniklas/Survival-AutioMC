@@ -66,6 +66,11 @@ public class Homes {
         data.put(pos, loc.getX() + ";" + loc.getY() + ";" + loc.getZ() + ";" + loc.getWorld().getName());
     }
 
+    public void deleteHome(String pos) {
+        HashMap<String, Object> data = PlayerData.getData(this.owner.getUniqueId());
+        data.put(pos, "null");
+    }
+
     public static Home parse(UUID owner, String text) {
 
         if(text.equalsIgnoreCase("null")) {
@@ -117,9 +122,9 @@ public class Homes {
                             gui.close(clicker);
                             clicker.sendMessage("§c§lAutio §7» Sinua viedään kotiin §c#1§7...");
                         } else if(clickType == ClickType.RIGHT) {
-                            homeList.createHome("first_home", clicker.getLocation());
+                            homeList.deleteHome("first_home");
                             gui.close(clicker);
-                            clicker.sendMessage("§c§lAutio §7» Loit kodin §c#1 §7sijaintiisi!");
+                            clicker.sendMessage("§c§lAutio §7» Postit kodin §c#1§7!");
                         }
                     }
                 });
@@ -156,9 +161,9 @@ public class Homes {
                             gui.close(clicker);
                             clicker.sendMessage("§c§lAutio §7» Sinua viedään kotiin §c#2§7...");
                         } else if(clickType == ClickType.RIGHT) {
-                            homeList.createHome("second_home", clicker.getLocation());
+                            homeList.deleteHome("second_home");
                             gui.close(clicker);
-                            clicker.sendMessage("§c§lAutio §7» Loit kodin §c#2 §7sijaintiisi!");
+                            clicker.sendMessage("§c§lAutio §7» Postit kodin §c#2§7!");
                         }
                     }
                 });
@@ -196,9 +201,9 @@ public class Homes {
                             gui.close(clicker);
                             clicker.sendMessage("§c§lAutio §7» Sinua viedään kotiin §c#3§7...");
                         } else if(clickType == ClickType.RIGHT) {
-                            homeList.createHome("third_home", clicker.getLocation());
+                            homeList.deleteHome("third_home");
                             gui.close(clicker);
-                            clicker.sendMessage("§c§lAutio §7» Loit kodin §c#3 §7sijaintiisi!");
+                            clicker.sendMessage("§c§lAutio §7» Postit kodin §c#3§7!");
                         }
                     }
                 });
@@ -241,9 +246,9 @@ public class Homes {
                             gui.close(clicker);
                             clicker.sendMessage("§c§lAutio §7» Sinua viedään kotiin §c#1§7... ");
                         } else if(clickType == ClickType.RIGHT) {
-                            homeList.createHome("first_home", clicker.getLocation());
+                            homeList.deleteHome("first_home");
                             gui.close(clicker);
-                            clicker.sendMessage("§c§lAutio §7» Loit kodin §c#1 §7sijaintiisi!");
+                            clicker.sendMessage("§c§lAutio §7» Postit kodin §c#1§7!");
                         }
                     }
                 });

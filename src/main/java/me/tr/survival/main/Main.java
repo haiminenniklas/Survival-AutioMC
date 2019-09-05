@@ -5,10 +5,7 @@ import me.tr.survival.main.commands.RankCommand;
 import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
-import me.tr.survival.main.other.AutoBroadcaster;
-import me.tr.survival.main.other.Enchant;
-import me.tr.survival.main.other.EnderpearlCooldown;
-import me.tr.survival.main.other.Util;
+import me.tr.survival.main.other.*;
 import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.Times;
 import me.tr.survival.main.util.data.Balance;
@@ -678,6 +675,14 @@ public final class Main extends JavaPlugin implements Listener {
 
                     }
 
+                }
+
+            } else if(command.getLabel().equalsIgnoreCase("piiloudu")) {
+
+                if(Disguise.changeSkin(player)) {
+                    Chat.sendMessage(player, "Skini vaihdettu!");
+                } else {
+                    Chat.sendMessage(player, "Skiniä ei voitu vaihtaa. Olethan yhteydessä ylläpitoon!");
                 }
 
             }
