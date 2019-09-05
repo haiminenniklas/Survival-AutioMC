@@ -33,7 +33,6 @@ public class Profile {
                 "§7Nimi: §c" + target.getName(),
                 " ",
                 "§7Arvo: §c" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
-                "§7Raha: §c" + data.get("money") + "€",
                 "§7Kristallit: §c" + Crystals.get(targetUUID),
                 " ",
                 "§7Liittynyt: §c" + data.get("joined"),

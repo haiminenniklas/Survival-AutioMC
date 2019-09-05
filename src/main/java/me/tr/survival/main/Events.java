@@ -1,5 +1,6 @@
 package me.tr.survival.main;
 
+import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
@@ -36,6 +37,7 @@ public class Events implements Listener {
     public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
         UUID uuid = e.getUniqueId();
         PlayerData.loadPlayer(uuid);
+
     }
 
     @EventHandler
@@ -69,6 +71,14 @@ public class Events implements Listener {
                 ChatColor.translateAlternateColorCodes('&', config.getString("tablist.header")),
                 ChatColor.translateAlternateColorCodes('&', config.getString("tablist.footer"))
         );
+
+        Main.getInstance().getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+
+            PlayerAliases.load(player);
+            PlayerAliases.add(player, player.getAddress().getHostName());
+
+        });
+
 
     }
 

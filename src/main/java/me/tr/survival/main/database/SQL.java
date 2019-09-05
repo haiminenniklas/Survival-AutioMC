@@ -63,8 +63,9 @@ public class SQL {
                 "CREATE TABLE IF NOT EXISTS `players` (`uuid` VARCHAR(120), player_name TEXT, money int(11), rank TEXT, joined TEXT, crystals int(11) , PRIMARY KEY(`uuid`));",
                 "CREATE TABLE IF NOT EXISTS `homes` (`uuid` VARCHAR(120), first_home TEXT, second_home TEXT, third_home TEXT, PRIMARY KEY(`uuid`));",
                 "CREATE TABLE IF NOT EXISTS `mined_ores` (`uuid` VARCHAR(120), diamond int(11), gold int(11), iron int(11), coal int(11), total int(11), PRIMARY KEY (`uuid`));",
-                "CREATE TABLE IF NOT EXISTS `levels` (`uuid` VARCHAR(120), level int(11), xp int(11), total_xp int(11), PRIMARY KEY (`uuid`));"/*,
-                "CREATE TABLE IF NOt EXISTS `settings` (`uuid` VARCHAR(120), scoreboard TEXT DEFAULT 'false', privacy TEXT DEFAULT 'false', chat TEXT DEFAULT 'true', PRIMARY KEY(`uuid`))"*/
+                "CREATE TABLE IF NOT EXISTS `levels` (`uuid` VARCHAR(120), level int(11), xp int(11), total_xp int(11), PRIMARY KEY (`uuid`));",
+                "CREATE TABLE IF NOT EXISTS `player_aliases` (`player_name` VARCHAR(32), `addresses` LONGTEXT, PRIMARY KEY(`uuid`));"/*,
+                "CREATE TABLE IF NOT EXISTS `settings` (`uuid` VARCHAR(120), scoreboard TEXT DEFAULT 'false', privacy TEXT DEFAULT 'false', chat TEXT DEFAULT 'true', PRIMARY KEY(`uuid`))"*/
 
         };
 

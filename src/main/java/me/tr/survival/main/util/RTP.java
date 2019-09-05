@@ -44,7 +44,9 @@ public class RTP {
         player.teleport(new Location(player.getWorld(), newX, newY, newZ));
         Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
 
-        cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));
+        if(!player.isOp()) {
+            cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));
+        }
 
     }
 

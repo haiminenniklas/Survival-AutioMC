@@ -2,6 +2,7 @@ package me.tr.survival.main;
 
 import me.tr.survival.main.commands.HomeCommand;
 import me.tr.survival.main.commands.RankCommand;
+import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.AutoBroadcaster;
@@ -96,10 +97,12 @@ public final class Main extends JavaPlugin implements Listener {
 
             if(command.getLabel().equalsIgnoreCase("bal")) {
                 if(args.length == 0){
-                    Chat.sendMessage(player, "Rahatilanne: §c" + Balance.get(player) + "€");
+                    //Chat.sendMessage(player, "Rahatilanne: §c" + Balance.get(player) + "€");
+                    Chat.sendMessage(player, "Kristallit: §c" + Crystals.get(player.getUniqueId()));
                 } else if(args.length > 0) {
                     if(!player.isOp()){
-                        Chat.sendMessage(player, "Rahatilanne: §c" + Balance.get(player) + "€");
+                      //Chat.sendMessage(player, "Rahatilanne: §c" + Balance.get(player) + "€");
+                        Chat.sendMessage(player, "Kristallit: §c" + Crystals.get(player.getUniqueId()));
                     } else {
 
                         if(args.length == 1 && args[0].equalsIgnoreCase("help")) {
@@ -622,6 +625,8 @@ public final class Main extends JavaPlugin implements Listener {
 
                     }
 
+                } else {
+                    Chat.sendMessage(player, "Kristallit: §c" + Crystals.get(player.getUniqueId()));
                 }
 
             } else if(command.getLabel().equalsIgnoreCase("rtp")) {
@@ -637,6 +642,42 @@ public final class Main extends JavaPlugin implements Listener {
                             Chat.sendMessage(player, "Config uudelleenladattu!");
                         }
                     }
+                }
+
+            } else if(command.getLabel().equalsIgnoreCase("seen")) {
+
+                if(player.isOp()) {
+
+                    if(args.length < 1) {
+                        Chat.sendMessage(player, "/seen <player>");
+                    } else {
+
+                        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+                        getServer().getScheduler().runTaskAsynchronously(this, () -> {
+                            String[] addresses = PlayerAliases.load(target);
+
+                            if(addresses != null) {
+                                StringBuilder sb = new StringBuilder();
+                                for(int i = 0; i < addresses.length; i++) {
+                                    if(i + 1 < addresses.length) {
+                                        sb.append("§c" + addresses[i] + ", ");
+                                    } else if(i + 1 >= addresses.length) {
+                                        sb.append("§c" + addresses[i]);
+                                    }
+                                }
+
+                                player.sendMessage("§7--------------------------");
+                                player.sendMessage("§7Pelaajan §c" + target.getName() + "§7 IP-osoitteet:");
+                                player.sendMessage(sb.toString());
+                                player.sendMessage("§7--------------------------");
+                            } else {
+                                Chat.sendMessage(player, "Pelaajalla ei ole koskaan liittynyt palvelimelle..");
+                            }
+
+                        });
+
+                    }
+
                 }
 
             }

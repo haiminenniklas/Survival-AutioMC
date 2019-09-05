@@ -64,3 +64,6 @@ commands:
     description: RTP
   autio:
     description: Autio
+  seen:
+    description: Pelaajan vanhat osoitteet
+    aliases: [history]
