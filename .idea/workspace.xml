@@ -7,37 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63a0b4b0-0b5c-4916-a9b3-4052c83d79e2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/other/Disguise.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Survival___AutioMC_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/Survival___AutioMC_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AutioMC-Survival.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AutioMC-Survival.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/database/SQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/database/SQL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/other/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/other/Util.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/data/Homes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/data/Homes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Home.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Home.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Profile$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Profile$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Profile$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Profile$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Settings$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Settings$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Settings$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Settings$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Settings$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/Settings$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/database/SQL.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/database/SQL.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/other/Ranks.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/other/Ranks.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/other/Util.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/other/Util.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$7.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes$8.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/data/Homes.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/gui/Gui.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/tr/survival/main/util/gui/Gui.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/RTP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/RTP.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -95,27 +66,30 @@
     <session id="69281310">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="4" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.127" value="1" />
           <entry key="project.open.time.26" value="1" />
+          <entry key="project.open.time.60" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
+          <entry key="class" value="1" />
           <entry key="gitignore" value="1" />
           <entry key="iml" value="1" />
-          <entry key="java" value="30" />
+          <entry key="java" value="31" />
           <entry key="xml" value="2" />
           <entry key="yml" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
+          <entry key="CLASS" value="1" />
           <entry key="IDEA_MODULE" value="1" />
-          <entry key="JAVA" value="30" />
+          <entry key="JAVA" value="31" />
           <entry key="PLAIN_TEXT" value="1" />
           <entry key="XML" value="2" />
           <entry key="YAML" value="3" />
@@ -124,13 +98,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="gitignore" value="8" />
-          <entry key="java" value="6619" />
+          <entry key="java" value="6948" />
           <entry key="yml" value="826" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="6619" />
+          <entry key="JAVA" value="6948" />
           <entry key="PLAIN_TEXT" value="8" />
           <entry key="YAML" value="826" />
         </counts>
@@ -140,27 +114,6 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/Home.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
-              <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/data/Homes.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="749">
-              <caret line="257" column="79" selection-start-line="257" selection-start-column="79" selection-end-line="257" selection-end-column="79" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="718">
@@ -172,10 +125,22 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/RTP.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="936">
+              <caret line="65" column="19" selection-start-line="65" selection-start-column="19" selection-end-line="65" selection-end-column="19" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/other/Util.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="851">
+            <state relative-caret-position="1802">
               <caret line="131" column="5" selection-start-line="131" selection-start-column="5" selection-end-line="131" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -187,8 +152,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/other/Disguise.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="519">
-              <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
+            <state relative-caret-position="578">
+              <caret line="50" selection-start-line="50" selection-end-line="50" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -199,7 +164,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="970">
+            <state relative-caret-position="1207">
               <caret line="71" column="22" selection-start-line="71" selection-start-column="22" selection-end-line="71" selection-end-column="22" />
             </state>
           </provider>
@@ -208,7 +173,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/Events.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
+            <state relative-caret-position="969">
               <caret line="77" column="27" selection-start-line="77" selection-start-column="27" selection-end-line="77" selection-end-column="27" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -220,7 +185,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/database/SQL.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="511">
+            <state relative-caret-position="1088">
               <caret line="69" column="10" selection-start-line="69" selection-start-column="10" selection-end-line="69" selection-end-column="10" />
             </state>
           </provider>
@@ -229,7 +194,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="868">
+            <state relative-caret-position="1088">
               <caret line="64" column="19" selection-start-line="64" selection-start-column="19" selection-end-line="64" selection-end-column="19" />
             </state>
           </provider>
@@ -238,7 +203,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/database/PlayerAliases.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="470">
+            <state relative-caret-position="629">
               <caret line="43" column="54" selection-start-line="43" selection-start-column="54" selection-end-line="43" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -262,6 +227,7 @@
       <find>´</find>
       <find>clicker.closeInventory();</find>
       <find>§7]</find>
+      <find>water</find>
     </findStrings>
     <replaceStrings>
       <replace>`</replace>
@@ -294,7 +260,6 @@
         <option value="$PROJECT_DIR$/src/main/java/me/tr/survival/main/other/AutoBroadcaster.java" />
         <option value="$PROJECT_DIR$/src/main/java/me/tr/survival/main/other/EnderpearlCooldown.java" />
         <option value="$PROJECT_DIR$/src/main/java/me/tr/survival/main/Profile.java" />
-        <option value="$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/RTP.java" />
         <option value="$PROJECT_DIR$/src/main/java/me/tr/survival/main/Events.java" />
         <option value="$PROJECT_DIR$/src/main/java/me/tr/survival/main/database/PlayerAliases.java" />
         <option value="$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/data/Homes.java" />
@@ -304,6 +269,7 @@
         <option value="$PROJECT_DIR$/src/main/resources/plugin.yml" />
         <option value="$PROJECT_DIR$/src/main/java/me/tr/survival/main/other/Disguise.java" />
         <option value="$PROJECT_DIR$/src/main/java/me/tr/survival/main/Main.java" />
+        <option value="$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/RTP.java" />
       </list>
     </option>
   </component>
@@ -333,6 +299,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -443,7 +410,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="AndroidView" />
     </panes>
@@ -451,7 +417,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1567705266419" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1567705900444" />
     <property name="last_opened_file_path" value="D:/AutioMC survival 1.14/spigot.jar!/" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -523,17 +489,18 @@
       <workItem from="1567336382131" duration="620000" />
       <workItem from="1567600922476" duration="10884000" />
       <workItem from="1567687741431" duration="6602000" />
+      <workItem from="1567771284114" duration="271000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="56852000" />
+    <option name="totallyTimeSpent" value="57123000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1186" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2835821" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2867804" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -708,9 +675,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
           <caret line="53" column="45" lean-forward="true" selection-start-line="53" selection-start-column="45" selection-end-line="53" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -770,9 +734,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="612">
           <caret line="53" column="40" lean-forward="true" selection-start-line="53" selection-start-column="40" selection-end-line="53" selection-end-column="40" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -797,39 +758,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/RTP.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="45" selection-start-line="45" selection-end-line="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/Events.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="77" column="27" selection-start-line="77" selection-start-column="27" selection-end-line="77" selection-end-column="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/database/PlayerAliases.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="470">
-          <caret line="43" column="54" selection-start-line="43" selection-start-column="54" selection-end-line="43" selection-end-column="54" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/Home.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
+        <state relative-caret-position="374">
           <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -839,28 +770,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/data/Homes.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="749">
+        <state relative-caret-position="4080">
           <caret line="257" column="79" selection-start-line="257" selection-start-column="79" selection-end-line="257" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/database/SQL.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="511">
-          <caret line="69" column="10" selection-start-line="69" selection-start-column="10" selection-end-line="69" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="868">
-          <caret line="64" column="19" selection-start-line="64" selection-start-column="19" selection-end-line="64" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/other/Util.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="851">
+        <state relative-caret-position="1802">
           <caret line="131" column="5" selection-start-line="131" selection-start-column="5" selection-end-line="131" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -870,8 +787,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/other/Disguise.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
+        <state relative-caret-position="578">
+          <caret line="50" selection-start-line="50" selection-end-line="50" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -880,8 +797,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="970">
+        <state relative-caret-position="1207">
           <caret line="71" column="22" selection-start-line="71" selection-start-column="22" selection-end-line="71" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/Events.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="969">
+          <caret line="77" column="27" selection-start-line="77" selection-start-column="27" selection-end-line="77" selection-end-column="27" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/database/SQL.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1088">
+          <caret line="69" column="10" selection-start-line="69" selection-start-column="10" selection-end-line="69" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1088">
+          <caret line="64" column="19" selection-start-line="64" selection-start-column="19" selection-end-line="64" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/database/PlayerAliases.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="43" column="54" selection-start-line="43" selection-start-column="54" selection-end-line="43" selection-end-column="54" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -889,6 +840,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="718">
           <caret line="685" column="17" selection-start-line="685" selection-start-column="17" selection-end-line="685" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/AutioMC survival 1.14/spigot.jar!/org/bukkit/Material.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="363" column="34" selection-start-line="363" selection-start-column="29" selection-end-line="363" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/me/tr/survival/main/util/RTP.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="936">
+          <caret line="65" column="19" selection-start-line="65" selection-start-column="19" selection-end-line="65" selection-end-column="19" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

@@ -4,6 +4,9 @@ import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.other.Util;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -21,6 +24,18 @@ public class RTP {
             return;
         }
 
+        Util.sendNotification(player, "§7Etsitään sopivaa sijaintia...");
+
+        player.teleport(randomLocation(player.getWorld()));
+        Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
+
+        if(!player.isOp()) {
+            cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));
+        }
+
+    }
+
+    public static Location randomLocation(World world) {
         Random r = new Random();
         int range = Main.getInstance().getConfig().getInt("random-tp.range");
         int newX = r.nextInt(range), newZ = r.nextInt(range);
@@ -39,15 +54,14 @@ public class RTP {
             newZ = -9000;
         }
 
-        int newY = player.getWorld().getHighestBlockYAt(newX, newZ);
+        int newY = world.getHighestBlockYAt(newX, newZ);
+        Location loc = new Location(world, newX, newY, newZ);
 
-        player.teleport(new Location(player.getWorld(), newX, newY, newZ));
-        Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
-
-        if(!player.isOp()) {
-            cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));
+        Block block = loc.getBlock();
+        if(block.getType() == Material.WATER || block.getType() == Material.LAVA) {
+            return randomLocation(world);
         }
-
+        return loc;
     }
 
 }
