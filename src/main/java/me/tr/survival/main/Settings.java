@@ -69,6 +69,15 @@ public class Settings {
             }
         });
 
+        gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                Profile.openProfile(player, player.getUniqueId());
+            }
+        });
+
+
         gui.open(player);
 
     }

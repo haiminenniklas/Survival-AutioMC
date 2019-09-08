@@ -1,6 +1,7 @@
 package me.tr.survival.main.util.data;
 
 import me.tr.survival.main.Home;
+import me.tr.survival.main.Profile;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
@@ -209,6 +210,14 @@ public class Homes {
                 });
             }
 
+            gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    Profile.openProfile(player, player.getUniqueId());
+                }
+            });
+
             gui.open(player);
 
         } else {
@@ -257,6 +266,14 @@ public class Homes {
 
             gui.addItem(1, ItemUtil.makeItem(Material.BARRIER, 1, "§c§lLUKITTU"), 13);
             gui.addItem(1, ItemUtil.makeItem(Material.BARRIER, 1, "§c§lLUKITTU"), 15);
+
+            gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    Profile.openProfile(player, player.getUniqueId());
+                }
+            });
 
             gui.open(player);
         }

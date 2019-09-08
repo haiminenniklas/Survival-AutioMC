@@ -5,21 +5,28 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.events.LevelUpEvent;
+import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class Events implements Listener {
@@ -64,13 +71,14 @@ public class Events implements Listener {
         }
 
         if(!player.hasPlayedBefore()) {
-            Main.teleportToSpawn(e.getPlayer());
+            Autio.teleportToSpawn(e.getPlayer());
         }
 
-        player.setPlayerListHeaderFooter(
+        // DISABLED FOR NOW
+        /*player.setPlayerListHeaderFooter(
                 ChatColor.translateAlternateColorCodes('&', config.getString("tablist.header")),
                 ChatColor.translateAlternateColorCodes('&', config.getString("tablist.footer"))
-        );
+        ); */
 
         Main.getInstance().getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
 
@@ -173,4 +181,67 @@ public class Events implements Listener {
         }
 
     }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent e) {
+
+        Player player = e.getPlayer();
+        Block block = e.getBlock();
+        UUID uuid = player.getUniqueId();
+
+        PlayerData.add(player.getUniqueId(), "total", 1);
+        int random = new Random().nextInt(100);
+
+        if(block.getType() == Material.DIAMOND_ORE) {
+            PlayerData.add(uuid, "diamond", 1);
+            if(random <= 10) {
+                int add = new Random().nextInt(5) + 1;
+                Crystals.add(uuid, add);
+                Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+            }
+        } else if(block.getType() == Material.GOLD_ORE) {
+            PlayerData.add(uuid, "gold", 1);
+            if(random <= 5) {
+                int add = new Random().nextInt(5) + 1;
+                Crystals.add(uuid, add);
+                Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+            }
+        } else if(block.getType() == Material.IRON_ORE) {
+            PlayerData.add(uuid, "iron", 1);
+            if(random <= 3) {
+                int add = new Random().nextInt(5) + 1;
+                Crystals.add(uuid, add);
+                Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+            }
+        } else if(block.getType() == Material.COAL_ORE) {
+            PlayerData.add(uuid, "coal", 1);
+            if(random <= 1) {
+                int add = new Random().nextInt(5) + 1;
+                Crystals.add(uuid, add);
+                Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+            }
+        } else if(block.getType() == Material.EMERALD_ORE) {
+            if(random <= 18) {
+                int add = new Random().nextInt(5) + 1;
+                Crystals.add(uuid, add);
+                Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+            }
+        }
+
+
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onCreatureSpawn(CreatureSpawnEvent event) {
+        if (event.getEntity().getType().equals(EntityType.PHANTOM)) {
+            event.setCancelled(true);
+        }
+
+    }
+
 }

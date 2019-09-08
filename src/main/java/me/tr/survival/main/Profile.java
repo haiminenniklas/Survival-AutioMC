@@ -2,10 +2,12 @@ package me.tr.survival.main;
 
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
+import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.data.Homes;
 import me.tr.survival.main.util.data.Level;
+import me.tr.survival.main.util.data.Ores;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
@@ -24,7 +26,7 @@ public class Profile {
     public static void openProfile(Player opener, UUID targetUUID) {
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
-        Gui gui = new Gui("Pelaajan tiedot", 27);
+        Gui gui = new Gui("Pelaajan tiedot", 36);
 
         HashMap<String, Object> data = PlayerData.getData(targetUUID);
 
@@ -37,27 +39,46 @@ public class Profile {
                 " ",
                 "§7Liittynyt: §c" + data.get("joined"),
                 "§7§m--------------------"
-        )), 10);
+        )), 13);
 
-        gui.addItem(1, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§cTehtävät", Arrays.asList(
-                "§7§m--------------------",
-                "§7Suoritettu: §c0§7/100 §o(0%)",
-                "§7§m--------------------"
-        )), 12);
+        double diamond_percentage = 0;
+        if(Ores.getDiamonds(targetUUID) >= 1) {
+            diamond_percentage = (double)  (Ores.getDiamonds(targetUUID) / Ores.getTotal(targetUUID)) * 100;
+        }
+
+        double gold_percentage = 0;
+        if(Ores.getGold(targetUUID) >= 1) {
+            gold_percentage = (double) (Ores.getGold(targetUUID) / Ores.getTotal(targetUUID)) * 100;
+        }
+
+        double iron_percentage = 0;
+        if(Ores.getIron(targetUUID) >= 1) {
+            iron_percentage = (double) (Ores.getGold(targetUUID) / Ores.getTotal(targetUUID)) * 100;
+        }
+
+        double coal_percentage = 0;
+        if(Ores.getCoal(targetUUID) >= 1) {
+            coal_percentage = (double) (Ores.getGold(targetUUID) / Ores.getTotal(targetUUID)) * 100;
+        }
+
+        double other_percentage = 0;
+        if(Ores.getOther(targetUUID) >= 1) {
+            other_percentage = (double)   (Ores.getGold(targetUUID) / Ores.getTotal(targetUUID)) * 100;
+        }
 
         gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§cTuhotut blockit", Arrays.asList(
                 "§7§m--------------------",
-                "§7Yhteensä: §c0",
+                "§7Yhteensä: §c" + Ores.getTotal(targetUUID),
                 " ",
-                "§7Timantti: §b0 §7§o(0%)",
-                "§7Kulta: §60 §7§o(0%)",
-                "§7Rauta: §f0 §7§o(0%)",
-                "§7Hiili: §80 §7§o(0%)",
-                "§7Muu: §c0 §7§o(0%)",
+                "§7Timantti: §b" + Ores.getDiamonds(targetUUID) + " §7§o(" + diamond_percentage +  "%)",
+                "§7Kulta: §6" + Ores.getGold(targetUUID) + " §7§o(" + gold_percentage +  "%)",
+                "§7Rauta: §f" + Ores.getIron(targetUUID) + " §7§o(" + iron_percentage +  "%)",
+                "§7Hiili: §8" + Ores.getCoal(targetUUID)  +" §7§o(" + coal_percentage +  "%)",
+                "§7Muu: §c" + Ores.getOther(targetUUID) + " §7§o(" + other_percentage +  "%)",
                 "§7§m--------------------"
-        )), 13);
+        )), 19);
 
-        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§cKodit", Arrays.asList(
+        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§cKodit", Arrays.asList(
                 "§7§m--------------------",
                 "§7Kodit: §c" + new Homes(target).get().size(),
                 " ",
@@ -71,21 +92,7 @@ public class Profile {
             }
         });
 
-        int level = Level.get(targetUUID);
-        int xp = Level.getXP(targetUUID);
-        float xpToNext = Level.getXPToNextLevel(targetUUID);
-        float percent = Math.round((xp / xpToNext) * 100);
-
-        gui.addItem(1, ItemUtil.makeItem(Material.NETHER_STAR, 1, "§cTaso", Arrays.asList(
-                "§7§m--------------------",
-                "§7Taso: §c" + level,
-                " ",
-                "§7Seuraava taso (§c" + xp + "xp§7/" + xpToNext + "xp):",
-                "§7" + Level.getProgressText(targetUUID, 30, ChatColor.RED) + " §o(" + percent + "%)",
-                "§7§m--------------------"
-        )), 15);
-
-        gui.addButton(new Button(1, 16, ItemUtil.makeItem(Material.LEGACY_REDSTONE_COMPARATOR, 1, "§cAsetukset", Arrays.asList(
+        gui.addButton(new Button(1, 25, ItemUtil.makeItem(Material.LEGACY_REDSTONE_COMPARATOR, 1, "§cAsetukset", Arrays.asList(
                 "§7§m--------------------",
                 "§cKlikkaa avataksesi asetukset!",
                 "§7§m--------------------"

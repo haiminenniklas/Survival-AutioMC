@@ -194,7 +194,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                 if(args.length < 1) {
                     player.sendMessage("§c§lAutio §7» Sinua viedään spawnille...");
-                    Main.teleportToSpawn(player);
+                    Autio.teleportToSpawn(player);
                 } else {
                     if(player.isOp()) {
                         Player target = Bukkit.getPlayer(args[0]);
@@ -202,7 +202,7 @@ public final class Main extends JavaPlugin implements Listener {
                             Chat.sendMessage(player, "Pelaajaa ei löydetty");
                             return true;
                         }
-                        Main.teleportToSpawn(target);
+                        Autio.teleportToSpawn(target);
                         Chat.sendMessage(player, "Pelaaja §c" + target.getName() + " §7vietiin spawnille!");
                     }
                 }
@@ -210,7 +210,7 @@ public final class Main extends JavaPlugin implements Listener {
             } else if(command.getLabel().equalsIgnoreCase("setspawn")) {
 
                 if(player.isOp()) {
-                    Main.setSpawn(player.getLocation());
+                    Autio.setSpawn(player.getLocation());
                     Chat.sendMessage(player, "Spawn asetettu sijaintiisi");
                 }
 
@@ -265,14 +265,14 @@ public final class Main extends JavaPlugin implements Listener {
             } else if(command.getLabel().equalsIgnoreCase("ping")) {
 
                 if(args.length < 1) {
-                    Chat.sendMessage(player, "Viiveesi: §c" + getPing(player) + "ms");
+                    Chat.sendMessage(player, "Viiveesi: §c" + Util.getPing(player) + "ms");
                 } else {
                     Player target = Bukkit.getPlayer(args[0]);
                     if(target == null) {
                         Chat.sendMessage(player, "Pelaajaa ei löydetty!");
                         return true;
                     }
-                    Chat.sendMessage(player, "Pelaajan §c" + target.getName() +  " §7viive: §c" + getPing(target) + "ms");
+                    Chat.sendMessage(player, "Pelaajan §c" + target.getName() +  " §7viive: §c" + Util.getPing(target) + "ms");
 
                 }
 
@@ -679,7 +679,7 @@ public final class Main extends JavaPlugin implements Listener {
 
             } else if(command.getLabel().equalsIgnoreCase("piiloudu")) {
 
-                if(Disguise.changeSkin(player)) {
+                if (Disguise.changeSkin(player)) {
                     Chat.sendMessage(player, "Skini vaihdettu!");
                 } else {
                     Chat.sendMessage(player, "Skiniä ei voitu vaihtaa. Olethan yhteydessä ylläpitoon!");
@@ -692,55 +692,5 @@ public final class Main extends JavaPlugin implements Listener {
         return true;
     }
 
-    public static int getPing(Player player) {
-        try {
-            Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
-            int ping = (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
-            return ping;
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public static void updateTag(Player player) {
-
-
-
-    }
-
-    public static void teleportToSpawn(Player player) {
-        player.teleport(Main.getSpawn());
-    }
-
-    public static void setSpawn(Location loc) {
-
-        FileConfiguration config = Main.getInstance().getConfig();
-        config.set("spawn.x", loc.getX());
-        config.set("spawn.y", loc.getY());
-        config.set("spawn.z", loc.getZ());
-        config.set("spawn.yaw", String.valueOf(loc.getYaw()));
-        config.set("spawn.pitch", String.valueOf(loc.getPitch()));
-        config.set("spawn.world", loc.getWorld().getName());
-
-        Main.getInstance().saveConfig();
-
-    }
-
-    public static Location getSpawn() {
-        FileConfiguration config = Main.getInstance().getConfig();
-
-        double x = config.getDouble("spawn.x");
-        double y = config.getDouble("spawn.y");
-        double z = config.getDouble("spawn.z");
-
-        float yaw = Float.parseFloat(config.getString("spawn.yaw"));
-        float pitch = Float.parseFloat(config.getString("spawn.pitch"));
-
-        World world = Bukkit.getWorld(config.getString("spawn.world"));
-
-        return new Location(world, x, y, z, yaw, pitch);
-
-    }
 
 }

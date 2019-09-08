@@ -19,6 +19,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,6 +41,7 @@ public class Util {
     public static void heal(Player player) {
         player.setHealth(20.0);
         player.setFoodLevel(20);
+        removePotionEffects(player);
     }
     public static void clearInventory(Player player) {
         player.getInventory().clear();
@@ -130,5 +132,17 @@ public class Util {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
 
     }
+
+    public static int getPing(Player player) {
+        try {
+            Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+            int ping = (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
+            return ping;
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 
 }
