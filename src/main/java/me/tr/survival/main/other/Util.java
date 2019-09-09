@@ -5,6 +5,7 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
+import org.bukkit.util.Vector;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -116,6 +118,12 @@ public class Util {
         }
     }
 
+    public static void bounceBack(Player player, Location from, Location to) {
+        Vector direction = from.toVector().subtract(to.toVector());
+        direction.setY(0);
+        player.setVelocity(direction.multiply(2));
+    }
+
     public static double round(double round){
         double rounded = Math.round(round * 10.0D) / 10.0D;
         return rounded;
@@ -128,7 +136,6 @@ public class Util {
 
     public static void sendNotification(Player player, String message){
 
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
 
     }

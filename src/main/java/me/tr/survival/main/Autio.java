@@ -27,6 +27,7 @@ public class Autio {
     }
 
     public static Location getSpawn() {
+
         FileConfiguration config = Main.getInstance().getConfig();
 
         double x = config.getDouble("spawn.x");

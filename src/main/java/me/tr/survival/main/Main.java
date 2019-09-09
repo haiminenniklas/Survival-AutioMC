@@ -6,6 +6,7 @@ import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.*;
+import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.Times;
 import me.tr.survival.main.util.data.Balance;
@@ -560,6 +561,7 @@ public final class Main extends JavaPlugin implements Listener {
                         ItemStack item = player.getInventory().getItemInMainHand();
 
                         ItemStack newItem = Util.makeEnchanted(item, enchant);
+
                         player.getInventory().remove(item);
                         player.getInventory().addItem(newItem);
 
@@ -685,6 +687,15 @@ public final class Main extends JavaPlugin implements Listener {
                     Chat.sendMessage(player, "Skiniä ei voitu vaihtaa. Olethan yhteydessä ylläpitoon!");
                 }
 
+            } else if(command.getLabel().equalsIgnoreCase("skull")) {
+                if(player.isOp()) {
+                    if(args.length < 1) {
+                        Chat.sendMessage(player, "§7Käytä: §c/skull <player>");
+                    } else {
+                        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+                        player.getInventory().addItem(ItemUtil.makeSkullItem(target.getName(), 1, "§c" + target.getName()));
+                    }
+                }
             }
 
         }

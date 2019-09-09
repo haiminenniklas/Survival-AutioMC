@@ -70,3 +70,5 @@ commands:
   disguise:
     description: Vaihda skiniä
     aliases: [piiloudu]
+  skull:
+    description: Pelaajan kallo

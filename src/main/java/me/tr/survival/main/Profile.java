@@ -26,7 +26,7 @@ public class Profile {
     public static void openProfile(Player opener, UUID targetUUID) {
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
-        Gui gui = new Gui("Pelaajan tiedot", 36);
+        Gui gui = new Gui("Pelaajan tiedot", 4 * 9);
 
         HashMap<String, Object> data = PlayerData.getData(targetUUID);
 
@@ -41,29 +41,39 @@ public class Profile {
                 "§7§m--------------------"
         )), 13);
 
-        double diamond_percentage = 0;
+        double diamond_percentage;
         if(Ores.getDiamonds(targetUUID) >= 1) {
-            diamond_percentage = (double)  (Ores.getDiamonds(targetUUID) / Ores.getTotal(targetUUID)) * 100;
+            diamond_percentage = Math.round(((double) Ores.getDiamonds(targetUUID) / (double) Ores.getTotal(targetUUID)) * 100d);
+        } else {
+            diamond_percentage = 0;
         }
 
-        double gold_percentage = 0;
+        double gold_percentage;
         if(Ores.getGold(targetUUID) >= 1) {
-            gold_percentage = (double) (Ores.getGold(targetUUID) / Ores.getTotal(targetUUID)) * 100;
+            gold_percentage =  Math.round(((double) Ores.getGold(targetUUID) / (double) Ores.getTotal(targetUUID)) * 100d);
+        } else {
+            gold_percentage = 0;
         }
 
-        double iron_percentage = 0;
+        double iron_percentage;
         if(Ores.getIron(targetUUID) >= 1) {
-            iron_percentage = (double) (Ores.getGold(targetUUID) / Ores.getTotal(targetUUID)) * 100;
+            iron_percentage = Math.round(((double) Ores.getIron(targetUUID) /(double)  Ores.getTotal(targetUUID)) * 100d);
+        } else {
+            iron_percentage = 0;
         }
 
-        double coal_percentage = 0;
+        double coal_percentage;
         if(Ores.getCoal(targetUUID) >= 1) {
-            coal_percentage = (double) (Ores.getGold(targetUUID) / Ores.getTotal(targetUUID)) * 100;
+            coal_percentage = Math.round(((double)  Ores.getCoal(targetUUID) / (double) Ores.getTotal(targetUUID)) * 100d);
+        } else {
+            coal_percentage = 0;
         }
 
-        double other_percentage = 0;
+        double other_percentage;
         if(Ores.getOther(targetUUID) >= 1) {
-            other_percentage = (double)   (Ores.getGold(targetUUID) / Ores.getTotal(targetUUID)) * 100;
+            other_percentage = Math.round(((double) Ores.getOther(targetUUID) / (double) Ores.getTotal(targetUUID)) * 100d);
+        } else {
+            other_percentage = 0;
         }
 
         gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§cTuhotut blockit", Arrays.asList(

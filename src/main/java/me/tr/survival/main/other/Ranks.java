@@ -104,10 +104,12 @@ public class Ranks {
     }
 
     public static boolean isVIP(UUID uuid) {
+        if(isStaff(uuid)) return true;
         return hasRank(uuid, "premium") || hasRank(uuid, "premiumplus");
     }
 
     public static boolean isPartner(UUID uuid) {
+        if(isStaff(uuid)) return true;
         return hasRank(uuid, "youtube") || hasRank(uuid, "twitch");
     }
 

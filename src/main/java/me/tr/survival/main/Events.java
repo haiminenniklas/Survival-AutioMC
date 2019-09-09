@@ -5,13 +5,11 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.events.LevelUpEvent;
+import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
@@ -25,7 +23,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
@@ -88,6 +88,7 @@ public class Events implements Listener {
         });
 
 
+
     }
 
     @EventHandler
@@ -132,6 +133,23 @@ public class Events implements Listener {
     }
 
     @EventHandler
+    public void onMove(PlayerMoveEvent e) {
+
+        Player player = e.getPlayer();
+        Location loc = e.getTo();
+
+        // RTP Portal
+        if(loc.getBlockZ() == 29 && (loc.getBlockX() <= 15 && loc.getBlockX() >= 11) &&
+                e.getTo().getWorld().getName().equalsIgnoreCase(Autio.getSpawn().getWorld().getName())) {
+            if(!RTP.teleport(player)) {
+                // Bounce player back
+                Util.bounceBack(player, e.getFrom(), e.getTo());
+            }
+        }
+
+    }
+
+    @EventHandler
     public void onInvClick(InventoryClickEvent e) {
         if(e.getClickedInventory() == null) return;
         if(e.getCurrentItem() == null) return;
@@ -143,7 +161,6 @@ public class Events implements Listener {
         if(!player.isOp()) e.setCancelled(true);
 
         if(Gui.getGui(player) != null) {
-            System.out.println(Gui.getGui(player).getTitle());
             Gui gui = Gui.getGui(player);
             if(e.getCurrentItem() != null) {
                 for(Button b : gui.getButtons()) {
@@ -174,8 +191,6 @@ public class Events implements Listener {
         FileConfiguration config = Main.getInstance().getConfig();
 
         if(config.getBoolean("effects.teleport.enabled")) {
-            player.getWorld().playSound(e.getTo(),
-                    Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
             player.getWorld().playSound(e.getFrom(),
                     Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
         }
