@@ -70,7 +70,7 @@ public class Ranks {
             case "admin":
                 return "§cYlläpitäjä";
             default:
-                return "";
+                return "§7Pelaaja";
 
         }
     }

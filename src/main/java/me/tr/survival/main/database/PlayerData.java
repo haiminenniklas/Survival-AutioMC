@@ -179,8 +179,8 @@ public class PlayerData {
                 "UPDATE `levels` SET `level` = " + data.get("level") + ", `xp` = " + data.get("xp") + ", `total_xp` = " + data.get("xp") +
                         " WHERE `uuid` = '" + uuid + "';",
 
-                "UPDATE `settings` SET `scoreboard` = " + data.get("scoreboard") + ", `privacy` = " + data.get("privacy") + ", `chat` = " + data.get("chat") +
-                        ", `treefall` = " + data.get("treefall") + " WHERE `uuid` = '" + uuid + "';"
+                "UPDATE `settings` SET `scoreboard` = '" + data.get("scoreboard") + "', `privacy` = '" + data.get("privacy") + "', `chat` = '" + data.get("chat") +
+                        "', `treefall` = '" + data.get("treefall") + "' WHERE `uuid` = '" + uuid + "';"
         };
 
         try {
