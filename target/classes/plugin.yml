@@ -3,6 +3,7 @@ version: 1.0-SNAPSHOT
 main: me.tr.survival.main.Main
 description: Survival for AutioMC
 api-version: 1.13
+depend: [UltimateTimber]
 
 commands:
   bal:

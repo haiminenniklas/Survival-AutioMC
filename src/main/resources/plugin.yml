@@ -3,6 +3,7 @@ version: ${project.version}
 main: me.tr.survival.main.Main
 description: Survival for AutioMC
 api-version: 1.13
+depend: [UltimateTimber]
 
 commands:
   bal:

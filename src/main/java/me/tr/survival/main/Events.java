@@ -1,5 +1,6 @@
 package me.tr.survival.main;
 
+import com.songoda.ultimatetimber.UltimateTimber;
 import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
@@ -44,7 +45,6 @@ public class Events implements Listener {
     public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
         UUID uuid = e.getUniqueId();
         PlayerData.loadPlayer(uuid);
-
     }
 
     @EventHandler
@@ -115,7 +115,13 @@ public class Events implements Listener {
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        if(Ranks.getRank(uuid) == "default") {
+        for(Player r : e.getRecipients()) {
+            if(!Settings.get(r.getUniqueId(), "chat")) {
+                e.getRecipients().remove(r);
+            }
+        }
+
+        if(Ranks.getRank(uuid).equalsIgnoreCase("default")) {
             e.setFormat("§70 " + player.getName() + ":§r " + e.getMessage());
         } else {
             e.setFormat("§70 " + Ranks.getPrefix(Ranks.getRank(uuid)) + " §7" + player.getName() + ":§r " + e.getMessage());

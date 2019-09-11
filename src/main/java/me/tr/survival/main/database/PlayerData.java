@@ -46,6 +46,11 @@ public class PlayerData {
         empty.put("xp", 0);
         empty.put("total_xp", 0);
 
+        empty.put("scoreboard", false);
+        empty.put("privacy", false);
+        empty.put("chat", true);
+        empty.put("treefall", true);
+
         player_data.put(uuid, empty);
 
     }
@@ -74,27 +79,56 @@ public class PlayerData {
                     data.put("first_home", homeResult.getString("first_home"));
                     data.put("second_home", homeResult.getString("second_home"));
                     data.put("third_home", homeResult.getString("third_home"));
-
-                    // User's Mining Data
-                    ResultSet mineResult = SQL.query("SELECT * FROM `mined_ores` WHERE `uuid` = '" + uuid.toString() + "';");
-                    if(mineResult.next()) {
-
-                        data.put("diamond", mineResult.getInt("diamond"));
-                        data.put("gold", mineResult.getInt("gold"));
-                        data.put("iron", mineResult.getInt("iron"));
-                        data.put("coal", mineResult.getInt("coal"));
-                        data.put("total", mineResult.getInt("total"));
-
-                        // User's Level Data
-                        ResultSet levelResult = SQL.query("SELECT * FROM `levels` WHERE `uuid` = '" + uuid.toString() + "';");
-                        if(levelResult.next())
-                            data.put("level", levelResult.getInt("level"));
-                            data.put("xp", levelResult.getInt("xp"));
-                            data.put("total_xp", levelResult.getInt("total_xp"));
-                    }
-
+                } else {
+                    data.put("first_home", "null");
+                    data.put("second_home", "null");
+                    data.put("third_home", "null");
                 }
 
+                // User's Mining Data
+                ResultSet mineResult = SQL.query("SELECT * FROM `mined_ores` WHERE `uuid` = '" + uuid.toString() + "';");
+                if(mineResult.next()) {
+
+                    data.put("diamond", mineResult.getInt("diamond"));
+                    data.put("gold", mineResult.getInt("gold"));
+                    data.put("iron", mineResult.getInt("iron"));
+                    data.put("coal", mineResult.getInt("coal"));
+                    data.put("total", mineResult.getInt("total"));
+
+                } else {
+                    data.put("diamond", 0);
+                    data.put("gold", 0);
+                    data.put("iron", 0);
+                    data.put("coal", 0);
+                    data.put("total", 0);
+                }
+
+                // User's Level Data
+                ResultSet levelResult = SQL.query("SELECT * FROM `levels` WHERE `uuid` = '" + uuid.toString() + "';");
+                if(levelResult.next()) {
+                    data.put("level", levelResult.getInt("level"));
+                    data.put("xp", levelResult.getInt("xp"));
+                    data.put("total_xp", levelResult.getInt("total_xp"));
+                } else {
+                    data.put("level", 0);
+                    data.put("xp", 0);
+                    data.put("total_xp", 0);
+                }
+
+                ResultSet settingsResult = SQL.query("SELECT * FROM `settings` WHERE `uuid` = '" + uuid.toString() + "';");
+                if(settingsResult.next()) {
+
+                    data.put("scoreboard", settingsResult.getBoolean("scoreboard"));
+                    data.put("privacy", settingsResult.getBoolean("privacy"));
+                    data.put("chat", settingsResult.getBoolean("chat"));
+                    data.put("treefall", settingsResult.getBoolean("treefall"));
+
+                } else {
+                    data.put("scoreboard", false);
+                    data.put("privacy", false);
+                    data.put("chat", true);
+                    data.put("treefall", true);
+                }
 
                 player_data.put(uuid, data);
 
@@ -143,7 +177,10 @@ public class PlayerData {
                         ", `coal` = " + data.get("coal") + ", `total` = " + data.get("total") + " WHERE `uuid` = '" + uuid + "';",
 
                 "UPDATE `levels` SET `level` = " + data.get("level") + ", `xp` = " + data.get("xp") + ", `total_xp` = " + data.get("xp") +
-                        " WHERE `uuid` = '" + uuid + "';"
+                        " WHERE `uuid` = '" + uuid + "';",
+
+                "UPDATE `settings` SET `scoreboard` = " + data.get("scoreboard") + ", `privacy` = " + data.get("privacy") + ", `chat` = " + data.get("chat") +
+                        ", `treefall` = " + data.get("treefall") + " WHERE `uuid` = '" + uuid + "';"
         };
 
         try {

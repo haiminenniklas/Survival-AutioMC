@@ -24,7 +24,7 @@ public class PlayerWeather {
         // 12, 13, 14
         // 21, 22, 23
 
-        gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.BOOK, 1, "§c§lSÄÄ: §7Selkeä")) {
+        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.BOOK, 1, "§c§lSÄÄ: §7Selkeä")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -32,12 +32,12 @@ public class PlayerWeather {
                     Chat.sendMessage(clicker, "Sää asetttu selkeäksi!");
                     player.setPlayerWeather(Weathers.SUNNY);
                 } else {
-                    Chat.sendMessage(player, "Tämä toiminto vaatii arvon §6§lPREMIUM§e§l+§7!");
+                    Chat.sendMessage(player, "Tämä toiminto vaatii arvon §6§lPremium§e§l+§7!");
                 }
             }
         });
 
-        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.BOOK, 1, "§c§lSÄÄ: §7Sade")) {
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.BOOK, 1, "§c§lSÄÄ: §7Sade")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -46,13 +46,13 @@ public class PlayerWeather {
                     Chat.sendMessage(clicker, "Sää asetttu sateiseksi!");
                     player.setPlayerWeather(Weathers.RAINY);
                 } else {
-                    Chat.sendMessage(player, "Tämä toiminto vaatii arvon §6§lPREMIUM§e§l+§7!");
+                    Chat.sendMessage(player, "Tämä toiminto vaatii arvon §6§lPremium§e§l+§7!");
                 }
 
             }
         });
 
-        gui.addButton(new Button(1, 21, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä", Arrays.asList(
+        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä", Arrays.asList(
                 "§7§m--------------------",
                 "§cKlikkaa resetoidaksesi",
                 "§csään ja ajan!",
@@ -67,7 +67,7 @@ public class PlayerWeather {
             }
         });
 
-        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.BOOK, 1, "§c§lAika: §7Päivä")) {
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.BOOK, 1, "§c§lAika: §7Päivä")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -76,7 +76,7 @@ public class PlayerWeather {
             }
         });
 
-        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.BOOK, 1, "§c§lSÄÄ: §7Yö")) {
+        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.BOOK, 1, "§c§lAIKA: §7Yö")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -92,8 +92,6 @@ public class PlayerWeather {
                 Settings.panel(player);
             }
         });
-
-        gui.open(player);
 
         gui.open(player);
 

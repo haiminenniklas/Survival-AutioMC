@@ -4,6 +4,7 @@
     <root id="archive" name="Survival - AutioMC.jar">
       <element id="module-output" name="AutioMC-Survival" />
       <element id="file-copy" path="D:/AutioMC survival 1.14/spigot.jar" />
+      <element id="file-copy" path="D:/AdvancedTimber_1.5.3.jar" />
     </root>
   </artifact>
 </component>

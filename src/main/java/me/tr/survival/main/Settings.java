@@ -1,30 +1,40 @@
 package me.tr.survival.main;
 
+import com.songoda.ultimatetimber.UltimateTimber;
+import com.songoda.ultimatetimber.manager.ChoppingManager;
+import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.PlayerWeather;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.data.Crystals;
+import me.tr.survival.main.util.data.Ores;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.scoreboard.*;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 public class Settings {
 
     public static void panel(Player player) {
 
         Gui gui = new Gui("Asetukset", 54);
+        UUID uuid = player.getUniqueId();
 
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.OAK_SIGN, 1, "§cScoreboard", Arrays.asList(
                 "§7§m--------------------",
-                "§7Tila: §c§lEI PÄÄLLÄ",
+                "§7Tila: " + settingText(Settings.get(uuid, "scoreboard")),
                 " ",
-                "§7§oKun tämä asetus on päällä",
-                "§7§o, sivulle tulee näkyville",
+                "§7§oKun tämä asetus on päällä,",
+                "§7§osivulle tulee näkyville",
                 "§7§oikkuna, jossa on näkyvillä",
-                "§7§o hyödyllistä informaatiota",
+                "§7§ohyödyllistä informaatiota",
                 "",
                 "§cKlikkaa vaihtaaksesi asetusta!",
                 "§7§m--------------------"
@@ -33,16 +43,18 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.sendMessage("§cEi vielä toimi");
+                Settings.toggle(uuid, "scoreboard");
+                Settings.panel(clicker);
+                Settings.scoreboard(clicker);
             }
         });
 
         gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§cYksityinen tila", Arrays.asList(
                 "§7§m--------------------",
-                "§7Tila: §c§lEI PÄÄLLÄ",
+                "§7Tila: " + settingText(Settings.get(uuid, "privacy")),
                 " ",
                 "§7§oKun tämä asetus on päällä,",
-                "§7§o et näe enää yksityisviestejä",
+                "§7§oet näe enää yksityisviestejä",
                 "§7§omuilta pelaajilta",
                 "",
                 "§cKlikkaa vaihtaaksesi asetusta!",
@@ -52,13 +64,14 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.sendMessage("§cEi vielä toimi");
+                Settings.toggle(uuid, "privacy");
+                Settings.panel(clicker);
             }
         });
 
         gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.PAPER, 1, "§cChat", Arrays.asList(
                 "§7§m--------------------",
-                "§7Tila: §a§lPÄÄLLÄ",
+                "§7Tila: " + settingText(Settings.get(uuid, "chat")),
                 " ",
                 "§7§oKun tämä asetus on pois päältä,",
                 "§7§oet näe enää chat-viestejä"  ,
@@ -71,13 +84,14 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.sendMessage("§cEi vielä toimi");
+                Settings.toggle(uuid, "chat");
+                Settings.panel(clicker);
             }
         });
 
-        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.PAPER, 1, "§cPuun kaato", Arrays.asList(
+        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.OAK_SAPLING, 1, "§cPuun kaato", Arrays.asList(
                 "§7§m--------------------",
-                "§7Tila: §a§lPÄÄLLÄ",
+                "§7Tila: " + settingText(UltimateTimber.getInstance().getChoppingManager().isChopping(player)),
                 " ",
                 "§7§oKun tämä asetus on päällä,",
                 "§7§opystyt kaatamaan koko puun",
@@ -91,11 +105,12 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.sendMessage("§cEi vielä toimi");
+                UltimateTimber.getInstance().getChoppingManager().togglePlayer(clicker);
+                Settings.panel(clicker);
             }
         });
 
-        gui.addButton(new Button(1, 40, ItemUtil.makeItem(Material.PAPER, 1, "§cSää ja aika", Arrays.asList(
+        gui.addButton(new Button(1, 40, ItemUtil.makeItem(Material.CLOCK, 1, "§cSää ja aika", Arrays.asList(
                 "§7§m--------------------",
                 "§cKlikkaa vaihtaakesi sinun säätä ja aikaa",
                 "§7§m--------------------"
@@ -122,6 +137,82 @@ public class Settings {
 
 
         gui.open(player);
+
+    }
+
+    public static boolean get(UUID uuid, String setting) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
+        return (boolean) PlayerData.getValue(uuid, setting);
+    }
+
+    public static void set(UUID uuid, String setting, boolean value) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
+        PlayerData.set(uuid, setting, value);
+    }
+
+    public static void toggle(UUID uuid, String setting) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
+        Settings.set(uuid, setting, !Settings.get(uuid, setting));
+    }
+
+    private static String settingText(boolean value) {
+        return value ? "§a§lPÄÄLLÄ" : "§c§lEI PÄÄLLÄ";
+    }
+
+    public static void scoreboard(Player player) {
+
+        if(!Settings.get(player.getUniqueId(), "scoreboard")) return;
+
+        Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+        Objective obj = board.registerNewObjective("AutioMC", "dummy", "dummy");
+        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        obj.setDisplayName("§c§lAutioMC §7(1.14.4)");
+
+        obj.getScore("§7 §c").setScore(15);
+        obj.getScore("§7» Kristallit").setScore(14);
+
+        Team crystals = board.registerNewTeam("crystals");
+        crystals.addEntry(ChatColor.RED + "" + ChatColor.WHITE);
+        crystals.setPrefix("§c" + Crystals.get(player.getUniqueId()));
+        obj.getScore(ChatColor.RED + "" + ChatColor.WHITE).setScore(13);
+
+        obj.getScore("§7 §a").setScore(12);
+        obj.getScore("§7» Tuhotut palikat").setScore(11);
+
+        Team moneyCounter = board.registerNewTeam("blocks");
+        moneyCounter.addEntry(ChatColor.BLUE + "" + ChatColor.WHITE);
+        moneyCounter.setPrefix("§c" + Ores.getTotal(player.getUniqueId()));
+        obj.getScore(ChatColor.BLUE + "" + ChatColor.WHITE).setScore(10);
+
+        obj.getScore("§7 §9").setScore(9);
+        obj.getScore("§7» Arvo").setScore(8);
+
+        Team rank = board.registerNewTeam("rank");
+        rank.addEntry(ChatColor.GREEN + "" + ChatColor.WHITE);
+        rank.setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
+        obj.getScore(ChatColor.GREEN + "" + ChatColor.WHITE).setScore(7);
+
+        obj.getScore("§7 §6").setScore(6);
+        obj.getScore("§7» Pelaajat").setScore(5);
+
+        Team players = board.registerNewTeam("players");
+        players.addEntry(ChatColor.LIGHT_PURPLE + "" + ChatColor.WHITE);
+        players.setPrefix("§c" + Bukkit.getOnlinePlayers().size());
+        obj.getScore(ChatColor.LIGHT_PURPLE + "" + ChatColor.WHITE).setScore(4);
+
+        obj.getScore("§7 §1").setScore(3);
+        obj.getScore("§cwww.autiomc.eu").setScore(2);
+
+        Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
+
+            board.getTeam("crystals").setPrefix("§c" + Crystals.get(player.getUniqueId()));
+            board.getTeam("blocks").setPrefix("§c" + Ores.getTotal(player.getUniqueId()));
+            board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
+            board.getTeam("players").setPrefix("§c" + Bukkit.getOnlinePlayers().size());
+
+        }, 0, 20 * 2);
+
+        player.setScoreboard(board);
 
     }
 

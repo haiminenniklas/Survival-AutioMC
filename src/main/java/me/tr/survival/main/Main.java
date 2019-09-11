@@ -364,6 +364,11 @@ public final class Main extends JavaPlugin implements Listener {
                         return true;
                     }
 
+                    if(Settings.get(target.getUniqueId(), "privacy")) {
+                        Chat.sendMessage(player, "Pelaajalla §c" + target.getName() + " §7on yksityinen tila päällä!");
+                        return true;
+                    }
+
                     StringBuilder sb = new StringBuilder();
                     for(int i = 1; i < args.length; i++) {
                         sb.append(args[i] + " ");
