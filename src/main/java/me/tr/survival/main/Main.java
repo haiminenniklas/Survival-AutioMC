@@ -701,6 +701,8 @@ public final class Main extends JavaPlugin implements Listener {
                         player.getInventory().addItem(ItemUtil.makeSkullItem(target.getName(), 1, "§c" + target.getName()));
                     }
                 }
+            } else if(command.getLabel().equalsIgnoreCase("debug")) {
+
             }
 
         }

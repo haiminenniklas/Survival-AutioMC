@@ -122,9 +122,9 @@ public class Events implements Listener {
         }
 
         if(Ranks.getRank(uuid).equalsIgnoreCase("default")) {
-            e.setFormat("§70 " + player.getName() + ":§r " + e.getMessage());
+            e.setFormat(player.getName() + ":§r " + e.getMessage());
         } else {
-            e.setFormat("§70 " + Ranks.getPrefix(Ranks.getRank(uuid)) + " §7" + player.getName() + ":§r " + e.getMessage());
+            e.setFormat(Ranks.getPrefix(Ranks.getRank(uuid)) + " §7" + player.getName() + ":§r " + e.getMessage());
         }
 
         if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {

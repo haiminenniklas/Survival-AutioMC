@@ -200,13 +200,14 @@ public class PlayerData {
                             "INSERT INTO `mined_ores` VALUES('" + uuid + "', " + data.get("diamond") + ", " + data.get("gold") + ", " + data.get("iron") + ", " +
                                     "" + data.get("coal") + ", " + data.get("total") + ");",
 
-                            "INSERT INTO `levels` VALUES('" + uuid + "', " + data.get("level") + ", " + data.get("xp") + ", " + data.get("total_xp") + ");"
+                            "INSERT INTO `levels` VALUES('" + uuid + "', " + data.get("level") + ", " + data.get("xp") + ", " + data.get("total_xp") + ");",
+                            "INSERT INTO `settings` VALUES('" + uuid + "', '" + data.get("scoreboard") + "', '" + data.get("privacy") + "', '" + data.get("chat") + "', 'false');"
                     };
 
                     int successful_saves = 1;
                     for(String query : saveQueries) {
 
-                        System.out.println("Executing Database save query: " + update);
+                        System.out.println("Executing Database save query: " + query);
                         if(!SQL.update(query)) {
                             System.err.println("Could not execute query for " + uuid + " (" + player.getName() + "): " + query);
                         } else {

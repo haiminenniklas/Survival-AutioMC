@@ -73,3 +73,5 @@ commands:
     aliases: [piiloudu]
   skull:
     description: Pelaajan kallo
+  debug:
+    description: Virheenkorjaus
