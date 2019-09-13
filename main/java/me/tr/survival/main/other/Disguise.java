@@ -1,4 +1,4 @@
-package me.tr.survival.main.other;
+/*package me.tr.survival.main.other;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -25,7 +25,7 @@ public class Disguise {
     public static boolean changeSkin(Player player) {
 
 
-        String targetName = PLAYERS[new Random().nextInt(PLAYERS.length-1)];
+     /*  String targetName = PLAYERS[new Random().nextInt(PLAYERS.length-1)];
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
         GameProfile profile = ((CraftPlayer)player).getProfile();
@@ -47,10 +47,11 @@ public class Disguise {
             return true;
         }
         return false;
+     return false;
     }
 
     public static boolean setSkin(GameProfile profile, UUID uuid) {
-        try {
+        /*try {
             HttpsURLConnection connection = (HttpsURLConnection) new URL(String.format("https://sessionserver.mojang.com/session/minecraft/profile/%s?unsigned=false", UUIDTypeAdapter.fromUUID(uuid))).openConnection();
             if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
                 String reply = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
@@ -66,6 +67,7 @@ public class Disguise {
             e.printStackTrace();
             return false;
         }
+        return false;
     }
 
     public static final String[] PLAYERS = new String[] {
@@ -79,3 +81,4 @@ public class Disguise {
     };
 
 }
+*/

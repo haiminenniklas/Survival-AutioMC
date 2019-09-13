@@ -686,11 +686,12 @@ public final class Main extends JavaPlugin implements Listener {
 
             } else if(command.getLabel().equalsIgnoreCase("piiloudu")) {
 
-                if (Disguise.changeSkin(player)) {
+                Chat.sendMessage(player, "Ei toimi vielä...");
+                /*if (Disguise.changeSkin(player)) {
                     Chat.sendMessage(player, "Skini vaihdettu!");
                 } else {
                     Chat.sendMessage(player, "Skiniä ei voitu vaihtaa. Olethan yhteydessä ylläpitoon!");
-                }
+                } */
 
             } else if(command.getLabel().equalsIgnoreCase("skull")) {
                 if(player.isOp()) {
