@@ -1,31 +1,12 @@
-/*package me.tr.survival.main.other;
+package me.tr.survival.main.other;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.mojang.util.UUIDTypeAdapter;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.entity.Player;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
-
+@Deprecated
 public class Disguise {
-
+/*
     public static HashMap<UUID, String> skins = new HashMap<>();
 
     public static boolean changeSkin(Player player) {
-
-
-     /*  String targetName = PLAYERS[new Random().nextInt(PLAYERS.length-1)];
+        String targetName = PLAYERS[new Random().nextInt(PLAYERS.length-1)];
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
         GameProfile profile = ((CraftPlayer)player).getProfile();
@@ -79,6 +60,5 @@ public class Disguise {
             "Accrot"
 
     };
-
-}
 */
+}

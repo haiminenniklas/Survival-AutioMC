@@ -1,6 +1,6 @@
 package me.tr.survival.main;
 
-import com.songoda.ultimatetimber.UltimateTimber;
+import com.destroystokyo.paper.event.server.ServerExceptionEvent;
 import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
@@ -31,6 +31,25 @@ import java.util.Random;
 import java.util.UUID;
 
 public class Events implements Listener {
+
+    public static final HashMap<UUID, Boolean> adminMode = new HashMap<>();
+
+    @EventHandler
+    public void onException(ServerExceptionEvent e) {
+
+        for(Player player : Bukkit.getOnlinePlayers()) {
+
+            if(player.isOp() && adminMode.containsKey(player.getUniqueId())) {
+                if(adminMode.get(player.getUniqueId())) {
+
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Virhe: §c" + e.getException().getMessage());
+
+                }
+            }
+
+        }
+
+    }
 
     @EventHandler
     public void onLevelUp(LevelUpEvent e){
@@ -115,17 +134,17 @@ public class Events implements Listener {
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
 
+        if(!Settings.get(player.getUniqueId(), "chat")) {
+            Chat.sendMessage(player, "Sinulla on chat poissa päältä!");
+        }
+
         for(Player r : e.getRecipients()) {
-            if(!Settings.get(r.getUniqueId(), "chat")) {
+            if(!Settings.get(r.getUniqueId(), "chat") && !r.getName().equalsIgnoreCase(player.getName())) {
                 e.getRecipients().remove(r);
             }
         }
 
-        if(Ranks.getRank(uuid).equalsIgnoreCase("default")) {
-            e.setFormat(player.getName() + ":§r " + e.getMessage());
-        } else {
-            e.setFormat(Ranks.getPrefix(Ranks.getRank(uuid)) + " §7" + player.getName() + ":§r " + e.getMessage());
-        }
+        e.setFormat(Chat.getFormat(player, e.getMessage()));
 
         if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {
             e.setCancelled(true);

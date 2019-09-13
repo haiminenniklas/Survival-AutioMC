@@ -49,4 +49,8 @@ public class Autio {
 
     }
 
+    public static FileConfiguration getConfig() {
+        return Main.getInstance().getConfig();
+    }
+
 }

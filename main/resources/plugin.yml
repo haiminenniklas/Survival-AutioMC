@@ -75,3 +75,5 @@ commands:
     description: Pelaajan kallo
   debug:
     description: Virheenkorjaus
+  admin:
+    description: Admin-toimintoja

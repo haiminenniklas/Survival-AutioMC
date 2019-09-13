@@ -704,6 +704,48 @@ public final class Main extends JavaPlugin implements Listener {
                 }
             } else if(command.getLabel().equalsIgnoreCase("debug")) {
 
+                if(player.isOp()) {
+                    if(args.length < 1) {
+                        Chat.sendMessage(player, "/debug load [player]");
+                        Chat.sendMessage(player, "/debug tag [player]");
+                        Chat.sendMessage(player, "/debug mode");
+                    } else {
+
+
+                        if(args.length == 1) {
+
+                            if(args[0].equalsIgnoreCase("mode")) {
+                                if(!Events.adminMode.containsKey(uuid)) {
+                                    Events.adminMode.put(uuid, true);
+                                    Chat.sendMessage(player, Chat.Prefix.DEBUG, "Virheenkorjaustila päällä!");
+                                } else {
+                                    Events.adminMode.remove(uuid);
+                                    Chat.sendMessage(player, Chat.Prefix.DEBUG, "Virheenkorjaustila pois päältä!");
+                                }
+                            } else if(args[0].equalsIgnoreCase("load")) {
+
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Tietojasi haetaan tietokannasta...");
+                                PlayerData.loadPlayer(player.getUniqueId());
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
+
+                            }
+
+                        } else if(args.length == 2) {
+
+                            OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+
+                            if(args[0].equalsIgnoreCase("load")) {
+
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Pelaajan §c" + target.getName() + " §7tietoja haetaan tietokannasta...");
+                                PlayerData.loadPlayer(target.getUniqueId());
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
+
+                            }
+                        }
+
+                    }
+                }
+
             }
 
         }
