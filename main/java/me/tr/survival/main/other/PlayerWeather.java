@@ -72,7 +72,7 @@ public class PlayerWeather {
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 Chat.sendMessage(player, "Aika asetettu päiväksi!");
-                clicker.setPlayerTime(Times.DAY, true);
+                clicker.setPlayerTime(Times.DAY, false);
             }
         });
 
@@ -81,7 +81,7 @@ public class PlayerWeather {
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 Chat.sendMessage(player, "Aika asetettu yöksi!");
-                clicker.setPlayerTime(Times.NIGHT, true);
+                clicker.setPlayerTime(Times.NIGHT, false);
             }
         });
 

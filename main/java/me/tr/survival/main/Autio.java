@@ -1,5 +1,6 @@
 package me.tr.survival.main;
 
+import me.tr.survival.main.other.Ranks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -52,5 +53,4 @@ public class Autio {
     public static FileConfiguration getConfig() {
         return Main.getInstance().getConfig();
     }
-
 }

@@ -230,11 +230,23 @@ public class Events implements Listener {
         UUID uuid = player.getUniqueId();
 
         PlayerData.add(player.getUniqueId(), "total", 1);
-        int random = new Random().nextInt(100);
+        double random = new Random().nextDouble();
+
+        /*
+
+        Chances:
+
+        Emerald: 10% (0.1)
+        Diamond: 7% (0.07)
+        Gold: 3% (0.03)
+        Iron: 2% (0.02)
+        Coal 0.5% (0.005)
+
+         */
 
         if(block.getType() == Material.DIAMOND_ORE) {
             PlayerData.add(uuid, "diamond", 1);
-            if(random <= 10) {
+            if(random <= 0.07) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
                 Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
@@ -242,7 +254,7 @@ public class Events implements Listener {
             }
         } else if(block.getType() == Material.GOLD_ORE) {
             PlayerData.add(uuid, "gold", 1);
-            if(random <= 5) {
+            if(random <= 0.03) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
                 Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
@@ -250,7 +262,7 @@ public class Events implements Listener {
             }
         } else if(block.getType() == Material.IRON_ORE) {
             PlayerData.add(uuid, "iron", 1);
-            if(random <= 3) {
+            if(random <= 0.02) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
                 Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
@@ -258,14 +270,14 @@ public class Events implements Listener {
             }
         } else if(block.getType() == Material.COAL_ORE) {
             PlayerData.add(uuid, "coal", 1);
-            if(random <= 1) {
+            if(random <= 0.005) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
                 Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.EMERALD_ORE) {
-            if(random <= 18) {
+            if(random <= 0.10) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
                 Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
