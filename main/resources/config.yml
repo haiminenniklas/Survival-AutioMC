@@ -38,10 +38,10 @@ other:
 
 chat:
   prefixes:
-    default: '&c&lAutio &7»'
-    error: '&c&lVirhe &7»'
-    afk: '&c&lAFK &7»'
-    debug: '&c&lVirheenkorjaus &7»'
+    default: '&6&lNimetön &7»'
+    error: '&6&lVirhe &7»'
+    afk: '&6&lAFK &7»'
+    debug: '&6&lVirheenkorjaus &7»'
   format: '%rank% &7%name%: &f%message%'
 
 messages:

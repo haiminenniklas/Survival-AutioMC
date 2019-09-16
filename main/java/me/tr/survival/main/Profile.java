@@ -30,14 +30,14 @@ public class Profile {
 
         HashMap<String, Object> data = PlayerData.getData(targetUUID);
 
-        gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§cProfiili", Arrays.asList(
+        gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§6Profiili", Arrays.asList(
                 "§7§m--------------------",
-                "§7Nimi: §c" + target.getName(),
+                "§7Nimi: §6" + target.getName(),
                 " ",
-                "§7Arvo: §c" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
-                "§7Kristallit: §c" + Crystals.get(targetUUID),
+                "§7Arvo: §6" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
+                "§7Kristallit: §6" + Crystals.get(targetUUID),
                 " ",
-                "§7Liittynyt: §c" + data.get("joined"),
+                "§7Liittynyt: §6" + data.get("joined"),
                 "§7§m--------------------"
         )), 13);
 
@@ -76,23 +76,23 @@ public class Profile {
             other_percentage = 0;
         }
 
-        gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§cTuhotut blockit", Arrays.asList(
+        gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§6Tuhotut blockit", Arrays.asList(
                 "§7§m--------------------",
-                "§7Yhteensä: §c" + Ores.getTotal(targetUUID),
+                "§7Yhteensä: §6" + Ores.getTotal(targetUUID),
                 " ",
                 "§7Timantti: §b" + Ores.getDiamonds(targetUUID) + " §7§o(" + diamond_percentage +  "%)",
                 "§7Kulta: §6" + Ores.getGold(targetUUID) + " §7§o(" + gold_percentage +  "%)",
                 "§7Rauta: §f" + Ores.getIron(targetUUID) + " §7§o(" + iron_percentage +  "%)",
                 "§7Hiili: §8" + Ores.getCoal(targetUUID)  +" §7§o(" + coal_percentage +  "%)",
-                "§7Muu: §c" + Ores.getOther(targetUUID) + " §7§o(" + other_percentage +  "%)",
+                "§7Muu: §6" + Ores.getOther(targetUUID) + " §7§o(" + other_percentage +  "%)",
                 "§7§m--------------------"
         )), 19);
 
-        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§cKodit", Arrays.asList(
+        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§6Kodit", Arrays.asList(
                 "§7§m--------------------",
-                "§7Kodit: §c" + new Homes(target).get().size(),
+                "§7Kodit: §6" + new Homes(target).get().size(),
                 " ",
-                "§cKlikkaa näkeäksesi kotisi!",
+                "§6Klikkaa näkeäksesi kotisi!",
                 "§7§m--------------------"
         ))) {
             @Override
@@ -102,9 +102,9 @@ public class Profile {
             }
         });
 
-        gui.addButton(new Button(1, 25, ItemUtil.makeItem(Material.LEGACY_REDSTONE_COMPARATOR, 1, "§cAsetukset", Arrays.asList(
+        gui.addButton(new Button(1, 25, ItemUtil.makeItem(Material.LEGACY_REDSTONE_COMPARATOR, 1, "§6Asetukset", Arrays.asList(
                 "§7§m--------------------",
-                "§cKlikkaa avataksesi asetukset!",
+                "§6Klikkaa avataksesi asetukset!",
                 "§7§m--------------------"
         ))) {
             @Override
@@ -117,5 +117,4 @@ public class Profile {
         gui.open(opener);
 
     }
-
 }

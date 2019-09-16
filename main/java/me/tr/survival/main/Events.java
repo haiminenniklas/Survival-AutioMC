@@ -42,7 +42,7 @@ public class Events implements Listener {
             if(player.isOp() && adminMode.containsKey(player.getUniqueId())) {
                 if(adminMode.get(player.getUniqueId())) {
 
-                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Virhe: §c" + e.getException().getMessage());
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Virhe: §6" + e.getException().getMessage());
 
                 }
             }
@@ -55,7 +55,7 @@ public class Events implements Listener {
     public void onLevelUp(LevelUpEvent e){
         Player player = e.getPlayer();
 
-        Util.sendNotification(player, "§a§lTASO! §7Nousit tasolle §c" + e.getLevel() + "§7!");
+        Util.sendNotification(player, "§a§lTASO! §7Nousit tasolle §6" + e.getLevel() + "§7!");
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
     }
@@ -73,12 +73,12 @@ public class Events implements Listener {
         FileConfiguration config = Main.getInstance().getConfig();
 
         player.sendMessage("§7§m--------------------------");
-        player.sendMessage("§7Tervetuloa §c§lAutioMC§7-palvelimelle!");
+        player.sendMessage("§7Tervetuloa §6§lNimettömälle §7 palvelimelle!");
         player.sendMessage(" ");
-        player.sendMessage("§7Pelaajia paikalla: §c" + Bukkit.getOnlinePlayers().size());
-        player.sendMessage("§7Apua: §c/apua");
+        player.sendMessage("§7Pelaajia paikalla: §6" + Bukkit.getOnlinePlayers().size());
+        player.sendMessage("§7Apua: §6/apua");
         player.sendMessage(" ");
-        player.sendMessage("§chttp://autiomc.eu");
+        player.sendMessage("§6http://autiomc.eu");
         player.sendMessage("§7§m--------------------------");
 
         if(Ranks.isVIP(player.getUniqueId()) || Ranks.isStaff(player.getUniqueId())) {
@@ -99,6 +99,7 @@ public class Events implements Listener {
                 ChatColor.translateAlternateColorCodes('&', config.getString("tablist.footer"))
         ); */
 
+
         Main.getInstance().getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
 
             PlayerAliases.load(player);
@@ -106,9 +107,9 @@ public class Events implements Listener {
 
         });
 
+        Autio.updatePlayer(player);
 
-
-    }
+   }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
@@ -150,7 +151,7 @@ public class Events implements Listener {
             e.setCancelled(true);
             for(Player online : Bukkit.getOnlinePlayers()) {
                 if(Ranks.isStaff(online.getUniqueId())) {
-                    online.sendMessage("§7§l(§c§lYLLÄPITO§7§l) §c" + player.getName() + " §7» §f" + e.getMessage().substring(1));
+                    online.sendMessage("§7§l(§6§lYLLÄPITO§7§l) §6" + player.getName() + " §7» §f" + e.getMessage().substring(1));
                 }
             }
         }
@@ -164,8 +165,9 @@ public class Events implements Listener {
         Location loc = e.getTo();
 
         // RTP Portal
-        if(loc.getBlockZ() == 29 && (loc.getBlockX() <= 15 && loc.getBlockX() >= 11) &&
-                e.getTo().getWorld().getName().equalsIgnoreCase(Autio.getSpawn().getWorld().getName())) {
+        if(loc.getBlockZ() == -37 && (loc.getBlockX() <= 42 && loc.getBlockX() >= 38) &&
+                e.getTo().getWorld().getName().equalsIgnoreCase(Autio.getSpawn().getWorld().getName())
+                && loc.getY() <= 135) {
             if(!RTP.teleport(player)) {
                 // Bounce player back
                 Util.bounceBack(player, e.getFrom(), e.getTo());
@@ -249,7 +251,7 @@ public class Events implements Listener {
             if(random <= 0.07) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.GOLD_ORE) {
@@ -257,7 +259,7 @@ public class Events implements Listener {
             if(random <= 0.03) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.IRON_ORE) {
@@ -265,7 +267,7 @@ public class Events implements Listener {
             if(random <= 0.02) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.COAL_ORE) {
@@ -273,14 +275,14 @@ public class Events implements Listener {
             if(random <= 0.005) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.EMERALD_ORE) {
             if(random <= 0.10) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §c" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         }

@@ -24,7 +24,7 @@ public class PlayerWeather {
         // 12, 13, 14
         // 21, 22, 23
 
-        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.BOOK, 1, "§c§lSÄÄ: §7Selkeä")) {
+        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.BOOK, 1, "§6§lSÄÄ: §7Selkeä")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -37,7 +37,7 @@ public class PlayerWeather {
             }
         });
 
-        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.BOOK, 1, "§c§lSÄÄ: §7Sade")) {
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.BOOK, 1, "§6§lSÄÄ: §7Sade")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -52,7 +52,7 @@ public class PlayerWeather {
             }
         });
 
-        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä", Arrays.asList(
+        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.BARRIER, 1, "§6Tyhjennä", Arrays.asList(
                 "§7§m--------------------",
                 "§cKlikkaa resetoidaksesi",
                 "§csään ja ajan!",
@@ -67,7 +67,7 @@ public class PlayerWeather {
             }
         });
 
-        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.BOOK, 1, "§c§lAika: §7Päivä")) {
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.BOOK, 1, "§6§lAika: §7Päivä")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -76,7 +76,7 @@ public class PlayerWeather {
             }
         });
 
-        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.BOOK, 1, "§c§lAIKA: §7Yö")) {
+        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.BOOK, 1, "§6§lAIKA: §7Yö")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
