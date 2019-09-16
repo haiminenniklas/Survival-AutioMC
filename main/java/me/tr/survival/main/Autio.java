@@ -2,6 +2,7 @@ package me.tr.survival.main;
 
 import me.tr.survival.main.other.Ranks;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -46,11 +47,24 @@ public class Autio {
 
     public static void updateTag(Player player) {
 
-
+        String color = "&" + Ranks.getRankColor(Ranks.getRank(player.getUniqueId())).getChar();
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "nte player " + player.getName() + " prefix " + color);
 
     }
 
     public static FileConfiguration getConfig() {
         return Main.getInstance().getConfig();
     }
+
+    public static void updatePlayer(Player player) {
+
+        Autio.updateTag(player);
+        Settings.scoreboard(player);
+
+    }
+
+    public static Main getPlugin() {
+        return Main.getInstance();
+    }
+
 }

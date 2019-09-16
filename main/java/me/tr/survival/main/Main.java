@@ -65,14 +65,22 @@ public final class Main extends JavaPlugin implements Listener {
 
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
 
-            System.out.println("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
-            int times_saved = 0;
-            for(Player player : Bukkit.getOnlinePlayers()) {
-                times_saved += 1;
-                PlayerData.savePlayer(player.getUniqueId());
-                Chat.sendMessage(player, "Tietosi tallennettiin automaattisesti!");
+
+            if(Bukkit.getTPS()[0] >= 18.5) {
+                System.out.println("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
+                int times_saved = 0;
+                for(Player player : Bukkit.getOnlinePlayers()) {
+                    times_saved += 1;
+                    PlayerData.savePlayer(player.getUniqueId());
+                    Chat.sendMessage(player, "Tietosi tallennettiin automaattisesti!");
+
+                    // Update scoreboard and nametag of player
+                    Autio.updatePlayer(player);
+                }
+                System.out.println("Saved the data of " + times_saved + " players!");
+            } else {
+                Bukkit.getLogger().warning("Server TPS too low, not updating players this time...");
             }
-            System.out.println("Saved the data of " + times_saved + " players!");
 
         }, 20, (20*60) * 5);
 
