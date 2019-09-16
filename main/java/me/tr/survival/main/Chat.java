@@ -43,7 +43,7 @@ public class Chat {
 
         public String text;
 
-        private Prefix(String text) {
+        Prefix(String text) {
             this.text = text;
         }
     }

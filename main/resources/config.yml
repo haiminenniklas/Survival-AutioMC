@@ -1,5 +1,3 @@
-version: 1.0
-
 mysql:
   enabled: true
   user: root
@@ -9,9 +7,9 @@ mysql:
 enderpearl-cooldown: 16
 
 vault-sizes:
-  default: 9
-  premium: 27
-  premiumplus: 54
+  1: 9
+  2: 27
+  3: 54
 
 chest-protect:
   default: 20
@@ -53,10 +51,6 @@ messages:
 random-tp:
   range: 5000
   cooldown-in-minutes: 3
-
-tablist:
-  header: '§7-- &c&lAutioMC §7--'
-  footer: '§cplay.autiomc.eu §7| §cwww.autiomc.eu §7| §ckauppa.autiomc.eu'
 
 auto-broadcaster:
   messages:

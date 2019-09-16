@@ -183,46 +183,44 @@ public class PlayerData {
                         "', `treefall` = '" + data.get("treefall") + "' WHERE `uuid` = '" + uuid + "';"
         };
 
+        String[] saveQueries = new String[] {
+                "INSERT INTO `players` VALUES('" + uuid + "', '" + data.get("player_name") + "', " + data.get("money") + ", '" + data.get("rank") +  "', '" + data.get("joined") + "');",
+
+                "INSERT INTO `homes` VALUES('" + uuid +"', '" + data.get("first_home") + "', '" + data.get("second_home") + "', '" + data.get("third_home") + "');",
+
+                "INSERT INTO `mined_ores` VALUES('" + uuid + "', " + data.get("diamond") + ", " + data.get("gold") + ", " + data.get("iron") + ", " +
+                        "" + data.get("coal") + ", " + data.get("total") + ");",
+
+                "INSERT INTO `levels` VALUES('" + uuid + "', " + data.get("level") + ", " + data.get("xp") + ", " + data.get("total_xp") + ");",
+
+                "INSERT INTO `settings` VALUES('" + uuid + "', '" + data.get("scoreboard") + "', '" + data.get("privacy") + "', '" + data.get("chat") + "', 'false');"
+        };
+
         try {
-            int successful_updates = 0;
-            for(String update : updateQueries){
 
+            int successful = 0;
+
+            for(int i = 0; i < updateQueries.length; i++) {
+
+                String update = updateQueries[i];
                 System.out.println("Executing Database update query: " + update);
-
                 if(!SQL.update(update)) {
-                    System.out.println("Could not update the player " + uuid + " (" + player.getName() + ") to the Database. Trying to save...");
-
-                    String[] saveQueries = new String[] {
-                            "INSERT INTO `players` VALUES('" + uuid + "', '" + data.get("player_name") + "', " + data.get("money") + ", '" + data.get("rank") +  "', '" + data.get("joined") + "');",
-
-                            "INSERT INTO `homes` VALUES('" + uuid +"', '" + data.get("first_home") + "', '" + data.get("second_home") + "', '" + data.get("third_home") + "');",
-
-                            "INSERT INTO `mined_ores` VALUES('" + uuid + "', " + data.get("diamond") + ", " + data.get("gold") + ", " + data.get("iron") + ", " +
-                                    "" + data.get("coal") + ", " + data.get("total") + ");",
-
-                            "INSERT INTO `levels` VALUES('" + uuid + "', " + data.get("level") + ", " + data.get("xp") + ", " + data.get("total_xp") + ");",
-                            "INSERT INTO `settings` VALUES('" + uuid + "', '" + data.get("scoreboard") + "', '" + data.get("privacy") + "', '" + data.get("chat") + "', 'false');"
-                    };
-
-                    int successful_saves = 1;
-                    for(String query : saveQueries) {
-
-                        System.out.println("Executing Database save query: " + query);
-                        if(!SQL.update(query)) {
-                            System.err.println("Could not execute query for " + uuid + " (" + player.getName() + "): " + query);
-                        } else {
-                            successful_saves += 1;
-                        }
+                    System.out.println("Could not execute update query " + update + " trying to execute the equivalent save query: " + saveQueries[i]);
+                    if(SQL.update(saveQueries[i])) {
+                        successful += 1;
+                    } else {
+                        System.err.println("Could not save or update the player " + uuid + " (" + player.getName() + ").. Maybe you should check it out?");
                     }
 
-                    System.out.println("Successfully saved " + successful_saves + "/" + saveQueries.length + " tables for " + uuid + " (" + player.getName() + ") in the Database");
-                    break;
                 } else {
-                    successful_updates += 1;
+                    successful += 1;
                 }
+
             }
 
-            System.out.println("Successfully updated " + successful_updates + "/" + updateQueries.length + " tables for " + uuid + " (" + player.getName() + ") in the Database");
+            if(successful >= 1) {
+                System.out.println("Updated or Saved " + successful + "/" + updateQueries.length + " tables for " + uuid +  " (" + player.getName() + ")!");
+            }
 
         } catch(SQLException ex) {
             ex.printStackTrace();
