@@ -77,3 +77,6 @@ commands:
     description: Virheenkorjaus
   admin:
     description: Admin-toimintoja
+  posti:
+    description: Posti
+    aliases: [mail, kirje]

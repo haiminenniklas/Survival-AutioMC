@@ -715,6 +715,7 @@ public final class Main extends JavaPlugin implements Listener {
                         Chat.sendMessage(player, "/debug mode");
                         Chat.sendMessage(player, "/debug update [player]");
                         Chat.sendMessage(player, "/debug info");
+                        Chat.sendMessage(player, "/debug resetMail");
                     } else {
 
 
@@ -748,6 +749,9 @@ public final class Main extends JavaPlugin implements Listener {
                                 player.sendMessage("§7Whitelist: " + (getServer().hasWhitelist() ? "§aPäällä" : "§6Ei päällä"));
                                 player.sendMessage("§7Maailmoja: §6" + getServer().getWorlds().size());
                                 player.sendMessage("§7§m--------------------");
+                            } else if(args[0].equalsIgnoreCase("resetMail")) {
+                                Mail.setLastMail(uuid, System.currentTimeMillis() - (1000 * 60 * 60 * 24));
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Päivittäinen posti tyhjennetty!");
                             }
 
                         } else if(args.length == 2) {
@@ -780,6 +784,43 @@ public final class Main extends JavaPlugin implements Listener {
                     Autio.updatePlayer(player);
                     Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjattu! Jos mikään ei muuttunut yritä poistua ja liittyä palvelimelle uudestaan!");
 
+                }
+
+            } else if(command.getLabel().equalsIgnoreCase("posti")) {
+
+                if(args.length < 1) {
+                    Mail.panel(player);
+                } else {
+                    if(player.isOp()) {
+
+                        if(args.length < 2) {
+                            Chat.sendMessage(player, "/posti addStreak <player>");
+                            Chat.sendMessage(player, "/posti addTickets <player>");
+                            Chat.sendMessage(player, "/posti getStreak <player>");
+                            Chat.sendMessage(player, "/posti getTickets <player>");
+                        } else {
+
+                            OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+
+                            if(!PlayerData.isLoaded(target.getUniqueId())) {
+                                PlayerData.loadNull(target.getUniqueId(), false);
+                            }
+
+                            if(args[0].equalsIgnoreCase("addStreak")) {
+                                Mail.addStreak(target);
+                                Chat.sendMessage(player, "Lisätty streak pelaajalle §6" + target.getName() + "§7!");
+                            } else if(args[0].equalsIgnoreCase("addTickets")) {
+                                Mail.addTickets(target.getUniqueId(), 1);
+                                Chat.sendMessage(player, "Lisätty §6arpa §7pelaajalle §6" + target.getName() + "§7!");
+                            } else if(args[0].equalsIgnoreCase("getStreak")) {
+                                Chat.sendMessage(player, "Pelaajan §6" + target.getName() + " §7streak on §6" + Mail.getStreak(target));
+                            } else if(args[0].equalsIgnoreCase("getTickets")) {
+                                Chat.sendMessage(player, "Pelaajan §6" + target.getName() + " §7arvat: §6" + Mail.getTickets(target));
+                            }
+
+                        }
+
+                    }
                 }
 
             }

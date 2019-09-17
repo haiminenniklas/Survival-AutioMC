@@ -167,7 +167,7 @@ public class Events implements Listener {
         // RTP Portal
         if(loc.getBlockZ() == -37 && (loc.getBlockX() <= 42 && loc.getBlockX() >= 38) &&
                 e.getTo().getWorld().getName().equalsIgnoreCase(Autio.getSpawn().getWorld().getName())
-                && loc.getY() <= 135) {
+                && loc.getY() <= 136 && loc.getY() >= 133) {
             if(!RTP.teleport(player)) {
                 // Bounce player back
                 Util.bounceBack(player, e.getFrom(), e.getTo());

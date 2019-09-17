@@ -49,7 +49,11 @@ public class PlayerData {
         empty.put("scoreboard", false);
         empty.put("privacy", false);
         empty.put("chat", true);
-        empty.put("treefall", true);
+        empty.put("treefall", false);
+
+        empty.put("last_mail", System.currentTimeMillis() - 1000 * 60 * 60 * 24);
+        empty.put("streak", 0);
+        empty.put("tickets", 0);
 
         player_data.put(uuid, empty);
 
@@ -130,6 +134,20 @@ public class PlayerData {
                     data.put("treefall", true);
                 }
 
+                ResultSet mailResult = SQL.query("SELECT * FROM `mail` WHERE `uuid` = '" + uuid + "';");
+                if(mailResult.next()) {
+
+                    data.put("last_mail", mailResult.getLong("last_mail"));
+                    data.put("streak", mailResult.getInt("streak"));
+                    data.put("tickets", mailResult.getInt("tickets"));
+
+                } else {
+                    data.put("last_mail", System.currentTimeMillis() - 1000 * 60 * 60 * 24);
+                    data.put("streak", 0);
+                    data.put("tickets", 0);
+                }
+
+
                 player_data.put(uuid, data);
 
                 System.out.println("Loaded player " + uuid + " (" + player.getName() + ") from Database");
@@ -180,7 +198,10 @@ public class PlayerData {
                         " WHERE `uuid` = '" + uuid + "';",
 
                 "UPDATE `settings` SET `scoreboard` = '" + data.get("scoreboard") + "', `privacy` = '" + data.get("privacy") + "', `chat` = '" + data.get("chat") +
-                        "', `treefall` = '" + data.get("treefall") + "' WHERE `uuid` = '" + uuid + "';"
+                        "', `treefall` = '" + data.get("treefall") + "' WHERE `uuid` = '" + uuid + "';",
+
+                "UPDATE `mail` SET `last_mail` = " + data.get("last_mail") + ", `streak` = " + data.get("streak") + ", `tickets` = " + data.get("tickets") +
+                        " WHERE `uuid` = '" + uuid + "';"
         };
 
         String[] saveQueries = new String[] {
@@ -193,7 +214,9 @@ public class PlayerData {
 
                 "INSERT INTO `levels` VALUES('" + uuid + "', " + data.get("level") + ", " + data.get("xp") + ", " + data.get("total_xp") + ");",
 
-                "INSERT INTO `settings` VALUES('" + uuid + "', '" + data.get("scoreboard") + "', '" + data.get("privacy") + "', '" + data.get("chat") + "', 'false');"
+                "INSERT INTO `settings` VALUES('" + uuid + "', '" + data.get("scoreboard") + "', '" + data.get("privacy") + "', '" + data.get("chat") + "', 'false');",
+
+                "INSERT INTO `mail` VALUES('" + uuid  +"', " + data.get("last_mail") + ", " + data.get("streak") + ", " + data.get("tickets") + ");"
         };
 
         try {
