@@ -113,15 +113,15 @@ public class Mail {
         gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.PAPER, 1, "§6Arvat", Arrays.asList(
                 "§7§m--------------------",
                 "",
-                " §7Kun äänestät palvelinta",
-                " §7komennolla §a/vote, saat",
-                " §7itsellesi §6yhden arvan§7,",
-                " §7jolla voit voittaa itsellesi",
-                " §7jopa §6§lPremium§7-arvon!",
+                " §7Kun äänestät palvelinta       ",
+                " §7komennolla §a/vote, saat      ",
+                " §7itsellesi §6yhden arvan§7,    ",
+                " §7jolla voit voittaa itsellesi  ",
+                " §7jopa §6§lPremium§7-arvon!     ",
                 "",
                 " §7Arvat: §e" + Mail.getTickets(player),
                 "",
-                " §6Klikkaa avataksesi arvan!",
+                " §6Klikkaa avataksesi arvan!     ",
                 "",
                 "§7§m--------------------"
         ))) {
@@ -163,7 +163,7 @@ public class Mail {
     }
 
     public static boolean canOpenDaily(OfflinePlayer player) {
-        return timeFromLastMail(player.getUniqueId()) >= 1000 * 60 * 60 * 24;
+        return (timeLeftForNextMail(player.getUniqueId()) / 1000 / 60 / 60) <= 0;
     }
 
     public static int getTickets(OfflinePlayer player) {
@@ -242,9 +242,6 @@ public class Mail {
 
     public static long timeLeftForNextMail(UUID uuid) {
         long next = getLastMail(uuid) + 1000 * 60 * 60 * 24;
-        if(System.currentTimeMillis() >= next) {
-            return 0;
-        }
         return next - System.currentTimeMillis();
     }
 

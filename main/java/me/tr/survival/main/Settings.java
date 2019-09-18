@@ -168,7 +168,12 @@ public class Settings {
 
     public static void scoreboard(Player player) {
 
-        if(!Settings.get(player.getUniqueId(), "scoreboard")) return;
+        if(!Settings.get(player.getUniqueId(), "scoreboard")){
+            if(player.getScoreboard() != null) {
+                player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            }
+            return;
+        }
 
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective obj = board.registerNewObjective("AutioMC", "dummy", "dummy");
