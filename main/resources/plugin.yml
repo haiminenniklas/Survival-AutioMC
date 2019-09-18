@@ -80,3 +80,6 @@ commands:
   posti:
     description: Posti
     aliases: [mail, kirje]
+  arpa:
+    description: Arvat
+    aliases: [lotto, lottery]

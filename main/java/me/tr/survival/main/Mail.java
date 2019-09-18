@@ -1,6 +1,7 @@
 package me.tr.survival.main;
 
 import me.tr.survival.main.database.PlayerData;
+import me.tr.survival.main.other.Lottery;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.data.Crystals;
@@ -46,7 +47,7 @@ public class Mail {
                 "§7 - §f+" + (10 * multiplier) + " rautaa",
                 "§7 - §c+" +  + (16 * multiplier) + " pihviä",
                 "§7 - §b+ " + (2 * multiplier) + " timanttia §7(§6Premium§7)",
-                "§7 - §a+ " + (1 * multiplier) + " emeraldia §7(§6Premium§7)",
+                "§7 - §a+ " + (multiplier) + " emeraldia §7(§6Premium§7)",
                 "§7 - §b+ " + (5 * multiplier) + " kristallia §7(§6Premium§e+§7)",
                 "§7§m--------------------"
         ))) {
@@ -85,6 +86,11 @@ public class Mail {
                     clicker.sendMessage("§b§l+" + (3 * multiplier) + " kristallia");
                 }
 
+                if(Mail.getStreak(clicker) >= 14 && Mail.getStreak(clicker) <= 21) {
+                    Crystals.add(clicker.getUniqueId(), 3);
+                    clicker.sendMessage("§b§l+ 3 Kristallia §7(Streak)");
+                }
+
                 clicker.getInventory().addItem(ItemUtil.makeItem(Material.IRON_INGOT, 10 * multiplier));
                 clicker.sendMessage("§f§l+" + (10 * multiplier) + " rautaa");
                 clicker.getInventory().addItem(ItemUtil.makeItem(Material.COOKED_BEEF, 16 * multiplier));
@@ -113,13 +119,16 @@ public class Mail {
                 " §7jolla voit voittaa itsellesi",
                 " §7jopa §6§lPremium§7-arvon!",
                 "",
-                " §c§lEI VIELÄ TOIMINNASSA",
+                " §7Arvat: §e" + Mail.getTickets(player),
+                "",
+                " §6Klikkaa avataksesi arvan!",
                 "",
                 "§7§m--------------------"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                Chat.sendMessage(player, "Tämä toiminto on vasta rakenteilla...");
+                gui.close(player);
+                Lottery.lot(player);
             }
         });
 
@@ -131,8 +140,8 @@ public class Mail {
                 "§7postitoimituksen, niin toimituksen",
                 "§7ns. §ekerroin §7nousee. Kertoimet:",
                 "",
-                "§7- §a§l7pv §7-> §b§l2x",
-                "§7- §e§l14pv §7-> §b§l3x",
+                "§7- §a§l>7pv §7-> §b§l2x",
+                "§7- §e§l>14pv §7-> §b§l+3 kristallia",
                 "§7 - §c§l>21pv §7-> §b§l4x",
                 "",
                 "§7§m--------------------"
@@ -145,12 +154,10 @@ public class Mail {
     public static int getMultiplier(OfflinePlayer player) {
         int multiplier = 1;
         int streak = Mail.getStreak(player);
-        if(streak >= 7 && streak <= 14) {
+        if(streak >= 7 && streak <= 21) {
             multiplier = 2;
-        } else if(streak >= 14 && streak <= 21) {
-            multiplier = 3;
         } else if(streak >= 21) {
-            multiplier = 4;
+            multiplier = 3;
         }
         return multiplier;
     }

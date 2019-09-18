@@ -823,6 +823,10 @@ public final class Main extends JavaPlugin implements Listener {
                     }
                 }
 
+            } else if(command.getLabel().equalsIgnoreCase("arpa")) {
+
+                Lottery.lot(player);
+
             }
 
         }
