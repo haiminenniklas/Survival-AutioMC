@@ -23,6 +23,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -100,12 +101,13 @@ public class Events implements Listener {
         ); */
 
 
-        Main.getInstance().getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+        Main.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
 
             PlayerAliases.load(player);
             PlayerAliases.add(player, player.getAddress().getHostName());
+            PlayerData.loadPlayer(player.getUniqueId());
 
-        });
+        }, 20 * 2);
 
         Autio.updatePlayer(player);
 

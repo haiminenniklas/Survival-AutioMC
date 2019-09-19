@@ -827,6 +827,20 @@ public final class Main extends JavaPlugin implements Listener {
 
                 Lottery.lot(player);
 
+            } else if(command.getLabel().equalsIgnoreCase("iteminfo")) {
+
+                if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR) {
+                    Chat.sendMessage(player, "Sinulla ei ole kädessä mitään!");
+                    return true;
+                }
+
+                ItemStack item = player.getInventory().getItemInMainHand();
+                player.sendMessage("§7§m--------------------");
+                player.sendMessage(" §7Materiaali: §6" + item.getType().toString());
+                player.sendMessage(" §7Määrä: §6" + item.getAmount());
+                player.sendMessage(" §7ID: §6" + item.getType().getId());
+                player.sendMessage("§7§m--------------------");
+
             }
 
         }

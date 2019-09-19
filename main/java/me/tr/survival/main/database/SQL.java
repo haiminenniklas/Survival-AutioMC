@@ -14,7 +14,7 @@ public class SQL {
     public static void setup() {
 
         FileConfiguration config = Main.getInstance().getConfig();
-        if(config.getBoolean("mysql.enabled") == false) {
+        if(!config.getBoolean("mysql.enabled")) {
             File dataFolder = new File(Main.getInstance().getDataFolder().getAbsolutePath() + File.separator + "database.db");
             if (!dataFolder.exists()) {
                 try {

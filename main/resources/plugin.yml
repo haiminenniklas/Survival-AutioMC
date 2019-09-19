@@ -83,3 +83,6 @@ commands:
   arpa:
     description: Arvat
     aliases: [lotto, lottery]
+  iteminfo:
+    description: Blockin id
+    aliases: [id]

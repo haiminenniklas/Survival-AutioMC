@@ -169,9 +169,7 @@ public class Settings {
     public static void scoreboard(Player player) {
 
         if(!Settings.get(player.getUniqueId(), "scoreboard")){
-            if(player.getScoreboard() != null) {
-                player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-            }
+            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             return;
         }
 
