@@ -69,6 +69,8 @@ public class Lottery {
             }
         }
 
+        Mail.addTickets(player.getUniqueId(), -1);
+
         player.sendMessage("§7§m--------------------");
         player.sendMessage("  §c§lEi voittoa...");
         player.sendMessage(" ");
