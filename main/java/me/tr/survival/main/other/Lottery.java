@@ -54,15 +54,19 @@ public class Lottery {
                                 && !Ranks.isPartner(player.getUniqueId())) {
                             PlayerData.set(player.getUniqueId(), "rank", "premium");
                         }
+                        break;
                     case FOOD:
                         player.getInventory().addItem(
                                 ItemUtil.makeItem(Material.COOKED_BEEF, 16),
                                 ItemUtil.makeItem(Material.COOKED_PORKCHOP, 16),
                                 ItemUtil.makeItem(Material.COOKED_CHICKEN, 16));
+                        break;
                     case CRYSTALS:
                         Crystals.add(player.getUniqueId(), 5);
+                        break;
                     case DIAMONDS:
                         player.getInventory().addItem(ItemUtil.makeItem(Material.DIAMOND, 3));
+                        break;
                 }
 
                 return prize;
