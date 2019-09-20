@@ -42,7 +42,7 @@ public class Warps {
             return;
         }
 
-        int size = 9 * (2 + (Math.floorDiv(getWarps().size(), 7)));
+        int size = 9 * (2 + ((int) Math.ceil((double) getWarps().size() / 7)));
         Gui gui = new Gui("Warpit", size);
 
         for(Map.Entry<String, Warp> e : getWarps().entrySet()) {
@@ -52,7 +52,7 @@ public class Warps {
                 Inventory inv = gui.getPages().get(1);
                 if(inv.getItem(i) != null) continue;
 
-                if(i == 9 || i == 18 || i == 36 || i == 45 || i == 17 || i == 26 || i == 35 || i == 45)
+                if(i == 9 || i == 18 || i == 36 || i == 45 || i == 17 || i == 26 || i == 35 || i == 44)
                     continue;
 
                 List<String> lore = new ArrayList<>();
