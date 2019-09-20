@@ -69,16 +69,16 @@ public final class Main extends JavaPlugin implements Listener {
 
 
             if(Bukkit.getTPS()[0] >= 18.5) {
-                System.out.println("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
+                Autio.log("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
                 int times_saved = 0;
                 for(Player player : Bukkit.getOnlinePlayers()) {
                     times_saved += 1;
                     PlayerData.savePlayer(player.getUniqueId());
                     Chat.sendMessage(player, "Tietosi tallennettiin automaattisesti!");
                 }
-                System.out.println("Saved the data of " + times_saved + " players!");
+                Autio.log("Saved the data of " + times_saved + " players!");
             } else {
-                Bukkit.getLogger().warning("Server TPS too low, not updating players this time...");
+                Autio.warn("Server TPS too low, not updating players this time...");
             }
 
         }, 20, (20*60) * 5);
@@ -651,10 +651,18 @@ public final class Main extends JavaPlugin implements Listener {
                 if(player.isOp()) {
                     if(args.length < 1) {
                         Chat.sendMessage(player, "/autio reload");
+                        Chat.sendMessage(player, "/autio logging");
                     } else {
                         if(args[0].equalsIgnoreCase("reload")) {
                             reloadConfig();
                             Chat.sendMessage(player, "Config uudelleenladattu!");
+                        } else if(args[0].equalsIgnoreCase("logging")) {
+                            boolean current = getConfig().getBoolean("other.logging");
+                            getConfig().set("other.logging", !current);
+
+                            String msg = (!current) ? "§apäällä" : "§cpois päältä";
+                            Chat.sendMessage(player, "Tietojen tallentaminen lokiin " + msg);
+
                         }
                     }
                 }
@@ -863,12 +871,20 @@ public final class Main extends JavaPlugin implements Listener {
                                     Chat.sendMessage(player, Chat.Prefix.DEBUG, output);
                                 });
 
-                            } else {
+                            } else if(args[0].equalsIgnoreCase("help")) {
                                 Chat.sendMessage(player, "/warp set <nimi>");
                                 Chat.sendMessage(player, "/warp delete <nimi>");
                                 Chat.sendMessage(player, "/warp load");
                                 Chat.sendMessage(player, "/warp setDisplayname <warp> <uusi_nimi>");
                                 Chat.sendMessage(player, "/warp setDescription <warp> <kuvaus>");
+                            } else {
+                                String name = args[0].toLowerCase();
+                                Warp warp = Warps.get(name);
+                                if(warp == null) {
+                                    Chat.sendMessage(player, "Tuota warppia ei löytynyt...");
+                                    return true;
+                                }
+                                warp.teleport(player);
                             }
                         } else if(args.length < 3) {
 
@@ -897,11 +913,11 @@ public final class Main extends JavaPlugin implements Listener {
                                 });
                             }
 
-                        } else if(args.length >= 3) {
+                        } else {
 
                             String name = args[1].toLowerCase();
 
-                            Warp warp = Warps.getWarps().get(name);
+                            Warp warp = Warps.get(name);
                             if(warp == null) {
                                 Chat.sendMessage(player, "Warppia ei löytynyt");
                                 return true;
@@ -932,6 +948,15 @@ public final class Main extends JavaPlugin implements Listener {
                             });
 
                         }
+
+                    } else {
+                        String name = args[0].toLowerCase();
+                        Warp warp = Warps.get(name);
+                        if(warp == null) {
+                            Chat.sendMessage(player, "Tuota warppia ei löytynyt...");
+                            return true;
+                        }
+                        warp.teleport(player);
 
                     }
                 }

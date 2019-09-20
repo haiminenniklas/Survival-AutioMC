@@ -35,6 +35,7 @@ other:
     web-full: 'http://www.autiomc.eu'
     web: 'www.autiomc.eu'
     store: 'http://autiomc.eu/kauppa'
+  logging: true
 
 chat:
   prefixes:

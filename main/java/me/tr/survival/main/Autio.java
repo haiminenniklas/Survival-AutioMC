@@ -17,6 +17,7 @@ public class Autio {
     }
 
     public static void log(Object msg) {
+        if(!getConfig().getBoolean("other.logging")) return;
         System.out.println(msg);
     }
 
@@ -34,6 +35,10 @@ public class Autio {
 
     public static void async(Runnable task) {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), task);
+    }
+
+    public static void teleportToNether(Player player) {
+        player.teleport(new Location(Bukkit.getWorld("world_nether"), 0.5, 52, 0.5));
     }
 
     public static void setSpawn(Location loc) {

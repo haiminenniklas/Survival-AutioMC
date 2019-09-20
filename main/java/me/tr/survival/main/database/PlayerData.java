@@ -1,5 +1,6 @@
 package me.tr.survival.main.database;
 
+import me.tr.survival.main.Autio;
 import me.tr.survival.main.other.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -150,7 +151,7 @@ public class PlayerData {
 
                 player_data.put(uuid, data);
 
-                System.out.println("Loaded player " + uuid + " (" + player.getName() + ") from Database");
+                Autio.log("Loaded player " + uuid + " (" + player.getName() + ") from Database");
 
             } else {
                 loadNull(uuid, true);
@@ -226,9 +227,9 @@ public class PlayerData {
             for(int i = 0; i < updateQueries.length; i++) {
 
                 String update = updateQueries[i];
-                System.out.println("Executing Database update query: " + update);
+                Autio.log("Executing Database update query: " + update);
                 if(!SQL.update(update)) {
-                    System.out.println("Could not execute update query " + update + " trying to execute the equivalent save query: " + saveQueries[i]);
+                    Autio.log("Could not execute update query " + update + " trying to execute the equivalent save query: " + saveQueries[i]);
                     if(SQL.update(saveQueries[i])) {
                         successful += 1;
                     } else {
@@ -242,7 +243,7 @@ public class PlayerData {
             }
 
             if(successful >= 1) {
-                System.out.println("Updated or Saved " + successful + "/" + updateQueries.length + " tables for " + uuid +  " (" + player.getName() + ")!");
+                Autio.log("Updated or Saved " + successful + "/" + updateQueries.length + " tables for " + uuid +  " (" + player.getName() + ")!");
             }
 
         } catch(SQLException ex) {

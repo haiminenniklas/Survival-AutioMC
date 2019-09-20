@@ -3,6 +3,7 @@ package me.tr.survival.main.other.warps;
 import com.google.common.base.Splitter;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.database.SQL;
+import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.callback.DatabaseCallback;
 import me.tr.survival.main.util.callback.TypedCallback;
@@ -23,7 +24,7 @@ import java.util.*;
 
 public class Warps {
 
-    private static final HashMap<String, Warp> warps = new HashMap<>();
+    private static final List<Warp> warps = new ArrayList<>();
 
     public static void panel(Player player) {
 
@@ -42,24 +43,32 @@ public class Warps {
             return;
         }
 
-        int size = 9 * (2 + ((int) Math.ceil((double) getWarps().size() / 7)));
+        int size = 18 + (9 * ((int) Math.ceil((double) getWarps().size() / 7)));
         Gui gui = new Gui("Warpit", size);
 
-        for(Map.Entry<String, Warp> e : getWarps().entrySet()) {
+        List<Warp> added = new ArrayList<>();
 
-            Warp warp = e.getValue();
+        for(Warp warp : getWarps()) {
+
+            if(added.contains(warp)) continue;
+
+            System.out.println(warp.getName());
             for(int i = 10; i < size - 10; i++) {
                 Inventory inv = gui.getPages().get(1);
+
+                if(gui.getButton(i) != null) continue;
                 if(inv.getItem(i) != null) continue;
 
-                if(i == 9 || i == 18 || i == 36 || i == 45 || i == 17 || i == 26 || i == 35 || i == 44)
+                System.out.println(i + " -> " + warp.getName());
+
+                if(i == 18 || i == 27 || i == 36 || i == 45 || i == 17 || i == 26 || i == 35 || i == 44)
                     continue;
 
                 List<String> lore = new ArrayList<>();
                 lore.add("§7§m--------------------");
-                Iterable<String> lines = Splitter.fixedLength(23).split(warp.getDescription());
-                while(lines.iterator().hasNext()) {
-                    lore.add(" §7" + ChatColor.translateAlternateColorCodes('&', lines.iterator().next()));
+                String[] text = Util.splitStringEvery(warp.getDescription(), 23);
+                for(int j = 0; j < text.length; j++) {
+                    lore.add(" §7" + ChatColor.translateAlternateColorCodes('&', text[j]));
                 }
                 lore.add("§7§m--------------------");
 
@@ -70,6 +79,8 @@ public class Warps {
                         warp.teleport(player);
                     }
                 });
+                added.add(warp);
+                break;
 
             }
 
@@ -79,6 +90,17 @@ public class Warps {
 
     }
 
+    public static Warp get(String name) {
+
+        for(Warp warp : getWarps()) {
+            if(warp.getName().equalsIgnoreCase(name))
+                return warp;
+        }
+
+        return null;
+    }
+
+    @Deprecated
     public static void loadWarp(String name, TypedCallback<Boolean> dbc) {
 
         Autio.async(() -> {
@@ -87,6 +109,7 @@ public class Warps {
 
                 ResultSet result = SQL.query("SELECT * FROM `warps` WHERE `name` = '" +  name + "';");
                 if(result.next()) {
+
                     dbc.execute(true);
                 } else {
                     dbc.execute(false);
@@ -120,7 +143,7 @@ public class Warps {
 
     }
 
-    public static HashMap<String, Warp> getWarps() {
+    public static List<Warp> getWarps() {
         return Warps.warps;
     }
 
@@ -148,7 +171,7 @@ public class Warps {
 
     public static void loadWarps(TypedCallback<Boolean> callback) {
 
-        System.out.println("Loading warps from Database...");
+        Autio.log("Loading warps from Database...");
 
         Autio.async(() -> {
 
@@ -168,8 +191,10 @@ public class Warps {
                             result.getString("display_name")
                     );
 
-                    System.out.println("Loaded warp '" + warp.getName() + "' from the Database!");
-                    warps.putIfAbsent(warp.getName(), warp);
+                    Autio.log("Loaded warp '" + warp.getName() + "' from the Database!");
+                    if(!warps.contains(warps.add(warp))) {
+                        warps.add(warp);
+                    }
                     loaded++;
 
                 }
@@ -189,7 +214,7 @@ public class Warps {
     }
 
     public static void createWarp(Location loc, String name, TypedCallback<Boolean> c) {
-        createWarp(loc, name, name, "§7Luo tähän warppiin description. §c/warp setDescription " + name + " <kuvaus>", c);
+        createWarp(loc, name, "§7Luo tähän warppiin description. §c/warp setDescription " + name + " <kuvaus>", name, c);
     }
 
     public static Warp createWarp(Location loc, String name, String description, String displayName, TypedCallback<Boolean> c) {
@@ -213,7 +238,9 @@ public class Warps {
 
         });
 
-        Warps.getWarps().putIfAbsent(name, warp);
+        if(!warps.contains(warp)) {
+            Warps.getWarps().add(warp);
+        }
         return warp;
     }
 

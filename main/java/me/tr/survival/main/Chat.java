@@ -24,12 +24,12 @@ public class Chat {
 
     public static String getFormat(Player player, String message) {
 
-        String format = Autio.getConfig().getString("chat.format");
-        format = format.replaceAll("%rank%", Ranks.getPrefix(Ranks.getRank(player.getUniqueId())));
+        String format = ChatColor.translateAlternateColorCodes('&', Autio.getConfig().getString("chat.format"));
+        format = format.replaceAll("%rank%", "§" + Ranks.getRankColor(Ranks.getRank(player.getUniqueId())).getChar());
         format = format.replaceAll("%name%", player.getName());
         format = format.replaceAll("%message%", message);
 
-        return ChatColor.translateAlternateColorCodes('&', format).trim();
+        return format;
 
     }
 

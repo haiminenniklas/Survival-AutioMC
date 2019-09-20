@@ -244,6 +244,13 @@ public class Gui implements Listener {
         }
     }
 
+    public Button getButton(int pos) {
+        for(Button b : getButtons()) {
+            if(b.pos == pos) return b;
+        }
+        return null;
+    }
+
     public int getPage(Player player){
         if(playerPages.containsKey(player)){
             return playerPages.get(player);
