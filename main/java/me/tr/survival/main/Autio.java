@@ -8,10 +8,24 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.logging.Level;
+
 public class Autio {
 
     public static void teleportToSpawn(Player player) {
         player.teleport(Autio.getSpawn());
+    }
+
+    public static void log(Object msg) {
+        System.out.println(msg);
+    }
+
+    public static void err(Object msg) {
+        System.err.println(msg);
+    }
+
+    public static void warn(String message) {
+        Bukkit.getLogger().log(Level.WARNING, message);
     }
 
     public static void task(Runnable task) {

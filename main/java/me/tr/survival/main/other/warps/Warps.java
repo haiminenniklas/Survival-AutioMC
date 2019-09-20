@@ -63,7 +63,8 @@ public class Warps {
                 }
                 lore.add("§7§m--------------------");
 
-                gui.addButton(new Button(1, i, ItemUtil.makeItem(Material.OAK_SIGN, 1, warp.getDisplayName(), lore)) {
+                gui.addButton(new Button(1, i, ItemUtil.makeItem(Material.OAK_SIGN, 1,
+                        ChatColor.translateAlternateColorCodes('&', warp.getDisplayName()), lore)) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         warp.teleport(player);
@@ -100,8 +101,49 @@ public class Warps {
 
     }
 
+    public static void deleteWarp(String name, TypedCallback<Boolean> cb) {
+
+        Autio.log("Deleting warp " + name + "...");
+        Autio.async(() -> {
+
+            try {
+
+                boolean update = SQL.update("DELETE FROM `warps` WHERE `name` = '" + name.toLowerCase() + "';");
+                cb.execute(update);
+
+            } catch(SQLException ex) {
+                ex.printStackTrace();
+                cb.execute(false);
+            }
+
+        });
+
+    }
+
     public static HashMap<String, Warp> getWarps() {
         return Warps.warps;
+    }
+
+    public static void saveWarp(Warp warp, TypedCallback<Boolean> cb) {
+
+        Autio.log("Saving the warp " + warp.getName() + "...");
+        Autio.async(() -> {
+
+            try {
+
+                cb.execute(SQL.update("UPDATE `warps` SET `display_name` = '" + warp.getDisplayName() +
+                        "', `loc_x` = " + warp.getX() + ", `loc_y` = " + warp.getY() +
+                        ", `loc_z` = " + warp.getZ() + ", `loc_pitch` = " + warp.getPitch() +
+                        ", `loc_yaw` = " + warp.getYaw() + ", `world` = '" +  warp.getWorld().getName() +
+                        "', `description` = '" + warp.getDescription() + "' WHERE `name` = '" + warp.getName() + "';"));
+
+            } catch(SQLException ex) {
+                ex.printStackTrace();
+                cb.execute(false);
+            }
+
+        });
+
     }
 
     public static void loadWarps(TypedCallback<Boolean> callback) {
@@ -152,7 +194,7 @@ public class Warps {
 
     public static Warp createWarp(Location loc, String name, String description, String displayName, TypedCallback<Boolean> c) {
 
-        Warp warp = new Warp(name, loc, description, displayName);
+        Warp warp = new Warp(name.toLowerCase(), loc, description, displayName);
 
         Autio.async(() -> {
 

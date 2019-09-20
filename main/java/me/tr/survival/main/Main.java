@@ -6,6 +6,7 @@ import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.*;
+import me.tr.survival.main.other.warps.Warp;
 import me.tr.survival.main.other.warps.Warps;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.RTP;
@@ -845,6 +846,95 @@ public final class Main extends JavaPlugin implements Listener {
                 player.sendMessage(" §7Määrä: §6" + item.getAmount());
                 player.sendMessage(" §7Nimi (Minecraft): §6" + item.getType().getKey());
                 player.sendMessage("§7§m--------------------");
+
+            } else if(command.getLabel().equalsIgnoreCase("warp")) {
+
+                if(args.length < 1) {
+                    Warps.panel(player);
+                } else {
+                    if(player.isOp()) {
+
+                        if(args.length < 2) {
+                            if(args[0].equalsIgnoreCase("load")) {
+
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Ladataan warppeja...");
+                                Warps.loadWarps((value) -> {
+                                    String output = (value) ? "§7Warpit ladattiin!" : "§7Ei voitu ladata warppeja...";
+                                    Chat.sendMessage(player, Chat.Prefix.DEBUG, output);
+                                });
+
+                            } else {
+                                Chat.sendMessage(player, "/warp set <nimi>");
+                                Chat.sendMessage(player, "/warp delete <nimi>");
+                                Chat.sendMessage(player, "/warp load");
+                                Chat.sendMessage(player, "/warp setDisplayname <warp> <uusi_nimi>");
+                                Chat.sendMessage(player, "/warp setDescription <warp> <kuvaus>");
+                            }
+                        } else if(args.length < 3) {
+
+                            String name = args[1].toLowerCase();
+
+                            if(args[0].equalsIgnoreCase("delete")) {
+
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Poistetaan warp §6" + name + "§7...");
+                                Warps.deleteWarp(name, (value) -> {
+                                    if(value) {
+                                        Chat.sendMessage(player, Chat.Prefix.DEBUG, "Warp poistettiin!");
+                                    } else {
+                                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei voitu poistaa warppia!");
+                                    }
+                                });
+
+                            } else if(args[0].equalsIgnoreCase("set")) {
+
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Asettaan warp §6" + name + "§7...");
+                                Warps.createWarp(player.getLocation(), name.toLowerCase(), (value) -> {
+                                    if(value) {
+                                        Chat.sendMessage(player, Chat.Prefix.DEBUG, "Warp asetettiin!");
+                                    } else {
+                                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei voitu asettaa warppia!");
+                                    }
+                                });
+                            }
+
+                        } else if(args.length >= 3) {
+
+                            String name = args[1].toLowerCase();
+
+                            Warp warp = Warps.getWarps().get(name);
+                            if(warp == null) {
+                                Chat.sendMessage(player, "Warppia ei löytynyt");
+                                return true;
+                            }
+
+                            StringBuilder sb = new StringBuilder();
+                            for(int i = 2; i < args.length; i++) {
+                                sb.append(args[i] + " ");
+                            }
+                            String text = sb.toString().trim();
+
+                            if(args[0].equalsIgnoreCase("setDisplayname")) {
+
+                                warp.setDisplayName(text);
+
+                            } else if(args[0].equalsIgnoreCase("setDescription")) {
+
+                                warp.setDescription(text);
+
+                            }
+
+                            Warps.saveWarp(warp, (value) -> {
+                                if(value) {
+                                    Chat.sendMessage(player, Chat.Prefix.DEBUG, "Muutokset tehty!");
+                                } else {
+                                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei voitu tallentaa warppia!");
+                                }
+                            });
+
+                        }
+
+                    }
+                }
 
             }
 

@@ -17,7 +17,7 @@ public class Warp {
 
     public Warp(String name, Location loc, String description, String displayName) {
 
-        this.name = name;
+        this.name = name.toLowerCase();
         this.displayName = "§6" + displayName;
 
         this.loc = loc;

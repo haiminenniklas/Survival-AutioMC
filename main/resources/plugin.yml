@@ -86,3 +86,6 @@ commands:
   iteminfo:
     description: Blockin id
     aliases: [id]
+  warp:
+    description: Warpit
+    aliases: [warps]
