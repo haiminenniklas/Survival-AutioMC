@@ -14,6 +14,14 @@ public class Autio {
         player.teleport(Autio.getSpawn());
     }
 
+    public static void task(Runnable task) {
+        Bukkit.getScheduler().runTask(Main.getInstance(), task);
+    }
+
+    public static void async(Runnable task) {
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), task);
+    }
+
     public static void setSpawn(Location loc) {
 
         FileConfiguration config = Main.getInstance().getConfig();
@@ -25,7 +33,6 @@ public class Autio {
         config.set("spawn.world", loc.getWorld().getName());
 
         Main.getInstance().saveConfig();
-
     }
 
     public static Location getSpawn() {

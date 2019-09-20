@@ -17,6 +17,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
@@ -26,8 +27,26 @@ public class Profile {
     public static void openProfile(Player opener, UUID targetUUID) {
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
-        Gui gui = new Gui("Pelaajan tiedot", 4 * 9);
 
+        if(!PlayerData.isLoaded(targetUUID)) {
+
+            Gui gui = new Gui("Ei löydetty", 27);
+            gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§c§lEI LÖYDETTY", Arrays.asList(
+                    "§7§m--------------------",
+                    " §7Pelaajan §6" + target.getName() + " §7tietoja",
+                    " §7ei löydetty. Ehkei hän ole ikinä",
+                    " §7liittynyt, tai hänen tietojaan ei",
+                    " §7olla vielä ladattu. Yritä myöhemmin",
+                    " §7uudestaan!",
+                    "",
+                    "§7 Omat tiedot saat §6/tiedot§7!",
+                    "§7§m--------------------"
+            )), 13);
+            gui.open(opener);
+            return;
+        }
+
+        Gui gui = new Gui("Pelaajan tiedot", 4 * 9);
         HashMap<String, Object> data = PlayerData.getData(targetUUID);
 
         gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§6Profiili", Arrays.asList(
@@ -78,19 +97,19 @@ public class Profile {
 
         gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§6Tuhotut blockit", Arrays.asList(
                 "§7§m--------------------",
-                "§7Yhteensä: §6" + Ores.getTotal(targetUUID),
+                "§7Yhteensä: §e" + Ores.getTotal(targetUUID),
                 " ",
                 "§7Timantti: §b" + Ores.getDiamonds(targetUUID) + " §7§o(" + diamond_percentage +  "%)",
                 "§7Kulta: §6" + Ores.getGold(targetUUID) + " §7§o(" + gold_percentage +  "%)",
                 "§7Rauta: §f" + Ores.getIron(targetUUID) + " §7§o(" + iron_percentage +  "%)",
                 "§7Hiili: §8" + Ores.getCoal(targetUUID)  +" §7§o(" + coal_percentage +  "%)",
-                "§7Muu: §6" + Ores.getOther(targetUUID) + " §7§o(" + other_percentage +  "%)",
+                "§7Muu: §e" + Ores.getOther(targetUUID) + " §7§o(" + other_percentage +  "%)",
                 "§7§m--------------------"
         )), 19);
 
         gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§6Kodit", Arrays.asList(
                 "§7§m--------------------",
-                "§7Kodit: §6" + new Homes(target).get().size(),
+                "§7Kodit: §e" + new Homes(target).get().size(),
                 " ",
                 "§6Klikkaa näkeäksesi kotisi!",
                 "§7§m--------------------"

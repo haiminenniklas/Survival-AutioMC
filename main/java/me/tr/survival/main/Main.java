@@ -6,6 +6,7 @@ import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.*;
+import me.tr.survival.main.other.warps.Warps;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.Times;
@@ -82,6 +83,10 @@ public final class Main extends JavaPlugin implements Listener {
         }, 20, (20*60) * 5);
 
         AutoBroadcaster.start();
+        Warps.loadWarps((value) -> {
+            String output = (value) ? "Loaded warps from the Database!" : "Did not load warps from the database, did an error occur?";
+            System.out.println(output);
+        });
 
     }
 
@@ -836,9 +841,9 @@ public final class Main extends JavaPlugin implements Listener {
 
                 ItemStack item = player.getInventory().getItemInMainHand();
                 player.sendMessage("§7§m--------------------");
-                player.sendMessage(" §7Materiaali: §6" + item.getType().toString());
+                player.sendMessage(" §7Materiaali (Spigot): §6" + item.getType().toString());
                 player.sendMessage(" §7Määrä: §6" + item.getAmount());
-                player.sendMessage(" §7ID: §6" + item.getType().getId());
+                player.sendMessage(" §7Nimi (Minecraft): §6" + item.getType().getKey());
                 player.sendMessage("§7§m--------------------");
 
             }
