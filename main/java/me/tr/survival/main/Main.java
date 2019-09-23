@@ -31,6 +31,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.UUID;
@@ -48,9 +50,36 @@ public final class Main extends JavaPlugin implements Listener {
     public void onEnable() {
         // Some setupping
 
+        Autio.logColored("§a---------------------------");
+        Autio.logColored(" §aEnabling AutioCore....");
+
+        Autio.log(" ");
+        Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IF FROM THE config.yml!");
+        Autio.log(" ");
+
         Main.instance = this;
+
+        Autio.logColored(" §aSetupping config and database...");
+
         saveDefaultConfig();
         SQL.setup();
+
+        /*Autio.logColored(" §aSetupping Boosters-system...");
+
+        File boosterJson = new File(getDataFolder() + File.separator + "boosters.json");
+        if(!boosterJson.exists()) {
+            try {
+                if(boosterJson.createNewFile()) {
+                    Autio.logColored(" §aCreated file for Boosters!");
+                } else {
+                    Autio.warn(" Could not create file for booster. Boosters will not be saved!");
+                }
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        } */
+
+        Autio.logColored(" §aRegistering plugin events...");
 
         // Events
         PluginManager pm = getServer().getPluginManager();
@@ -60,11 +89,14 @@ public final class Main extends JavaPlugin implements Listener {
 
         // Commands
 
+        Autio.logColored(" §aRegistering plugin commands....");
+
         getCommand("home").setExecutor(new HomeCommand());
         getCommand("rank").setExecutor(new RankCommand());
 
         // Autosave code...
 
+        Autio.logColored(" §aStarting autosaving for players...");
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
 
 
@@ -83,11 +115,15 @@ public final class Main extends JavaPlugin implements Listener {
 
         }, 20, (20*60) * 5);
 
+        Autio.logColored(" §aStarting AutoBroadcaster...");
         AutoBroadcaster.start();
         Warps.loadWarps((value) -> {
             String output = (value) ? "Loaded warps from the Database!" : "Did not load warps from the database, did an error occur?";
             System.out.println(output);
         });
+
+        Autio.logColored("§a Enabled AutioCore!");
+        Autio.logColored("§a---------------------------");
 
     }
 

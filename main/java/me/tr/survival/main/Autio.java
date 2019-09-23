@@ -16,13 +16,17 @@ public class Autio {
         player.teleport(Autio.getSpawn());
     }
 
-    public static void log(Object msg) {
+    public static void log(String msg) {
         if(!getConfig().getBoolean("other.logging")) return;
-        System.out.println(msg);
+        Bukkit.getLogger().log(Level.INFO, msg);
     }
 
-    public static void err(Object msg) {
-        System.err.println(msg);
+    public static void err(String msg) {
+        Bukkit.getLogger().log(Level.WARNING, msg);
+    }
+
+    public static void logColored(String msg) {
+        Bukkit.getConsoleSender().sendMessage(msg);
     }
 
     public static void warn(String message) {
