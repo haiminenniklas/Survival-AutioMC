@@ -59,8 +59,6 @@ public class Warps {
                 if(gui.getButton(i) != null) continue;
                 if(inv.getItem(i) != null) continue;
 
-                System.out.println(i + " -> " + warp.getName());
-
                 if(i == 18 || i == 27 || i == 36 || i == 45 || i == 17 || i == 26 || i == 35 || i == 44)
                     continue;
 

@@ -5,8 +5,10 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
@@ -19,6 +21,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Util {
+
+    public static void fixItem(ItemStack item) {
+        if(!item.hasItemMeta()) return;
+        ItemMeta meta = item.getItemMeta();
+        ((Damageable)meta).setDamage(0);
+        item.setItemMeta(meta);
+    }
 
     public static String getToday() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -127,6 +136,16 @@ public class Util {
     public static void sendNotification(Player player, String message){
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
+
+    }
+
+    public static void sendNotification(Player player, String message, boolean sound){
+
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
+        if(sound) {
+
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
+        }
 
     }
 
