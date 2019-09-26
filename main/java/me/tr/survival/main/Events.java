@@ -5,6 +5,7 @@ import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
+import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.other.events.LevelUpEvent;
 import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.data.Crystals;
@@ -17,6 +18,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.inventory.ClickType;
@@ -24,6 +26,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -227,6 +230,25 @@ public class Events implements Listener {
     }
 
     @EventHandler
+    public void onInteract(PlayerInteractEvent e) {
+
+        Player player = e.getPlayer();
+        if(Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
+
+            Block block = player.getTargetBlock(5);
+            if(block != null && block.getType() != Material.AIR) {
+                if(e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                    if(Util.isMineralOre(block)) {
+                        block.breakNaturally();
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
 
         Player player = e.getPlayer();
@@ -234,6 +256,16 @@ public class Events implements Listener {
         UUID uuid = player.getUniqueId();
 
         PlayerData.add(player.getUniqueId(), "total", 1);
+
+        if(Boosters.isActive(Boosters.Booster.MORE_ORES)) {
+
+            // Add one of every drop (2x)
+            for(ItemStack item : block.getDrops()) {
+                block.getDrops().add(item.clone());
+            }
+
+        }
+
         double random = new Random().nextDouble();
 
         /*

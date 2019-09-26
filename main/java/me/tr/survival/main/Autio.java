@@ -1,5 +1,6 @@
 package me.tr.survival.main;
 
+import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,6 +46,22 @@ public class Autio {
         player.teleport(new Location(Bukkit.getWorld("world_nether"), 0.5, 52, 0.5));
     }
 
+    public static void every(int seconds, Runnable task, boolean async) {
+        if(async) {
+            Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, 20 * seconds);
+        } else {
+            Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, 20 * seconds);
+        }
+    }
+
+    public static void every(int seconds, Runnable task) {
+        Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, 20 * seconds);
+    }
+
+    public static void everyAsync(int seconds, Runnable task) {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, 20 * seconds);
+    }
+
     public static void setSpawn(Location loc) {
 
         FileConfiguration config = Main.getInstance().getConfig();
@@ -84,6 +101,18 @@ public class Autio {
 
     public static FileConfiguration getConfig() {
         return Main.getInstance().getConfig();
+    }
+
+    public static void savePlayer(Player player) {
+        Autio.async(() -> {
+            PlayerData.savePlayer(player.getUniqueId());
+        });
+    }
+
+    public static void loadPlayer(Player player) {
+        Autio.async(() -> {
+           PlayerData.savePlayer(player.getUniqueId());
+        });
     }
 
     public static void updatePlayer(Player player) {

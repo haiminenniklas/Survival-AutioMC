@@ -6,7 +6,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -39,6 +42,16 @@ public class Util {
         return (int) (Math.rint((double) value / 10) * 10);
     }
 
+    public static boolean isMineralOre(Block block) {
+        if(block.getType() == Material.DIAMOND_ORE || block.getType() == Material.EMERALD_ORE ||
+                block.getType() == Material.GOLD_ORE || block.getType() == Material.IRON_ORE ||
+                block.getType() == Material.COAL_ORE || block.getType() == Material.LAPIS_ORE ||
+                block.getType() == Material.REDSTONE_ORE) {
+            return true;
+        }
+        return false;
+    }
+
     public static void heal(Player player) {
         player.setHealth(20.0);
         player.setFoodLevel(20);
@@ -60,6 +73,14 @@ public class Util {
         Potion pot = new Potion(type);
         pot.setSplash(true);
         pot.apply(item);
+        return item;
+    }
+
+    public static ItemStack makeEnchanted(ItemStack item) {
+        item = makeEnchanted(item, new Enchant(Enchantment.ARROW_DAMAGE, 1));
+        ItemMeta meta = item.getItemMeta();
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        item.setItemMeta(meta);
         return item;
     }
 
@@ -143,10 +164,19 @@ public class Util {
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
         if(sound) {
-
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
         }
 
+    }
+
+    public static void broadcastSound(Sound sound) {
+        broadcastSound(sound, 1, 1);
+    }
+
+    public static void broadcastSound(Sound sound, long volume, long pitch) {
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            player.playSound(player.getLocation(), sound, volume, pitch);
+        }
     }
 
     public static int getPing(Player player) {

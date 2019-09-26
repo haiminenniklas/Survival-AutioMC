@@ -89,3 +89,6 @@ commands:
   warp:
     description: Warpit
     aliases: [warps]
+  tehostus:
+    description: Tehostukset
+    aliases: [booster, boosters, tehostukset]

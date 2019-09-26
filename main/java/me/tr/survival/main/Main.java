@@ -6,6 +6,7 @@ import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.*;
+import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.other.warps.Warp;
 import me.tr.survival.main.other.warps.Warps;
 import me.tr.survival.main.util.ItemUtil;
@@ -52,6 +53,8 @@ public final class Main extends JavaPlugin implements Listener {
 
         Autio.logColored("§a---------------------------");
         Autio.logColored(" §aEnabling AutioCore....");
+
+        long start = System.currentTimeMillis();
 
         Autio.log(" ");
         Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IF FROM THE config.yml!");
@@ -122,7 +125,11 @@ public final class Main extends JavaPlugin implements Listener {
             System.out.println(output);
         });
 
-        Autio.logColored("§a Enabled AutioCore!");
+        Autio.logColored(" §aStarting booster manager...");
+        Boosters.activateManager();
+
+        Autio.logColored("§a Enabled AutioCore! (It took " + (System.currentTimeMillis() - start) +
+                "ms / " + ((System.currentTimeMillis() - start) / 1000) + "s)");
         Autio.logColored("§a---------------------------");
 
     }
@@ -560,7 +567,7 @@ public final class Main extends JavaPlugin implements Listener {
                         } else {
                             player.setAllowFlight(false);
                             player.setFlying(false);
-                            Chat.sendMessage(player, "Lento §6pois päältä§7!");
+                            Chat.sendMessage(player, "Lento §cpois päältä§7!");
                         }
                     } else {
                         Player target = Bukkit.getPlayer(args[0]);
@@ -576,8 +583,8 @@ public final class Main extends JavaPlugin implements Listener {
                         } else {
                             target.setAllowFlight(false);
                             target.setFlying(false);
-                            Chat.sendMessage(target, "Lento §6pois päältä§7!");
-                            Chat.sendMessage(player, "Lento §6pois päältä§7 pelaajalla §6" + target.getName() + "§7!");
+                            Chat.sendMessage(target, "Lento §cpois päältä§7!");
+                            Chat.sendMessage(player, "Lento §cpois päältä§7 pelaajalla §6" + target.getName() + "§7!");
                         }
                     }
                 }
@@ -997,6 +1004,8 @@ public final class Main extends JavaPlugin implements Listener {
                     }
                 }
 
+            } else if(command.getLabel().equalsIgnoreCase("tehostus")) {
+                Boosters.panel(player);
             }
 
         }

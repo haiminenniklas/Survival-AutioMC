@@ -1,15 +1,17 @@
 package me.tr.survival.main.other.booster;
 
+import me.tr.survival.main.Autio;
+import me.tr.survival.main.Chat;
+import me.tr.survival.main.other.Enchant;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.callback.Callback;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemFlag;
@@ -22,7 +24,7 @@ import java.util.*;
 
 public class Boosters implements Listener {
 
-    private static HashMap<UUID, Booster> active = new HashMap<>();
+    private static HashMap<UUID, HashMap<Booster, Long>> active = new HashMap<>();
 
     public static void panel(Player player) {
 
@@ -63,9 +65,17 @@ public class Boosters implements Listener {
                 }
                 ItemStack item = ItemUtil.makeItem(Material.EMERALD, 1, booster.getDisplayName(), lore);
                 if(isActive(booster)) {
+                    item = Util.makeEnchanted(item);
                 }
 
-
+                gui.addButton(new Button(1, i, item) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(clicker);
+                        Boosters.activate(booster, clicker.getUniqueId());
+                        Chat.sendMessage(clicker, "Aktivoit tehostuksen " + booster.getDisplayName() + "§7!");
+                    }
+                });
 
             }
 
@@ -75,11 +85,66 @@ public class Boosters implements Listener {
 
     }
 
+    public static void activateManager() {
 
+        Autio.every(60, () -> {
+
+            for(Map.Entry<UUID, HashMap<Booster, Long>> e : getActive().entrySet()) {
+                for(Map.Entry<Booster, Long> e1 : e.getValue().entrySet()) {
+                    long start = e1.getValue();
+                    Booster booster = e1.getKey();
+                    int time = booster.getDuration();
+                    // Check if the booster's time is up
+                    if(System.currentTimeMillis() >= start + (time * 60 * 1000)) {
+                        Boosters.getActive().remove(e.getKey(), e.getValue());
+                        Bukkit.broadcastMessage("§7§m--------------------");
+                        Bukkit.broadcastMessage(" ");
+                        Bukkit.broadcastMessage(" §c§lTEHOSTUS LOPPUI §7(" + booster.getDisplayName() + "§7)");
+                        Bukkit.broadcastMessage(" ");
+                        Bukkit.broadcastMessage(" §7Aktivoinut: §6" + getActivatorPlayer(booster).getName());
+                        Bukkit.broadcastMessage(" §7Kesto: §c" + booster.getDuration() + "min");
+                        Bukkit.broadcastMessage(" ");
+                        Bukkit.broadcastMessage("§7§m--------------------");
+
+                        Util.broadcastSound(Sound.BLOCK_NOTE_BLOCK_PLING);
+                    }
+                }
+            }
+
+        }, true);
+
+    }
+
+    public static void activate(Booster booster, UUID uuid) {
+
+        Bukkit.broadcastMessage("§7§m--------------------");
+        Bukkit.broadcastMessage(" ");
+        Bukkit.broadcastMessage(" §a§lTEHOSTUS AKTIVOITU §7(" + booster.getDisplayName() + "§7)");
+        Bukkit.broadcastMessage(" ");
+        Bukkit.broadcastMessage(" §7Aktivoinut: §6" + getActivatorPlayer(booster).getName());
+        Bukkit.broadcastMessage(" §7Kesto: §c" + booster.getDuration() + "min");
+        Bukkit.broadcastMessage(" ");
+        Bukkit.broadcastMessage("§7§m--------------------");
+
+        Util.broadcastSound(Sound.BLOCK_NOTE_BLOCK_PLING);
+
+        // Execute if booster has some immediate functionality
+        booster.getCallback().execute();
+
+        long time = System.currentTimeMillis();
+        HashMap<Booster, Long> map = new HashMap<>();
+        map.put(booster, time);
+        Boosters.getActive().put(uuid, map);
+
+    }
+
+    public static OfflinePlayer getActivatorPlayer(Booster booster) {
+        return Bukkit.getOfflinePlayer(getActivator(booster));
+    }
 
     public static UUID getActivator(Booster booster) {
-        for(Map.Entry<UUID, Booster> e : getActive().entrySet()) {
-            if(e.getValue() == booster) {
+        for(Map.Entry<UUID, HashMap<Booster, Long>> e : getActive().entrySet()) {
+            if(e.getValue().containsKey(booster)) {
                 return e.getKey();
             }
         }
@@ -90,7 +155,7 @@ public class Boosters implements Listener {
         return getActive().containsValue(booster);
     }
 
-    public static HashMap<UUID, Booster> getActive() {
+    public static HashMap<UUID, HashMap<Booster, Long>> getActive() {
         return Boosters.active;
     }
 
@@ -103,7 +168,7 @@ public class Boosters implements Listener {
 
         }),
         MORE_ORES(30, "§b§lENEMMÄN MINERAALEJA!",
-                "§7Kun rikot oren, siitä putoaa §a25% §7enemmän mineraalia millä tahansa työkalulla. Tehostus kehtää §6§l30MIN§7!", 30, () -> {
+                "§7Kun rikot oren, siitä putoaa §a2x §7enemmän mineraalia millä tahansa työkalulla. Tehostus kehtää §6§l30MIN§7!", 30, () -> {
 
 
         }),
