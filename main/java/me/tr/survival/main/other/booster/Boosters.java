@@ -6,6 +6,7 @@ import me.tr.survival.main.other.Enchant;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.callback.Callback;
+import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.*;
@@ -48,7 +49,7 @@ public class Boosters implements Listener {
                 lore.add("§7 ");
 
                 if(isActive(booster)) {
-                    lore.add("§7 Aikaa jäljellä: §c30min");
+                    lore.add("§7 Aikaa jäljellä: §c" + getTimeLeft(booster) + "min");
                     lore.add("§7 Aktivoinut: §a" + Bukkit.getOfflinePlayer(getActivator(booster)).getName());
                 } else {
                     lore.add("§7 Hinta: §b" + booster.getCost() + " kristallia");
@@ -72,8 +73,17 @@ public class Boosters implements Listener {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
-                        Boosters.activate(booster, clicker.getUniqueId());
-                        Chat.sendMessage(clicker, "Aktivoit tehostuksen " + booster.getDisplayName() + "§7!");
+                        if(!isActive(booster)) {
+                            if(Crystals.canRemove(clicker.getUniqueId(), booster.getCost())) {
+                                Crystals.add(clicker.getUniqueId(), -booster.getCost());
+                                Boosters.activate(booster, clicker.getUniqueId());
+                                Chat.sendMessage(clicker, "Aktivoit tehostuksen " + booster.getDisplayName() + "§7!");
+                            } else {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tuohon!");
+                            }
+                        } else {
+                            Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Tuo tehostus on jo käynnistetty!");
+                        }
                     }
                 });
 
@@ -113,6 +123,17 @@ public class Boosters implements Listener {
 
         }, true);
 
+    }
+
+    public static long getTimeLeft(Booster booster) {
+        for(Map.Entry<UUID, HashMap<Booster, Long>> e : getActive().entrySet()) {
+            for(Map.Entry<Booster, Long> e1 : e.getValue().entrySet()) {
+                if(booster.getDisplayName().equalsIgnoreCase(booster.getDisplayName())) {
+                    return (System.currentTimeMillis() - e1.getValue()) / 1000 / 60 / 60;
+                }
+            }
+        }
+        return 0L;
     }
 
     public static void activate(Booster booster, UUID uuid) {

@@ -2,10 +2,7 @@ package me.tr.survival.main;
 
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -52,6 +49,22 @@ public class Autio {
         } else {
             Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, 20 * seconds);
         }
+    }
+
+    public static void after(int seconds, Runnable task) {
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), task, 20 * seconds);
+    }
+
+    public static void after(int seconds, Runnable task, boolean async) {
+        if(async) {
+            Autio.after(seconds, task);
+        } else {
+            Autio.afterAsync(seconds, task);
+        }
+    }
+
+    public static void afterAsync(int seconds, Runnable task) {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), task, 20 * seconds);
     }
 
     public static void every(int seconds, Runnable task) {
@@ -120,6 +133,10 @@ public class Autio {
         Autio.updateTag(player);
         Settings.scoreboard(player);
 
+    }
+
+    public static Server getServer() {
+        return Bukkit.getServer();
     }
 
     public static Main getPlugin() {

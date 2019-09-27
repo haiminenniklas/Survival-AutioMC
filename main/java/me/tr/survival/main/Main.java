@@ -51,6 +51,8 @@ public final class Main extends JavaPlugin implements Listener {
     public void onEnable() {
         // Some setupping
 
+        Main.instance = this;
+
         Autio.logColored("§a---------------------------");
         Autio.logColored(" §aEnabling AutioCore....");
 
@@ -59,8 +61,6 @@ public final class Main extends JavaPlugin implements Listener {
         Autio.log(" ");
         Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IF FROM THE config.yml!");
         Autio.log(" ");
-
-        Main.instance = this;
 
         Autio.logColored(" §aSetupping config and database...");
 
