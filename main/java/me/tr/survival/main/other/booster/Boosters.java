@@ -25,7 +25,7 @@ import java.util.*;
 
 public class Boosters implements Listener {
 
-    private static HashMap<UUID, HashMap<Booster, Long>> active = new HashMap<>();
+    private static HashMap<String, HashMap<UUID, Long>> active = new HashMap<>();
 
     public static void panel(Player player) {
 
@@ -38,7 +38,8 @@ public class Boosters implements Listener {
             for(int i = 10; i < size - 10; i++) {
                 Inventory inv = gui.getPages().get(1);
 
-                if(gui.getButton(i) != null || inv.getItem(i) != null) continue;
+                if(gui.getButton(i) != null) continue;
+                if(inv.getItem(i) != null) continue;
 
                 if(i == 18 || i == 27 || i == 36 || i == 45 || i == 17 || i == 26 || i == 35 || i == 44) {
                     continue;
@@ -51,18 +52,21 @@ public class Boosters implements Listener {
                 if(isActive(booster)) {
                     lore.add("§7 Aikaa jäljellä: §c" + getTimeLeft(booster) + "min");
                     lore.add("§7 Aktivoinut: §a" + Bukkit.getOfflinePlayer(getActivator(booster)).getName());
+                    lore.add("§7 ");
                 } else {
                     lore.add("§7 Hinta: §b" + booster.getCost() + " kristallia");
+                    lore.add("§7 ");
                 }
 
-                String[] text = Util.splitStringEvery(booster.getDescription(), 23);
+                String[] text = Util.splitPreservingWords(booster.getDescription(), 23);
                 for(int j = 0; j < text.length; j++) {
-                    lore.add("  §7" + ChatColor.translateAlternateColorCodes('&', text[j]));
+                    lore.add(" §7" + ChatColor.translateAlternateColorCodes('&', text[j]));
                 }
 
+                lore.add("§7 ");
                 lore.add("§7§m--------------------");
                 if(!isActive(booster)) {
-                    lore.add("§a§l KLIKKAA AKTIVOIDAKSESI!");
+                    lore.add("§a§lKLIKKAA AKTIVOIDAKSESI!");
                 }
                 ItemStack item = ItemUtil.makeItem(Material.EMERALD, 1, booster.getDisplayName(), lore);
                 if(isActive(booster)) {
@@ -87,6 +91,10 @@ public class Boosters implements Listener {
                     }
                 });
 
+                System.out.println(getActive());
+
+                break;
+
             }
 
         }
@@ -95,18 +103,29 @@ public class Boosters implements Listener {
 
     }
 
+    public static Booster getBoosterByName(String name) {
+        for(Booster booster : Booster.values()) {
+            if(booster.getDisplayName().equalsIgnoreCase(name)) {
+                return booster;
+            }
+        }
+        return null;
+    }
+
     public static void activateManager() {
 
         Autio.every(60, () -> {
 
-            for(Map.Entry<UUID, HashMap<Booster, Long>> e : getActive().entrySet()) {
-                for(Map.Entry<Booster, Long> e1 : e.getValue().entrySet()) {
+            for(Map.Entry<String, HashMap<UUID, Long>> e : getActive().entrySet()) {
+                for(Map.Entry<String, Long> e1 : e.getValue().entrySet()) {
                     long start = e1.getValue();
-                    Booster booster = e1.getKey();
+                    Booster booster = getBoosterByName(e1.getKey());
                     int time = booster.getDuration();
                     // Check if the booster's time is up
+
+                    if(time < 0) continue;
+
                     if(System.currentTimeMillis() >= start + (time * 60 * 1000)) {
-                        Boosters.getActive().remove(e.getKey(), e.getValue());
                         Bukkit.broadcastMessage("§7§m--------------------");
                         Bukkit.broadcastMessage(" ");
                         Bukkit.broadcastMessage(" §c§lTEHOSTUS LOPPUI §7(" + booster.getDisplayName() + "§7)");
@@ -116,6 +135,7 @@ public class Boosters implements Listener {
                         Bukkit.broadcastMessage(" ");
                         Bukkit.broadcastMessage("§7§m--------------------");
 
+                        Boosters.getActive().remove(e.getKey(), e.getValue());
                         Util.broadcastSound(Sound.BLOCK_NOTE_BLOCK_PLING);
                     }
                 }
@@ -126,9 +146,9 @@ public class Boosters implements Listener {
     }
 
     public static long getTimeLeft(Booster booster) {
-        for(Map.Entry<UUID, HashMap<Booster, Long>> e : getActive().entrySet()) {
-            for(Map.Entry<Booster, Long> e1 : e.getValue().entrySet()) {
-                if(booster.getDisplayName().equalsIgnoreCase(booster.getDisplayName())) {
+        for(Map.Entry<UUID, HashMap<String, Long>> e : getActive().entrySet()) {
+            for(Map.Entry<String, Long> e1 : e.getValue().entrySet()) {
+                if(booster.getDisplayName().equalsIgnoreCase(e1.getKey())) {
                     return (System.currentTimeMillis() - e1.getValue()) / 1000 / 60 / 60;
                 }
             }
@@ -138,12 +158,19 @@ public class Boosters implements Listener {
 
     public static void activate(Booster booster, UUID uuid) {
 
+        long time = System.currentTimeMillis();
+        HashMap<String, Long> map = new HashMap<>();
+        map.put(booster.getDisplayName(), time);
+        Boosters.getActive().put(uuid, map);
+
         Bukkit.broadcastMessage("§7§m--------------------");
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §a§lTEHOSTUS AKTIVOITU §7(" + booster.getDisplayName() + "§7)");
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §7Aktivoinut: §6" + getActivatorPlayer(booster).getName());
-        Bukkit.broadcastMessage(" §7Kesto: §c" + booster.getDuration() + "min");
+        if(booster.getDuration() >= 1) {
+            Bukkit.broadcastMessage(" §7Kesto: §c" + booster.getDuration() + "min");
+        }
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage("§7§m--------------------");
 
@@ -152,10 +179,6 @@ public class Boosters implements Listener {
         // Execute if booster has some immediate functionality
         booster.getCallback().execute();
 
-        long time = System.currentTimeMillis();
-        HashMap<Booster, Long> map = new HashMap<>();
-        map.put(booster, time);
-        Boosters.getActive().put(uuid, map);
 
     }
 
@@ -164,8 +187,8 @@ public class Boosters implements Listener {
     }
 
     public static UUID getActivator(Booster booster) {
-        for(Map.Entry<UUID, HashMap<Booster, Long>> e : getActive().entrySet()) {
-            if(e.getValue().containsKey(booster)) {
+        for(Map.Entry<String, HashMap<UUID, Long>> e : getActive().entrySet()) {
+            if(e.getValue().containsKey(booster.getDisplayName())) {
                 return e.getKey();
             }
         }
@@ -173,10 +196,15 @@ public class Boosters implements Listener {
     }
 
     public static boolean isActive(Booster booster) {
-        return getActive().containsValue(booster);
+        for(Map.Entry<String, HashMap<UUID, Long>> e : getActive().entrySet()) {
+
+            return e.getValue().containsKey(booster.getDisplayName());
+
+        }
+        return false;
     }
 
-    public static HashMap<UUID, HashMap<Booster, Long>> getActive() {
+    public static HashMap<String, HashMap<UUID, Long>> getActive() {
         return Boosters.active;
     }
 
@@ -196,16 +224,25 @@ public class Boosters implements Listener {
         EXTRA_HEARTS(60, "§c§lLISÄSYDÄMET",
                 "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 15, () -> {
 
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                Util.heal(player);
+                player.setHealth(22d);
+            }
+
         }),
         FIX_ITEMS(-1, "§6§lITEMIEN KORJAUS",
                 "§7Tämä korjaa kaikki inventoryssasi olevat itemit.", 150, () -> {
 
             for(Player player : Bukkit.getOnlinePlayers()) {
                 for(ItemStack item : player.getInventory().getContents()) {
-                    Util.fixItem(item);
+                    if(item != null) {
+                        Util.fixItem(item);
+                    }
                 }
                 for(ItemStack armor : player.getInventory().getArmorContents()) {
-                    Util.fixItem(armor);
+                    if(armor != null) {
+                        Util.fixItem(armor);
+                    }
                 }
                 Util.sendNotification(player, "§a§lTEHOSTUS §7Itemisi korjattiin!", true);
             }

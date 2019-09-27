@@ -21,6 +21,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -37,6 +39,7 @@ import java.util.UUID;
 public class Events implements Listener {
 
     public static final HashMap<UUID, Boolean> adminMode = new HashMap<>();
+    public static final HashMap<UUID, Location> lastLocation = new HashMap<>();
 
     @EventHandler
     public void onException(ServerExceptionEvent e) {
@@ -217,6 +220,15 @@ public class Events implements Listener {
     }
 
     @EventHandler
+    public void onDeath(PlayerDeathEvent e) {
+
+        Player player = e.getEntity();
+
+        lastLocation.put(player.getUniqueId(), player.getLocation());
+
+    }
+
+    @EventHandler
     public void onTeleport(PlayerTeleportEvent e) {
 
         Player player = e.getPlayer();
@@ -227,6 +239,15 @@ public class Events implements Listener {
                     Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
         }
 
+        lastLocation.put(player.getUniqueId(), e.getFrom());
+
+    }
+
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent e) {
+        if(Boosters.isActive(Boosters.Booster.NO_HUNGER)) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -236,6 +257,7 @@ public class Events implements Listener {
         if(Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
 
             Block block = player.getTargetBlock(5);
+
             if(block != null && block.getType() != Material.AIR) {
                 if(e.getAction() == Action.LEFT_CLICK_BLOCK) {
                     if(Util.isMineralOre(block)) {
@@ -246,6 +268,19 @@ public class Events implements Listener {
 
         }
 
+    }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent e) {
+
+        Player player = e.getPlayer();
+
+        if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
+            Util.heal(player);
+            player.setHealth(22d);
+        }
+
+        Autio.teleportToSpawn(player);
     }
 
     @EventHandler

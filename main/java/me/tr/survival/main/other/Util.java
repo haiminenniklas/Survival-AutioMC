@@ -21,6 +21,7 @@ import org.bukkit.util.Vector;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Util {
@@ -50,6 +51,10 @@ public class Util {
             return true;
         }
         return false;
+    }
+
+    public static String[] splitPreservingWords(String text, int length) {
+        return text.replaceAll("(?:\\s*)(.{1,"+ length +"})(?:\\s+|\\s*$)", "$1\n").split("\n");
     }
 
     public static void heal(Player player) {

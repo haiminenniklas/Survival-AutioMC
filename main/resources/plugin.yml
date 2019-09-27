@@ -92,3 +92,6 @@ commands:
   tehostus:
     description: Tehostukset
     aliases: [booster, boosters, tehostukset]
+  back:
+    description: Viimeisein sijainti
+    aliases: [takaisin]

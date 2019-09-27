@@ -697,8 +697,17 @@ public final class Main extends JavaPlugin implements Listener {
                         Chat.sendMessage(player, "/autio logging");
                     } else {
                         if(args[0].equalsIgnoreCase("reload")) {
+
+                            Chat.sendMessage(player, Chat.Prefix.DEBUG, "Uudelleenladataan §aconfig.yml§7...");
                             reloadConfig();
-                            Chat.sendMessage(player, "Config uudelleenladattu!");
+                            Chat.sendMessage(player, Chat.Prefix.DEBUG, "§aconfig.yml §7uudelleenladattu!");
+
+                            Chat.sendMessage(player, Chat.Prefix.DEBUG, "§7Ladataan §awarppeja§7...");
+                            Warps.loadWarps((value) -> {
+                                String output = (value) ? "§aWarpit ladattiin!" : "§cWarppeja §7ei ladattu.. Onkohan consolessa erroria?";
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, output);
+                            });
+
                         } else if(args[0].equalsIgnoreCase("logging")) {
                             boolean current = getConfig().getBoolean("other.logging");
                             getConfig().set("other.logging", !current);
@@ -1006,6 +1015,13 @@ public final class Main extends JavaPlugin implements Listener {
 
             } else if(command.getLabel().equalsIgnoreCase("tehostus")) {
                 Boosters.panel(player);
+            } else if(command.getLabel().equalsIgnoreCase("back")) {
+                if(!Events.lastLocation.containsKey(uuid)) {
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei ole mitään mihin viedä.");
+                } else {
+                    Chat.sendMessage(player, "Viedään äskeiseen sijaintiin...");
+                    player.teleport(Events.lastLocation.get(uuid));
+                }
             }
 
         }
