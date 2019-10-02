@@ -9,8 +9,10 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
@@ -22,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Util {
@@ -41,6 +44,46 @@ public class Util {
 
     public static int roundInt(int value){
         return (int) (Math.rint((double) value / 10) * 10);
+    }
+
+    public static boolean isSmeltable(Material material) {
+        Iterator<Recipe> iterator = Bukkit.recipeIterator();
+
+        while(iterator.hasNext()) {
+            Recipe recipe = iterator.next();
+            if (!(recipe instanceof FurnaceRecipe)) continue;
+            if (((FurnaceRecipe) recipe).getInput().getType() != material) continue;
+
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public static ItemStack smelt(ItemStack item) {
+
+        if(isSmeltable(item.getType())) {
+
+            Iterator<Recipe> iterator = Bukkit.recipeIterator();
+
+            while(iterator.hasNext()) {
+                Recipe recipe = iterator.next();
+                if (!(recipe instanceof FurnaceRecipe)) continue;
+                if (((FurnaceRecipe) recipe).getInput().getType() != item.getType()) continue;
+
+                ItemStack result = recipe.getResult();
+                result.setAmount(item.getAmount());
+                if(item.hasItemMeta())
+                    result.setItemMeta(item.getItemMeta());
+
+
+                return result;
+            }
+
+        }
+
+        return null;
     }
 
     public static boolean isMineralOre(Block block) {

@@ -3,6 +3,7 @@ package me.tr.survival.main;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
+import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.data.Homes;
@@ -46,7 +47,7 @@ public class Profile {
             return;
         }
 
-        Gui gui = new Gui("Pelaajan tiedot", 4 * 9);
+        Gui gui = new Gui("Pelaajan tiedot", 5 * 9);
         HashMap<String, Object> data = PlayerData.getData(targetUUID);
 
         gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§6Profiili", Arrays.asList(
@@ -117,7 +118,7 @@ public class Profile {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                Homes.panel(clicker);
+                Homes.panel(clicker, clicker);
             }
         });
 
@@ -130,6 +131,51 @@ public class Profile {
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 Settings.panel(clicker);
+            }
+        });
+
+        // 39 40 41
+
+        gui.addButton(new Button(1, 39, ItemUtil.makeItem(Material.EMERALD, 1, "§aTehostukset", Arrays.asList(
+                "§7§m--------------------",
+                " §7Tästä klikkaamalla pääset",
+                " §atehostuksien §7valikkoon",
+                " §7joilla voit hieman tehostaa",
+                " §7pelin kulkua! ;)",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                Boosters.panel(clicker);
+            }
+        });
+
+        gui.addItem(1, ItemUtil.makeSkullItem("MHF_Question", 1, "§6Apua", Arrays.asList(
+                "§7§m--------------------",
+                " §7Hyödylliset komennot:",
+                "  §6/profiili §7tämä valikko",
+                "  §6/rtp §7vie sinut arämaahan",
+                "  §6/msg §7yksityisviestit",
+                "  §6/tpa §7teleporttauspyyntö",
+                "  §6/warp §7palvelimen warpit",
+                "  §9/discord §7Discord-yhteisö",
+                "  §6/vaihda §7vaihtokauppa",
+                "  §a/osta §7verkkokauppa",
+                "§7§m--------------------"
+        )), 40);
+
+        gui.addButton(new Button(1, 41, ItemUtil.makeItem(Material.PAPER, 1, "§dPosti", Arrays.asList(
+                "§7§m--------------------",
+                " §7Tästä klikkaamalla pääset",
+                " §7katsomaan §dpäivittäisiä",
+                " §dtoimituksiasi§7!",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                Mail.panel(clicker);
             }
         });
 

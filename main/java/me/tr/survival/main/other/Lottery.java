@@ -33,6 +33,8 @@ public class Lottery {
             return null;
         }
 
+        Mail.addTickets(player.getUniqueId(), -1);
+
         for(int i = 0; i < 6; i++) {
             Prize prize = findPrize();
             if(prize != null) {
@@ -72,8 +74,6 @@ public class Lottery {
                 return prize;
             }
         }
-
-        Mail.addTickets(player.getUniqueId(), -1);
 
         player.sendMessage("§7§m--------------------");
         player.sendMessage("  §c§lEi voittoa...");

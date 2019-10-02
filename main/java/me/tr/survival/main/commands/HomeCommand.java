@@ -1,6 +1,10 @@
 package me.tr.survival.main.commands;
 
+import me.tr.survival.main.Chat;
+import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.util.data.Homes;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,7 +16,28 @@ public class HomeCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if(sender instanceof Player) {
-            Homes.panel((Player) sender);
+
+            Player player = (Player) sender;
+
+            if(!player.isOp()) {
+                Homes.panel(player, player);
+            } else {
+                if(args.length >= 1) {
+
+                    OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+
+                    if(!PlayerData.isLoaded(target.getUniqueId())) {
+                        Chat.sendMessage(player, "Pelaajan §6" + target.getName() + " §7koteja ei ole ladattu. Tee §6/debug load "
+                                + target.getName() + " §7ja kokeile uudestaan!");
+                        return true;
+                    } else {
+                        Homes.panel(player, target);
+                    }
+
+                } else {
+                    Homes.panel(player, player);
+                }
+            }
         }
 
         return false;

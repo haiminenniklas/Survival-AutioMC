@@ -14,7 +14,7 @@ commands:
     aliases: [tallenna]
   profile:
     description: Statistiikat
-    aliases: [stats, tilastot, tiedot]
+    aliases: [stats, tilastot, tiedot, profiili]
   home:
     description: Koti
     aliases: [koti, homes, delhome]
@@ -95,3 +95,6 @@ commands:
   back:
     description: Viimeisein sijainti
     aliases: [takaisin]
+  enderchest:
+    description: Avaa enderchest
+    aliases: [ec]

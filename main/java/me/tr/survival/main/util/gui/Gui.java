@@ -55,6 +55,18 @@ public class Gui implements Listener {
         createPage(false);
     }
 
+    public ItemStack getItem(int pos) {
+
+        HashMap<Integer, ItemStack> items = this.items.get(1);
+
+        if(!items.isEmpty() && items.containsKey(pos)) {
+            return items.get(pos);
+        }
+
+        return null;
+
+    }
+
     public int nextEmptySlot() {
         ItemStack[] items = getPages().get(1).getContents();
 

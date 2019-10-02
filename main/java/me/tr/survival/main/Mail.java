@@ -35,6 +35,10 @@ public class Mail {
 
         int multiplier = getMultiplier(player);
 
+        if(timeFromLastMail(player.getUniqueId()) > (1000 * 60 * 60 * 24 * 2)) {
+            Mail.setStreak(player, 1);
+        }
+
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(dailyMat, 1, "§aPäivittäinen", Arrays.asList(
                 "§7§m--------------------",
                 "",

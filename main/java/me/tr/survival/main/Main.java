@@ -27,6 +27,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -472,7 +473,25 @@ public final class Main extends JavaPlugin implements Listener {
 
             } else if(command.getLabel().equalsIgnoreCase("sethome")) {
 
-                Homes.panel(player);
+                if(!player.isOp()) {
+                    Homes.panel(player, player);
+                } else {
+                    if(args.length >= 1) {
+
+                        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+
+                        if(!PlayerData.isLoaded(target.getUniqueId())) {
+                            Chat.sendMessage(player, "Pelaajan §6" + target.getName() + " §7koteja ei ole ladattu. Tee §6/debug load "
+                                    + target.getName() + " §7ja kokeile uudestaan!");
+                            return true;
+                        } else {
+                            Homes.panel(player, target);
+                        }
+
+                    } else {
+                        Homes.panel(player, player);
+                    }
+                }
 
                /* if(!PlayerData.isLoaded(uuid)) {
                     PlayerData.loadNull(uuid, false);
@@ -1014,7 +1033,51 @@ public final class Main extends JavaPlugin implements Listener {
                 }
 
             } else if(command.getLabel().equalsIgnoreCase("tehostus")) {
-                Boosters.panel(player);
+
+                if(!player.isOp()) {
+                    Boosters.panel(player);
+                } else {
+                    if(args.length >= 1) {
+
+                        if(args.length == 1) {
+
+                            if(args[0].equalsIgnoreCase("clearAll")) {
+                                for(Boosters.Booster booster : Boosters.Booster.values()) {
+
+                                    if(Boosters.isActive(booster)) {
+                                        Boosters.deactivate(booster);
+                                    }
+
+                                }
+                                Chat.sendMessage(player, "Kaikki aktiiviset tehostukset lopetettu!");
+                            } else {
+                                Chat.sendMessage(player, "/tehostus clearAll");
+                                Chat.sendMessage(player, "/tehostus clear [tehostus]");
+                            }
+
+                        } else {
+
+                            Boosters.Booster booster = Boosters.getBoosterByName(args[1]);
+
+                            if(booster == null) {
+                                Chat.sendMessage(player, "Tuota tehostussa ei ole olemassa!");
+                                return true;
+                            }
+
+                            if(Boosters.isActive(booster)) {
+                                Boosters.deactivate(booster);
+                                Chat.sendMessage(player, "Tehostus " + booster.getDisplayName() + " §7lopetettu!");
+                            } else {
+                                Chat.sendMessage(player, "Tuo tehostus ei ole aktiivinen..");
+                            }
+
+                        }
+
+                    } else {
+                        Boosters.panel(player);
+                    }
+                }
+
             } else if(command.getLabel().equalsIgnoreCase("back")) {
                 if(!Events.lastLocation.containsKey(uuid)) {
                     Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei ole mitään mihin viedä.");
@@ -1022,9 +1085,20 @@ public final class Main extends JavaPlugin implements Listener {
                     Chat.sendMessage(player, "Viedään äskeiseen sijaintiin...");
                     player.teleport(Events.lastLocation.get(uuid));
                 }
+            } else if(command.getLabel().equalsIgnoreCase("enderchest")) {
+
+                if(!Ranks.isVIP(uuid)) {
+                    Chat.sendMessage(player, "Tähän toimintoon tarvitset vähinään §6§lPremium§7-arvon!");
+                    return true;
+                }
+
+                Inventory ec = player.getEnderChest();
+                player.openInventory(ec);
+
             }
 
         }
+
 
         return true;
     }

@@ -68,7 +68,47 @@ public class Homes {
         data.put(pos, loc.getX() + ";" + loc.getY() + ";" + loc.getZ() + ";" + loc.getWorld().getName());
     }
 
-    public void deleteHome(String pos) {
+    public void deleteHome(Player player, String position) {
+
+        Gui gui = new Gui("Poiston varmistus", 27);
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahivsta", Arrays.asList(
+                "§7§m--------------------",
+                " §7Klikkaa vahvistaaksesi poiston!",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+
+                gui.close(player);
+                deleteHomeReal(position);
+
+                Chat.sendMessage(player, "Koti poistettiin!");
+
+            }
+        });
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                "§7§m--------------------",
+                "§7 Klikkaa peruuttaaksesi poiston!",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+
+                gui.close(clicker);
+                Homes.panel(clicker, clicker);
+                Chat.sendMessage(clicker, "Kodin poisto peruutettiin!");
+
+            }
+        });
+
+
+        gui.open(player);
+
+    }
+
+    public void deleteHomeReal(String pos) {
         HashMap<String, Object> data = PlayerData.getData(this.owner.getUniqueId());
         data.put(pos, "null");
     }
@@ -85,13 +125,13 @@ public class Homes {
 
     }
 
-    public static void panel(Player player) {
+    public static void panel(Player opener, OfflinePlayer target) {
 
-        UUID uuid = player.getUniqueId();
-        Homes homeList = new Homes(player);
+        UUID uuid = target.getUniqueId();
+        Homes homeList = new Homes(target);
         ArrayList<Home> homes = homeList.get();
 
-        if(Ranks.isVIP(uuid) || Ranks.isPartner(uuid) || player.isOp()) {
+        if(Ranks.isVIP(uuid) || Ranks.isPartner(uuid) || target.isOp()) {
             Gui gui = new Gui("Kodit", 27);
             if(homes.get(0) == null) {
                 gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§6Luo koti #1", Arrays.asList(
@@ -114,19 +154,18 @@ public class Homes {
                         " §6" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§6Vasen-klikkaa: §7Teleporttaa kotiisi",
-                        "§6Oikea-klikkaa: §7Aseta koti tähän sijaintiin",
+                        "§6Oikea-klikkaa: §7Poista koti",
                         "§7§m--------------------"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         if(clickType == ClickType.LEFT) {
-                            home.teleport();
+                            home.teleport(clicker);
                             gui.close(clicker);
                             Chat.sendMessage(clicker, "Sinua viedään kotiin §6#1§7...");
                         } else if(clickType == ClickType.RIGHT) {
-                            homeList.deleteHome("first_home");
                             gui.close(clicker);
-                            Chat.sendMessage(clicker, "Poistit kodin §6#1§7!");
+                            homeList.deleteHome(opener, "first_home");
                         }
                     }
                 });
@@ -153,19 +192,18 @@ public class Homes {
                         " §6" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§6Vasen-klikkaa: §7Teleporttaa kotiisi",
-                        "§6Oikea-klikkaa: §7Aseta koti tähän sijaintiin",
+                        "§6Oikea-klikkaa: §7Poista koti",
                         "§7§m--------------------"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         if(clickType == ClickType.LEFT) {
-                            home.teleport();
+                            home.teleport(clicker);
                             gui.close(clicker);
                             clicker.sendMessage("§6§lAutio §7» Sinua viedään kotiin §6#2§7...");
                         } else if(clickType == ClickType.RIGHT) {
-                            homeList.deleteHome("second_home");
                             gui.close(clicker);
-                            Chat.sendMessage(clicker, "Poistit kodin §6#2§7!");
+                            homeList.deleteHome(opener, "second_home");
                         }
                     }
                 });
@@ -179,8 +217,8 @@ public class Homes {
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
-                        homeList.createHome("third_home", clicker.getLocation());
                         gui.close(clicker);
+                        homeList.createHome("third_home", clicker.getLocation());
                         Chat.sendMessage(clicker, "Loit kodin §6#3 §7sijaintiisi!");
                     }
 
@@ -193,19 +231,18 @@ public class Homes {
                         " §6" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§6Vasen-klikkaa: §7Teleporttaa kotiisi",
-                        "§6Oikea-klikkaa: §7Aseta koti tähän sijaintiin",
+                        "§6Oikea-klikkaa: §7Poista koti",
                         "§7§m--------------------"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         if(clickType == ClickType.LEFT) {
-                            home.teleport();
+                            home.teleport(clicker);
                             gui.close(clicker);
                             Chat.sendMessage(clicker, "Sinua viedään kotiin §6#3§7...");
                         } else if(clickType == ClickType.RIGHT) {
-                            homeList.deleteHome("third_home");
                             gui.close(clicker);
-                            Chat.sendMessage(clicker, "Poistit kodin §6#3§7!");
+                            homeList.deleteHome(opener, "third_home");
                         }
                     }
                 });
@@ -215,11 +252,11 @@ public class Homes {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    Profile.openProfile(player, player.getUniqueId());
+                    Profile.openProfile(opener, opener.getUniqueId());
                 }
             });
 
-            gui.open(player);
+            gui.open(opener);
 
         } else {
             Gui gui = new Gui("Kodit", 27);
@@ -246,19 +283,18 @@ public class Homes {
                         " §6" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§6Vasen-klikkaa: §7Teleporttaa kotiisi",
-                        "§6Oikea-klikkaa: §7Aseta koti tähän sijaintiin",
+                        "§6Oikea-klikkaa: §7Poista koti",
                         "§7§m--------------------"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         if(clickType == ClickType.LEFT) {
-                            home.teleport();
+                            home.teleport(clicker);
                             gui.close(clicker);
                             clicker.sendMessage("§6§lAutio §7» Sinua viedään kotiin §6#1§7... ");
                         } else if(clickType == ClickType.RIGHT) {
-                            homeList.deleteHome("first_home");
                             gui.close(clicker);
-                            Chat.sendMessage(clicker, "Postit kodin §6#1§7!");
+                            homeList.deleteHome(opener, "first_home");
                         }
                     }
                 });
@@ -272,11 +308,11 @@ public class Homes {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    Profile.openProfile(player, player.getUniqueId());
+                    Profile.openProfile(opener, opener.getUniqueId());
                 }
             });
 
-            gui.open(player);
+            gui.open(opener);
         }
 
     }

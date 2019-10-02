@@ -43,7 +43,7 @@ chat:
     error: '&6&lVirhe &7»'
     afk: '&6&lAFK &7»'
     debug: '&6&lVirheenkorjaus &7»'
-  format: '%rank% &7%name%: &f%message%'
+  format: '%rank%%name%: &f%message%'
 
 messages:
   join: '&7[&a+&7] %player%'

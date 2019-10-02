@@ -206,7 +206,8 @@ public class PlayerData {
         };
 
         String[] saveQueries = new String[] {
-                "INSERT INTO `players` VALUES('" + uuid + "', '" + data.get("player_name") + "', " + data.get("money") + ", '" + data.get("rank") +  "', '" + data.get("joined") + "');",
+                "INSERT INTO `players` VALUES('" + uuid + "', '" + data.get("player_name") + "', " + data.get("money") + ", '" + data.get("rank") +  "', '" + data.get("joined")
+                        + "', " + data.get("crystals") + ");",
 
                 "INSERT INTO `homes` VALUES('" + uuid +"', '" + data.get("first_home") + "', '" + data.get("second_home") + "', '" + data.get("third_home") + "');",
 

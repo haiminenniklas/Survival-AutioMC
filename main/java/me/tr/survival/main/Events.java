@@ -12,6 +12,7 @@ import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
@@ -21,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
@@ -32,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
@@ -229,14 +232,35 @@ public class Events implements Listener {
     }
 
     @EventHandler
+    public void onEntityDeath(EntityDeathEvent e) {
+
+        if(Boosters.isActive(Boosters.Booster.DOUBLE_XP) && e.getEntity().getKiller() != null) {
+            e.setDroppedExp(e.getDroppedExp() * 2);
+            if(e.getDroppedExp() >= 1) {
+                Util.sendNotification(e.getEntity().getKiller(), "§a§lTEHOSTUS §7Tupla XP!", false);
+            }
+
+        }
+
+    }
+
+    @EventHandler
     public void onTeleport(PlayerTeleportEvent e) {
 
         Player player = e.getPlayer();
         FileConfiguration config = Main.getInstance().getConfig();
 
         if(config.getBoolean("effects.teleport.enabled")) {
+
+            if(e.getCause() == PlayerTeleportEvent.TeleportCause.UNKNOWN) return;
+            if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) return;
+
             player.getWorld().playSound(e.getFrom(),
                     Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
+        }
+
+        if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
         }
 
         lastLocation.put(player.getUniqueId(), e.getFrom());
@@ -251,33 +275,16 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractEvent e) {
-
-        Player player = e.getPlayer();
-        if(Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
-
-            Block block = player.getTargetBlock(5);
-
-            if(block != null && block.getType() != Material.AIR) {
-                if(e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                    if(Util.isMineralOre(block)) {
-                        block.breakNaturally();
-                    }
-                }
-            }
-
-        }
-
-    }
-
-    @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
 
         Player player = e.getPlayer();
 
         if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
             Util.heal(player);
-            player.setHealth(22d);
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24d);
+            player.setHealth(24d);
+        } else {
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
         }
 
         Autio.teleportToSpawn(player);
@@ -289,14 +296,42 @@ public class Events implements Listener {
         Player player = e.getPlayer();
         Block block = e.getBlock();
         UUID uuid = player.getUniqueId();
+        Material mat = block.getType();
 
         PlayerData.add(player.getUniqueId(), "total", 1);
 
         if(Boosters.isActive(Boosters.Booster.MORE_ORES)) {
 
-            // Add one of every drop (2x)
-            for(ItemStack item : block.getDrops()) {
-                block.getDrops().add(item.clone());
+            Collection<ItemStack> drops = block.getDrops();
+
+            if(mat == Material.EMERALD_ORE || mat == Material.DIAMOND_ORE || mat == Material.LAPIS_ORE) {
+                // Add one of every drop (2x)
+                for(ItemStack item : drops) {
+                    e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation(), item.clone());
+                }
+                Util.sendNotification(player, "§a§lTEHOSTUS §72x oret!");
+            }
+
+
+        }
+
+        if(Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
+
+            if(mat == Material.IRON_ORE || mat == Material.GOLD_ORE) {
+
+                block.setType(Material.AIR);
+
+                ItemStack item;
+
+                if(mat == Material.IRON_ORE) {
+                    item = new ItemStack(Material.IRON_INGOT);
+                } else {
+                    item = new ItemStack(Material.GOLD_INGOT);
+                }
+
+                Util.sendNotification(player, "§a§lTEHOSTUS §7Välittömät oret!");
+                e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation(), item.clone());
+
             }
 
         }
@@ -307,23 +342,25 @@ public class Events implements Listener {
 
         Chances:
 
-        Emerald: 10% (0.1)
-        Diamond: 7% (0.07)
+        Emerald: 50% (0.5)
+        Diamond: 25% (0.25)
         Gold: 3% (0.03)
         Iron: 2% (0.02)
         Coal 0.5% (0.005)
+        Redstone: 7% (0.07)
+        Lapis 5% (0.05)
 
          */
 
         if(block.getType() == Material.DIAMOND_ORE) {
             PlayerData.add(uuid, "diamond", 1);
-            if(random <= 0.07) {
+            if(random <= 0.25) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
                 Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
-        } else if(block.getType() == Material.GOLD_ORE) {
+        } else if(block.getType() == Material.GOLD_ORE && Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
             PlayerData.add(uuid, "gold", 1);
             if(random <= 0.03) {
                 int add = new Random().nextInt(5) + 1;
@@ -331,7 +368,7 @@ public class Events implements Listener {
                 Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
-        } else if(block.getType() == Material.IRON_ORE) {
+        } else if(block.getType() == Material.IRON_ORE && Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
             PlayerData.add(uuid, "iron", 1);
             if(random <= 0.02) {
                 int add = new Random().nextInt(5) + 1;
@@ -348,7 +385,21 @@ public class Events implements Listener {
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.EMERALD_ORE) {
-            if(random <= 0.10) {
+            if(random <= 0.5) {
+                int add = new Random().nextInt(5) + 1;
+                Crystals.add(uuid, add);
+                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+            }
+        } else if(block.getType() == Material.LAPIS_ORE) {
+            if(random <= 0.05) {
+                int add = new Random().nextInt(5) + 1;
+                Crystals.add(uuid, add);
+                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+            }
+        } else if(block.getType() == Material.REDSTONE_ORE) {
+            if(random <= 0.07) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
                 Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
