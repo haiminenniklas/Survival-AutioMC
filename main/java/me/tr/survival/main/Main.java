@@ -2,6 +2,7 @@ package me.tr.survival.main;
 
 import me.tr.survival.main.commands.HomeCommand;
 import me.tr.survival.main.commands.RankCommand;
+import me.tr.survival.main.commands.TpaCommand;
 import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
@@ -90,6 +91,7 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(this, this);
         pm.registerEvents(new Events(), this);
         pm.registerEvents(new EnderpearlCooldown(), this);
+        pm.registerEvents(new TpaCommand(), this);
 
         // Commands
 
@@ -97,6 +99,10 @@ public final class Main extends JavaPlugin implements Listener {
 
         getCommand("home").setExecutor(new HomeCommand());
         getCommand("rank").setExecutor(new RankCommand());
+
+        getCommand("tpa").setExecutor(new TpaCommand());
+        getCommand("tpaccept").setExecutor(new TpaCommand());
+        getCommand("tpahere").setExecutor(new TpaCommand());
 
         // Autosave code...
 
@@ -399,6 +405,10 @@ public final class Main extends JavaPlugin implements Listener {
                             player.setGameMode(GameMode.CREATIVE);
                             Chat.sendMessage(player, "Pelimuoto Creative");
 
+                        } else if(args[0].equalsIgnoreCase("spectator") || args[0].equalsIgnoreCase("3")
+                                || args[0].equalsIgnoreCase("sp")) {
+                            player.setGameMode(GameMode.SPECTATOR);
+                            Chat.sendMessage(player, "Pelimuoto Spectator");
                         }
 
                     }

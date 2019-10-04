@@ -98,3 +98,10 @@ commands:
   enderchest:
     description: Avaa enderchest
     aliases: [ec]
+  tpa:
+    description: Tpa-pyynto
+  tpaccept:
+    description: Vahvista tpa-pyyntp
+    aliases: [tpyes]
+  tpahere:
+    description: Tpa-pyynto sinun luoksesi

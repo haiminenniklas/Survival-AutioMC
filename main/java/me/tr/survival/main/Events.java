@@ -156,7 +156,8 @@ public class Events implements Listener {
             }
         }
 
-        e.setFormat(Chat.getFormat(player, e.getMessage()));
+      //e.setFormat(Chat.getFormat(player, e.getMessage()));
+        e.setFormat(Ranks.getRankColor(Ranks.getRank(player.getUniqueId())) + player.getName() + "§7: §f" + e.getMessage());
 
         if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {
             e.setCancelled(true);
