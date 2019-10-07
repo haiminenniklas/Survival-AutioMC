@@ -54,13 +54,13 @@ public class TeleportRequest {
         if(this.getType() == TeleportManager.Teleport.FORCE) {
             accept();
         } else {
-            TextComponent accept =  new TextComponent(TextComponent.fromLegacyText("§a§lHYVÄKSY"));
+            TextComponent accept =  new TextComponent(TextComponent.fromLegacyText("  §a§lHYVÄKSY"));
             accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7Klikkaa hyväksyäksesi §o(§a/tpaccept§7§o)").create()));
-            accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "tpaccept " + one.getName()));
+            accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + one.getName()));
 
             TextComponent deny =  new TextComponent(TextComponent.fromLegacyText("§c§lKIELLÄ"));
             deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7Klikkaa kieltääksesi §o(§c/tpdeny§7§o)").create()));
-            deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "tpdeny " + one.getName()));
+            deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny " + one.getName()));
 
             accept.addExtra("  ");
             accept.addExtra(deny);
@@ -68,9 +68,9 @@ public class TeleportRequest {
             two.sendMessage("§7§m--------------------------");
             two.sendMessage(" §7Pelaaja §6" + one.getName() + " §7pyytää");
             if(here) {
-                two.sendMessage(" §7lupaa teleportata luoksesi!");
+                two.sendMessage(" §7pyytää sinua hänen luokseen!");
             } else {
-                two.sendMessage(" §7sinua hänen luokseen!");
+                two.sendMessage(" §7lupaa teleportata luoksesi!");
             }
             two.sendMessage(" ");
             two.spigot().sendMessage(accept);
