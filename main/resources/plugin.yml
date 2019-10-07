@@ -113,3 +113,6 @@ commands:
   tpdeny:
     description: Kiella tpa-pyynto
     aliases: [tpno]
+  weather:
+    description: Sää
+    aliases: [sää]

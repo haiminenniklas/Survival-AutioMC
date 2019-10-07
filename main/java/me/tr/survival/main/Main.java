@@ -17,6 +17,8 @@ import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.data.Homes;
 import me.tr.survival.main.util.data.Level;
+import me.tr.survival.main.util.gui.Button;
+import me.tr.survival.main.util.gui.Gui;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -28,6 +30,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
@@ -1119,6 +1122,25 @@ public final class Main extends JavaPlugin implements Listener {
                 Inventory ec = player.getEnderChest();
                 player.openInventory(ec);
 
+            } else if(command.getLabel().equalsIgnoreCase("weather")) {
+                if(Ranks.isStaff(uuid)) {
+
+                    Gui gui = new Gui("Säätila", 27);
+
+                    gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§a§lSelkeä")) {
+                        @Override
+                        public void onClick(Player clicker, ClickType clickType) {
+                            gui.close(player);
+                            player.getWorld().setThunderDuration(0);
+                            player.getWorld().setThundering(false);
+                            player.getWorld().setStorm(false);
+                            player.getWorld().setWeatherDuration(0);
+                        }
+                    });
+
+                    gui.open(player);
+
+                }
             }
 
         }
