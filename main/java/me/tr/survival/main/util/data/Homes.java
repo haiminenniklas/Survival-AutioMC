@@ -63,6 +63,15 @@ public class Homes {
         return this.homes;
     }
 
+    public int getHomesAmount() {
+        int amount = 0;
+        for(Home home : get()) {
+            if(home == null) continue;
+            amount += 1;
+        }
+        return amount;
+    }
+
     public void createHome(String pos, Location loc) {
         HashMap<String, Object> data = PlayerData.getData(this.owner.getUniqueId());
         data.put(pos, loc.getX() + ";" + loc.getY() + ";" + loc.getZ() + ";" + loc.getWorld().getName());

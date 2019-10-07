@@ -156,7 +156,6 @@ public class PlayerData {
 
             } else {
                 loadNull(uuid, true);
-                return true;
             }
 
 

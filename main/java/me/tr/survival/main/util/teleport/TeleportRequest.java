@@ -49,6 +49,12 @@ public class TeleportRequest {
             return;
         }
 
+        // If player tries to request from himself
+        if(this.one.getUniqueId().equals(this.two.getUniqueId())) {
+            Chat.sendMessage(this.one, Chat.Prefix.ERROR, "Et voi lähettää §eTeleport§7-pyyntöä itsellesi!");
+            return;
+        }
+
         TeleportManager.getActiveRequests().put(one.getUniqueId(), this);
 
         if(this.getType() == TeleportManager.Teleport.FORCE) {

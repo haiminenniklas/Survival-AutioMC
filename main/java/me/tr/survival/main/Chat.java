@@ -26,6 +26,7 @@ public class Chat {
 
     }
 
+    @Deprecated
     public static String getFormat(Player player, String message) {
 
         String format = ChatColor.translateAlternateColorCodes('&', Autio.getConfig().getString("chat.format"));

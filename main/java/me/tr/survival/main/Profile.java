@@ -36,6 +36,7 @@ public class Profile {
             Autio.async(() -> {
 
                 if(!PlayerData.loadPlayer(targetUUID)) {
+
                     Gui gui = new Gui("Ei löydetty", 27);
                     gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§c§lEI LÖYDETTY", Arrays.asList(
                             "§7§m--------------------",
@@ -48,9 +49,13 @@ public class Profile {
                             "§7 Omat tiedot saat §6/tiedot§7!",
                             "§7§m--------------------"
                     )), 13);
-                    gui.open(opener);
+                    Autio.task(() -> {
+                        gui.open(opener);
+                    });
                 } else {
-                    openProfile(opener, targetUUID);
+                    Autio.task(() -> {
+                        openProfile(opener, targetUUID);
+                    });
                 }
 
 
@@ -67,7 +72,7 @@ public class Profile {
                 "§7Nimi: §6" + target.getName(),
                 " ",
                 "§7Arvo: §6" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
-                "§7Kristallit: §n" + Crystals.get(targetUUID),
+                "§7Kristallit: §b" + Crystals.get(targetUUID),
                 " ",
                 "§7Liittynyt: §6" + data.get("joined"),
                 "§7§m--------------------"
@@ -122,7 +127,7 @@ public class Profile {
 
         gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§6Kodit", Arrays.asList(
                 "§7§m--------------------",
-                "§7Kodit: §e" + new Homes(target).get().size(),
+                "§7Kodit: §e" + new Homes(target).getHomesAmount(),
                 " ",
                 "§6Klikkaa näkeäksesi kotisi!",
                 "§7§m--------------------"
@@ -148,7 +153,7 @@ public class Profile {
 
         // 39 40 41
 
-        gui.addButton(new Button(1, 39, ItemUtil.makeItem(Material.EMERALD, 1, "§aTehostukset", Arrays.asList(
+        gui.addButton(new Button(1, 38, ItemUtil.makeItem(Material.EMERALD, 1, "§aTehostukset", Arrays.asList(
                 "§7§m--------------------",
                 " §7Tästä klikkaamalla pääset",
                 " §atehostuksien §7valikkoon",
@@ -175,7 +180,7 @@ public class Profile {
                 "  §6/vaihda §7vaihtokauppa",
                 "  §a/osta §7verkkokauppa",
                 "§7§m--------------------"
-        )), 40);
+        )), 39);
 
         gui.addButton(new Button(1, 41, ItemUtil.makeItem(Material.PAPER, 1, "§dPosti", Arrays.asList(
                 "§7§m--------------------",
@@ -188,6 +193,26 @@ public class Profile {
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 Mail.panel(clicker);
+            }
+        });
+
+        gui.addButton(new Button(1, 42, ItemUtil.makeItem(Material.NETHER_STAR, 1, "§bPartikkelit", Arrays.asList(
+                "§7§m--------------------",
+                " §7Tästä klikkaamalla pääset",
+                " §7katsomaan §bpartikkeliefektejä",
+                " §7jotka ovat sinulle avoinna!",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+
+                if(!Ranks.isVIP(clicker.getUniqueId())) {
+                    Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §6§lPremium§7-arvo tähän toimintoon!");
+                } else {
+                    Chat.sendMessage(clicker, "Tulossa myöhemmin! Stay tuned ;)");
+                }
+
             }
         });
 

@@ -1063,9 +1063,20 @@ public final class Main extends JavaPlugin implements Listener {
 
                                 }
                                 Chat.sendMessage(player, "Kaikki aktiiviset tehostukset lopetettu!");
+                            } else if(args[0].equalsIgnoreCase("clearCooldown")) {
+
+                                for(Boosters.Booster booster : Boosters.Booster.values()) {
+                                    if(Boosters.isInCooldown(booster)) {
+                                        Boosters.getInCooldown().remove(booster.getDisplayName());
+                                    }
+                                }
+
+                                Chat.sendMessage(player, "Kaikkien tehostuksien jäähy tyhjennetty!");
+
                             } else {
                                 Chat.sendMessage(player, "/tehostus clearAll");
                                 Chat.sendMessage(player, "/tehostus clear [tehostus]");
+                                Chat.sendMessage(player, "/tehostus clearCooldown");
                             }
 
                         } else {

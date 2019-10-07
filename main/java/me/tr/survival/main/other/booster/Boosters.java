@@ -27,6 +27,7 @@ import java.util.*;
 public class Boosters implements Listener {
 
     private static HashMap<String, HashMap<UUID, Long>> active = new HashMap<>();
+    private static Map<String, Long> cooldown = new HashMap<>();
 
     public static void panel(Player player) {
 
@@ -69,6 +70,18 @@ public class Boosters implements Listener {
                 } else {
                     lore.add("§7 Hinta: §b" + booster.getCost() + " kristallia");
                     lore.add("§7 ");
+
+                    if(isInCooldown(booster)) {
+
+                        if(getTimeForNextUsage(booster) >= 1) {
+                            lore.add(" §c§lJÄÄHYLLÄ §7(§c" + getTimeForNextUsage(booster) + "min §7jäljellä)");
+                            lore.add("§7 ");
+                        } else {
+                            getActive().remove(booster.getDisplayName());
+                        }
+
+                    }
+
                 }
 
                 String[] text = Util.splitPreservingWords(booster.getDescription(), 30);
@@ -92,6 +105,12 @@ public class Boosters implements Listener {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
+
+                        if(isInCooldown(booster)) {
+                            Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Tuo tehostus on jäähyllä. Odota vielä §c" + getTimeForNextUsage(booster) + "min§7!");
+                            return;
+                        }
+
                         if(!isActive(booster)) {
                             if(Crystals.canRemove(clicker.getUniqueId(), booster.getCost())) {
                                 Crystals.add(clicker.getUniqueId(), -booster.getCost());
@@ -152,6 +171,30 @@ public class Boosters implements Listener {
             }
         }
         return null;
+    }
+
+    public static Map<String, Long> getInCooldown() {
+        return Boosters.cooldown;
+    }
+
+    public static boolean isInCooldown(Booster booster) {
+        return getInCooldown().containsKey(booster.getDisplayName());
+    }
+
+    public static long getTimeForNextUsage(Booster booster) {
+        if(!isInCooldown(booster)) return 0;
+
+        long putInCooldown = getInCooldown().get(booster.getDisplayName());
+        long shouldExpire = putInCooldown + (60 * 1000 * 60 * 60);
+
+        long timeLeft = shouldExpire - System.currentTimeMillis();
+
+        if(timeLeft <= 0) {
+            return 0;
+        }
+
+        return timeLeft / 1000 / 60 / 60;
+
     }
 
     public static void activateManager() {
@@ -240,6 +283,8 @@ public class Boosters implements Listener {
         if(booster.getDuration() < 1) {
             Boosters.getActive().remove(booster.getDisplayName());
         }
+
+        getInCooldown().put(booster.getDisplayName(), System.currentTimeMillis());
 
 
     }
