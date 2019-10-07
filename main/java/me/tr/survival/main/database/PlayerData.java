@@ -60,7 +60,7 @@ public class PlayerData {
 
     }
 
-    public static void loadPlayer(UUID uuid){
+    public static boolean loadPlayer(UUID uuid){
 
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         HashMap<String, Object> data = new HashMap<>();
@@ -152,9 +152,11 @@ public class PlayerData {
                 player_data.put(uuid, data);
 
                 Autio.log("Loaded player " + uuid + " (" + player.getName() + ") from Database");
+                return true;
 
             } else {
                 loadNull(uuid, true);
+                return true;
             }
 
 
@@ -162,6 +164,8 @@ public class PlayerData {
             ex.printStackTrace();
             loadNull(uuid, false);
         }
+
+        return false;
 
     }
 

@@ -103,6 +103,9 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("tpa").setExecutor(new TpaCommand());
         getCommand("tpaccept").setExecutor(new TpaCommand());
         getCommand("tpahere").setExecutor(new TpaCommand());
+        getCommand("tp").setExecutor(new TpaCommand());
+        getCommand("tphere").setExecutor(new TpaCommand());
+        getCommand("tpdeny").setExecutor(new TpaCommand());
 
         // Autosave code...
 

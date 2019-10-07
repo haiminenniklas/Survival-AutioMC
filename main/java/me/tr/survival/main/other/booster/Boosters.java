@@ -309,7 +309,11 @@ public class Boosters implements Listener {
         DOUBLE_XP(45, "§eKokemuspisteiden kapina",
                 "§7Tällä tehostuksella saat jokaisesta tappamastasi mobista §a2x §7enemmän §eXP:§7tä! Tehostus kestää §6§l45MIN§7!", 80, () -> {
 
-        }, Material.EXPERIENCE_BOTTLE);
+        }, Material.EXPERIENCE_BOTTLE),
+
+            // Efekti-idea -> pystyy "hengittämään" veden alla
+
+        ;
 
         // Duration in minutes
         int duration;

@@ -31,19 +31,31 @@ public class Profile {
 
         if(!PlayerData.isLoaded(targetUUID)) {
 
-            Gui gui = new Gui("Ei löydetty", 27);
-            gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§c§lEI LÖYDETTY", Arrays.asList(
-                    "§7§m--------------------",
-                    " §7Pelaajan §6" + target.getName() + " §7tietoja",
-                    " §7ei löydetty. Ehkei hän ole ikinä",
-                    " §7liittynyt, tai hänen tietojaan ei",
-                    " §7olla vielä ladattu. Yritä myöhemmin",
-                    " §7uudestaan!",
-                    "",
-                    "§7 Omat tiedot saat §6/tiedot§7!",
-                    "§7§m--------------------"
-            )), 13);
-            gui.open(opener);
+            Chat.sendMessage(opener, "Etsitään pelaajan §6" + target.getName() + " §7tietoja...");
+
+            Autio.async(() -> {
+
+                if(!PlayerData.loadPlayer(targetUUID)) {
+                    Gui gui = new Gui("Ei löydetty", 27);
+                    gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§c§lEI LÖYDETTY", Arrays.asList(
+                            "§7§m--------------------",
+                            " §7Pelaajan §6" + target.getName() + " §7tietoja",
+                            " §7ei löydetty. Ehkei hän ole ikinä",
+                            " §7liittynyt, tai hänen tietojaan ei",
+                            " §7olla vielä ladattu. Yritä myöhemmin",
+                            " §7uudestaan!",
+                            "",
+                            "§7 Omat tiedot saat §6/tiedot§7!",
+                            "§7§m--------------------"
+                    )), 13);
+                    gui.open(opener);
+                } else {
+                    openProfile(opener, targetUUID);
+                }
+
+
+            });
+
             return;
         }
 
@@ -55,7 +67,7 @@ public class Profile {
                 "§7Nimi: §6" + target.getName(),
                 " ",
                 "§7Arvo: §6" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
-                "§7Kristallit: §6" + Crystals.get(targetUUID),
+                "§7Kristallit: §n" + Crystals.get(targetUUID),
                 " ",
                 "§7Liittynyt: §6" + data.get("joined"),
                 "§7§m--------------------"

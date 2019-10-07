@@ -101,7 +101,15 @@ commands:
   tpa:
     description: Tpa-pyynto
   tpaccept:
-    description: Vahvista tpa-pyyntp
+    description: Vahvista tpa-pyynto
     aliases: [tpyes]
   tpahere:
     description: Tpa-pyynto sinun luoksesi
+  tp:
+    description: Teleporttaa pelaajaan
+    aliases: [teleport]
+  tphere:
+    description: Teleporttaa pelaaja luoksesi
+  tpdeny:
+    description: Kiella tpa-pyynto
+    aliases: [tpno]
