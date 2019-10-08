@@ -126,15 +126,20 @@ public class TeleportRequest {
             Chat.sendMessage(two, Chat.Prefix.ERROR, "Teleporttauspyyntö pelaajalta §6" + one.getName() + " §7on jo umpeutunut!");
         } else {
 
-            if(!this.here) {
-                Chat.sendMessage(two, "Hyväksyit Teleport-pyynnön pelaajalta §6" + one.getName() + "§7!");
-                Chat.sendMessage(one, "Pelaaja §6" + two.getName() + " §7hyväksyi Teleport-pyyntösi! Teleportataan §e3 sekunnin §7kuluttua!");
+            if(this.getType() == TeleportManager.Teleport.FORCE) {
+                this.teleport();
             } else {
-                Chat.sendMessage(two, "Hyväksyit Teleport-pyynnön pelaajalta §6" + one.getName() + "§7! Teleportataan §e3 sekunnin §7kuluttua!");
-                Chat.sendMessage(one, "Pelaaja §6" + two.getName() + " §7hyväksyi Teleport-pyyntösi!");
-            }
 
-            Autio.after(3, () -> this.teleport() );
+                if(!this.here) {
+                    Chat.sendMessage(two, "Hyväksyit Teleport-pyynnön pelaajalta §6" + one.getName() + "§7!");
+                    Chat.sendMessage(one, "Pelaaja §6" + two.getName() + " §7hyväksyi Teleport-pyyntösi! Teleportataan §e3 sekunnin §7kuluttua!");
+                } else {
+                    Chat.sendMessage(two, "Hyväksyit Teleport-pyynnön pelaajalta §6" + one.getName() + "§7! Teleportataan §e3 sekunnin §7kuluttua!");
+                    Chat.sendMessage(one, "Pelaaja §6" + two.getName() + " §7hyväksyi Teleport-pyyntösi!");
+                }
+
+                Autio.after(3, () -> this.teleport() );
+            }
 
         }
 

@@ -23,17 +23,34 @@ import org.bukkit.util.Vector;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Util {
+
+    public static HashMap<UUID, Long> joined = new HashMap<>();
+
+    public static long getWhenLogged(UUID player) {
+        if (joined.containsKey(player)) {
+            return joined.get(player);
+        }
+        return 0L;
+    }
 
     public static void fixItem(ItemStack item) {
         if(!item.hasItemMeta()) return;
         ItemMeta meta = item.getItemMeta();
         ((Damageable)meta).setDamage(0);
         item.setItemMeta(meta);
+    }
+
+    public static void broadcastStaff(String message) {
+
+        for(Player online : Bukkit.getOnlinePlayers()) {
+            if(Ranks.isStaff(online.getUniqueId())) {
+                online.sendMessage(message);
+            }
+        }
+
     }
 
     public static String getToday() {
@@ -94,6 +111,29 @@ public class Util {
             return true;
         }
         return false;
+    }
+
+    public static String getOreDisplayName(Material mat) {
+
+        switch(mat) {
+            case DIAMOND_ORE:
+                return "§b§lTimantti";
+            case EMERALD_ORE:
+                return "§a§lEmerald";
+            case GOLD_ORE:
+                return "§6§lKulta";
+            case IRON_ORE:
+                return "§f§lRauta";
+            case COAL_ORE:
+                return "§8§lHiili";
+            case LAPIS_ORE:
+                return "§9§lLapis";
+            case REDSTONE_ORE:
+                return "§4§lRedstone";
+            default:
+                return "§7Muu";
+        }
+
     }
 
     public static String[] splitPreservingWords(String text, int length) {

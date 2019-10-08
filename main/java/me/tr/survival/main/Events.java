@@ -91,7 +91,7 @@ public class Events implements Listener {
         player.sendMessage("§6http://autiomc.eu");
         player.sendMessage("§7§m--------------------------");
 
-        if(Ranks.isVIP(player.getUniqueId()) || Ranks.isStaff(player.getUniqueId())) {
+        if(Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) {
             e.setJoinMessage(
                     ChatColor.translateAlternateColorCodes('&',
                             Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
@@ -102,6 +102,8 @@ public class Events implements Listener {
         if(!player.hasPlayedBefore()) {
             Autio.teleportToSpawn(e.getPlayer());
         }
+
+        Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
 
         // DISABLED FOR NOW
         /*player.setPlayerListHeaderFooter(

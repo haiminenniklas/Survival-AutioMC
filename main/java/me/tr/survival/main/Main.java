@@ -19,6 +19,7 @@ import me.tr.survival.main.util.data.Homes;
 import me.tr.survival.main.util.data.Level;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import me.tr.survival.main.util.staff.StaffManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -96,6 +97,7 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(new Events(), this);
         pm.registerEvents(new EnderpearlCooldown(), this);
         pm.registerEvents(new Chat(), this);
+        pm.registerEvents(new StaffManager(), this);
 
         // Commands
 
