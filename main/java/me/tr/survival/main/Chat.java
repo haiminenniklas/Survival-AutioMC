@@ -1,16 +1,34 @@
 package me.tr.survival.main;
 
 import me.tr.survival.main.other.Ranks;
+import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.gui.Button;
+import me.tr.survival.main.util.gui.Gui;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.UUID;
 
-public class Chat {
+public class Chat implements Listener {
+
+    private static HashMap<String, Object> settings = new HashMap<>();
+
+    public static void init() {
+        Chat.settings.put("mute", false);
+        Chat.settings.put("slow", false);
+    }
 
     public static String getPrefix() {
         return Prefix.DEFAULT.text;
@@ -53,5 +71,77 @@ public class Chat {
             this.text = text;
         }
     }
+
+    public static void panel(Player opener) {
+
+        Gui gui = new Gui("Chat-asetukset", 27);
+
+        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§b§lTyhjennä Chat", Arrays.asList(
+                "§7§m--------------------",
+                " §7Klikkaa tyhjentääksesi chatin!",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close();
+            }
+        });
+
+        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.OAK_SIGN, 1, "§b§lHidasta Chattia", Arrays.asList(
+                "§7§m--------------------",
+                " §7Hidastaaksesi chattia.",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close();
+            }
+        });
+
+        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.BARRIER, 1, "§b§lHiljennä Chat", Arrays.asList(
+                "§7§m--------------------",
+                " §7Klikkaa tyhjentääksesi chatin!",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close();
+            }
+        });
+
+        gui.open(opener);
+
+    }
+
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent e) {
+
+        Player player = e.getPlayer();
+        UUID uuid = player.getUniqueId();
+
+        if(!Settings.get(player.getUniqueId(), "chat")) {
+            Chat.sendMessage(player, "Sinulla on chat poissa päältä!");
+        }
+
+        for(Player r : e.getRecipients()) {
+            if(!Settings.get(r.getUniqueId(), "chat") && !r.getName().equalsIgnoreCase(player.getName())) {
+                e.getRecipients().remove(r);
+            }
+        }
+
+        //e.setFormat(Chat.getFormat(player, e.getMessage()));
+        e.setFormat(Ranks.getRankColor(Ranks.getRank(player.getUniqueId())) + player.getName() + "§7: §f%2$s");
+
+        if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {
+            e.setCancelled(true);
+            for(Player online : Bukkit.getOnlinePlayers()) {
+                if(Ranks.isStaff(online.getUniqueId())) {
+                    online.sendMessage("§7§l(§6§lYLLÄPITO§7§l) §6" + player.getName() + " §7» §f" + e.getMessage().substring(1));
+                }
+            }
+        }
+
+    }
+
 
 }

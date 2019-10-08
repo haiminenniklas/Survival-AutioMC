@@ -87,14 +87,15 @@ public final class Main extends JavaPlugin implements Listener {
             }
         } */
 
-        Autio.logColored(" §aRegistering plugin events...");
+        Autio.logColored(" §aRegistering plugin event listeners...");
 
         // Events
         PluginManager pm = getServer().getPluginManager();
+
         pm.registerEvents(this, this);
         pm.registerEvents(new Events(), this);
         pm.registerEvents(new EnderpearlCooldown(), this);
-        pm.registerEvents(new TpaCommand(), this);
+        pm.registerEvents(new Chat(), this);
 
         // Commands
 
@@ -1132,9 +1133,29 @@ public final class Main extends JavaPlugin implements Listener {
                         public void onClick(Player clicker, ClickType clickType) {
                             gui.close(player);
                             player.getWorld().setThunderDuration(0);
+                            player.getWorld().setWeatherDuration(0);
                             player.getWorld().setThundering(false);
                             player.getWorld().setStorm(false);
-                            player.getWorld().setWeatherDuration(0);
+                            Chat.sendMessage(clicker, "Sää vaihdettu selkeäksi!");
+                        }
+                    });
+
+                    gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§9§lSateinen")) {
+                        @Override
+                        public void onClick(Player clicker, ClickType clickType) {
+                            gui.close(player);
+                            player.getWorld().setStorm(true);
+                            Chat.sendMessage(clicker, "Sää vaihdettu sateiseksi!");
+                        }
+                    });
+
+                    gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.PAPER, 1, "§b§lMyrsykyinen")) {
+                        @Override
+                        public void onClick(Player clicker, ClickType clickType) {
+                            gui.close(player);
+                            player.getWorld().setThundering(true);
+                            player.getWorld().setStorm(true);
+                            Chat.sendMessage(clicker, "Sää vaihdettu myrskyiseksi!");
                         }
                     });
 

@@ -141,36 +141,6 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void onChat(AsyncPlayerChatEvent e) {
-
-        Player player = e.getPlayer();
-        UUID uuid = player.getUniqueId();
-
-        if(!Settings.get(player.getUniqueId(), "chat")) {
-            Chat.sendMessage(player, "Sinulla on chat poissa päältä!");
-        }
-
-        for(Player r : e.getRecipients()) {
-            if(!Settings.get(r.getUniqueId(), "chat") && !r.getName().equalsIgnoreCase(player.getName())) {
-                e.getRecipients().remove(r);
-            }
-        }
-
-      //e.setFormat(Chat.getFormat(player, e.getMessage()));
-        e.setFormat(Ranks.getRankColor(Ranks.getRank(player.getUniqueId())) + player.getName() + "§7: §f%2$s");
-
-        if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {
-            e.setCancelled(true);
-            for(Player online : Bukkit.getOnlinePlayers()) {
-                if(Ranks.isStaff(online.getUniqueId())) {
-                    online.sendMessage("§7§l(§6§lYLLÄPITO§7§l) §6" + player.getName() + " §7» §f" + e.getMessage().substring(1));
-                }
-            }
-        }
-
-    }
-
-    @EventHandler
     public void onMove(PlayerMoveEvent e) {
 
         Player player = e.getPlayer();
