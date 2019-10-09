@@ -116,3 +116,12 @@ commands:
   weather:
     description: Sää
     aliases: [sää]
+  staff:
+    description: Ylläpito-paneeli
+    aliases: [yp, ylläpito]
+  join:
+    description: Liittyminen
+    aliases: [fakejoin, liity]
+  leave:
+    description: Poistuminen
+    aliases: [quit, fakeleave, fakequit, poistu]

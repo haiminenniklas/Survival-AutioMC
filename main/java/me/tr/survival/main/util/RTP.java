@@ -28,7 +28,14 @@ public class RTP {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
         Util.sendNotification(player, "§7Etsitään sopivaa sijaintia...");
 
-        player.teleport(randomLocation(player.getWorld()));
+        Location loc = randomLocation(player.getWorld());
+
+        // Maybe fix inside block teleport
+        if(!loc.isChunkLoaded()) {
+            loc.getChunk().load();
+        }
+
+        player.teleport(loc);
         Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
 
         if(!player.isOp()) {
@@ -60,8 +67,8 @@ public class RTP {
         int newY = world.getHighestBlockYAt(newX, newZ);
         Location loc = new Location(world, newX, newY, newZ);
 
-        Block block = loc.getBlock();
-        if(block.getType() == Material.WATER || block.getType() == Material.LAVA) {
+        Block block = loc.clone().add(0d, -1d, 0d).getBlock();
+        if(block.isLiquid()) {
             return randomLocation(world);
         }
         return loc;

@@ -159,7 +159,7 @@ public class Homes {
                 Home home = homes.get(0);
                 gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.RED_BED, 1, "§6Koti #1", Arrays.asList(
                         "§7§m--------------------",
-                        "§7Sijainti:",
+                        "§7Sijainti §o(x, y, z)§7:",
                         " §6" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§6Vasen-klikkaa: §7Teleporttaa kotiisi",
@@ -197,7 +197,7 @@ public class Homes {
                 Home home = homes.get(1);
                 gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.ORANGE_BED, 1, "§6Koti #2", Arrays.asList(
                         "§7§m--------------------",
-                        "§7Sijainti:",
+                        "§7Sijainti §o(x, y, z)§7:",
                         " §6" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§6Vasen-klikkaa: §7Teleporttaa kotiisi",
@@ -236,7 +236,7 @@ public class Homes {
                 Home home = homes.get(2);
                 gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.GREEN_BED, 1, "§6Koti #3", Arrays.asList(
                         "§7§m--------------------",
-                        "§7Sijainti:",
+                        "§7Sijainti §o(x, y, z)§7:",
                         " §6" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§6Vasen-klikkaa: §7Teleporttaa kotiisi",
@@ -288,7 +288,7 @@ public class Homes {
 
                 gui.addButton(new Button(1,11, ItemUtil.makeItem(Material.RED_BED, 1, "§6Koti #1", Arrays.asList(
                         "§7§m--------------------",
-                        "§7Sijainti:",
+                        "§7Sijainti §o(x, y, z)§7:",
                         " §6" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§6Vasen-klikkaa: §7Teleporttaa kotiisi",

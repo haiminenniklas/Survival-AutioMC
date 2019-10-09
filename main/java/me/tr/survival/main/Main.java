@@ -113,6 +113,8 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("tphere").setExecutor(new TpaCommand());
         getCommand("tpdeny").setExecutor(new TpaCommand());
 
+        getCommand("staff").setExecutor(new StaffManager());
+
         // Autosave code...
 
         Autio.logColored(" §aStarting autosaving for players...");
@@ -143,6 +145,9 @@ public final class Main extends JavaPlugin implements Listener {
 
         Autio.logColored(" §aStarting booster manager...");
         Boosters.activateManager();
+
+        Autio.logColored(" §aInitializing ChatManager");
+        Chat.init();
 
         Autio.logColored("§a Enabled AutioCore! (It took " + (System.currentTimeMillis() - start) +
                 "ms / " + ((System.currentTimeMillis() - start) / 1000) + "s)");
@@ -1162,6 +1167,41 @@ public final class Main extends JavaPlugin implements Listener {
                     });
 
                     gui.open(player);
+
+                }
+            } else if(command.getLabel().equalsIgnoreCase("join")) {
+
+                if(Ranks.isStaff(uuid)) {
+                    Bukkit.broadcastMessage(
+                            ChatColor.translateAlternateColorCodes('&',
+                                    Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
+
+                    for(Player online : Bukkit.getOnlinePlayers()) {
+
+                        if(online.getUniqueId().equals(uuid)) continue;
+
+                        online.showPlayer(this, player);
+
+                    }
+
+                    Chat.sendMessage(player, "Olet nyt esillä kaikille!");
+
+                }
+
+            } else if(command.getLabel().equalsIgnoreCase("leave")) {
+                if(Ranks.isStaff(uuid)) {
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                            Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
+
+                    for(Player online : Bukkit.getOnlinePlayers()) {
+
+                        if(online.getUniqueId().equals(uuid)) continue;
+
+                        online.hidePlayer(this, player);
+
+                    }
+
+                    Chat.sendMessage(player, "Piilouduit pelaajilta!");
 
                 }
             }

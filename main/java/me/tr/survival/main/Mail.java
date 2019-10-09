@@ -144,9 +144,9 @@ public class Mail {
                 "§7postitoimituksen, niin toimituksen",
                 "§7ns. §ekerroin §7nousee. Kertoimet:",
                 "",
-                "§7- §a§l>7pv §7-> §b§l2x",
-                "§7- §e§l>14pv §7-> §b§l+3 kristallia",
-                "§7 - §c§l>21pv §7-> §b§l4x",
+                "§7- §a§l+7pv §7-> §b§l2x",
+                "§7- §e§l+14pv §7-> §b§l+3 kristallia",
+                "§7- §c§l+21pv §7-> §b§l3x",
                 "",
                 "§7§m--------------------"
         )), 18);

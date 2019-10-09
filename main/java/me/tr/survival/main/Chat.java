@@ -1,6 +1,7 @@
 package me.tr.survival.main;
 
 import me.tr.survival.main.other.Ranks;
+import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
@@ -9,6 +10,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -78,23 +80,25 @@ public class Chat implements Listener {
 
         gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§b§lTyhjennä Chat", Arrays.asList(
                 "§7§m--------------------",
-                " §7Klikkaa tyhjentääksesi chatin!",
+                " §7Klikkaa hiljentääksesi chatin!",
+                " §7§o(Ei toiminnassa vielä)",
                 "§7§m--------------------"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close();
+                gui.close(clicker);
             }
         });
 
         gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.OAK_SIGN, 1, "§b§lHidasta Chattia", Arrays.asList(
                 "§7§m--------------------",
                 " §7Hidastaaksesi chattia.",
+                " §7§o(Ei vielä toiminnassa)",
                 "§7§m--------------------"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close();
+                gui.close(clicker);
             }
         });
 
@@ -105,11 +109,26 @@ public class Chat implements Listener {
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close();
+                gui.close(clicker);
+                Chat.clear();
+                Chat.sendMessage(clicker, "Chat tyhjennetty!");
             }
         });
 
         gui.open(opener);
+
+    }
+
+    public static void clear() {
+
+        for(Player online : Bukkit.getOnlinePlayers()) {
+            for(int i = 0; i < 200; i++) {
+                online.sendMessage(" ");
+            }
+        }
+
+        Bukkit.broadcastMessage("§6§lChat tyhjennetty!");
+        Util.broadcastSound(Sound.BLOCK_ANVIL_BREAK);
 
     }
 
