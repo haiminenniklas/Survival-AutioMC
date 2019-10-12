@@ -2,11 +2,13 @@ package me.tr.survival.main.other;
 
 import me.tr.survival.main.database.PlayerData;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
 public class Ranks {
 
+    @Deprecated
     public static final String[] RANKS = new String[] {
 
             "default",
@@ -20,6 +22,7 @@ public class Ranks {
 
     };
 
+    @Deprecated
     public static String getRank(UUID uuid) {
         if(!PlayerData.isLoaded(uuid)) {
             PlayerData.loadNull(uuid, false);
@@ -27,6 +30,7 @@ public class Ranks {
         return String.valueOf(PlayerData.getValue(uuid, "rank"));
     }
 
+    @Deprecated
     public static String getPrefix(String rank) {
         switch(rank) {
             case "default":
@@ -51,6 +55,7 @@ public class Ranks {
         }
     }
 
+    @Deprecated
     public static String getDisplayName(String rank) {
         switch(rank) {
             case "default":
@@ -75,6 +80,7 @@ public class Ranks {
         }
     }
 
+    @Deprecated
     public static ChatColor getRankColor(String rank) {
         switch(rank) {
             case "default":
@@ -99,21 +105,29 @@ public class Ranks {
         }
     }
 
+    @Deprecated
     public static boolean hasRank(UUID uuid, String rank) {
         return getRank(uuid).equals(rank.toLowerCase());
     }
 
+    @Deprecated
     public static boolean isVIP(UUID uuid) {
         if(isStaff(uuid)) return true;
         if(isPartner(uuid)) return true;
         return hasRank(uuid, "premium") || hasRank(uuid, "premiumplus");
     }
-
+    @Deprecated
     public static boolean isPartner(UUID uuid) {
         if(isStaff(uuid)) return true;
         return hasRank(uuid, "youtube") || hasRank(uuid, "twitch");
     }
 
+    @Deprecated
     public static boolean isStaff(UUID uuid) { return hasRank(uuid, "admin") || hasRank(uuid, "valvoja") || hasRank(uuid, "builder"); }
+
+    public static boolean hasRank(Player player, String rank) {
+        return player.hasPermission("server." + rank.toLowerCase());
+
+    }
 
 }

@@ -92,10 +92,12 @@ public class TeleportRequest {
             // Set the request as expired after 60 seconds
             Autio.afterAsync(60, () -> {
 
-                this.setExpired(true);
-                Chat.sendMessage(one, "Teleporttauspyyntö pelaajalle §6" + two.getName() + " §7on nyt umpeutunut!");
-                Chat.sendMessage(two, "Teleporttauspyyntö pelaajalta §6" + one.getName() + " §7on nyt umpeutunut!");
-                remove();
+                if(!this.expired) {
+                    this.setExpired(true);
+                    Chat.sendMessage(one, "Teleporttauspyyntö pelaajalle §6" + two.getName() + " §7on nyt umpeutunut!");
+                    Chat.sendMessage(two, "Teleporttauspyyntö pelaajalta §6" + one.getName() + " §7on nyt umpeutunut!");
+                    remove();
+                }
 
             });
 

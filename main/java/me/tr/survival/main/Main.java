@@ -52,7 +52,6 @@ public final class Main extends JavaPlugin implements Listener {
     }
 
     public static final HashMap<Player, Player> messages = new HashMap<>();
-
     @Override
     public void onEnable() {
         // Some setupping
@@ -68,10 +67,11 @@ public final class Main extends JavaPlugin implements Listener {
         Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IF FROM THE config.yml!");
         Autio.log(" ");
 
-        Autio.logColored(" §aSetupping config and database...");
+        Autio.logColored(" §aSetupping configs and database...");
 
         saveDefaultConfig();
         SQL.setup();
+
 
         /*Autio.logColored(" §aSetupping Boosters-system...");
 

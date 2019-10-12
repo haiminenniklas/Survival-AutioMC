@@ -57,3 +57,4 @@ auto-broadcaster:
   messages:
     - '&7Lorem ipsum dolor sit amet'
   interval-in-minutes: 1
+
