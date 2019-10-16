@@ -111,7 +111,6 @@ public class Events implements Listener {
                 ChatColor.translateAlternateColorCodes('&', config.getString("tablist.footer"))
         ); */
 
-
         Main.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
 
             PlayerAliases.load(player);

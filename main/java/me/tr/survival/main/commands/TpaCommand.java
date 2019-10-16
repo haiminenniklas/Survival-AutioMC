@@ -101,17 +101,66 @@ public class TpaCommand implements CommandExecutor, Listener {
                 if(Ranks.isStaff(player.getUniqueId())) {
 
                     if(args.length < 1) {
-                        Chat.sendMessage(player, "Käyttö: §6/tp <pelaaja>");
+                        Chat.sendMessage(player, "Käyttö: §6/tp (<pelaaja> | <x> <y> <z>) ([x] [y] [z] | [pelaaja2])");
                     } else {
 
                         Player target = Bukkit.getPlayer(args[0]);
-                        if(target == null) {
-                            Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaaja ei löydetty!");
-                            return true;
-                        }
+                        if(args.length == 1) {
+                            if(target == null) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaaja ei löydetty!");
+                                return true;
+                            }
 
-                        TeleportRequest request = new TeleportRequest(player, target, TeleportManager.Teleport.FORCE);
-                        request.ask();
+                            TeleportRequest request = new TeleportRequest(player, target, TeleportManager.Teleport.FORCE);
+                            request.ask();
+                        } else if(args.length == 2) {
+                            Player target2 = Bukkit.getPlayer(args[1]);
+
+                            if(target == null || target2 == null) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Varmista että kaikki pelaajat ovat paikalla!");
+                                return true;
+                            }
+
+                            TeleportRequest request = new TeleportRequest(target, target2, TeleportManager.Teleport.FORCE);
+                            request.ask();
+                        } else if(args.length == 3){
+
+                            double x, y, z;
+                            try {
+                                x = Double.parseDouble(args[0]);
+                                y = Double.parseDouble(args[1]);
+                                z = Double.parseDouble(args[2]);
+                            } catch(NumberFormatException ex) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytäthän numeroita!");
+                                return true;
+                            }
+
+                            Location loc = new Location(player.getWorld(), x, y, z);
+                            player.teleport(loc);
+                            Chat.sendMessage(player, "Sinua viedään sijaintiin §6" + x + "," + y + "," + z + "§7!");
+
+                        } else {
+
+                            if(target == null) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaaja ei löydetty!");
+                                return true;
+                            }
+
+                            double x, y, z;
+                            try {
+                                x = Double.parseDouble(args[1]);
+                                y = Double.parseDouble(args[2]);
+                                z = Double.parseDouble(args[3]);
+                            } catch(NumberFormatException ex) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytäthän numeroita!");
+                                return true;
+                            }
+
+                            Location loc = new Location(player.getWorld(), x, y, z);
+                            target.teleport(loc);
+                            Chat.sendMessage(player, "Pelaaja §6" + target.getName() + " §7viety sijaintiin §6" + x + "," + y + "," + z + "§7!");
+
+                        }
 
                     }
 
