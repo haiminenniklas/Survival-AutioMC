@@ -45,9 +45,9 @@ public class Autio {
 
     public static void every(int seconds, Runnable task, boolean async) {
         if(async) {
-            Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, 20 * seconds);
+            Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds);
         } else {
-            Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, 20 * seconds);
+            Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds);
         }
     }
 
@@ -64,15 +64,19 @@ public class Autio {
     }
 
     public static void afterAsync(int seconds, Runnable task) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), task, 20 * seconds);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), task, (long) getCurrentTPS() * seconds);
     }
 
     public static void every(int seconds, Runnable task) {
-        Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, 20 * seconds);
+        Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds);
     }
 
     public static void everyAsync(int seconds, Runnable task) {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, 20 * seconds);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds);
+    }
+
+    public static double getCurrentTPS() {
+        return Bukkit.getTPS()[0];
     }
 
     public static void setSpawn(Location loc) {

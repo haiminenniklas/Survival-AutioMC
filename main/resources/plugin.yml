@@ -125,3 +125,17 @@ commands:
   leave:
     description: Poistuminen
     aliases: [quit, fakeleave, fakequit, poistu]
+  afk:
+    description: Ole AFK
+  apua:
+    description: Apua
+    aliases: [help, commands, komennot]
+  koordinaatit:
+    description: Katso sijaintisi
+    aliases: [here, loc, location]
+  world:
+    description: Maailmat
+    aliases: [worlds, maailma, maailmat]
+  broadcast:
+    description: Ilmoita
+    aliases: [bc, ilmoita, shout]

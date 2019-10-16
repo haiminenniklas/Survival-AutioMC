@@ -1,5 +1,6 @@
 package me.tr.survival.main;
 
+import me.tr.survival.main.commands.Essentials;
 import me.tr.survival.main.commands.HomeCommand;
 import me.tr.survival.main.commands.RankCommand;
 import me.tr.survival.main.commands.TpaCommand;
@@ -51,6 +52,11 @@ public final class Main extends JavaPlugin implements Listener {
         return Main.instance;
     }
 
+    public static LuckPermsApi luckPermsApi;
+    public static LuckPermsApi getLuckPermsApi() {
+        return Main.luckPermsApi;
+    }
+
     public static final HashMap<Player, Player> messages = new HashMap<>();
     @Override
     public void onEnable() {
@@ -98,6 +104,7 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(new EnderpearlCooldown(), this);
         pm.registerEvents(new Chat(), this);
         pm.registerEvents(new StaffManager(), this);
+        pm.registerEvents(new Essentials(), this);
 
         // Commands
 
@@ -114,6 +121,10 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("tpdeny").setExecutor(new TpaCommand());
 
         getCommand("staff").setExecutor(new StaffManager());
+
+        getCommand("afk").setExecutor(new Essentials());
+        getCommand("apua").setExecutor(new Essentials());
+        getCommand("broadcast").setExecutor(new Essentials());
 
         // Autosave code...
 
