@@ -3,9 +3,11 @@ package me.tr.survival.main.commands;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.other.Ranks;
+import me.tr.survival.main.other.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -63,12 +65,35 @@ public class Essentials implements CommandExecutor, Listener {
             } else if(cmd.getLabel().equalsIgnoreCase("clear")) {
 
                 if(Ranks.isStaff(uuid)) {
-
+                    Util.clearInventory(player);
+                    Chat.sendMessage(player, "Inventorysi tyhjennettiin!");
                 }
 
             } else if(cmd.getLabel().equalsIgnoreCase("kordinaatit")) {
 
+                if(Ranks.isStaff(uuid)) {
+                    Location loc = player.getLocation();
+                    Chat.sendMessage(player, "Sijaintisi: §a" + loc.getX() + "§7, §a" + loc.getY() + "§7, §a" + loc.getZ() + " §7-> §a" + loc.getWorld().getName());
+                }
+
             } else if(cmd.getLabel().equalsIgnoreCase("world")) {
+
+                if(Ranks.isStaff(uuid)) {
+
+                    player.sendMessage("§7§m---------------------");
+                    player.sendMessage(" §7Maailmat (" + Bukkit.getWorlds().size() +  "):");
+
+                    for(World w : Bukkit.getWorlds()) {
+                        if(player.getWorld().getName().equalsIgnoreCase(w.getName())) {
+                            player.sendMessage("§7- §6" + w.getName() + " §8(sinä)");
+                        } else {
+                            player.sendMessage("§7- §6" + w.getName());
+                        }
+                    }
+
+                    player.sendMessage("§7§m---------------------");
+
+                }
 
             }
 

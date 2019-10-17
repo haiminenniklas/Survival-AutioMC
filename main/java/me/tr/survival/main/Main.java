@@ -1,5 +1,6 @@
 package me.tr.survival.main;
 
+import me.lucko.luckperms.api.LuckPermsApi;
 import me.tr.survival.main.commands.Essentials;
 import me.tr.survival.main.commands.HomeCommand;
 import me.tr.survival.main.commands.RankCommand;
