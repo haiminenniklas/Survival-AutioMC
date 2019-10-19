@@ -1,5 +1,6 @@
 package me.tr.survival.main.util.teleport;
 
+import ch.njol.util.Validate;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Settings;
@@ -8,7 +9,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
 public class TeleportRequest {

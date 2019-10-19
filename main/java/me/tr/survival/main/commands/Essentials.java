@@ -4,10 +4,9 @@ import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.gui.Gui;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,6 +43,24 @@ public class Essentials implements CommandExecutor, Listener {
                 } */
 
             } else if(cmd.getLabel().equalsIgnoreCase("apua")) {
+
+                Gui gui = new Gui("Apua", 27);
+
+                gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Hyödylliset komennot", Arrays.asList(
+                        "§7§m--------------------",
+                        " §7Hyödylliset komennot:",
+                        "  §6/profiili §7tämä valikko",
+                        "  §6/rtp §7vie sinut arämaahan",
+                        "  §6/msg §7yksityisviestit",
+                        "  §6/tpa §7teleporttauspyyntö",
+                        "  §6/warp §7palvelimen warpit",
+                        "  §9/discord §7Discord-yhteisö",
+                        "  §6/vaihda §7vaihtokauppa",
+                        "  §a/osta §7verkkokauppa",
+                        "§7§m--------------------"
+                )), 13);
+
+                gui.open(player);
 
             } else if(cmd.getLabel().equalsIgnoreCase("broadcast")) {
 
