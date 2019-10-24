@@ -126,6 +126,7 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("afk").setExecutor(new Essentials());
         getCommand("apua").setExecutor(new Essentials());
         getCommand("broadcast").setExecutor(new Essentials());
+        getCommand("discord").setExecutor(new Essentials());
 
         // Autosave code...
 
@@ -1184,37 +1185,16 @@ public final class Main extends JavaPlugin implements Listener {
             } else if(command.getLabel().equalsIgnoreCase("join")) {
 
                 if(Ranks.isStaff(uuid)) {
-                    Bukkit.broadcastMessage(
-                            ChatColor.translateAlternateColorCodes('&',
-                                    Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
-
-                    for(Player online : Bukkit.getOnlinePlayers()) {
-
-                        if(online.getUniqueId().equals(uuid)) continue;
-
-                        online.showPlayer(this, player);
-
-                    }
-
-                    Chat.sendMessage(player, "Olet nyt esillä kaikille!");
-
+                    StaffManager.show(player);
                 }
 
             } else if(command.getLabel().equalsIgnoreCase("leave")) {
                 if(Ranks.isStaff(uuid)) {
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                            Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
-
-                    for(Player online : Bukkit.getOnlinePlayers()) {
-
-                        if(online.getUniqueId().equals(uuid)) continue;
-
-                        online.hidePlayer(this, player);
-
-                    }
-
-                    Chat.sendMessage(player, "Piilouduit pelaajilta!");
-
+                    StaffManager.hide(player);
+                }
+            } else if(command.getLabel().equalsIgnoreCase("vanish")) {
+                if(Ranks.isStaff(uuid)) {
+                    StaffManager.toggleVanish(player);
                 }
             }
 

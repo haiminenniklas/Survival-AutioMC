@@ -176,42 +176,42 @@ public class Settings {
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective obj = board.registerNewObjective("AutioMC", "dummy", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName("§6§lNIMETÖN §7(1.14.4)");
+        obj.setDisplayName("  §6§lNIMETÖN §8| §7Survival  ");
 
-        obj.getScore("§7 §6").setScore(15);
+        obj.getScore("§7 §6 §k").setScore(15);
         obj.getScore("§7» Kristallit").setScore(14);
 
         Team crystals = board.registerNewTeam("crystals");
-        crystals.addEntry(ChatColor.RED + "" + ChatColor.WHITE);
+        crystals.addEntry(ChatColor.RED + "" + ChatColor.WHITE + "" + ChatColor.RED);
         crystals.setPrefix("§6" + Crystals.get(player.getUniqueId()));
-        obj.getScore(ChatColor.RED + "" + ChatColor.WHITE).setScore(13);
+        obj.getScore(ChatColor.RED + "" + ChatColor.WHITE + "" + ChatColor.RED).setScore(13);
 
-        obj.getScore("§7 §a").setScore(12);
+        obj.getScore("§7 §a §o").setScore(12);
         obj.getScore("§7» Tuhotut palikat").setScore(11);
 
         Team moneyCounter = board.registerNewTeam("blocks");
-        moneyCounter.addEntry(ChatColor.BLUE + "" + ChatColor.WHITE);
+        moneyCounter.addEntry(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED);
         moneyCounter.setPrefix("§6" + Ores.getTotal(player.getUniqueId()));
-        obj.getScore(ChatColor.BLUE + "" + ChatColor.WHITE).setScore(10);
+        obj.getScore(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED).setScore(10);
 
-        obj.getScore("§7 §9").setScore(9);
+        obj.getScore("§7 §9 §l").setScore(9);
         obj.getScore("§7» Arvo").setScore(8);
 
         Team rank = board.registerNewTeam("rank");
-        rank.addEntry(ChatColor.GREEN + "" + ChatColor.WHITE);
+        rank.addEntry(ChatColor.GREEN + "" + ChatColor.BLUE + "" + ChatColor.RED);
         rank.setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
-        obj.getScore(ChatColor.GREEN + "" + ChatColor.WHITE).setScore(7);
+        obj.getScore(ChatColor.GREEN + "" + ChatColor.BLUE + "" + ChatColor.RED).setScore(7);
 
-        obj.getScore("§7 §6").setScore(6);
+        obj.getScore("§7 §6 §k").setScore(6);
         obj.getScore("§7» Pelaajat").setScore(5);
 
         Team players = board.registerNewTeam("players");
-        players.addEntry(ChatColor.LIGHT_PURPLE + "" + ChatColor.WHITE);
+        players.addEntry(ChatColor.LIGHT_PURPLE + "" + ChatColor.GREEN + "" + ChatColor.RED);
         players.setPrefix("§6" + Bukkit.getOnlinePlayers().size());
-        obj.getScore(ChatColor.LIGHT_PURPLE + "" + ChatColor.WHITE).setScore(4);
+        obj.getScore(ChatColor.LIGHT_PURPLE + "" + ChatColor.GREEN + "" + ChatColor.RED).setScore(4);
 
-        obj.getScore("§7 §1").setScore(3);
-        obj.getScore("§6www.autiomc.eu").setScore(2);
+        obj.getScore("§7 §1 §k").setScore(3);
+        obj.getScore("       §6nimeton.fi").setScore(2);
 
         Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
 

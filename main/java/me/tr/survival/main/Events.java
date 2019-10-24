@@ -1,8 +1,10 @@
 package me.tr.survival.main;
 
+import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.event.server.ServerExceptionEvent;
 import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
+import me.tr.survival.main.other.CountdownTimer;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.booster.Boosters;
@@ -31,6 +33,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -102,6 +106,8 @@ public class Events implements Listener {
         if(!player.hasPlayedBefore()) {
             Autio.teleportToSpawn(e.getPlayer());
         }
+
+
 
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
 
@@ -199,7 +205,36 @@ public class Events implements Listener {
 
         Player player = e.getEntity();
 
+        player.spigot().respawn();
+
         lastLocation.put(player.getUniqueId(), player.getLocation());
+        player.setHealth(20d);
+
+        if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
+            Util.heal(player);
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24d);
+            player.setHealth(24d);
+        } else {
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
+        }
+
+        if(!player.hasPermission("deathisland.bypass")) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 999, true, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 999, true, false));
+
+            CountdownTimer timer = new CountdownTimer(Main.getInstance(), 30, () -> {},
+                    () -> {
+                        Util.heal(player);
+                        Autio.teleportToSpawn(player);
+                        player.sendTitle(new Title("§a§lTAKAISIN", "§7Olet taas elossa!", 15, 20, 15));
+                    }, (t) -> player.sendTitle(new Title("§c§lKUOLIT", "§7Pääset §c" + t.getSecondsLeft() + "s §7päästä takaisin!", 15, 20, 15)));
+
+// Start scheduling, don't use the "run" method unless you want to skip a second
+            timer.scheduleTimer();
+
+        }
+
+        Autio.teleportToSpawn(player);
 
     }
 
@@ -251,15 +286,6 @@ public class Events implements Listener {
 
         Player player = e.getPlayer();
 
-        if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
-            Util.heal(player);
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24d);
-            player.setHealth(24d);
-        } else {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
-        }
-
-        Autio.teleportToSpawn(player);
     }
 
     @EventHandler
@@ -390,4 +416,8 @@ public class Events implements Listener {
 
     }
 
+    @EventHandler
+    public void onCommandPreProcess(PlayerCommandPreprocessEvent e) {
+
+    }
 }

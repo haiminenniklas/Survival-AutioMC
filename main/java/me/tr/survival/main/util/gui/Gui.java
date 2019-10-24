@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -296,6 +297,12 @@ public class Gui implements Listener {
 
         }
         return null;
+    }
+
+    public static void openGui(Player player, String title, int size, TypedCallback<Gui> cb) {
+        Gui gui = new Gui(title, size);
+        cb.execute(gui);
+        gui.open(player);
     }
 
 }

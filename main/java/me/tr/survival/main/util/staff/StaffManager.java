@@ -1,6 +1,7 @@
 package me.tr.survival.main.util.staff;
 
 import me.tr.survival.main.Chat;
+import me.tr.survival.main.Main;
 import me.tr.survival.main.Profile;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
@@ -10,6 +11,7 @@ import me.tr.survival.main.util.gui.Gui;
 import me.tr.survival.main.util.teleport.TeleportManager;
 import me.tr.survival.main.util.teleport.TeleportRequest;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -21,14 +23,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.ClickType;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class StaffManager implements Listener, CommandExecutor {
 
     private static Map<UUID, Map<Material, Integer>> blocksPerHour = new HashMap<>();
+    private static List<UUID> hidden = new ArrayList<>();
 
     public static int getBlockMinedPerHour(UUID uuid, Material mat) {
 
@@ -53,7 +53,7 @@ public class StaffManager implements Listener, CommandExecutor {
 
     public static void panel(Player player) {
 
-        Gui gui = new Gui("Ylläpito", 36);
+        Gui gui = new Gui("Ylläpito", 27);
 
         gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§bChat-asetukset", Arrays.asList(
                 "§7§m--------------------",
@@ -68,29 +68,20 @@ public class StaffManager implements Listener, CommandExecutor {
             }
         });
 
-        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§cPoistu §7(Fake)", Arrays.asList(
-                "§7§m--------------------",
-                " §7Klikkaa piiloutuaksesi",
-                " §7muilta pelaajilta",
-                "§7§m--------------------"
-        ))) {
-            @Override
-            public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
-                Bukkit.dispatchCommand(player, "leave");
-            }
-        });
+        String vanishToggled = (hidden.contains(player.getUniqueId())) ? "§c§lPIILOUTUNUT" : "§a§lNÄKYVILLÄ";
 
-        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.PAPER, 1, "§aLiity §7(Fake)", Arrays.asList(
+        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§cPiiloutuminen", Arrays.asList(
                 "§7§m--------------------",
-                " §7Klikkaa itsesi näkyväksi",
-                " §7muille pelaajille!",
+                " §7Tällä asetuksella voit piiloutua",
+                " §7muilta pelaajilta!",
+                " ",
+                " §7Tila: " + vanishToggled,
                 "§7§m--------------------"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                Bukkit.dispatchCommand(player, "join");
+                toggleVanish(clicker);
             }
         });
 
@@ -158,6 +149,56 @@ public class StaffManager implements Listener, CommandExecutor {
         });
 
         gui.open(player);
+    }
+
+    public static boolean toggleVanish(Player player) {
+
+        if(hidden.contains(player.getUniqueId())) {
+            show(player);
+            return false;
+
+        } else {
+            hide(player);
+            return true;
+        }
+
+    }
+
+    public static void hide(Player player) {
+        hidden.add(player.getUniqueId());
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
+
+
+        player.setPlayerListName("§7" + player.getName() + " §8[PIILOSSA]");
+
+        for(Player online : Bukkit.getOnlinePlayers()) {
+
+            if(online.getUniqueId().equals(player.getUniqueId())) continue;
+            online.hidePlayer(Main.getInstance(), player);
+
+        }
+
+        Chat.sendMessage(player, "Piilouduit pelaajilta!");
+    }
+
+    public static void show(Player player) {
+        hidden.remove(player.getUniqueId());
+
+        player.setPlayerListName(player.getName());
+
+        Bukkit.broadcastMessage(
+                ChatColor.translateAlternateColorCodes('&',
+                        Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
+
+        for(Player online : Bukkit.getOnlinePlayers()) {
+
+            if(online.getUniqueId().equals(player.getUniqueId())) continue;
+
+            online.showPlayer(Main.getInstance(), player);
+        }
+
+        Chat.sendMessage(player, "Olet nyt esillä kaikille!");
     }
 
     @Override

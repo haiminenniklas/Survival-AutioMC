@@ -1,7 +1,9 @@
 package me.tr.survival.main.other;
 
 import me.tr.survival.main.database.PlayerData;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -107,7 +109,11 @@ public class Ranks {
 
     @Deprecated
     public static boolean hasRank(UUID uuid, String rank) {
-        return getRank(uuid).equals(rank.toLowerCase());
+        Player player = Bukkit.getPlayer(uuid);
+        if(player == null) {
+            throw new IllegalArgumentException("Player cannot be null!");
+        }
+        return hasRank(player, rank);
     }
 
     @Deprecated

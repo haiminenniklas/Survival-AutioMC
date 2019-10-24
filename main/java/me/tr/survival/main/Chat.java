@@ -26,6 +26,7 @@ import java.util.UUID;
 public class Chat implements Listener {
 
     private static HashMap<String, Object> settings = new HashMap<>();
+    private static HashMap<UUID, Long> sentMessages = new HashMap<>();
 
     public static void init() {
         Chat.settings.put("mute", false);
@@ -78,27 +79,42 @@ public class Chat implements Listener {
 
         Gui gui = new Gui("Chat-asetukset", 27);
 
+        String isSilenced = ((boolean) Chat.settings.get("mute")) ? "§c§lHILJENNETTY" : "§a§lAVOIN";
+
         gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§b§lTyhjennä Chat", Arrays.asList(
                 "§7§m--------------------",
                 " §7Klikkaa hiljentääksesi chatin!",
-                " §7§o(Ei toiminnassa vielä)",
+                " ",
+                " §7Tila: " + isSilenced,
                 "§7§m--------------------"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
+
+                Chat.settings.put("mute",  !(boolean)Chat.settings.get("mute"));
+                String isSilenced = ((boolean) Chat.settings.get("mute")) ? "§c§lHILJENNETTY" : "§a§lAVOIN";
+
+                Chat.sendMessage(clicker, "Chatin tila: " + isSilenced);
+
             }
         });
+
+        String isSlowed = ((boolean)Chat.settings.get("slow")) ? "§c§lHIDASTETTU" : "§a§lTAVALLINEN";
 
         gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.OAK_SIGN, 1, "§b§lHidasta Chattia", Arrays.asList(
                 "§7§m--------------------",
                 " §7Hidastaaksesi chattia.",
-                " §7§o(Ei vielä toiminnassa)",
+                "",
+                " §7Nopeus: " + isSlowed,
                 "§7§m--------------------"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
+                Chat.settings.put("slow", !(boolean)Chat.settings.get("slow"));
+                String isSlowed = ((boolean)Chat.settings.get("slow")) ? "§c§lHIDASTETTU" : "§a§lTAVALLINEN";
+                Chat.sendMessage(clicker, "Chatin nopeus: " + isSilenced);
             }
         });
 
@@ -140,6 +156,7 @@ public class Chat implements Listener {
 
         if(!Settings.get(player.getUniqueId(), "chat")) {
             Chat.sendMessage(player, "Sinulla on chat poissa päältä!");
+            return;
         }
 
         for(Player r : e.getRecipients()) {
@@ -148,8 +165,29 @@ public class Chat implements Listener {
             }
         }
 
+        if((boolean) Chat.settings.get("mute")) {
+            e.setCancelled(true);
+            Chat.sendMessage(player, Prefix.ERROR, "Chat on hiljennetty!");
+            return;
+        }
+
+        if(sentMessages.containsKey(uuid)) {
+            long lastSent = sentMessages.get(uuid);
+            if((System.currentTimeMillis() - lastSent) / 1000 <= 3 && (boolean) Chat.settings.get("slow")) {
+                e.setCancelled(true);
+                Chat.sendMessage(player, "Chat on hidastetussa tilassa! Voit lähettää viestin §63s §7välein!");
+                return;
+            }
+        }
+
+        sentMessages.put(uuid, System.currentTimeMillis());
+
         //e.setFormat(Chat.getFormat(player, e.getMessage()));
-        e.setFormat(Ranks.getRankColor(Ranks.getRank(player.getUniqueId())) + player.getName() + "§7: §f%2$s");
+        if(Ranks.isStaff(uuid)) {
+            e.setFormat(Ranks.getRankColor(Ranks.getRank(player.getUniqueId())) + player.getName() + ChatColor.translateAlternateColorCodes('&', "&7: &f%2$s"));
+        } else {
+            e.setFormat(Ranks.getRankColor(Ranks.getRank(player.getUniqueId())) + player.getName() + "§7: §f%2$s");
+        }
 
         if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {
             e.setCancelled(true);

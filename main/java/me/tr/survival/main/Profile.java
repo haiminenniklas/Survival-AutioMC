@@ -182,6 +182,7 @@ public class Profile {
                 "§7§m--------------------"
         )), 39);
 
+
         gui.addButton(new Button(1, 41, ItemUtil.makeItem(Material.PAPER, 1, "§dPosti", Arrays.asList(
                 "§7§m--------------------",
                 " §7Tästä klikkaamalla pääset",

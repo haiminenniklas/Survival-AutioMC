@@ -129,7 +129,7 @@ commands:
     description: Ole AFK
   apua:
     description: Apua
-    aliases: [help, commands, komennot]
+    aliases: [help, commands, komennot, faq]
   koordinaatit:
     description: Katso sijaintisi
     aliases: [here, loc, location]
@@ -139,3 +139,9 @@ commands:
   broadcast:
     description: Ilmoita
     aliases: [bc, ilmoita, shout]
+  discord:
+    description: Discord-yhteisö
+    aliases: [dc]
+  vanish:
+    description: Piiloudu
+    aliases: [v, piiloudu]
