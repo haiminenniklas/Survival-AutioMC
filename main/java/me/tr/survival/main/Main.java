@@ -12,6 +12,7 @@ import me.tr.survival.main.other.*;
 import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.other.warps.Warp;
 import me.tr.survival.main.other.warps.Warps;
+import me.tr.survival.main.trading.TradeManager;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.Times;
@@ -106,6 +107,7 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(new Chat(), this);
         pm.registerEvents(new StaffManager(), this);
         pm.registerEvents(new Essentials(), this);
+        pm.registerEvents(new TradeManager(), this);
 
         // Commands
 
