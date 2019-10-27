@@ -444,7 +444,7 @@ public final class Main extends JavaPlugin implements Listener {
 
             } else if(command.getLabel().equalsIgnoreCase("msg")) {
 
-                if(args.length < 2) {
+              /*  if(args.length < 2) {
 
                     Chat.sendMessage(player, "Käytä §6/msg <pelaaja> <viesti>");
 
@@ -474,8 +474,10 @@ public final class Main extends JavaPlugin implements Listener {
 
                 }
 
-            } else if(command.getLabel().equalsIgnoreCase("r")) {
+                */
 
+            } else if(command.getLabel().equalsIgnoreCase("r")) {
+/*
                 if(args.length < 1) {
 
                     Chat.sendMessage(player, "Käytä §6/r <viesti>");
@@ -507,7 +509,7 @@ public final class Main extends JavaPlugin implements Listener {
 
 
                 }
-
+*/
             } else if(command.getLabel().equalsIgnoreCase("sethome")) {
 
                 if(!player.isOp()) {
