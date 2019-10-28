@@ -21,22 +21,17 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -179,6 +174,9 @@ public class Events implements Listener {
         if(Gui.getGui(player) != null) {
             Gui gui = Gui.getGui(player);
             if(e.getCurrentItem() != null) {
+
+                gui.setClickAction(new InventoryClickAction(e.getSlot(), e.getCurrentItem(), gui, e.getClickedInventory()));
+
                 for(Button b : gui.getButtons()) {
                     if(b.item.clone().equals(e.getCurrentItem())) {
                         b.onClick(player, e.getClick());

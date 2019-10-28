@@ -216,7 +216,6 @@ public class Profile {
 
             }
         });
-
         gui.open(opener);
 
     }

@@ -239,7 +239,6 @@ public class Gui implements Listener {
 
     }
 
-
     public void previousPage(Player player){
         if(getPages() == null || getPages().isEmpty()){
             throw new IllegalArgumentException("You must have at least 1 page in your gui!");
@@ -299,10 +298,11 @@ public class Gui implements Listener {
         return null;
     }
 
-    public static void openGui(Player player, String title, int size, TypedCallback<Gui> cb) {
+    public static Gui openGui(Player player, String title, int size, TypedCallback<Gui> cb) {
         Gui gui = new Gui(title, size);
         cb.execute(gui);
         gui.open(player);
+        return gui;
     }
 
 }
