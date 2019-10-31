@@ -31,6 +31,11 @@ public class Trade {
         this.requestTime = 0L;
         this.expired = false;
         this.gui = this.initGui();
+
+        if(!TradeManager.getOngoingTrades().contains(this)) {
+            TradeManager.getOngoingTrades().add(this);
+        }
+
     }
 
     private Gui initGui() {
@@ -205,24 +210,95 @@ public class Trade {
 
         Gui gui = new Gui("Vaihtokauppa", 54);
 
-        gui.addItem(1, ItemUtil.makeSkullItem(trader.getName(), 1, "§a" + trader.getName()), 0);
-        gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§c" + target.getName()), 8);
+        gui.addItem(1, ItemUtil.makeSkullItem(trader.getName(), 1, "§a" + trader.getName(), Arrays.asList(
+                "§7§m--------------------",
+                "§7§m--------------------"
+        )), 1);
+        gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§c" + target.getName(), Arrays.asList(
+                "§7§m--------------------",
+                "§7§m--------------------"
+        )), 7);
 
-        for(int i = 9; i < 45; i++) {
+        for(int i = 10; i < 44; i++) {
 
             // Item Slots
             if(i == 19 || i == 20 || i == 24 || i == 25 || i == 28 || i == 29 || i == 33 || i == 34)
+                continue;
+
+            if(i == 18 || i == 27 || i == 36 || i == 17 || i == 26 || i == 35)
                 continue;
 
             gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE, 1, ""), i);
 
         }
 
+        for(int i = 0; i < 54; i++) {
+            // Item Slots
+            if(i == 19 || i == 20 || i == 24 || i == 25 || i == 28 || i == 29 || i == 33 || i == 34)
+                continue;
+
+            if(i == 1 || i == 7 || i == 47 || i == 51 || i == 49) continue;
+
+            if(i > 9 && i < 17) continue;
+            if (i == 21 || i == 22 || i == 23 || i == 30 || i == 31 || i == 32) continue;
+            if (i > 36 && i < 44) continue;
+
+            gui.addItem(1, ItemUtil.makeItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""), i);
+
+        }
+
+        gui.addItem(1, ItemUtil.makeItem(Material.EMERALD_BLOCK, 1, "§a§lHYVÄKSY", Arrays.asList(
+                "§7§m--------------------",
+                " §7Kun olet hyväksynyt molempien",
+                " §7antamat §etavarat§7, paina tästä",
+                " §ahyväksyäksesi §7tarjouksen!",
+                "§7§m--------------------"
+        )), 47);
+
+        gui.addItem(1, ItemUtil.makeItem(Material.EMERALD_BLOCK, 1, "§b§lTYHJENNÄ", Arrays.asList(
+                "§7§m--------------------",
+                " §7Mikäli laitoit vahingossa",
+                " §7väärät itemit tarjoukseen",
+                " §7niin tästä voit tyhjentää ne",
+                " §7itemit!",
+                "§7§m--------------------"
+        )), 49);
+
+        gui.addItem(1, ItemUtil.makeItem(Material.REDSTONE_BLOCK, 1, "§c§lHYLKÄÄ", Arrays.asList(
+                "§7§m--------------------",
+                " §7Mikäli toinen osapuoli, ei",
+                " §7suostu laittamaan §esovittuja",
+                " §7tavaraoita, niin voit painaa",
+                " §7tästä §chylätäksesi§7 vaihtokaupan.",
+                "§7§m--------------------"
+        )), 48);
+
         this.gui = gui;
 
     }
 
     public void acceptItems() {
+        this.finish();
+    }
+
+    public void denyItems() {
+
+        this.finish();
+    }
+
+    public void close() {
+
+        Chat.sendMessage(this.getTarget(), Chat.Prefix.ERROR, "Vaihtokauppa suljettiin virheen takia, yrittäkää pian uudestaan!");
+        Chat.sendMessage(this.getTrader(), Chat.Prefix.ERROR, "Vaihtokauppa suljettiin virheen takia, yrittäkää pian uudestaan!");
+
+        this.finish();
+    }
+
+    private void finish() {
+
+        if(TradeManager.getOngoingTrades().contains(this)) {
+            TradeManager.getOngoingTrades().remove(this);
+        }
 
     }
 

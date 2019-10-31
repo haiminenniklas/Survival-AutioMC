@@ -175,8 +175,6 @@ public class Events implements Listener {
             Gui gui = Gui.getGui(player);
             if(e.getCurrentItem() != null) {
 
-                gui.setClickAction(new InventoryClickAction(e.getSlot(), e.getCurrentItem(), gui, e.getClickedInventory()));
-
                 for(Button b : gui.getButtons()) {
                     if(b.item.clone().equals(e.getCurrentItem())) {
                         b.onClick(player, e.getClick());
