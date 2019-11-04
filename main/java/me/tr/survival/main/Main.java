@@ -130,6 +130,8 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("broadcast").setExecutor(new Essentials());
         getCommand("discord").setExecutor(new Essentials());
 
+        getCommand("trade").setExecutor(new TradeManager());
+
         // Autosave code...
 
         Autio.logColored(" §aStarting autosaving for players...");

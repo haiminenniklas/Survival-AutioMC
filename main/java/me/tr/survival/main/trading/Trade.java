@@ -13,9 +13,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
 
 public class Trade {
 
@@ -25,6 +25,9 @@ public class Trade {
 
     private Gui gui;
 
+    private HashMap<UUID, List<ItemStack>> items;
+    private HashMap<UUID, Boolean> accepted;
+
     public Trade(UUID trader, UUID target) {
         this.trader = trader;
         this.target = target;
@@ -32,9 +35,12 @@ public class Trade {
         this.expired = false;
         this.gui = this.initGui();
 
-        if(!TradeManager.getOngoingTrades().contains(this)) {
-            TradeManager.getOngoingTrades().add(this);
-        }
+        this.items = new HashMap<>();
+        this.accepted = new HashMap<>();
+        this.accepted.put(trader, false);
+        this.accepted.put(target, false);
+
+        TradeManager.getOngoingTrades().add(this);
 
     }
 
@@ -166,7 +172,9 @@ public class Trade {
         target.sendMessage(" §7Teille avataan vaihtokauppa-näkymää...");
         target.sendMessage("§7§m---------------------");
 
-        this.initExhangeGui();
+        this.expired = true;
+
+        this.initExchangeGui();
         this.updateGui();
 
     }
@@ -199,11 +207,108 @@ public class Trade {
     public void updateGui() {
         Player trader = getTrader();
         Player target = getTarget();
+        if(this.items.containsKey(trader.getUniqueId())) {
+
+            for(int i = 0; i < this.items.get(trader.getUniqueId()).size(); i++) {
+                switch(i) {
+                    case 0:
+                        this.gui.addItem(1, this.items.get(trader.getUniqueId()).get(i), 19);
+                    case 1:
+                        this.gui.addItem(1, this.items.get(trader.getUniqueId()).get(i), 20);
+                    case 2:
+                        this.gui.addItem(1, this.items.get(trader.getUniqueId()).get(i), 24);
+                    case 3:
+                        this.gui.addItem(1, this.items.get(trader.getUniqueId()).get(i), 25);
+                }
+            }
+
+        }
+
+        if(this.items.containsKey(target.getUniqueId())) {
+            for(int i = 0; i < this.items.get(target.getUniqueId()).size(); i++) {
+                switch(i) {
+                    case 0:
+                        this.gui.addItem(1, this.items.get(target.getUniqueId()).get(i), 28);
+                    case 1:
+                        this.gui.addItem(1, this.items.get(target.getUniqueId()).get(i), 29);
+                    case 2:
+                        this.gui.addItem(1, this.items.get(target.getUniqueId()).get(i), 33);
+                    case 3:
+                        this.gui.addItem(1, this.items.get(target.getUniqueId()).get(i), 34);
+                }
+            }
+        }
+
+        this.gui.addItem(1, ItemUtil.makeSkullItem(trader.getName(), 1, "§a" + trader.getName(), Arrays.asList(
+                "§7§m--------------------",
+                " §7Tila: " + ((this.accepted.get(trader.getUniqueId()) ? "§aHyväksynyt" : "§cOdottaa")),
+                "§7§m--------------------"
+        )), 1);
+        this.gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§c" + target.getName(), Arrays.asList(
+                "§7§m--------------------",
+                " §7Tila" + ((this.accepted.get(target.getUniqueId()) ? "§aHyväksynyt" : "§cOdottaa")),
+                "§7§m--------------------"
+        )), 7);
+
         this.gui.open(trader);
         this.gui.open(target);
+
     }
 
-    private void initExhangeGui() {
+    public void returnItems(Player player) {
+        if(this.items.containsKey(player.getUniqueId())) {
+            for(int i = 0; i < this.items.get(player.getUniqueId()).size(); i++) {
+                player.getInventory().addItem(this.items.get(player.getUniqueId()).get(i));
+            }
+        }
+        Chat.sendMessage(player, "Tavarasi palautettiin!");
+
+    }
+
+    public void returnItems() {
+
+        Player trader = getTrader();
+        Player target = getTarget();
+
+        if(this.items.containsKey(trader.getUniqueId())) {
+            for(int i = 0; i < this.items.get(trader.getUniqueId()).size(); i++) {
+                trader.getInventory().addItem(this.items.get(trader.getUniqueId()).get(i));
+            }
+        }
+
+        if(this.items.containsKey(target.getUniqueId())) {
+            for(int i = 0; i < this.items.get(target.getUniqueId()).size(); i++) {
+                target.getInventory().addItem(this.items.get(target.getUniqueId()).get(i));
+            }
+        }
+
+    }
+
+    public void addItem(Player player, ItemStack item) {
+
+        UUID uuid = player.getUniqueId();
+
+        if(!uuid.equals(this.target) && !uuid.equals(this.trader)) {
+            throw new IllegalArgumentException("Player not included in the trade");
+        }
+
+        List<ItemStack> playerItems;
+
+        if(!this.items.containsKey(uuid)) {
+            playerItems = new ArrayList<>();
+        } else {
+            playerItems = this.items.get(uuid);
+        }
+
+        if(playerItems.size() >= 4) return;
+
+        playerItems.add(item.clone());
+        player.getInventory().remove(item);
+        this.updateGui();
+
+    }
+
+    private void initExchangeGui() {
 
         Player trader = getTrader();
         Player target = getTarget();
@@ -212,10 +317,12 @@ public class Trade {
 
         gui.addItem(1, ItemUtil.makeSkullItem(trader.getName(), 1, "§a" + trader.getName(), Arrays.asList(
                 "§7§m--------------------",
+                " §7Tila: " + ((this.accepted.get(trader.getUniqueId()) ? "§aHyväksynyt" : "§cOdottaa")),
                 "§7§m--------------------"
         )), 1);
         gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§c" + target.getName(), Arrays.asList(
                 "§7§m--------------------",
+                " §7Tila" + ((this.accepted.get(target.getUniqueId()) ? "§aHyväksynyt" : "§cOdottaa")),
                 "§7§m--------------------"
         )), 7);
 
@@ -255,7 +362,7 @@ public class Trade {
                 "§7§m--------------------"
         )), 47);
 
-        gui.addItem(1, ItemUtil.makeItem(Material.EMERALD_BLOCK, 1, "§b§lTYHJENNÄ", Arrays.asList(
+        gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§b§lTYHJENNÄ", Arrays.asList(
                 "§7§m--------------------",
                 " §7Mikäli laitoit vahingossa",
                 " §7väärät itemit tarjoukseen",
@@ -271,18 +378,51 @@ public class Trade {
                 " §7tavaraoita, niin voit painaa",
                 " §7tästä §chylätäksesi§7 vaihtokaupan.",
                 "§7§m--------------------"
-        )), 48);
+        )), 51);
 
         this.gui = gui;
 
     }
 
+    public void acceptPlayer(Player player) {
+
+        this.accepted.put(player.getUniqueId(), true);
+        Chat.sendMessage(this.getTarget(),"Pelaaja §6" + player.getName() + " §7hyväksyi tarjousken!");
+        Chat.sendMessage(this.getTrader(),"Pelaaja §6" + player.getName() + " §7hyväksyi tarjousken!");
+
+        if(this.accepted.get(this.target) && this.accepted.get(this.trader)) {
+            this.acceptItems();
+        }
+
+    }
     public void acceptItems() {
+
+        Player trader = getTrader();
+        Player target = getTarget();
+
+        if(this.items.containsKey(trader.getUniqueId())) {
+            for(int i = 0; i < this.items.get(trader.getUniqueId()).size(); i++) {
+                target.getInventory().addItem(this.items.get(trader.getUniqueId()).get(i));
+            }
+        }
+
+        if(this.items.containsKey(target.getUniqueId())) {
+            for(int i = 0; i < this.items.get(target.getUniqueId()).size(); i++) {
+                trader.getInventory().addItem(this.items.get(target.getUniqueId()).get(i));
+            }
+        }
+
+        Chat.sendMessage(this.getTarget(),"Vaihtokauppa valmis! Tavarat vaihdettu!");
+        Chat.sendMessage(this.getTrader(),"Vaihtokauppa valmis! Tavarat vaihdettu!");
+
         this.finish();
+
     }
 
     public void denyItems() {
-
+        Chat.sendMessage(this.getTarget(),"Vaihtokauppa peruttu! Tavarat palautettu.");
+        Chat.sendMessage(this.getTrader(),"Vaihtokauppa peruttu! Tavarat palautettu.");
+        this.returnItems();
         this.finish();
     }
 
@@ -291,6 +431,7 @@ public class Trade {
         Chat.sendMessage(this.getTarget(), Chat.Prefix.ERROR, "Vaihtokauppa suljettiin virheen takia, yrittäkää pian uudestaan!");
         Chat.sendMessage(this.getTrader(), Chat.Prefix.ERROR, "Vaihtokauppa suljettiin virheen takia, yrittäkää pian uudestaan!");
 
+        this.returnItems();
         this.finish();
     }
 
@@ -299,6 +440,9 @@ public class Trade {
         if(TradeManager.getOngoingTrades().contains(this)) {
             TradeManager.getOngoingTrades().remove(this);
         }
+
+        getTrader().closeInventory();
+        getTarget().closeInventory();
 
     }
 

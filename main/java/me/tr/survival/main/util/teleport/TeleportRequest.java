@@ -1,6 +1,5 @@
 package me.tr.survival.main.util.teleport;
 
-import ch.njol.util.Validate;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Settings;
@@ -167,7 +166,9 @@ public class TeleportRequest {
 
         this.expired = true;
 
-        Validate.notNull(this.one, "Neither of the players in the Teleportation request cannot be null!");
+        if(this.one == null) {
+            throw new IllegalArgumentException("Neither of the players in the Teleportation request cannot be null!");
+        }
         TeleportManager.getActiveRequests().remove(this.one.getUniqueId());
 
     }

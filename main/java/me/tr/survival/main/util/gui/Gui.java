@@ -201,7 +201,9 @@ public class Gui implements Listener {
             this.items.put(page, items);
         } else {
             HashMap<Integer, ItemStack> items = this.items.get(page);
-            items.put(pos, item);
+            if(items.containsKey(pos)) {
+                items.replace(pos, item);
+            } else items.put(pos, item);
             this.items.replace(page, items);
         }
 
