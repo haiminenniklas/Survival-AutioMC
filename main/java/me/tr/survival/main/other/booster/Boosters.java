@@ -347,7 +347,7 @@ public class Boosters implements Listener {
             }
 
         }, Material.CHAINMAIL_CHESTPLATE),
-        NO_HUNGER(25, "§6Ruokajakelu",
+        NO_HUNGER(25, "§6Leipäjono",
                 "§7Tällä tehostuksella et koe nälkää! Tehostus kestää §6§l25MIN§7!", 30, () -> {
         }, Material.COOKED_BEEF),
 

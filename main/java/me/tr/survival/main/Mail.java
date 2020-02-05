@@ -4,6 +4,7 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Lottery;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
@@ -48,6 +49,7 @@ public class Mail {
                 "",
                 "§7 Sinua odottaa:",
                 "§7 - §b+" + (3 * multiplier) + " kristallia",
+                "§7 - §a+" + (50 * multiplier) + "€",
                 "§7 - §f+" + (10 * multiplier) + " rautaa",
                 "§7 - §c+" +  + (16 * multiplier) + " pihviä",
                 "§7 - §b+ " + (2 * multiplier) + " timanttia §7(§6Premium§7)",
@@ -90,9 +92,17 @@ public class Mail {
                     clicker.sendMessage("§b§l+" + (3 * multiplier) + " kristallia");
                 }
 
+                Balance.add(clicker.getUniqueId(), 50*multiplier);
+                clicker.sendMessage("§a§l+ " + (50*multiplier) + "€");
+
                 if(Mail.getStreak(clicker) >= 14 && Mail.getStreak(clicker) <= 21) {
                     Crystals.add(clicker.getUniqueId(), 3);
                     clicker.sendMessage("§b§l+ 3 Kristallia §7(Streak)");
+                }
+
+                if(Math.random() < .20) {
+                    Mail.addTickets(player.getUniqueId(), 1);
+                    clicker.sendMessage("§6§l+1 Arpa!!!");
                 }
 
                 clicker.getInventory().addItem(ItemUtil.makeItem(Material.IRON_INGOT, 10 * multiplier));
@@ -104,7 +114,7 @@ public class Mail {
                     clicker.getInventory().addItem(ItemUtil.makeItem(Material.DIAMOND, 2 * multiplier));
                     clicker.sendMessage("§b§l+"  + (2 * multiplier) + " timanttia");
                     clicker.getInventory().addItem(ItemUtil.makeItem(Material.EMERALD, 1 * multiplier));
-                    clicker.sendMessage("§a§l+" + (1 * multiplier) + " emerald");
+                    clicker.sendMessage("§a§l+" + (multiplier) + " emerald");
                 }
 
                 clicker.sendMessage("§7§m--------------------");
@@ -122,6 +132,8 @@ public class Mail {
                 " §7itsellesi §6yhden arvan§7,    ",
                 " §7jolla voit voittaa itsellesi  ",
                 " §7jopa §6§lPremium§7-arvon!     ",
+                " §7Arpoja voi myös voittaa",
+                " §atoimituksista§7.",
                 "",
                 " §7Arvat: §e" + Mail.getTickets(player),
                 "",
@@ -136,7 +148,7 @@ public class Mail {
             }
         });
 
-        gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Streakit", Arrays.asList(
+        gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Kertoimet", Arrays.asList(
                 "§7§m--------------------",
                 "",
                 "§7Mitä pitempään käyt putkeen",

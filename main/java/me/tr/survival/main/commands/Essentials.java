@@ -170,19 +170,24 @@ public class Essentials implements CommandExecutor, Listener {
                         Gui.openGui(player, "Apua (Raha/Valuutta)", 27, (gui) -> {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Miten toimii?", Arrays.asList(
                                     "§7§m--------------------",
-                                    " §7Meidän palvelimellamme §c§lEI",
-                                    " §7ole perinteistä §arahaa§7, jolla",
-                                    " §7voisit esim. mennä palvelimella",
-                                    " §7kauppaan ostamaan mineraaleja.",
-                                    " §7Meillä kaikki perustuu §avaihtokauppaan",
-                                    " §7§o(§a§o/vaihto§7§o)§7, jolloin pelaajat",
-                                    " §7päättävät asioiden hinnan ja kaupan",
+                                    " §7Palvelimellamme on valuutta §eEuro",
+                                    " §7(&e€&7), jolla voit ostaa huuto-",
+                                    " §7kaupasta esineitä. Saat myös näitä",
+                                    " §eeuroja§7, kun saat huutokaupattua",
+                                    " §7tavaroitasi. Palvelimellamme ei ole",
+                                    " §7ylläpidön ylläpitämää kauppaa, vain",
+                                    " §7pelaajien ylläpitämä huutokauppa.",
+                                    " §7(§a/huutokauppa§7)",
+                                    " §7Voit myös maksaa ja vastaanottaa",
+                                    " §7rahaa muilta pelaajilta §7(§a/raha§7)!",
+                                    " §7Aluksi kaikki pelaajat saavat",
+                                    " §a1000€§7!",
                                     "§7§m--------------------"
                             )), 12);
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Mitkä kristallit?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Palvelimellamme on kuitenkin",
-                                    " §7tietynlainen §6valuutta§7. Nämä",
+                                    " §7toisenlainenkin §6valuutta§7. Nämä",
                                     " §7ovat ns. §bkristallit§7. Näillä",
                                     " §7voit ostaa erilaisia §atehostuksia§7,",
                                     " §7sekä erikoistavaroita ja -kykyjä.",

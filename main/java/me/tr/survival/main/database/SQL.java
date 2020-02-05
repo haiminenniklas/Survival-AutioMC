@@ -45,7 +45,7 @@ public class SQL {
 
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-                SQL.conn = DriverManager.getConnection("jdbc:mysql://" + address+ ":3306/autiomc", user, password);
+                SQL.conn = DriverManager.getConnection("jdbc:mysql://" + address + ":3306/autiomc", user, password);
                 System.out.println("Opened database successfully");
 
                 queries();
@@ -63,8 +63,8 @@ public class SQL {
                 "CREATE TABLE IF NOT EXISTS `players` (`uuid` VARCHAR(120), player_name TEXT, money int(11), rank TEXT, joined TEXT, crystals int(11) , PRIMARY KEY(`uuid`));",
                 "CREATE TABLE IF NOT EXISTS `homes` (`uuid` VARCHAR(120), first_home TEXT, second_home TEXT, third_home TEXT, PRIMARY KEY(`uuid`));",
                 "CREATE TABLE IF NOT EXISTS `mined_ores` (`uuid` VARCHAR(120), diamond int(11), gold int(11), iron int(11), coal int(11), total int(11), PRIMARY KEY (`uuid`));",
-                "CREATE TABLE IF NOT EXISTS `levels` (`uuid` VARCHAR(120), level int(11), xp int(11), total_xp int(11), PRIMARY KEY (`player_name`));",
-                "CREATE TABLE IF NOT EXISTS `player_aliases` (`player_name` VARCHAR(32), `addresses` LONGTEXT, PRIMARY KEY(`uuid`));",
+               // "CREATE TABLE IF NOT EXISTS `levels` (`uuid` VARCHAR(120), level int(11), xp int(11), total_xp int(11), PRIMARY KEY (`uuid`));",
+               // "CREATE TABLE IF NOT EXISTS `player_aliases` (`player_name` VARCHAR(32), `addresses` LONGTEXT, PRIMARY KEY(`uuid`));",
                 "CREATE TABLE IF NOT EXISTS `settings` (`uuid` VARCHAR(120), scoreboard TEXT, privacy TEXT, chat TEXT, `treefall` TEXT, PRIMARY KEY(`uuid`));",
                 "CREATE TABLE IF NOT EXISTS `mail` (`uuid` VARCHAR(120), `last_mail` BIGINT(11), `streak` int(11), `tickets` int(11), PRIMARY KEY(`uuid`));",
                 "CREATE TABLE IF NOT EXISTS `warps` (`name` VARCHAR(32), `display_name` TEXT, `loc_x` int(11), `loc_y` int(11), `loc_z` int(11), `loc_pitch` float, `loc_yaw` float, `world` TEXT, `description` LONGTEXT, PRIMARY KEY(`name`));"

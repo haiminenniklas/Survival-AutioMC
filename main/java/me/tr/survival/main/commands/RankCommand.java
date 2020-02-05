@@ -15,6 +15,8 @@ public class RankCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        sender.sendMessage("§cEi käytössä!");
+
         if(sender instanceof Player) {
 
             Player player = (Player) sender;

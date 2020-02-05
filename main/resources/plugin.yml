@@ -9,6 +9,9 @@ commands:
   bal:
     description: Balance
     aliases: [balance, raha, rahatilanne, money]
+  pay:
+    description: Maksa
+    aliases: [maksa]
   save:
     description: Tallenna
     aliases: [tallenna]

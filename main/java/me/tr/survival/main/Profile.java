@@ -5,10 +5,7 @@ import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.util.ItemUtil;
-import me.tr.survival.main.util.data.Crystals;
-import me.tr.survival.main.util.data.Homes;
-import me.tr.survival.main.util.data.Level;
-import me.tr.survival.main.util.data.Ores;
+import me.tr.survival.main.util.data.*;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
@@ -73,6 +70,7 @@ public class Profile {
                 " ",
                 "§7Arvo: §6" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
                 "§7Kristallit: §b" + Crystals.get(targetUUID),
+                "§7Rahatilanne: §a" + Balance.get(targetUUID),
                 " ",
                 "§7Liittynyt: §6" + data.get("joined"),
                 "§7§m--------------------"

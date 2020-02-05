@@ -108,6 +108,7 @@ public class PlayerData {
                     data.put("total", 0);
                 }
 
+                /*
                 // User's Level Data
                 ResultSet levelResult = SQL.query("SELECT * FROM `levels` WHERE `uuid` = '" + uuid.toString() + "';");
                 if(levelResult.next()) {
@@ -118,7 +119,7 @@ public class PlayerData {
                     data.put("level", 0);
                     data.put("xp", 0);
                     data.put("total_xp", 0);
-                }
+                } */
 
                 ResultSet settingsResult = SQL.query("SELECT * FROM `settings` WHERE `uuid` = '" + uuid.toString() + "';");
                 if(settingsResult.next()) {
@@ -198,7 +199,7 @@ public class PlayerData {
                 "UPDATE `mined_ores` SET `diamond` = " + data.get("diamond") + ", `gold` = " + data.get("gold") + ", `iron` = " + data.get("iron") +
                         ", `coal` = " + data.get("coal") + ", `total` = " + data.get("total") + " WHERE `uuid` = '" + uuid + "';",
 
-                "UPDATE `levels` SET `level` = " + data.get("level") + ", `xp` = " + data.get("xp") + ", `total_xp` = " + data.get("xp") +
+                //"UPDATE `levels` SET `level` = " + data.get("level") + ", `xp` = " + data.get("xp") + ", `total_xp` = " + data.get("xp") +
                         " WHERE `uuid` = '" + uuid + "';",
 
                 "UPDATE `settings` SET `scoreboard` = '" + data.get("scoreboard") + "', `privacy` = '" + data.get("privacy") + "', `chat` = '" + data.get("chat") +
@@ -217,7 +218,7 @@ public class PlayerData {
                 "INSERT INTO `mined_ores` VALUES('" + uuid + "', " + data.get("diamond") + ", " + data.get("gold") + ", " + data.get("iron") + ", " +
                         "" + data.get("coal") + ", " + data.get("total") + ");",
 
-                "INSERT INTO `levels` VALUES('" + uuid + "', " + data.get("level") + ", " + data.get("xp") + ", " + data.get("total_xp") + ");",
+               // "INSERT INTO `levels` VALUES('" + uuid + "', " + data.get("level") + ", " + data.get("xp") + ", " + data.get("total_xp") + ");",
 
                 "INSERT INTO `settings` VALUES('" + uuid + "', '" + data.get("scoreboard") + "', '" + data.get("privacy") + "', '" + data.get("chat") + "', 'false');",
 

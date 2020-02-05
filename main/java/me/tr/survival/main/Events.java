@@ -114,8 +114,8 @@ public class Events implements Listener {
 
         Main.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
 
-            PlayerAliases.load(player);
-            PlayerAliases.add(player, player.getAddress().getHostName());
+            //PlayerAliases.load(player);
+           // PlayerAliases.add(player, player.getAddress().getHostName());
             PlayerData.loadPlayer(player.getUniqueId());
 
         }, 20 * 2);

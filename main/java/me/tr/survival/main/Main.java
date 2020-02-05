@@ -1,15 +1,13 @@
 package me.tr.survival.main;
 
 import me.lucko.luckperms.api.LuckPermsApi;
-import me.tr.survival.main.commands.Essentials;
-import me.tr.survival.main.commands.HomeCommand;
-import me.tr.survival.main.commands.RankCommand;
-import me.tr.survival.main.commands.TpaCommand;
+import me.tr.survival.main.commands.*;
 import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.*;
 import me.tr.survival.main.other.booster.Boosters;
+import me.tr.survival.main.other.recipes.Recipe;
 import me.tr.survival.main.other.warps.Warp;
 import me.tr.survival.main.other.warps.Warps;
 import me.tr.survival.main.trading.TradeManager;
@@ -44,6 +42,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -72,7 +71,7 @@ public final class Main extends JavaPlugin implements Listener {
         long start = System.currentTimeMillis();
 
         Autio.log(" ");
-        Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IF FROM THE config.yml!");
+        Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
         Autio.log(" ");
 
         Autio.logColored(" §aSetupping configs and database...");
@@ -130,6 +129,9 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("broadcast").setExecutor(new Essentials());
         getCommand("discord").setExecutor(new Essentials());
 
+        getCommand("bal").setExecutor(new MoneyCommand());
+        getCommand("pay").setExecutor(new MoneyCommand());
+
         getCommand("trade").setExecutor(new TradeManager());
 
         // Autosave code...
@@ -166,6 +168,9 @@ public final class Main extends JavaPlugin implements Listener {
         Autio.logColored(" §aInitializing ChatManager");
         Chat.init();
 
+        Autio.log(" §aLoading Custom Recipes...");
+        Recipe.load();
+
         Autio.logColored("§a Enabled AutioCore! (It took " + (System.currentTimeMillis() - start) +
                 "ms / " + ((System.currentTimeMillis() - start) / 1000) + "s)");
         Autio.logColored("§a---------------------------");
@@ -174,6 +179,26 @@ public final class Main extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+
+        Autio.logColored("§a---------------------------");
+        Autio.logColored(" §aDisablign AutioCore....");
+
+        Autio.log(" ");
+        Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
+        Autio.log(" ");
+
+        Autio.logColored(" §aSaving config...");
+
+        saveConfig();
+
+        Autio.logColored(" §aClosing Database Connection...");
+
+        try {
+            SQL.getConnection().close();
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+        Autio.logColored("§a---------------------------");
 
     }
 
@@ -185,59 +210,7 @@ public final class Main extends JavaPlugin implements Listener {
             Player player = (Player) sender;
             UUID uuid = player.getUniqueId();
 
-            if(command.getLabel().equalsIgnoreCase("bal")) {
-                if(args.length == 0){
-                    //Chat.sendMessage(player, "Rahatilanne: §6" + Balance.get(player) + "€");
-                    Chat.sendMessage(player, "Kristallit: §6" + Crystals.get(player.getUniqueId()));
-                } else if(args.length > 0) {
-                    if(!player.isOp()){
-                      //Chat.sendMessage(player, "Rahatilanne: §6" + Balance.get(player) + "€");
-                        Chat.sendMessage(player, "Kristallit: §6" + Crystals.get(player.getUniqueId()));
-                    } else {
-
-                        if(args.length == 1 && args[0].equalsIgnoreCase("help")) {
-                            Chat.sendMessage(player, "/bal add <player> <amount>");
-                            Chat.sendMessage(player, "/bal remove <player> <amount>");
-                            Chat.sendMessage(player, "/bal get <player>");
-                        } else if(args.length >= 2) {
-
-                            OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
-
-                            if(!PlayerData.isLoaded(target.getUniqueId())) {
-                                Chat.sendMessage(player, "(Pelaajan " + target.getName() + " tietoja ei ole ladattu)");
-                            }
-
-                            if(args.length >= 3) {
-
-                                int value;
-                                try {
-                                    value = Integer.parseInt(args[2]);
-                                } catch(NumberFormatException ex) {
-                                    Chat.sendMessage(player, "Käytä numeroita!");
-                                    return true;
-                                }
-
-                                if(args[0].equalsIgnoreCase("add")) {
-                                    PlayerData.add(target.getUniqueId(), "money", value);
-                                    Chat.sendMessage(player, "Pelaajalle annettu §6" + value + "€§7! Hänen rahatilanteensa: §6" + PlayerData.getValue(target.getUniqueId(), "money") + "€");
-                                } else if(args[0].equalsIgnoreCase("remove")) {
-                                    PlayerData.add(target.getUniqueId(), "money", -value);
-                                    Chat.sendMessage(player, "Pelaajalta poistettu §6" + value + "€! §7Hänen rahatilanteensa: §6" + PlayerData.getValue(target.getUniqueId(), "money") + "€");
-                                }
-
-                                Chat.sendMessage(player, "Tallenna pelaajan tiedot komennolla §6/save " + target.getName());
-
-                            } else {
-                                if(args[0].equalsIgnoreCase("get")) {
-                                    Chat.sendMessage(player, "Pelaajan §4" + target.getName() + " rahatilanne: " + PlayerData.getValue(target.getUniqueId(), "money") + "€");
-                                }
-                            }
-
-                        }
-
-                    }
-                }
-            } else if(command.getLabel().equalsIgnoreCase("save")) {
+           if(command.getLabel().equalsIgnoreCase("save")) {
 
                 if(player.isOp()) {
 

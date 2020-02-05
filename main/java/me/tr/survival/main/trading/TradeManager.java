@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Deprecated
 public class TradeManager implements CommandExecutor, Listener {
 
     public static List<Trade> trades = new ArrayList<>();
@@ -50,7 +51,12 @@ public class TradeManager implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if(sender instanceof Player && command.getLabel().equalsIgnoreCase("trade")) {
+        if(sender instanceof Player) {
+            Chat.sendMessage(((Player)sender), Chat.Prefix.ERROR, "Ei käytössä!");
+        }
+        return true;
+
+        /*if(sender instanceof Player && command.getLabel().equalsIgnoreCase("trade")) {
 
             Player player = (Player) sender;
 
@@ -136,7 +142,7 @@ public class TradeManager implements CommandExecutor, Listener {
 
         }
 
-        return true;
+        return true; */
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

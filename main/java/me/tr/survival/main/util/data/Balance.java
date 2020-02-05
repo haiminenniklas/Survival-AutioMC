@@ -3,30 +3,32 @@ package me.tr.survival.main.util.data;
 import me.tr.survival.main.database.PlayerData;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class Balance {
 
-    public static int get(Player player) {
-        return (int) PlayerData.getValue(player.getUniqueId(), "money");
+    public static int get(UUID player) {
+        return (int) PlayerData.getValue(player, "money");
     }
 
-    public static void add(Player player, int value) {
-        PlayerData.add(player.getUniqueId(), "money",  value);
+    public static void add(UUID player, int value) {
+        PlayerData.add(player, "money",  value);
     }
 
-    public static void remove(Player player, int value) {
+    public static void remove(UUID player, int value) {
         if(!canRemove(player, value)) {
-            PlayerData.set(player.getUniqueId(), "money", 0);
+            PlayerData.set(player, "money", 0);
         } else {
-            PlayerData.add(player.getUniqueId(), "money",  -value);
+            PlayerData.add(player, "money",  -value);
         }
     }
 
 
 
-    public static boolean canRemove(Player player, int value) {
+    public static boolean canRemove(UUID player, int value) {
         int current_balance = Balance.get(player);
 
-        return current_balance - value >= 0;
+        return canRemove(current_balance, value);
 
     }
 
