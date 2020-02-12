@@ -21,12 +21,12 @@ public class CustomGunpowderRecipe extends Recipe {
     }
 
     @Override
-    public Map<String, ItemStack> getIngredients() {
-        Map<String, ItemStack> map = new HashMap<>();
+    public Map<Character, ItemStack> getIngredients() {
+        Map<Character, ItemStack> map = new HashMap<>();
 
-        map.put("G", ItemUtil.makeItem(Material.GLOWSTONE_DUST));
-        map.put("C", ItemUtil.makeItem(Material.COAL));
-        map.put("R", ItemUtil.makeItem(Material.REDSTONE));
+        map.put('G', ItemUtil.makeItem(Material.GLOWSTONE_DUST));
+        map.put('C', ItemUtil.makeItem(Material.COAL));
+        map.put('R', ItemUtil.makeItem(Material.REDSTONE));
 
         return map;
     }

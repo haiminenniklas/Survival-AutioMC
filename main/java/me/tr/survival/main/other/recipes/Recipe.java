@@ -13,12 +13,17 @@ import java.util.Map;
 public abstract class Recipe {
 
     private ItemStack result;
+    private ShapedRecipe recipe;
 
     public Recipe(ItemStack result) {
         this.result = result;
 
-        for(Map.Entry<String, ItemStack> entry : getIngredients().entrySet()) {
-            getShapedRecipe().setIngredient(entry.getKey().charAt(0), entry.getValue());
+        this.recipe = new ShapedRecipe(this.getKey(), this.getResult());
+
+        this.recipe.shape(getShape());
+
+        for(Map.Entry<Character, ItemStack> entry : getIngredients().entrySet()) {
+            this.recipe.setIngredient(entry.getKey(), entry.getValue());
         }
 
     }
@@ -29,14 +34,14 @@ public abstract class Recipe {
 
     public abstract String[] getShape();
 
-    public abstract Map<String, ItemStack> getIngredients();
+    public abstract Map<Character, ItemStack> getIngredients();
 
     public NamespacedKey getKey() {
         return new NamespacedKey(Main.getInstance(), this.result.getType().name().toLowerCase());
     }
 
     public ShapedRecipe getShapedRecipe() {
-        return new ShapedRecipe(this.getKey(), this.getResult());
+        return this.recipe;
     }
 
     public static Recipe[] getRecipes() {

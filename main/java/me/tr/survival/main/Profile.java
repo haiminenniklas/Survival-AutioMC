@@ -175,7 +175,7 @@ public class Profile {
                 "  §6/tpa §7teleporttauspyyntö",
                 "  §6/warp §7palvelimen warpit",
                 "  §9/discord §7Discord-yhteisö",
-                "  §6/vaihda §7vaihtokauppa",
+                "  §6/huutokauppa §7huutokauppa",
                 "  §a/osta §7verkkokauppa",
                 "§7§m--------------------"
         )), 39);

@@ -6,6 +6,7 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.PlayerWeather;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.data.Ores;
 import me.tr.survival.main.util.gui.Button;
@@ -187,11 +188,11 @@ public class Settings {
         obj.getScore(ChatColor.RED + "" + ChatColor.WHITE + "" + ChatColor.RED).setScore(13);
 
         obj.getScore("§7 §a §o").setScore(12);
-        obj.getScore("§7» Tuhotut palikat").setScore(11);
+        obj.getScore("§7» Rahatilanne").setScore(11);
 
         Team moneyCounter = board.registerNewTeam("blocks");
         moneyCounter.addEntry(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED);
-        moneyCounter.setPrefix("§6" + Ores.getTotal(player.getUniqueId()));
+        moneyCounter.setPrefix("§6" + Balance.get(player.getUniqueId()) + "€");
         obj.getScore(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED).setScore(10);
 
         obj.getScore("§7 §9 §l").setScore(9);
@@ -216,7 +217,7 @@ public class Settings {
         Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
 
             board.getTeam("crystals").setPrefix("§6" + Crystals.get(player.getUniqueId()));
-            board.getTeam("blocks").setPrefix("§6" + Ores.getTotal(player.getUniqueId()));
+            board.getTeam("blocks").setPrefix("§6" + Balance.get(player.getUniqueId()) + "€");
             board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
             board.getTeam("players").setPrefix("§6" + Bukkit.getOnlinePlayers().size());
 

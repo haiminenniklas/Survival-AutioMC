@@ -2,6 +2,7 @@ package me.tr.survival.main;
 
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
+import me.tr.survival.main.other.booster.Boosters;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -136,6 +137,7 @@ public class Autio {
 
         Autio.updateTag(player);
         Settings.scoreboard(player);
+        loadPlayer(player);
 
     }
 
@@ -145,6 +147,13 @@ public class Autio {
 
     public static Main getPlugin() {
         return Main.getInstance();
+    }
+
+    public static void runDebug(Player player) {
+        Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjataan yleiset virheet ja bugit...");
+        Autio.updatePlayer(player);
+        Boosters.debug();
+        Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjattu! Jos mikään ei muuttunut yritä poistua ja liittyä palvelimelle uudestaan!");
     }
 
 }

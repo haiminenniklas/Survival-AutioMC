@@ -31,6 +31,8 @@ public class Boosters implements Listener {
 
     public static void panel(Player player) {
 
+        debug();
+
        // int size = 18 + (9 * ((int) Math.ceil((double) Booster.values().length / 7)));
 
         int size = 45;
@@ -107,8 +109,12 @@ public class Boosters implements Listener {
                         gui.close(clicker);
 
                         if(isInCooldown(booster)) {
-                            Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Tuo tehostus on jäähyllä. Odota vielä §c" + getTimeForNextUsage(booster) + "min§7!");
-                            return;
+                            if(getTimeForNextUsage(booster) > 0) {
+                                Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Tuo tehostus on jäähyllä. Odota vielä §c" + getTimeForNextUsage(booster) + "min§7!");
+                                return;
+                            } else {
+                                cooldown.remove(booster.getDisplayName());
+                            }
                         }
 
                         if(!isActive(booster)) {
@@ -164,6 +170,31 @@ public class Boosters implements Listener {
 
     }
 
+    public static void debug() {
+        for(Map.Entry<String, Long> entry : getInCooldown().entrySet()) {
+            Booster booster = Boosters.getBoosterByName(entry.getKey());
+            if(getTimeForNextUsage(booster) <= 0) {
+                getInCooldown().remove(entry.getKey());
+            }
+        }
+
+        for(Map.Entry<String, HashMap<UUID, Long>> entry : getActive().entrySet()) {
+
+            Booster booster = Boosters.getBoosterByName(entry.getKey());
+
+            if(booster == null) {
+                getActive().remove(entry.getKey());
+                continue;
+            }
+
+            if(getTimeLeft(booster) <= 0) {
+                deactivate(booster);
+            }
+
+        }
+
+    }
+
     public static Booster getBoosterByName(String name) {
         for(Booster booster : Booster.values()) {
             if(booster.getDisplayName().equalsIgnoreCase(name)) {
@@ -178,6 +209,7 @@ public class Boosters implements Listener {
     }
 
     public static boolean isInCooldown(Booster booster) {
+
         return getInCooldown().containsKey(booster.getDisplayName());
     }
 
@@ -185,7 +217,7 @@ public class Boosters implements Listener {
         if(!isInCooldown(booster)) return 0;
 
         long putInCooldown = getInCooldown().get(booster.getDisplayName());
-        long shouldExpire = putInCooldown + (60 * 1000 * 60 * 60);
+        long shouldExpire = putInCooldown + (60 * 1000 * 60);
 
         long timeLeft = shouldExpire - System.currentTimeMillis();
 
@@ -202,19 +234,13 @@ public class Boosters implements Listener {
         Autio.every(60, () -> {
 
             for(Map.Entry<String, HashMap<UUID, Long>> e : getActive().entrySet()) {
-                for(Map.Entry<UUID, Long> e1 : e.getValue().entrySet()) {
-                    long start = e1.getValue();
-                    Booster booster = getBoosterByName(e.getKey());
-                    int time = booster.getDuration();
-                    // Check if the booster's time is up
-
-                    if(time < 0) continue;
-
-                    if(System.currentTimeMillis() > start + (time * 60 * 60 * 1000)) {
-                        deactivate(booster);
-                    }
+                Booster booster = getBoosterByName(e.getKey());
+                if(booster == null) continue;
+                if(getTimeLeft(booster) <= 0) {
+                    deactivate(booster);
                 }
             }
+
 
         }, true);
 
@@ -243,9 +269,9 @@ public class Boosters implements Listener {
             HashMap<UUID, Long> map = getActive().get(booster.getDisplayName());
 
             long value = (long) map.values().toArray()[0];
-            long stopTime = value + (booster.getDuration() * 60 * 60 * 1000);
+            long stopTime = value + (booster.getDuration() * 60 * 1000);
 
-            long timeLeft = (stopTime - System.currentTimeMillis()) / 60 / 60 / 1000;
+            long timeLeft = (stopTime - System.currentTimeMillis()) / 60 / 1000;
 
             System.out.println("Aikaa jäjljellä (" + booster.getDisplayName() + ") -> " + value + " / " + timeLeft);
 
@@ -317,7 +343,7 @@ public class Boosters implements Listener {
                         " §7Tehostus kestää §6§l45MIN§7!", 50, () -> {
         }, Material.IRON_NUGGET),
         MORE_ORES(30, "§bMineeralimyllerrys!",
-                "§7Kun tämä tehostus on päälle, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 50, () -> {
+                "§7Kun tämä tehostus on päällä, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 50, () -> {
         }, Material.DIAMOND_ORE),
         EXTRA_HEARTS(60, "§cSote-uudistus",
                 "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 15, () -> {

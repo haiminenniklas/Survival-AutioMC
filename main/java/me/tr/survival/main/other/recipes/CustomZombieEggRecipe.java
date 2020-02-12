@@ -24,11 +24,11 @@ public class CustomZombieEggRecipe extends Recipe {
     }
 
     @Override
-    public Map<String, ItemStack> getIngredients() {
-        Map<String, ItemStack> map = new HashMap<>();
+    public Map<Character, ItemStack> getIngredients() {
+        Map<Character, ItemStack> map = new HashMap<>();
 
-        map.put("R", ItemUtil.makeItem(Material.ROTTEN_FLESH, 64));
-        map.put("H", ItemUtil.makeItem(Material.ZOMBIE_HEAD));
+        map.put('R', ItemUtil.makeItem(Material.ROTTEN_FLESH, 64));
+        map.put('H', ItemUtil.makeItem(Material.ZOMBIE_HEAD));
 
         return map;
     }

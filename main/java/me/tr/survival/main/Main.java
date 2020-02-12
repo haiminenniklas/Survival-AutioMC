@@ -134,6 +134,12 @@ public final class Main extends JavaPlugin implements Listener {
 
         getCommand("trade").setExecutor(new TradeManager());
 
+        getCommand("world").setExecutor(new Essentials());
+        getCommand("clear").setExecutor(new Essentials());
+        getCommand("koordinaatit").setExecutor(new Essentials());
+
+        getCommand("baltop").setExecutor(new BaltopCommand());
+
         // Autosave code...
 
         Autio.logColored(" §aStarting autosaving for players...");
@@ -817,6 +823,8 @@ public final class Main extends JavaPlugin implements Listener {
                         Chat.sendMessage(player, "/debug update [player]");
                         Chat.sendMessage(player, "/debug info");
                         Chat.sendMessage(player, "/debug resetMail");
+                        Chat.sendMessage(player, "/debug resetBooster");
+                        Chat.sendMessage(player, "/debug run");
                     } else {
 
 
@@ -853,6 +861,11 @@ public final class Main extends JavaPlugin implements Listener {
                             } else if(args[0].equalsIgnoreCase("resetMail")) {
                                 Mail.setLastMail(uuid, System.currentTimeMillis() - (1000 * 60 * 60 * 24));
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Päivittäinen posti tyhjennetty!");
+                            } else if(args[0].equalsIgnoreCase("resetBooster")) {
+                                Boosters.getActive().clear();
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Resetoitiin boosterit!");
+                            } else if(args[0].equalsIgnoreCase("run")) {
+                                Autio.runDebug(player);
                             }
 
                         } else if(args.length == 2) {
@@ -881,9 +894,7 @@ public final class Main extends JavaPlugin implements Listener {
                     }
                 } else {
 
-                    Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjataan yleiset virheet ja bugit...");
-                    Autio.updatePlayer(player);
-                    Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjattu! Jos mikään ei muuttunut yritä poistua ja liittyä palvelimelle uudestaan!");
+                    Autio.runDebug(player);
 
                 }
 

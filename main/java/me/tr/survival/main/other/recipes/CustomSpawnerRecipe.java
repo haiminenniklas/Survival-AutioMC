@@ -23,12 +23,12 @@ public class CustomSpawnerRecipe extends Recipe {
     }
 
     @Override
-    public Map<String, ItemStack> getIngredients() {
-        Map<String, ItemStack> map = new HashMap<>();
+    public Map<Character, ItemStack> getIngredients() {
+        Map<Character, ItemStack> map = new HashMap<>();
 
-        map.put("I", ItemUtil.makeItem(Material.IRON_BLOCK));
-        map.put("O", ItemUtil.makeItem(Material.OBSIDIAN));
-        map.put("B", ItemUtil.makeItem(Material.IRON_BARS));
+        map.put('I', ItemUtil.makeItem(Material.IRON_BLOCK));
+        map.put('O', ItemUtil.makeItem(Material.OBSIDIAN));
+        map.put('B', ItemUtil.makeItem(Material.IRON_BARS));
 
         return map;
     }

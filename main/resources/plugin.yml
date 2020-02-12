@@ -151,3 +151,9 @@ commands:
   trade:
     description: Vaihtokauppa
     aliases: [vaihda, vaihto]
+  baltop:
+    description: Top raha
+    aliases: [rahatop, btop]
+  clear:
+    description: Clear inventory
+    aliases: [invclear, clearinventory]

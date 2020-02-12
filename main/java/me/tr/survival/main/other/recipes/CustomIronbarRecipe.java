@@ -23,10 +23,10 @@ public class CustomIronbarRecipe extends Recipe {
     }
 
     @Override
-    public Map<String, ItemStack> getIngredients() {
-        Map<String, ItemStack> map = new HashMap<>();
+    public Map<Character, ItemStack> getIngredients() {
+        Map<Character, ItemStack> map = new HashMap<>();
 
-        map.put("I", ItemUtil.makeItem(Material.IRON_BLOCK));
+        map.put('I', ItemUtil.makeItem(Material.IRON_BLOCK));
 
         return map;
     }
