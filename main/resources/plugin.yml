@@ -3,7 +3,7 @@ version: 0.8
 main: me.tr.survival.main.Main
 description: Survival for AutioMC
 api-version: 1.13
-depend: [UltimateTimber, LuckPerms]
+depend: [UltimateTimber, LuckPerms, ProtocolLib]
 
 commands:
   bal:
@@ -157,3 +157,9 @@ commands:
   clear:
     description: Clear inventory
     aliases: [invclear, clearinventory]
+  matkusta:
+    description: Matkustaminen
+    aliases: [travel, matkustaminen]
+  valuutta:
+    description: Valuutta-asiat
+    aliases: [finanssi, finances, currency]

@@ -21,6 +21,8 @@ public class EnderpearlCooldown implements Listener {
     @EventHandler
     public void onProjectileLaunch(PlayerInteractEvent e) {
 
+        if(e.isCancelled()) return;
+
         Player player = e.getPlayer();
 
         UUID uuid = player.getUniqueId();

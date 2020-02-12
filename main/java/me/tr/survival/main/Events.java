@@ -1,6 +1,7 @@
 package me.tr.survival.main;
 
 import com.destroystokyo.paper.Title;
+import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
 import com.destroystokyo.paper.event.server.ServerExceptionEvent;
 import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
@@ -16,6 +17,8 @@ import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -29,9 +32,13 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.loot.LootContext;
+import org.bukkit.loot.LootTable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -102,7 +109,7 @@ public class Events implements Listener {
             Autio.teleportToSpawn(e.getPlayer());
         }
 
-
+        Autio.sendTablist(player);
 
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
 
@@ -200,10 +207,38 @@ public class Events implements Listener {
     public void onDeath(PlayerDeathEvent e) {
 
         Player player = e.getEntity();
+/*
+        Block firstBlock = player.getLocation().getBlock();
+        if(firstBlock.getType() == Material.AIR) {
 
-        player.spigot().respawn();
+            Block secondBlock = player.getLocation().add(1, 0, 0).getBlock();
+            if(secondBlock.getType() == Material.AIR) {
 
+                BlockData first = Material.CHEST.createBlockData();
+                BlockData second = Material.CHEST.createBlockData();
+
+                firstBlock.setBlockData(first, false);
+                secondBlock.setBlockData(second, false);
+
+                ((Chest)firstBlock).getInventory().addItem(player.getInventory().getContents());
+                ((Chest)firstBlock).getInventory().addItem(player.getInventory().getArmorContents());
+
+                Chat.sendMessage(player, "Sinun kuolinsijainnilla on chesti, jossa on kaikki tavarasi. Ole nopea, ennen kuin joku muu ehtii löytää sen!");
+
+            }
+
+        }
+ */
         lastLocation.put(player.getUniqueId(), player.getLocation());
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.spigot().respawn();
+                cancel();
+            }
+        }.runTaskLater(Main.getInstance(), 3);
+
         player.setHealth(20d);
 
         if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {

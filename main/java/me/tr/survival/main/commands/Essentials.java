@@ -58,6 +58,7 @@ public class Essentials implements CommandExecutor, Listener {
                     player.sendMessage(" §6...asetukset §7Mitkä asetukset?");
                     player.sendMessage(" §6...valuutta §7Miten raha toimii täällä?");
                     player.sendMessage(" §6...tehtävät §7Mitä ne ovat?");
+                    player.sendMessage(" §6...matkustaminen §7Miten toimii??");
                     player.sendMessage("§7§m-----------------------");
 
                 } else {
@@ -203,12 +204,32 @@ public class Essentials implements CommandExecutor, Listener {
                             )), 14);
                         });
                     } else if(args[0].equalsIgnoreCase("tehtävät")) {
-                        Gui.openGui(player, "Apua (Aloittaminen)", 27, (gui) -> {
+                        Gui.openGui(player, "Apua (Tehtävät)", 27, (gui) -> {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Mitä tehtävät ovat?", Arrays.asList(
                                     "§7§m--------------------",
-                                    " §7Tätä sivua ei olla tehty",
-                                    " §7valmiiksi. Muistathan hoputtaa",
-                                    " §cylläpitoa §7tekemäään töitään!",
+                                    " §7Pitääksemme pelaamisen mielekkäänä",
+                                    " §7ja hauskana, olemme lisänneet",
+                                    " §7monenlaisia tehtäviä, joita voit",
+                                    " §7suorittaa ja saada niistä palkintoja!",
+                                    " ",
+                                    " §7Lista tehtävistä: §6/tehtävät§7!",
+                                    "§7§m--------------------"
+                            )), 13);
+                        });
+                    } else if(args[0].equalsIgnoreCase("matkustaminen")) {
+                        Gui.openGui(player, "Apua (Matkustaminen)", 27, (gui) -> {
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Mitä tarkoittaa?", Arrays.asList(
+                                    "§7§m--------------------",
+                                    " §7Palvelimellamme voit matkustaa",
+                                    " §7sekä §5Endiin§7, että §cNetheriin§7!",
+                                    " §7Netheriin matkustaminen on ilmaista,",
+                                    " §7mutta Endiin se on §amaksullista§7.",
+                                    " §7Endiin matkustamiseen vaaditaan erityis-",
+                                    " §7esine. Tämän pysty craftaamaan normaalisti,",
+                                    " §7ja sen resepti löytyy §bnettisivuiltamme§7!",
+                                    " ",
+                                    " §7Lisätietoa matkustamisesta: §6/matkustaminen",
+                                    " §7Nettisivumme: §6www.nuotio.xyz",
                                     "§7§m--------------------"
                             )), 13);
                         });

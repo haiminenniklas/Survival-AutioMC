@@ -2,6 +2,7 @@ package me.tr.survival.main;
 
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
+import me.tr.survival.main.other.TravelManager;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.util.ItemUtil;
@@ -127,7 +128,7 @@ public class Profile {
                 "§7§m--------------------",
                 "§7Kodit: §e" + new Homes(target).getHomesAmount(),
                 " ",
-                "§6Klikkaa näkeäksesi kotisi!",
+                "§6Klikkaa nähdäksesi kotisi!",
                 "§7§m--------------------"
         ))) {
             @Override
@@ -179,6 +180,20 @@ public class Profile {
                 "  §a/osta §7verkkokauppa",
                 "§7§m--------------------"
         )), 39);
+
+        gui.addButton(new Button(1, 40, ItemUtil.makeItem(Material.MAP, 1, "§eMatkustaminen", Arrays.asList(
+                "§7§m--------------------",
+                " §7Tästä klikkaamalla, pääset",
+                " §7matkustamaan eri §emaailmoihin§7!",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                TravelManager.gui(clicker);
+            }
+        });
+
 
 
         gui.addButton(new Button(1, 41, ItemUtil.makeItem(Material.PAPER, 1, "§dPosti", Arrays.asList(

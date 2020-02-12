@@ -261,6 +261,8 @@ public class Boosters implements Listener {
         Bukkit.broadcastMessage("§7§m--------------------");
 
         Boosters.getActive().remove(booster.getDisplayName());
+        getInCooldown().put(booster.getDisplayName(), System.currentTimeMillis());
+
         Util.broadcastSound(Sound.BLOCK_NOTE_BLOCK_PLING);
     }
 
@@ -273,7 +275,7 @@ public class Boosters implements Listener {
 
             long timeLeft = (stopTime - System.currentTimeMillis()) / 60 / 1000;
 
-            System.out.println("Aikaa jäjljellä (" + booster.getDisplayName() + ") -> " + value + " / " + timeLeft);
+            //System.out.println("Aikaa jäjljellä (" + booster.getDisplayName() + ") -> " + value + " / " + timeLeft);
 
             return timeLeft;
 
@@ -308,9 +310,8 @@ public class Boosters implements Listener {
 
         if(booster.getDuration() < 1) {
             Boosters.getActive().remove(booster.getDisplayName());
+            getInCooldown().put(booster.getDisplayName(), System.currentTimeMillis());
         }
-
-        getInCooldown().put(booster.getDisplayName(), System.currentTimeMillis());
 
 
     }

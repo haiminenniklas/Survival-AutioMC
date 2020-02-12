@@ -35,7 +35,7 @@ public class RTP {
             loc.getChunk().load();
         }
 
-        player.teleport(loc);
+        player.teleportAsync(loc);
         Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
 
         if(!player.isOp()) {

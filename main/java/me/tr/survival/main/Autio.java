@@ -1,5 +1,11 @@
 package me.tr.survival.main;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLib;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.booster.Boosters;
@@ -154,6 +160,33 @@ public class Autio {
         Autio.updatePlayer(player);
         Boosters.debug();
         Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjattu! Jos mikään ei muuttunut yritä poistua ja liittyä palvelimelle uudestaan!");
+    }
+
+    public static World getEndWorld() {
+        return Bukkit.getWorld("world_the_end");
+    }
+
+    public static World getNetherWorld() {
+        return Bukkit.getWorld("world_nether");
+    }
+
+    public static ProtocolManager getProtocolManager(){
+        return ProtocolLibrary.getProtocolManager();
+    }
+
+    public static void sendTablist(Player player) {
+        PacketContainer pc = getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
+
+        pc.getChatComponents().write(0, WrappedChatComponent.fromText("§6§lNUOTIO.XYZ"))
+                .write(1, WrappedChatComponent.fromText("§6Survival"));
+        try
+        {
+            getProtocolManager().sendServerPacket(player, pc);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
 }

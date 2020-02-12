@@ -107,6 +107,13 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(new StaffManager(), this);
         pm.registerEvents(new Essentials(), this);
         pm.registerEvents(new TradeManager(), this);
+        pm.registerEvents(new TravelManager(), this);
+
+        // Disable Advancement announcing
+        for(World world : Bukkit.getWorlds()) {
+            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        }
+        Autio.logColored(" §aDisabled Announcement of Advancements!");
 
         // Commands
 
@@ -139,6 +146,9 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("koordinaatit").setExecutor(new Essentials());
 
         getCommand("baltop").setExecutor(new BaltopCommand());
+        getCommand("matkusta").setExecutor(new TravelManager());
+
+        getCommand("valuutta").setExecutor(new MoneyManager());
 
         // Autosave code...
 
@@ -187,7 +197,7 @@ public final class Main extends JavaPlugin implements Listener {
     public void onDisable() {
 
         Autio.logColored("§a---------------------------");
-        Autio.logColored(" §aDisablign AutioCore....");
+        Autio.logColored(" §aDisabling AutioCore....");
 
         Autio.log(" ");
         Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");

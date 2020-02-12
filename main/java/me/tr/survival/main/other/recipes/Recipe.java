@@ -49,7 +49,8 @@ public abstract class Recipe {
                 new CustomGunpowderRecipe(),
                 new CustomIronbarRecipe(),
                 new CustomSpawnerRecipe(),
-                new CustomZombieEggRecipe()
+                new CustomZombieEggRecipe(),
+                new CustomEndPearlRecipe()
         };
     }
 
