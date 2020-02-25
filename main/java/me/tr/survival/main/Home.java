@@ -44,7 +44,11 @@ public class Home {
     }
 
     public void teleport(Player player) {
-        player.teleport(this.getLocation());
+        Chat.sendMessage(player, "Sinut viedään kotiin §63 sekunnin §7päästä...");
+        Autio.afterAsync(3, () -> {
+            Chat.sendMessage(player, "Teleportataan...");
+            player.teleportAsync(this.getLocation());
+        });
     }
 
     public OfflinePlayer getOwner() {

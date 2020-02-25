@@ -150,7 +150,7 @@ commands:
     aliases: [v, piiloudu]
   trade:
     description: Vaihtokauppa
-    aliases: [vaihda, vaihto]
+    aliases: [vaihto]
   baltop:
     description: Top raha
     aliases: [rahatop, btop]
@@ -163,3 +163,13 @@ commands:
   valuutta:
     description: Valuutta-asiat
     aliases: [finanssi, finances, currency]
+  vaihda:
+    description: Vaihda rahaa kristalleihin
+  shekki:
+    description: Kirjoita shekkejä
+    aliases: [cheques, shekit]
+  stop:
+    description: Stop the server
+    aliases: [shutdown]
+  forcestop:
+    description: Force Stop

@@ -1,5 +1,6 @@
 package me.tr.survival.main.other;
 
+import com.sun.management.OperatingSystemMXBean;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -20,7 +21,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -307,5 +310,27 @@ public class Util {
         return result;
     }
 
+    public static double getFreeMemory() {
+        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
+        return round(osBean.getFreePhysicalMemorySize() * 0.000001);
+    }
+
+    public static double getMaxMemory() {
+
+        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
+        return round(osBean.getTotalPhysicalMemorySize() * 0.000001);
+    }
+
+    public static double getProcessCPULoad() {
+        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
+        DecimalFormat df = new DecimalFormat("#.##");
+        return Double.parseDouble(df.format(osBean.getProcessCpuLoad()*100));
+    }
+
+    public static double getSystemCPULoad() {
+        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
+        DecimalFormat df = new DecimalFormat("#.##");
+        return Double.parseDouble(df.format(osBean.getSystemCpuLoad()*100));
+    }
 
 }

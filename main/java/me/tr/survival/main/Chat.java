@@ -183,20 +183,16 @@ public class Chat implements Listener {
         sentMessages.put(uuid, System.currentTimeMillis());
 
         //e.setFormat(Chat.getFormat(player, e.getMessage()));
-        if(Ranks.isStaff(uuid)) {
-            e.setFormat(Ranks.getRankColor(Ranks.getRank(player.getUniqueId())) + player.getName() + ChatColor.translateAlternateColorCodes('&', "&7: &f%2$s"));
-        } else {
-            e.setFormat(Ranks.getRankColor(Ranks.getRank(player.getUniqueId())) + player.getName() + "§7: §f%2$s");
-        }
+        e.setFormat((ChatColor.translateAlternateColorCodes('&', Autio.getPrefix(player) + " " + player.getName()).trim() + "§r: %2$s"));
 
-        if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {
+        /*if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {
             e.setCancelled(true);
             for(Player online : Bukkit.getOnlinePlayers()) {
                 if(Ranks.isStaff(online.getUniqueId())) {
                     online.sendMessage("§7§l(§6§lYLLÄPITO§7§l) §6" + player.getName() + " §7» §f" + e.getMessage().substring(1));
                 }
             }
-        }
+        } */
 
     }
 

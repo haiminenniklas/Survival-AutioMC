@@ -1,6 +1,5 @@
 package me.tr.survival.main;
 
-import me.lucko.luckperms.api.LuckPermsApi;
 import me.tr.survival.main.commands.*;
 import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
@@ -21,6 +20,8 @@ import me.tr.survival.main.util.data.Level;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import me.tr.survival.main.util.staff.StaffManager;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -53,9 +54,9 @@ public final class Main extends JavaPlugin implements Listener {
         return Main.instance;
     }
 
-    public static LuckPermsApi luckPermsApi;
-    public static LuckPermsApi getLuckPermsApi() {
-        return Main.luckPermsApi;
+    private static LuckPerms luckPerms;
+    public static LuckPerms getLuckPerms() {
+        return Main.luckPerms;
     }
 
     public static final HashMap<Player, Player> messages = new HashMap<>();
@@ -64,6 +65,7 @@ public final class Main extends JavaPlugin implements Listener {
         // Some setupping
 
         Main.instance = this;
+        Main.luckPerms = LuckPermsProvider.get();
 
         Autio.logColored("§a---------------------------");
         Autio.logColored(" §aEnabling AutioCore....");
@@ -108,6 +110,7 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(new Essentials(), this);
         pm.registerEvents(new TradeManager(), this);
         pm.registerEvents(new TravelManager(), this);
+        pm.registerEvents(new MoneyManager(), this);
 
         // Disable Advancement announcing
         for(World world : Bukkit.getWorlds()) {
@@ -149,6 +152,11 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("matkusta").setExecutor(new TravelManager());
 
         getCommand("valuutta").setExecutor(new MoneyManager());
+        getCommand("vaihda").setExecutor(new MoneyManager());
+        getCommand("shekki").setExecutor(new MoneyManager());
+
+        getCommand("stop").setExecutor(new StopCommand());
+        getCommand("forcestop").setExecutor(new StopCommand());
 
         // Autosave code...
 
@@ -170,6 +178,21 @@ public final class Main extends JavaPlugin implements Listener {
             }
 
         }, 20, (20*60) * 5);
+
+        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+
+            try {
+
+                Autio.log("Trying to refresh SQL connection...");
+
+                SQL.getConnection().close();
+                SQL.setup();
+
+            } catch(SQLException ex) {
+                ex.printStackTrace();
+            }
+
+        }, (20*60) * 60 * 4, (20*60) * 60 * 4);
 
         Autio.logColored(" §aStarting AutoBroadcaster...");
         AutoBroadcaster.start();
@@ -841,13 +864,7 @@ public final class Main extends JavaPlugin implements Listener {
                         if(args.length == 1) {
 
                             if(args[0].equalsIgnoreCase("mode")) {
-                                if(!Events.adminMode.containsKey(uuid)) {
-                                    Events.adminMode.put(uuid, true);
-                                    Chat.sendMessage(player, Chat.Prefix.DEBUG, "Virheenkorjaustila päällä!");
-                                } else {
-                                    Events.adminMode.remove(uuid);
-                                    Chat.sendMessage(player, Chat.Prefix.DEBUG, "Virheenkorjaustila pois päältä!");
-                                }
+                                Autio.toggleDebugMode(player);
                             } else if(args[0].equalsIgnoreCase("load")) {
 
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Tietojasi haetaan tietokannasta...");

@@ -95,6 +95,11 @@ public class MoneyCommand implements CommandExecutor {
                         return true;
                     }
 
+                    if(amount < 1) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita, tai nolla!");
+                        return true;
+                    }
+
                     if(!Balance.canRemove(uuid, amount)) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole tarpeeksi rahaa!");
                         return true;

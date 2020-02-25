@@ -14,6 +14,9 @@ import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -89,27 +92,51 @@ public class Events implements Listener {
         FileConfiguration config = Main.getInstance().getConfig();
 
         player.sendMessage("§7§m--------------------------");
-        player.sendMessage("§7Tervetuloa §6§lNimettömälle §7 palvelimelle!");
+        player.sendMessage("§7Tervetuloa §6§lNuotion §aSurvivaliin§7!");
         player.sendMessage(" ");
         player.sendMessage("§7Pelaajia paikalla: §6" + Bukkit.getOnlinePlayers().size());
         player.sendMessage("§7Apua: §6/apua");
         player.sendMessage(" ");
-        player.sendMessage("§6http://autiomc.eu");
+        TextComponent mail = new TextComponent(" §d§lPOSTI  ");
+
+        mail.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/posti"));
+        mail.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa tarkastellaksesi §dpäivittäisiä toimituksia§7!")));
+
+        TextComponent stats = new TextComponent("§b§lPROFIILI  ");
+
+        stats.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/stats"));
+        stats.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa tarkastellaksesi §bprofiiliasi§7!")));
+
+
+        TextComponent boosters = new TextComponent("§a§lTEHOSTUKSET");
+
+        boosters.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/boosters"));
+        boosters.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa tarkastellaksesi §atehostuksia§7!")));
+
+        stats.addExtra(boosters);
+        mail.addExtra(stats);
+
+        player.spigot().sendMessage(mail);
+
+        player.sendMessage(" ");
+
+        player.sendMessage("§6http://nuotio.xyz");
         player.sendMessage("§7§m--------------------------");
 
-        if(Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) {
+
+        e.setJoinMessage(null);
+
+        /*if(Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) {
             e.setJoinMessage(
                     ChatColor.translateAlternateColorCodes('&',
                             Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
         } else {
             e.setJoinMessage(null);
-        }
+        }*/
 
         if(!player.hasPlayedBefore()) {
             Autio.teleportToSpawn(e.getPlayer());
         }
-
-        Autio.sendTablist(player);
 
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
 
@@ -128,6 +155,8 @@ public class Events implements Listener {
         }, 20 * 2);
 
         Autio.updatePlayer(player);
+
+        Autio.everyAsync(3, () -> Autio.sendTablist(player));
 
    }
 
@@ -156,14 +185,14 @@ public class Events implements Listener {
         Location loc = e.getTo();
 
         // RTP Portal
-        if(loc.getBlockZ() == -39 && (loc.getBlockX() <= 42 && loc.getBlockX() >= 38) &&
+      /*  if(loc.getBlockZ() == -39 && (loc.getBlockX() <= 42 && loc.getBlockX() >= 38) &&
                 e.getTo().getWorld().getName().equalsIgnoreCase(Autio.getSpawn().getWorld().getName())
                 && loc.getY() <= 136 && loc.getY() >= 133) {
             if(!RTP.teleport(player)) {
                 // Bounce player back
                 Util.bounceBack(player, e.getFrom(), e.getTo());
             }
-        }
+        } */
 
     }
 
@@ -173,10 +202,7 @@ public class Events implements Listener {
         if(e.getCurrentItem() == null) return;
 
         if(e.getView().getTitle().contains("§r")) e.setCancelled(true);
-
         Player player = (Player) e.getWhoClicked();
-
-        if(!player.isOp()) e.setCancelled(true);
 
         if(Gui.getGui(player) != null) {
             Gui gui = Gui.getGui(player);
@@ -309,6 +335,8 @@ public class Events implements Listener {
     public void onFoodLevelChange(FoodLevelChangeEvent e) {
         if(Boosters.isActive(Boosters.Booster.NO_HUNGER)) {
             e.setCancelled(true);
+        } else {
+            e.setCancelled(false);
         }
     }
 

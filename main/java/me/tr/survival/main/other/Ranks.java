@@ -1,6 +1,8 @@
 package me.tr.survival.main.other;
 
+import me.tr.survival.main.Autio;
 import me.tr.survival.main.database.PlayerData;
+import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -10,26 +12,11 @@ import java.util.UUID;
 
 public class Ranks {
 
-    @Deprecated
-    public static final String[] RANKS = new String[] {
-
-            "default",
-            "premium",
-            "premiumplus",
-            "youtube",
-            "twitch",
-            "valvoja",
-            "builder",
-            "admin"
-
-    };
-
-    @Deprecated
     public static String getRank(UUID uuid) {
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
+        if(Autio.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup() != null) {
+            return Autio.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup();
         }
-        return String.valueOf(PlayerData.getValue(uuid, "rank"));
+        return "default";
     }
 
     @Deprecated
@@ -57,7 +44,6 @@ public class Ranks {
         }
     }
 
-    @Deprecated
     public static String getDisplayName(String rank) {
         switch(rank) {
             case "default":
@@ -70,9 +56,9 @@ public class Ranks {
                 return "§cYOUTUBE";
             case "twitch":
                 return "§5TWITCH";
-            case "valvoja":
-                return "§3Valvoja";
-            case "builder":
+            case "mod":
+                return "§5Moderaattori";
+            case "rakentaja":
                 return "§2Rakentaja";
             case "admin":
                 return "§cYlläpitäjä";
@@ -82,7 +68,6 @@ public class Ranks {
         }
     }
 
-    @Deprecated
     public static ChatColor getRankColor(String rank) {
         switch(rank) {
             case "default":
@@ -107,32 +92,26 @@ public class Ranks {
         }
     }
 
-    @Deprecated
     public static boolean hasRank(UUID uuid, String rank) {
-        Player player = Bukkit.getPlayer(uuid);
-        if(player == null) {
-            throw new IllegalArgumentException("Player cannot be null!");
-        }
-        return hasRank(player, rank);
+        User user = Autio.getLuckPerms().getUserManager().getUser(uuid);
+        return (user.getPrimaryGroup().equalsIgnoreCase(rank));
     }
 
-    @Deprecated
     public static boolean isVIP(UUID uuid) {
         if(isStaff(uuid)) return true;
         if(isPartner(uuid)) return true;
         return hasRank(uuid, "premium") || hasRank(uuid, "premiumplus");
     }
-    @Deprecated
     public static boolean isPartner(UUID uuid) {
         if(isStaff(uuid)) return true;
         return hasRank(uuid, "youtube") || hasRank(uuid, "twitch");
     }
 
-    @Deprecated
-    public static boolean isStaff(UUID uuid) { return hasRank(uuid, "admin") || hasRank(uuid, "valvoja") || hasRank(uuid, "builder"); }
+    public static boolean isStaff(UUID uuid) { return hasRank(uuid, "admin") || hasRank(uuid, "moderator") || hasRank(uuid, "builder"); }
 
     public static boolean hasRank(Player player, String rank) {
-        return player.hasPermission("server." + rank.toLowerCase());
+
+        return hasRank(player.getUniqueId(), rank);
 
     }
 

@@ -90,7 +90,7 @@ public class Lottery {
 
         FOOD(50, "§c§lRuokaa"),
         DIAMONDS(10, "§b§lTimantteja"),
-        VIP(0.1, "§6§lPremium"),
+        VIP(0.01, "§a§lPremium"),
         CRYSTALS(5, "§b§lKristalleja");
 
         private double chance;

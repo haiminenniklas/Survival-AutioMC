@@ -20,6 +20,9 @@ public class Balance {
 
     public static void add(UUID player, int value) {
         PlayerData.add(player, "money",  value);
+        if(get(player) < 1) {
+            PlayerData.set(player, "money", 0);
+        }
     }
 
     public static void remove(UUID player, int value) {
@@ -28,6 +31,11 @@ public class Balance {
         } else {
             PlayerData.add(player, "money",  -value);
         }
+
+        if(get(player) < 1) {
+            PlayerData.set(player, "money", 0);
+        }
+
     }
 
 

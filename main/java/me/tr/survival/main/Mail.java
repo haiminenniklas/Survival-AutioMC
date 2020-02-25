@@ -52,9 +52,9 @@ public class Mail {
                 "§7 - §a+" + (50 * multiplier) + "€",
                 "§7 - §f+" + (10 * multiplier) + " rautaa",
                 "§7 - §c+" +  + (16 * multiplier) + " pihviä",
-                "§7 - §b+ " + (2 * multiplier) + " timanttia §7(§6Premium§7)",
-                "§7 - §a+ " + (multiplier) + " emeraldia §7(§6Premium§7)",
-                "§7 - §b+ " + (5 * multiplier) + " kristallia §7(§6Premium§e+§7)",
+                "§7 - §b+ " + (2 * multiplier) + " timanttia §7(§aPremium§7)",
+                "§7 - §a+ " + (multiplier) + " emeraldia §7(§aPremium§7)",
+                "§7 - §b+ " + (5 * multiplier) + " kristallia §7(§aPremium§6+§7)",
                 "§7§m--------------------"
         ))) {
             @Override

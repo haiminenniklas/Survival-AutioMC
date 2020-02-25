@@ -21,7 +21,7 @@ public class RTP {
     public static boolean teleport(Player player) {
 
         if(cooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < cooldown.get(player.getUniqueId()) ) {
-            Chat.sendMessage(player, "Sinun pitää odottaa hetki, jotta voit tehdä teleportata uudestaan..");
+            Chat.sendMessage(player, "Sinun pitää odottaa hetki, jotta voit teleportata uudestaan..");
             return false;
         }
 

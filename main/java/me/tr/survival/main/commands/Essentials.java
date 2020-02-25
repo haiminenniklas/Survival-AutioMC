@@ -252,7 +252,7 @@ public class Essentials implements CommandExecutor, Listener {
 
             } else if(cmd.getLabel().equalsIgnoreCase("discord")) {
 
-                Chat.sendMessage(player, "Discord: §6https://discord.gg/TBrTmZn");
+                Chat.sendMessage(player, "Discord: §6https://discord.gg/MPv4W3");
 
             } else if(cmd.getLabel().equalsIgnoreCase("clear")) {
 
@@ -284,6 +284,15 @@ public class Essentials implements CommandExecutor, Listener {
                     }
 
                     player.sendMessage("§7§m---------------------");
+
+                }
+
+            } else if(cmd.getLabel().equalsIgnoreCase("pullota")) {
+
+                if(args.length < 1) {
+                    Chat.sendMessage(player, "Käytä: §6/pullota <XP Määrä>");
+                    return true;
+                } else {
 
                 }
 

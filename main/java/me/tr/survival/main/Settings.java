@@ -121,7 +121,7 @@ public class Settings {
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 if(!Ranks.isVIP(clicker.getUniqueId()) || !Ranks.isStaff(clicker.getUniqueId())) {
-                    Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§7-arvon!");
+                    Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §aPremium§7-arvon!");
                 } else {
                     PlayerWeather.panel(clicker);
                 }
@@ -177,14 +177,14 @@ public class Settings {
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective obj = board.registerNewObjective("AutioMC", "dummy", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName("  §6§lNIMETÖN §8| §7Survival  ");
+        obj.setDisplayName("  §6§lNUOTIO §8| §7Survival  ");
 
         obj.getScore("§7 §6 §k").setScore(15);
         obj.getScore("§7» Kristallit").setScore(14);
 
         Team crystals = board.registerNewTeam("crystals");
         crystals.addEntry(ChatColor.RED + "" + ChatColor.WHITE + "" + ChatColor.RED);
-        crystals.setPrefix("§6" + Crystals.get(player.getUniqueId()));
+        crystals.setPrefix("§b" + Crystals.get(player.getUniqueId()));
         obj.getScore(ChatColor.RED + "" + ChatColor.WHITE + "" + ChatColor.RED).setScore(13);
 
         obj.getScore("§7 §a §o").setScore(12);
@@ -212,11 +212,11 @@ public class Settings {
         obj.getScore(ChatColor.LIGHT_PURPLE + "" + ChatColor.GREEN + "" + ChatColor.RED).setScore(4);
 
         obj.getScore("§7 §1 §k").setScore(3);
-        obj.getScore("       §6nimeton.fi").setScore(2);
+        obj.getScore("       §6nuotio.xyz").setScore(2);
 
         Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
 
-            board.getTeam("crystals").setPrefix("§6" + Crystals.get(player.getUniqueId()));
+            board.getTeam("crystals").setPrefix("§b" + Crystals.get(player.getUniqueId()));
             board.getTeam("blocks").setPrefix("§6" + Balance.get(player.getUniqueId()) + "€");
             board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
             board.getTeam("players").setPrefix("§6" + Bukkit.getOnlinePlayers().size());

@@ -189,7 +189,7 @@ public class PlayerData {
         }
 
         String[] updateQueries = new String[] {
-                "UPDATE `players` SET `player_name` = '" + data.get("player_name")
+                "UPDATE `players` SET `player_name` = '" + player.getName()
                         + "', `money` = " + data.get("money") + ", `rank` = '" + data.get("rank") + "', `joined` = '" + data.get("joined") + "', `crystals` = " + data.get("crystals") +
                         " WHERE `uuid` = '" + uuid + "';",
 
@@ -209,7 +209,7 @@ public class PlayerData {
         };
 
         String[] saveQueries = new String[] {
-                "INSERT INTO `players` VALUES('" + uuid + "', '" + data.get("player_name") + "', " + data.get("money") + ", '" + data.get("rank") +  "', '" + data.get("joined")
+                "INSERT INTO `players` VALUES('" + uuid + "', '" + player.getName() + "', " + data.get("money") + ", '" + data.get("rank") +  "', '" + data.get("joined")
                         + "', " + data.get("crystals") + ");",
 
                 "INSERT INTO `homes` VALUES('" + uuid +"', '" + data.get("first_home") + "', '" + data.get("second_home") + "', '" + data.get("third_home") + "');",

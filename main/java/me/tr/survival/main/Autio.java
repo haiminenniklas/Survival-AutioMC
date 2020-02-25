@@ -1,18 +1,24 @@
 package me.tr.survival.main;
 
 import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLib;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
+import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.booster.Boosters;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.cacheddata.CachedMetaData;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.query.QueryOptions;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class Autio {
@@ -177,8 +183,8 @@ public class Autio {
     public static void sendTablist(Player player) {
         PacketContainer pc = getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
 
-        pc.getChatComponents().write(0, WrappedChatComponent.fromText("§6§lNUOTIO.XYZ"))
-                .write(1, WrappedChatComponent.fromText("§6Survival"));
+        pc.getChatComponents().write(0, WrappedChatComponent.fromText("\n  §6§lNUOTIO§7 - §aSurvival  \n"))
+                .write(1, WrappedChatComponent.fromText("\n  §7Paikalla:  \n  §8⇻§6" + Bukkit.getOnlinePlayers().size() + "§8⇺  \n"));
         try
         {
             getProtocolManager().sendServerPacket(player, pc);
@@ -187,6 +193,103 @@ public class Autio {
         {
             ex.printStackTrace();
         }
+    }
+
+    public static LuckPerms getLuckPerms() {
+        return Main.getLuckPerms();
+    }
+
+    public static String getPrefix(Player player) {
+        User user = getLuckPerms().getUserManager().getUser(player.getUniqueId());
+        QueryOptions queryOptions = getLuckPerms().getContextManager().getQueryOptions(user).orElse(getLuckPerms().getContextManager().getStaticQueryOptions());
+        if (user == null) {
+            // user not loaded, even after requesting data from storage
+            return "";
+        }
+        CachedMetaData data = user.getCachedData().getMetaData(queryOptions);
+        String prefix = data.getPrefix();
+        getLuckPerms().getUserManager().cleanupUser(user);
+        if(prefix == null) return "";
+        return prefix;
+
+    }
+
+    public static void toggleDebugMode(Player player) {
+        UUID uuid = player.getUniqueId();
+        if(!Events.adminMode.containsKey(uuid)) {
+            Events.adminMode.put(uuid, true);
+            Chat.sendMessage(player, Chat.Prefix.DEBUG, "Virheenkorjaustila päällä!");
+
+           new BukkitRunnable() {
+               @Override
+               public void run() {
+                   if(!Events.adminMode.containsKey(uuid)) {
+                        cancel();
+                       return;
+                   }
+
+                   Util.sendNotification(player, "§7TPS: §e" + Util.round(Autio.getCurrentTPS()) +
+                           " §7| RAM: §a" + Util.getFreeMemory() + "Mb/" + Util.getMaxMemory() + "Mb" +
+                           " §7| CPU: §b" + Util.getProcessCPULoad() + "%/" + Util.getSystemCPULoad() + "%");
+               }
+           }.runTaskTimerAsynchronously(Main.getInstance(), 20, 20);
+        } else {
+            Events.adminMode.remove(uuid);
+            Chat.sendMessage(player, Chat.Prefix.DEBUG, "Virheenkorjaustila pois päältä!");
+        }
+    }
+
+    public static void stopServer() {
+
+       new BukkitRunnable() {
+
+           int timer = 300;
+
+           @Override
+           public void run() {
+
+                if(timer < 0) {
+
+                    for(Player player : Bukkit.getOnlinePlayers()) {
+                        player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §an. minuutin §7kuluttua! Nähdään taas pian!");
+                    }
+
+                    Bukkit.shutdown();
+                    cancel();
+                    return;
+                }
+
+                if(timer == 300) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l5 minuutin §7kuluttua");
+                } else if(timer == 180) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l3 minuutin §7kuluttua");
+                } else if(timer == 120) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l2 minuutin §7kuluttua");
+                } else if(timer == 60) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l1 minuutin §7kuluttua");
+                } else if(timer == 30) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l30 sekunnin §7kuluttua");
+                } else if(timer == 10) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l10 sekunnin §7kuluttua");
+                } else if(timer == 5) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l5...");
+                } else if(timer == 4) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l4...");
+                } else if(timer == 3) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l3...");
+                } else if(timer == 2) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l2...");
+                } else if(timer == 1) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l1...");
+                } else if(timer == 0) {
+                    Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu nyt!");
+                }
+
+                timer -= 1;
+
+           }
+       }.runTaskTimer(Main.getInstance(), 0, 20);
+
     }
 
 }

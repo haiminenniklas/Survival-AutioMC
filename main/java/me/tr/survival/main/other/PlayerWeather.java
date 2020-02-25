@@ -32,7 +32,7 @@ public class PlayerWeather {
                     Chat.sendMessage(clicker, "Sää asetttu selkeäksi!");
                     player.setPlayerWeather(Weathers.SUNNY);
                 } else {
-                    Chat.sendMessage(player, "Tämä toiminto vaatii arvon §6§lPremium§e§l+§7!");
+                    Chat.sendMessage(player, "Tämä toiminto vaatii arvon §aPremium§6+§7!");
                 }
             }
         });
@@ -46,7 +46,7 @@ public class PlayerWeather {
                     Chat.sendMessage(clicker, "Sää asetttu sateiseksi!");
                     player.setPlayerWeather(Weathers.RAINY);
                 } else {
-                    Chat.sendMessage(player, "Tämä toiminto vaatii arvon §6§lPremium§e§l+§7!");
+                    Chat.sendMessage(player, "Tämä toiminto vaatii arvon §aPremium§6+§7!");
                 }
 
             }

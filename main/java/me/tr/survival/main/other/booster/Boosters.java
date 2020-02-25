@@ -225,7 +225,7 @@ public class Boosters implements Listener {
             return 0;
         }
 
-        return timeLeft / 1000 / 60 / 60;
+        return timeLeft / 1000 / 60;
 
     }
 
