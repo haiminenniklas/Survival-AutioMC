@@ -56,6 +56,8 @@ public class PlayerData {
         empty.put("streak", 0);
         empty.put("tickets", 0);
 
+        empty.put("backpack_level", "ONE");
+
         player_data.put(uuid, empty);
 
     }
@@ -149,6 +151,19 @@ public class PlayerData {
                     data.put("tickets", 0);
                 }
 
+                ResultSet backpackResult = SQL.query("SELECT * from `backpacks` WHERE `uuid` = '" + uuid + "';");
+                if(backpackResult.next()) {
+
+                    data.put("backpack_level", backpackResult.getString("level"));
+                    data.put("backpack_inventory", backpackResult.getString("saved_inventory"));
+
+                } else {
+
+                    data.put("backpack_level", "ONE");
+                    data.put("backpack_inventory", "null");
+
+                }
+
 
                 player_data.put(uuid, data);
 
@@ -205,7 +220,9 @@ public class PlayerData {
                         "', `treefall` = '" + data.get("treefall") + "' WHERE `uuid` = '" + uuid + "';",
 
                 "UPDATE `mail` SET `last_mail` = " + data.get("last_mail") + ", `streak` = " + data.get("streak") + ", `tickets` = " + data.get("tickets") +
-                        " WHERE `uuid` = '" + uuid + "';"
+                        " WHERE `uuid` = '" + uuid + "';",
+
+                "UPDATE `backpacks` SET `level` = '" + data.get("backpack_level") + "', `saved_inventory` = '" + data.get("backpack_inventory") + "', WHERE `uuid` = '" + uuid + "';"
         };
 
         String[] saveQueries = new String[] {
@@ -221,7 +238,9 @@ public class PlayerData {
 
                 "INSERT INTO `settings` VALUES('" + uuid + "', '" + data.get("scoreboard") + "', '" + data.get("privacy") + "', '" + data.get("chat") + "', 'false');",
 
-                "INSERT INTO `mail` VALUES('" + uuid  +"', " + data.get("last_mail") + ", " + data.get("streak") + ", " + data.get("tickets") + ");"
+                "INSERT INTO `mail` VALUES('" + uuid  +"', " + data.get("last_mail") + ", " + data.get("streak") + ", " + data.get("tickets") + ");",
+
+                "INSERT INTO `backpacks` VALUES('" + uuid + "', '" + data.get("backpack_level") + "', '" + data.get("backpack_inventory") + "');"
         };
 
         try {

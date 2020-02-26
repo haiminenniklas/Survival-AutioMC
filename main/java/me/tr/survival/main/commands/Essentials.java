@@ -2,6 +2,7 @@ package me.tr.survival.main.commands;
 
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
+import me.tr.survival.main.Main;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
@@ -13,7 +14,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ExpBottleEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
+import org.bukkit.inventory.meta.tags.ItemTagType;
 
 import java.util.*;
 
@@ -57,8 +64,9 @@ public class Essentials implements CommandExecutor, Listener {
                     player.sendMessage(" §6...tehostukset §7Mitä tehostukset ovat?");
                     player.sendMessage(" §6...asetukset §7Mitkä asetukset?");
                     player.sendMessage(" §6...valuutta §7Miten raha toimii täällä?");
-                    player.sendMessage(" §6...tehtävät §7Mitä ne ovat?");
+                    player.sendMessage(" §6...tehtävät §7Miten suoritat tehtäviä");
                     player.sendMessage(" §6...matkustaminen §7Miten toimii??");
+                    player.sendMessage(" §6...reppu §7Kätevä tapa tallettaa tavarat");
                     player.sendMessage("§7§m-----------------------");
 
                 } else {
@@ -112,17 +120,18 @@ public class Essentials implements CommandExecutor, Listener {
                         Gui.openGui(player, "Apua (Arvot)", 27, (gui) -> {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6VIP-arvot", Arrays.asList(
                                     "§7§m--------------------",
-                                    " §7Palvelimellamme on §62",
-                                    " §7VIP-arvoa; §a§lPremium",
-                                    " §7sekä §6§lPremium§e§l+§7.",
+                                    " §7Palvelimellamme on §63",
+                                    " §7VIP-arvoa: §a§lPremium§7,",
+                                    " §6§lPremium§f§l+§7 sekä",
+                                    " §6§lKUNINGAS§7.",
                                     " §7VIP-arvot ovat yksi tapa",
                                     " §7tukea palvelimen toimintaa",
                                     " §7ja pitämällä sen mahdollisimman",
                                     " §7pitkään toiminnassa",
                                     " ",
                                     " §7Lisää VIP-arvoista",
-                                    " §7verkkokaupastamme:",
-                                    " §animeton.fi/kauppa",
+                                    " §7verkkokaupassamme:",
+                                    " §awww.nuotio.xyz/kauppa",
                                     "§7§m--------------------"
                             )), 13);
                         });
@@ -233,6 +242,25 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m--------------------"
                             )), 13);
                         });
+                    } else if(args[0].equalsIgnoreCase("reppu")) {
+                        Gui.openGui(player, "Apua (Matkustaminen)", 27, (gui) -> {
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Mitkä ihmeen reput?", Arrays.asList(
+                                    "§7§m--------------------",
+                                    " §7Kaikki me tiedämme, että on",
+                                    " §7olemassa §5Ender chestit§7, ",
+                                    " §7mutta halusimme tuoda teille",
+                                    " §7paremman ja kätevämmän tavan",
+                                    " §7tallettaa tavaroita! §7Kun teet",
+                                    " §7komennon §6/reppu§7, niin voit ",
+                                    " §7sinne tallettaa tavarasi missä vain!",
+                                    " ",
+                                    " §7On kolmen tason reppua, 1, 2 ja 3",
+                                    " §7ja koko suurenee tason myötä",
+                                    " §7Päivittää reppusi voit komennolla",
+                                    " §a/reppu päivitä§7!",
+                                    "§7§m--------------------"
+                            )), 13);
+                        });
                     }
 
                 }
@@ -294,6 +322,23 @@ public class Essentials implements CommandExecutor, Listener {
                     return true;
                 } else {
 
+                    int value;
+                    try {
+                        value = Integer.parseInt(args[0]);
+                    } catch(NumberFormatException ex) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytä numeroita!");
+                        return true;
+                    }
+
+                    if(value < 1) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Vain positiivisia numeroita!");
+                        return true;
+                    }
+
+                    ItemStack item = createCustomXPBottle(value);
+                    player.getInventory().addItem(item);
+                    Chat.sendMessage(player, "Pullotit §d" + value + " §7kokemusta!");
+
                 }
 
             }
@@ -301,6 +346,64 @@ public class Essentials implements CommandExecutor, Listener {
         }
 
         return true;
+    }
+
+    public static ItemStack createCustomXPBottle(int experienceAmount) {
+
+        ItemStack item = Util.makeEnchanted(ItemUtil.makeItem(Material.EXPERIENCE_BOTTLE, 1, "§a§lXP-Pullo", Arrays.asList(
+                "§7Tämä pullo sisältää",
+                "§d" + experienceAmount,
+                "§7kokemusta! Klikkaa tätä itemiä",
+                "§7saadaksesi kokemukset!"
+        )));
+
+        NamespacedKey key = new NamespacedKey(Main.getInstance(), "xp-amount");
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.getCustomTagContainer().setCustomTag(key, ItemTagType.INTEGER, experienceAmount);
+        item.setItemMeta(itemMeta);
+
+        return item;
+
+    }
+
+    public static int getExperienceFromCustomXPBottle(ItemStack bottle) {
+        NamespacedKey key = new NamespacedKey(Main.getInstance(), "xp-amount");
+        ItemMeta itemMeta = bottle.getItemMeta();
+        CustomItemTagContainer tagContainer = itemMeta.getCustomTagContainer();
+
+        if(tagContainer.hasCustomTag(key, ItemTagType.INTEGER)) {
+            return tagContainer.getCustomTag(key, ItemTagType.INTEGER);
+        }
+
+        return 0;
+
+    }
+
+    @EventHandler
+    public void onClick(PlayerInteractEvent e) {
+
+        Player player = e.getPlayer();
+        if(e.getItem() != null) {
+
+            ItemStack item = e.getItem();
+            if(item.hasItemMeta()) {
+
+                ItemMeta meta = item.getItemMeta();
+                if(meta.getDisplayName().equalsIgnoreCase("§a§lXP-Pullo")) {
+
+                    int exp = getExperienceFromCustomXPBottle(item);
+                    if(exp > 0) {
+                        e.setCancelled(true);
+                        player.giveExp(exp);
+                        Chat.sendMessage(player, "Sait §d" + exp + " §7kokemusta!");
+                    }
+
+                }
+
+            }
+
+        }
+
     }
 
     @EventHandler

@@ -5,6 +5,7 @@ import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.*;
+import me.tr.survival.main.other.backpacks.Backpack;
 import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.other.recipes.Recipe;
 import me.tr.survival.main.other.warps.Warp;
@@ -13,7 +14,6 @@ import me.tr.survival.main.trading.TradeManager;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.Times;
-import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.data.Homes;
 import me.tr.survival.main.util.data.Level;
@@ -29,7 +29,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -38,11 +37,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
@@ -147,6 +141,7 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("world").setExecutor(new Essentials());
         getCommand("clear").setExecutor(new Essentials());
         getCommand("koordinaatit").setExecutor(new Essentials());
+        getCommand("pullota").setExecutor(new Essentials());
 
         getCommand("baltop").setExecutor(new BaltopCommand());
         getCommand("matkusta").setExecutor(new TravelManager());
@@ -157,6 +152,8 @@ public final class Main extends JavaPlugin implements Listener {
 
         getCommand("stop").setExecutor(new StopCommand());
         getCommand("forcestop").setExecutor(new StopCommand());
+
+        getCommand("reppu").setExecutor(new Backpack());
 
         // Autosave code...
 

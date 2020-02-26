@@ -173,3 +173,8 @@ commands:
     aliases: [shutdown]
   forcestop:
     description: Force Stop
+  reppu:
+    description: Talleta tavaroita turvallisesti
+    aliases: [backpack, vault]
+  pullota:
+    description: Pullota kokemusta
