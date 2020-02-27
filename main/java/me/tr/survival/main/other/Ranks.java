@@ -13,8 +13,17 @@ import java.util.UUID;
 public class Ranks {
 
     public static String getRank(UUID uuid) {
-        if(Autio.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup() != null) {
-            return Autio.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup();
+
+        if(Autio.getLuckPerms() != null) {
+            if(Autio.getLuckPerms().getUserManager() != null) {
+                if(Autio.getLuckPerms().getUserManager().getUser(uuid) != null) {
+                    if(Autio.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup() != null) {
+                        return Autio.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup();
+                    }
+                }
+
+            }
+
         }
         return "default";
     }

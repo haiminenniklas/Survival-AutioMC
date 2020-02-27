@@ -58,7 +58,8 @@ public class Essentials implements CommandExecutor, Listener {
                     player.sendMessage( "§7§oKirjoita §6§o/apua <...>");
                     player.sendMessage(" ");
                     player.sendMessage(" §6...komennot §7Hyödylliset komennot");
-                    player.sendMessage(" §6...vaihto §7Tietoa vaihtokaupasta");
+                    //player.sendMessage(" §6...vaihto §7Tietoa vaihtokaupasta");
+                    player.sendMessage(" §6...huutokauppa §7Tietoa huutokaupasta");
                     player.sendMessage(" §6...arvot §7Palvelimen VIP-arvot");
                     player.sendMessage(" §6...aloitus §7Vinkit survivalin aloitukseen");
                     player.sendMessage(" §6...tehostukset §7Mitä tehostukset ovat?");
@@ -261,6 +262,16 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m--------------------"
                             )), 13);
                         });
+                    } else if(args[0].equalsIgnoreCase("huutokauppa")) {
+                        Gui.openGui(player, "Apua (Huutokauppa)", 27, (gui) -> {
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Miten tienaan rahaa?", Arrays.asList(
+                                    "§7§m--------------------",
+                                    " §7Tätä sivua ei olla tehty",
+                                    " §7valmiiksi. Muistathan hoputtaa",
+                                    " §cylläpitoa §7tekemäään töitään!",
+                                    "§7§m--------------------"
+                            )), 13);
+                        });
                     }
 
                 }
@@ -335,6 +346,14 @@ public class Essentials implements CommandExecutor, Listener {
                         return true;
                     }
 
+                    int playerTotalXP = player.getTotalExperience();
+                    if(playerTotalXP - value < 0) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole tarpeeksi kokemusta!");
+                        return true;
+                    }
+
+                    player.setTotalExperience(playerTotalXP - value);
+
                     ItemStack item = createCustomXPBottle(value);
                     player.getInventory().addItem(item);
                     Chat.sendMessage(player, "Pullotit §d" + value + " §7kokemusta!");
@@ -396,6 +415,8 @@ public class Essentials implements CommandExecutor, Listener {
                         e.setCancelled(true);
                         player.giveExp(exp);
                         Chat.sendMessage(player, "Sait §d" + exp + " §7kokemusta!");
+                        item.setAmount(item.getAmount() - 1);
+                        if(item.getAmount() < 1) player.getInventory().remove(item);
                     }
 
                 }

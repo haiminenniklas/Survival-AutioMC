@@ -178,3 +178,5 @@ commands:
     aliases: [backpack, vault]
   pullota:
     description: Pullota kokemusta
+  huutokauppa:
+    description: Huutokauppa

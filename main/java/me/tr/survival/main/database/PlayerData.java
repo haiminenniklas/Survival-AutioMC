@@ -222,7 +222,7 @@ public class PlayerData {
                 "UPDATE `mail` SET `last_mail` = " + data.get("last_mail") + ", `streak` = " + data.get("streak") + ", `tickets` = " + data.get("tickets") +
                         " WHERE `uuid` = '" + uuid + "';",
 
-                "UPDATE `backpacks` SET `level` = '" + data.get("backpack_level") + "', `saved_inventory` = '" + data.get("backpack_inventory") + "', WHERE `uuid` = '" + uuid + "';"
+                "UPDATE `backpacks` SET `level` = '" + data.get("backpack_level") + "', `saved_inventory` = '" + data.get("backpack_inventory") + "' WHERE `uuid` = '" + uuid + "';"
         };
 
         String[] saveQueries = new String[] {

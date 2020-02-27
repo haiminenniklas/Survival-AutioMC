@@ -5,6 +5,7 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.data.Crystals;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -55,9 +56,11 @@ public class Backpack implements CommandExecutor, Listener {
         Level level =  getLevel(player.getUniqueId());
 
         ItemStack[] items = getSavedInventory(uuid);
-        Inventory inv = Bukkit.createInventory(null, level.size, "Reppu (" + level.displayName + "§7)");
+        Inventory inv = Bukkit.createInventory(null, level.size, "Reppu (" + level.displayName + "§8)");
 
         for(ItemStack item : items) {
+            if(item == null) continue;
+            if(item.getType() == Material.AIR) continue;
             inv.addItem(item);
         }
 
@@ -75,7 +78,7 @@ public class Backpack implements CommandExecutor, Listener {
         if(e.getView().getTitle().startsWith("Reppu")) {
 
             saveInventory(player.getUniqueId(), inv.getContents());
-            Chat.sendMessage(player, "Reppusi tallennettiin!");
+            //Chat.sendMessage(player, "Reppusi tallennettiin!");
 
         }
 
@@ -97,11 +100,14 @@ public class Backpack implements CommandExecutor, Listener {
 
     public static ItemStack[] getSavedInventory(UUID uuid) {
 
+        if(!PlayerData.isLoaded(uuid)) {
+            PlayerData.loadNull(uuid, false);
+        }
+
         String raw = getRawSavedInventory(uuid);
         if(raw.equalsIgnoreCase("null")) {
             return new ItemStack[0];
         } else {
-
             try {
                 return Util.itemStackArrayFromBase64(raw);
             } catch(IOException ex) {
@@ -157,8 +163,11 @@ public class Backpack implements CommandExecutor, Listener {
 
             Crystals.add(uuid, -price);
 
-            addLevel(uuid);
-            Chat.sendMessage(player, "Reppusi päivitettiin! Avaa reppusi komennolla §6/reppu");
+            if(addLevel(uuid)) {
+                Chat.sendMessage(player, "Reppusi päivitettiin! Avaa reppusi komennolla §6/reppu");
+            } else {
+                Chat.sendMessage(player, "Reppusi on jo ylimmällä tasolla!");
+            }
 
         } else {
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Päivitys maksaa §b§l" + price + " kristallia§7!");
@@ -189,7 +198,7 @@ public class Backpack implements CommandExecutor, Listener {
     }
 
 
-    enum Level {
+    public enum Level {
 
         ONE(9, "§a§lLEVEL 1"),
         TWO(27, "§e§lLEVEL 2"),

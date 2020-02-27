@@ -8,6 +8,7 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.CountdownTimer;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
+import me.tr.survival.main.other.backpacks.Backpack;
 import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.other.events.LevelUpEvent;
 import me.tr.survival.main.util.RTP;
@@ -80,6 +81,20 @@ public class Events implements Listener {
     }
 
     @EventHandler
+    public void onLogin(PlayerLoginEvent e) {
+
+        Player player = e.getPlayer();
+        if(e.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
+            if(player.hasPermission("server.join.full")) {
+                e.allow();
+            } else {
+                e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän, sinun täytyy omistaa vähintään §a§lPremium§7-arvo!");
+            }
+        }
+
+    }
+
+    @EventHandler
     public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
         UUID uuid = e.getUniqueId();
         PlayerData.loadPlayer(uuid);
@@ -123,6 +138,19 @@ public class Events implements Listener {
         player.sendMessage("§6http://nuotio.xyz");
         player.sendMessage("§7§m--------------------------");
 
+
+        // Setup backpacks
+
+        Backpack.Level bLvl = Backpack.getLevel(player.getUniqueId());
+         if(Ranks.hasRank(player, "premiumplus")) {
+             if(bLvl == Backpack.Level.ONE) {
+                 Backpack.setLevel(player.getUniqueId(), Backpack.Level.TWO);
+             }
+        } else if(Ranks.hasRank(player, "kuningas")) {
+             if(bLvl != Backpack.Level.THREE) {
+                 Backpack.setLevel(player.getUniqueId(), Backpack.Level.THREE);
+             }
+        }
 
         e.setJoinMessage(null);
 

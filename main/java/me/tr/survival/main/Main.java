@@ -26,6 +26,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -35,7 +36,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -105,6 +108,7 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(new TradeManager(), this);
         pm.registerEvents(new TravelManager(), this);
         pm.registerEvents(new MoneyManager(), this);
+        pm.registerEvents(new Backpack(), this);
 
         // Disable Advancement announcing
         for(World world : Bukkit.getWorlds()) {
@@ -154,6 +158,7 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("forcestop").setExecutor(new StopCommand());
 
         getCommand("reppu").setExecutor(new Backpack());
+        getCommand("huutokauppa").setExecutor(new AuctionCommands());
 
         // Autosave code...
 
@@ -167,7 +172,7 @@ public final class Main extends JavaPlugin implements Listener {
                 for(Player player : Bukkit.getOnlinePlayers()) {
                     times_saved += 1;
                     PlayerData.savePlayer(player.getUniqueId());
-                    Chat.sendMessage(player, "Tietosi tallennettiin automaattisesti!");
+                    //Chat.sendMessage(player, "Tietosi tallennettiin automaattisesti!");
                 }
                 Autio.log("Saved the data of " + times_saved + " players!");
             } else {
@@ -206,6 +211,14 @@ public final class Main extends JavaPlugin implements Listener {
 
         Autio.log(" §aLoading Custom Recipes...");
         Recipe.load();
+
+        Autio.log(" §aIntegrating custom economy into Vault...");
+        if(Bukkit.getServer().getPluginManager().getPlugin("Vault") != null) {
+            Bukkit.getServer().getServicesManager().register(Economy.class, new CustomEconomy(), this, ServicePriority.Highest);
+        } else {
+            Autio.log(" §cCould not find Vault! Disabling plugin...");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
 
         Autio.logColored("§a Enabled AutioCore! (It took " + (System.currentTimeMillis() - start) +
                 "ms / " + ((System.currentTimeMillis() - start) / 1000) + "s)");
@@ -1217,6 +1230,5 @@ public final class Main extends JavaPlugin implements Listener {
 
         return true;
     }
-
 
 }

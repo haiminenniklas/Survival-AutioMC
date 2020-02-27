@@ -39,7 +39,7 @@ other:
 
 chat:
   prefixes:
-    default: '&6&lNimetön &7»'
+    default: '&6&lNuotio &7»'
     error: '&6&lVirhe &7»'
     afk: '&6&lAFK &7»'
     debug: '&6&lVirheenkorjaus &7»'
