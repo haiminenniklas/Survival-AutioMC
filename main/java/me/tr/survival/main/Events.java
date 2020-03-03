@@ -27,6 +27,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -80,7 +81,7 @@ public class Events implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onLogin(PlayerLoginEvent e) {
 
         Player player = e.getPlayer();
@@ -94,13 +95,13 @@ public class Events implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
         UUID uuid = e.getUniqueId();
         PlayerData.loadPlayer(uuid);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(PlayerJoinEvent e) {
 
         Player player = e.getPlayer();
@@ -188,7 +189,7 @@ public class Events implements Listener {
 
    }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
 
         Player player = e.getPlayer();
@@ -224,7 +225,7 @@ public class Events implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInvClick(InventoryClickEvent e) {
         if(e.getClickedInventory() == null) return;
         if(e.getCurrentItem() == null) return;
@@ -247,7 +248,7 @@ public class Events implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInvClose(InventoryCloseEvent e) {
 
         Player player = (Player) e.getPlayer();
@@ -257,7 +258,7 @@ public class Events implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent e) {
 
         Player player = e.getEntity();
@@ -289,9 +290,10 @@ public class Events implements Listener {
             @Override
             public void run() {
                 player.spigot().respawn();
+                Autio.teleportToSpawn(player);
                 cancel();
             }
-        }.runTaskLater(Main.getInstance(), 3);
+        }.runTaskLater(Main.getInstance(), 5);
 
         player.setHealth(20d);
 
@@ -319,11 +321,9 @@ public class Events implements Listener {
 
         }
 
-        Autio.teleportToSpawn(player);
-
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDeath(EntityDeathEvent e) {
 
         if(Boosters.isActive(Boosters.Booster.DOUBLE_XP) && e.getEntity().getKiller() != null) {
@@ -336,7 +336,7 @@ public class Events implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onTeleport(PlayerTeleportEvent e) {
 
         Player player = e.getPlayer();
@@ -359,16 +359,17 @@ public class Events implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onFoodLevelChange(FoodLevelChangeEvent e) {
         if(Boosters.isActive(Boosters.Booster.NO_HUNGER)) {
             e.setCancelled(true);
         } else {
             e.setCancelled(false);
         }
+        Bukkit.broadcastMessage(String.valueOf(e.isCancelled()));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent e) {
 
         Player player = e.getPlayer();
@@ -494,6 +495,15 @@ public class Events implements Listener {
 
 
     }
+
+    @EventHandler
+    public void onKick(PlayerKickEvent e) {
+        if (e.getReason().equalsIgnoreCase("disconnect.spam")) {
+            return;
+        }
+        e.setCancelled(true);
+    }
+
 
     @EventHandler(ignoreCancelled = true)
     public void onCreatureSpawn(CreatureSpawnEvent event) {

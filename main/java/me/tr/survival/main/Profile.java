@@ -222,9 +222,9 @@ public class Profile {
                 gui.close(clicker);
 
                 if(!Ranks.isVIP(clicker.getUniqueId())) {
-                    Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §6§lPremium§7-arvo tähän toimintoon!");
+                    Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §a§lPremium§7-arvo tähän toimintoon!");
                 } else {
-                    Chat.sendMessage(clicker, "Tulossa myöhemmin! Stay tuned ;)");
+                    Particles.openMainGui(clicker);
                 }
 
             }

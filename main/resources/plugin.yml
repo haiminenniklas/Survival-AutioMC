@@ -3,7 +3,7 @@ version: 0.8
 main: me.tr.survival.main.Main
 description: Survival for AutioMC
 api-version: 1.13
-depend: [UltimateTimber, LuckPerms, ProtocolLib]
+depend: [UltimateTimber, LuckPerms, ProtocolLib, PlayerParticles]
 
 commands:
   bal:
@@ -170,9 +170,10 @@ commands:
     aliases: [cheques, shekit]
   stop:
     description: Stop the server
-    aliases: [shutdown]
+    aliases: [shutdown, restart]
   forcestop:
     description: Force Stop
+    aliases: [forcerestart, forceshutdown]
   reppu:
     description: Talleta tavaroita turvallisesti
     aliases: [backpack, vault]
@@ -180,3 +181,8 @@ commands:
     description: Pullota kokemusta
   huutokauppa:
     description: Huutokauppa
+  invsee:
+    description: Tarkastele inventorya
+  kosmetiikka:
+    description: Kosmetiikka
+    aliases: [cosmetics, particles, partikkelit, nuolijanat, arrowtrail]

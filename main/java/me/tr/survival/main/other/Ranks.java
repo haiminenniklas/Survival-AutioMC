@@ -41,8 +41,8 @@ public class Ranks {
                 return "§c§lYOUTUBE";
             case "twitch":
                 return "§5§lTWITCH";
-            case "valvoja":
-                return "§3§lValvoja";
+            case "mod":
+                return "§3§lMOD";
             case "builder":
                 return "§2§lRakentaja";
             case "admin":
@@ -61,12 +61,14 @@ public class Ranks {
                 return "§6Premium";
             case "premiumplus":
                 return "§6Premium§6+";
+            case "kuningas":
+                return "§6KUNINGAS";
             case "youtube":
                 return "§cYOUTUBE";
             case "twitch":
                 return "§5TWITCH";
             case "mod":
-                return "§5Moderaattori";
+                return "§3Moderaattori";
             case "rakentaja":
                 return "§2Rakentaja";
             case "admin":
@@ -82,14 +84,16 @@ public class Ranks {
             case "default":
                 return ChatColor.GRAY;
             case "premium":
-                return ChatColor.GOLD;
+                return ChatColor.GREEN;
             case "premiumplus":
+                return ChatColor.GREEN;
+            case "kuningas":
                 return ChatColor.GOLD;
             case "youtube":
                 return ChatColor.DARK_RED;
             case "twitch":
                 return ChatColor.DARK_PURPLE;
-            case "valvoja":
+            case "mod":
                 return ChatColor.DARK_AQUA;
             case "builder":
                 return ChatColor.DARK_GREEN;
@@ -116,7 +120,11 @@ public class Ranks {
         return hasRank(uuid, "youtube") || hasRank(uuid, "twitch");
     }
 
-    public static boolean isStaff(UUID uuid) { return hasRank(uuid, "admin") || hasRank(uuid, "moderator") || hasRank(uuid, "builder"); }
+    public static boolean isStaff(UUID uuid) {
+        if(Bukkit.getOfflinePlayer(uuid).isOp()) {
+            return true;
+        }
+        return hasRank(uuid, "admin") || hasRank(uuid, "mod") || hasRank(uuid, "builder"); }
 
     public static boolean hasRank(Player player, String rank) {
 

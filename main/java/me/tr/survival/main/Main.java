@@ -1,5 +1,6 @@
 package me.tr.survival.main;
 
+import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.commands.*;
 import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
@@ -36,10 +37,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
@@ -56,6 +57,11 @@ public final class Main extends JavaPlugin implements Listener {
         return Main.luckPerms;
     }
 
+    private static PlayerParticlesAPI particlesAPI;
+    public static PlayerParticlesAPI getParticlesAPI() {
+        return particlesAPI;
+    }
+
     public static final HashMap<Player, Player> messages = new HashMap<>();
     @Override
     public void onEnable() {
@@ -63,6 +69,13 @@ public final class Main extends JavaPlugin implements Listener {
 
         Main.instance = this;
         Main.luckPerms = LuckPermsProvider.get();
+        if (Bukkit.getPluginManager().getPlugin("PlayerParticles") != null) {
+            Main.particlesAPI = PlayerParticlesAPI.getInstance();
+        } else {
+            Autio.log("§cCould not find PlayerParticles plugin, disabling...");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
 
         Autio.logColored("§a---------------------------");
         Autio.logColored(" §aEnabling AutioCore....");
@@ -109,6 +122,7 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(new TravelManager(), this);
         pm.registerEvents(new MoneyManager(), this);
         pm.registerEvents(new Backpack(), this);
+        pm.registerEvents(new Particles(), this);
 
         // Disable Advancement announcing
         for(World world : Bukkit.getWorlds()) {
@@ -159,6 +173,9 @@ public final class Main extends JavaPlugin implements Listener {
 
         getCommand("reppu").setExecutor(new Backpack());
         getCommand("huutokauppa").setExecutor(new AuctionCommands());
+        getCommand("invsee").setExecutor(new Essentials());
+
+        getCommand("kosmetiikka").setExecutor(new Particles());
 
         // Autosave code...
 
@@ -1157,8 +1174,13 @@ public final class Main extends JavaPlugin implements Listener {
                 if(!Events.lastLocation.containsKey(uuid)) {
                     Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei ole mitään mihin viedä.");
                 } else {
-                    Chat.sendMessage(player, "Viedään äskeiseen sijaintiin...");
-                    player.teleport(Events.lastLocation.get(uuid));
+                    Location loc = Events.lastLocation.get(uuid);
+                    if(loc != null) {
+                        Chat.sendMessage(player, "Viedään äskeiseen sijaintiin...");
+                        player.teleport(Events.lastLocation.get(uuid));
+                    } else {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei ole mitään mihin viedä.");
+                    }
                 }
             } else if(command.getLabel().equalsIgnoreCase("enderchest")) {
 

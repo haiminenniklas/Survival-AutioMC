@@ -128,7 +128,7 @@ public class Mail {
                 "§7§m--------------------",
                 "",
                 " §7Kun äänestät palvelinta       ",
-                " §7komennolla §a/vote, saat      ",
+                " §7komennolla §a/vote§7, saat      ",
                 " §7itsellesi §6yhden arvan§7,    ",
                 " §7jolla voit voittaa itsellesi  ",
                 " §7jopa §6§lPremium§7-arvon!     ",
@@ -161,7 +161,15 @@ public class Mail {
                 "§7- §c§l+21pv §7-> §b§l3x",
                 "",
                 "§7§m--------------------"
-        )), 18);
+        )), 26);
+
+        gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(player);
+                Profile.openProfile(player, clicker.getUniqueId());
+            }
+        });
 
         gui.open(player);
 

@@ -15,8 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ExpBottleEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
@@ -328,7 +331,9 @@ public class Essentials implements CommandExecutor, Listener {
 
             } else if(cmd.getLabel().equalsIgnoreCase("pullota")) {
 
-                if(args.length < 1) {
+                Chat.sendMessage(player, "Ei käytössä!");
+
+               /* if(args.length < 1) {
                     Chat.sendMessage(player, "Käytä: §6/pullota <XP Määrä>");
                     return true;
                 } else {
@@ -358,13 +363,75 @@ public class Essentials implements CommandExecutor, Listener {
                     player.getInventory().addItem(item);
                     Chat.sendMessage(player, "Pullotit §d" + value + " §7kokemusta!");
 
-                }
+                } */
 
+            } else if(cmd.getLabel().equalsIgnoreCase("invsee")) {
+
+                if(Ranks.isStaff(player.getUniqueId())) {
+
+                    if(args.length < 1) {
+                        Chat.sendMessage(player, "Käytä §6/invsee <pelaaja>");
+                    } else {
+
+                        Player target = Bukkit.getPlayer(args[0]);
+                        if(target == null) {
+                            Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty!");
+                            return true;
+                        }
+
+                        invsee(player, target);
+
+
+                    }
+
+                } else {
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei oikeuksia!");
+                }
             }
 
         }
 
         return true;
+    }
+
+    public static void invsee(Player opener, Player target) {
+
+        Inventory inv = Bukkit.createInventory(target, InventoryType.PLAYER, "Tarkastele inventoryä (" + target.getName() + ")");
+        for(ItemStack item : target.getInventory().getContents()) {
+            if(item == null) {
+                item = new ItemStack(Material.AIR);
+            }
+
+            inv.addItem(item);
+
+        }
+        opener.openInventory(inv);
+
+    }
+
+    @EventHandler
+    public void onInvClose(InventoryCloseEvent e) {
+
+        Player player = (Player) e.getPlayer();
+
+        if(e.getView().getTitle().startsWith("Tarkastele inventoryä")) {
+            String title = e.getView().getTitle();
+
+            String playerName = title.substring(title.indexOf('('));
+            playerName = playerName.replace(")", "");
+            playerName = playerName.replace("(", "");
+
+            Player target = Bukkit.getPlayer(playerName);
+            if(target == null) {
+                Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty!");
+                return;
+            }
+
+            target.getInventory().setContents(e.getInventory().getContents());
+
+        }
+
+
     }
 
     public static ItemStack createCustomXPBottle(int experienceAmount) {

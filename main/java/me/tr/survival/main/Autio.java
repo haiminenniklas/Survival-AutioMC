@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
@@ -148,8 +149,8 @@ public class Autio {
     public static void updatePlayer(Player player) {
 
         Autio.updateTag(player);
-        Settings.scoreboard(player);
         loadPlayer(player);
+        Settings.scoreboard(player);
 
     }
 
@@ -165,7 +166,9 @@ public class Autio {
         Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjataan yleiset virheet ja bugit...");
         Autio.updatePlayer(player);
         Boosters.debug();
-        Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjattu! Jos mikään ei muuttunut yritä poistua ja liittyä palvelimelle uudestaan!");
+        Particles.reloadParticles(player);
+        Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjattu! Jos mikään ei muuttunut yritä poistua ja liittyä palvelimelle uudestaan!" +
+                " Jos muutosta ei vieläkään näy, laita ilmoitus ylläpidollemme Discordissa kanavalla §9#ilmoita-bugeista§7!");
     }
 
     public static World getEndWorld() {
@@ -197,6 +200,10 @@ public class Autio {
 
     public static LuckPerms getLuckPerms() {
         return Main.getLuckPerms();
+    }
+
+    public static PlayerParticlesAPI getParticlesAPI() {
+        return Main.getParticlesAPI();
     }
 
     public static String getPrefix(Player player) {
@@ -251,7 +258,7 @@ public class Autio {
                 if(timer < 0) {
 
                     for(Player player : Bukkit.getOnlinePlayers()) {
-                        player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §an. minuutin §7kuluttua! Nähdään taas pian!");
+                        player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");
                     }
 
                     Bukkit.shutdown();

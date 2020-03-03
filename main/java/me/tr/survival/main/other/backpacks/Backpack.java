@@ -1,11 +1,17 @@
 package me.tr.survival.main.other.backpacks;
 
+import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.database.PlayerData;
+import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
+import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.data.Crystals;
+import me.tr.survival.main.util.gui.Button;
+import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,11 +19,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -37,7 +45,37 @@ public class Backpack implements CommandExecutor, Listener {
                 } else {
 
                    if(args[0].equalsIgnoreCase("päivitä") || args[0].equalsIgnoreCase("upgrade")) {
-                        Backpack.upgrade(player);
+                        Backpack.upgradeConfirm(player);
+                   }
+
+                   if(args.length >= 2) {
+
+                       if(Ranks.isStaff(player.getUniqueId())) {
+                           if(args[0].equalsIgnoreCase("katso")) {
+
+                               OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+                               if(!PlayerData.isLoaded(target.getUniqueId())) {
+
+                                   Chat.sendMessage(player, "Pelaajaa ei löydetty... Yritetään ladata tiedot tietokannasta");
+
+                                   Autio.async(() -> {
+                                       boolean result = PlayerData.loadPlayer(target.getUniqueId());
+                                       if(result) {
+                                           openOther(player, target);
+                                       } else {
+                                           Chat.sendMessage(player, "Pelaajaa ei löydetty... Ei voida avata reppua!");
+                                       }
+                                   });
+
+                               } else {
+                                   openOther(player, target);
+                               }
+
+                           }
+                       } else {
+                           Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei oikeuksia!");
+                       }
+
                    }
 
                 }
@@ -47,6 +85,21 @@ public class Backpack implements CommandExecutor, Listener {
         }
 
         return true;
+    }
+
+    public static void openOther(Player opener, OfflinePlayer target) {
+
+        ItemStack[] items = getSavedInventory(target.getUniqueId());
+        Inventory inv = Bukkit.createInventory(null, 54, "Tarkastele reppua (" + target.getName() + ")");
+
+        for(ItemStack item : items) {
+            if(item == null) continue;
+            if(item.getType() == Material.AIR) continue;
+            inv.addItem(item);
+        }
+
+        opener.openInventory(inv);
+
     }
 
     public static void openBackpack(Player player) {
@@ -79,6 +132,20 @@ public class Backpack implements CommandExecutor, Listener {
 
             saveInventory(player.getUniqueId(), inv.getContents());
             //Chat.sendMessage(player, "Reppusi tallennettiin!");
+
+        } else if(e.getView().getTitle().startsWith("Tarkastele reppua")) {
+
+            String title = e.getView().getTitle();
+
+            String playerName = title.substring(title.indexOf('('));
+            playerName = playerName.replace(")", "");
+            playerName = playerName.replace("(", "");
+
+            OfflinePlayer target = Bukkit.getOfflinePlayer(playerName);
+
+            saveInventory(target.getUniqueId(), inv.getContents());
+
+            Chat.sendMessage(player, "Tallennettiin pelaajan §6" + playerName + " §7reppu!");
 
         }
 
@@ -147,6 +214,52 @@ public class Backpack implements CommandExecutor, Listener {
         }
 
         PlayerData.set(uuid, "backpack_level", level.toString());
+    }
+
+    public static void upgradeConfirm(Player player) {
+
+        UUID uuid = player.getUniqueId();
+        Level current = getLevel(uuid);
+
+        int price = 300;
+        if(current == Level.TWO) {
+            price = 450;
+        }
+
+        final int finalPrice = price;
+
+        Gui.openGui(player, "Päivitä reppusi", 27, (gui) -> {
+
+            gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahivsta", Arrays.asList(
+                    "§7§m--------------------",
+                    " §7Klikkaa vahvistaaksesi päivityksen!",
+                    " §7Päivitys maksaa: §b" + finalPrice + " kristallia§7!",
+                    "§7§m--------------------"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+
+                    upgrade(clicker);
+                    gui.close(player);
+
+                }
+            });
+
+            gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                    "§7§m--------------------",
+                    "§7 Klikkaa peruuttaaksesi päivityksen!",
+                    "§7§m--------------------"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+
+                    gui.close(clicker);
+
+                }
+            });
+
+        });
+
     }
 
     public static void upgrade(Player player) {

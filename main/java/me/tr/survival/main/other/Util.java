@@ -315,13 +315,13 @@ public class Util {
 
     public static double getFreeMemory() {
         OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-        return round(osBean.getFreePhysicalMemorySize() * 0.000001);
+        return round(osBean.getFreePhysicalMemorySize() * 0.00000095367432);
     }
 
     public static double getMaxMemory() {
 
         OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-        return round(osBean.getTotalPhysicalMemorySize() * 0.000001);
+        return round(osBean.getTotalPhysicalMemorySize() * 0.00000095367432);
     }
 
     public static double getProcessCPULoad() {

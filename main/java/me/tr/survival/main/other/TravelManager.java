@@ -2,6 +2,7 @@ package me.tr.survival.main.other;
 
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
+import me.tr.survival.main.Profile;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
@@ -93,6 +94,15 @@ public class TravelManager implements CommandExecutor, Listener {
 
                 }
             });
+
+            gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(player);
+                    Profile.openProfile(player, clicker.getUniqueId());
+                }
+            });
+
 
         });
 

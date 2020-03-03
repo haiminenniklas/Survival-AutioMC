@@ -58,6 +58,10 @@ public class PlayerData {
 
         empty.put("backpack_level", "ONE");
 
+        empty.put("arrowtrail", "default");
+        empty.put("particle", "default");
+
+
         player_data.put(uuid, empty);
 
     }
@@ -164,6 +168,15 @@ public class PlayerData {
 
                 }
 
+                ResultSet particleResult = SQL.query("SELECT * FROM `particles` WHERE `uuid` = '" + uuid +  "';");
+                if(particleResult.next()) {
+                    data.put("arrowtrail", particleResult.getString("arrowtrail"));
+                    data.put("particle", particleResult.getString("particle"));
+                } else {
+                    data.put("arrowtrail", "default");
+                    data.put("particle", "default");
+                }
+
 
                 player_data.put(uuid, data);
 
@@ -222,7 +235,9 @@ public class PlayerData {
                 "UPDATE `mail` SET `last_mail` = " + data.get("last_mail") + ", `streak` = " + data.get("streak") + ", `tickets` = " + data.get("tickets") +
                         " WHERE `uuid` = '" + uuid + "';",
 
-                "UPDATE `backpacks` SET `level` = '" + data.get("backpack_level") + "', `saved_inventory` = '" + data.get("backpack_inventory") + "' WHERE `uuid` = '" + uuid + "';"
+                "UPDATE `backpacks` SET `level` = '" + data.get("backpack_level") + "', `saved_inventory` = '" + data.get("backpack_inventory") + "' WHERE `uuid` = '" + uuid + "';",
+
+                "UPDATE `particles` SET `arrowtrail` = '" + data.get("arrowtrail") + "', `particle` = '" + data.get("particle") + "' WHERE `uuid` = '" + uuid + "';"
         };
 
         String[] saveQueries = new String[] {
@@ -240,7 +255,9 @@ public class PlayerData {
 
                 "INSERT INTO `mail` VALUES('" + uuid  +"', " + data.get("last_mail") + ", " + data.get("streak") + ", " + data.get("tickets") + ");",
 
-                "INSERT INTO `backpacks` VALUES('" + uuid + "', '" + data.get("backpack_level") + "', '" + data.get("backpack_inventory") + "');"
+                "INSERT INTO `backpacks` VALUES('" + uuid + "', '" + data.get("backpack_level") + "', '" + data.get("backpack_inventory") + "');",
+
+                "INSERT INTO `particles` VALUES('" + uuid + "', '" + data.get("arrowtrail") + "', '" + data.get("particle") + "');"
         };
 
         try {
