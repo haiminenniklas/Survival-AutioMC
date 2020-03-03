@@ -67,6 +67,7 @@ public final class Main extends JavaPlugin implements Listener {
     public void onEnable() {
         // Some setupping
 
+
         Main.instance = this;
         Main.luckPerms = LuckPermsProvider.get();
         if (Bukkit.getPluginManager().getPlugin("PlayerParticles") != null) {

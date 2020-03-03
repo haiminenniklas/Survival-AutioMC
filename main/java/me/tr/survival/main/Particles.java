@@ -27,7 +27,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +36,7 @@ import java.util.UUID;
 public class Particles implements Listener, CommandExecutor {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if(command.getLabel().equalsIgnoreCase("kosmetiikka")) {
             if(sender instanceof Player) {
@@ -45,7 +44,6 @@ public class Particles implements Listener, CommandExecutor {
                 openMainGui(player);
             }
         }
-
         return true;
     }
 

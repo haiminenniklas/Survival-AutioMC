@@ -1,5 +1,6 @@
 package me.tr.survival.main.util;
 
+import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.other.Util;
@@ -28,14 +29,23 @@ public class RTP {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
         Util.sendNotification(player, "§7Etsitään sopivaa sijaintia...");
 
-        Location loc = randomLocation(player.getWorld());
+        // Do the RTP in async for better performance
+        Autio.async(() -> {
+            World world = player.getWorld();
+            Location loc = randomLocation(player.getWorld());
 
-        // Maybe fix inside block teleport
-        if(!loc.isChunkLoaded()) {
-            loc.getChunk().load();
-        }
+            world.getChunkAtAsync(loc, (chunk) -> {
 
-        player.teleportAsync(loc);
+                if(!chunk.isLoaded()) {
+                    chunk.load();
+                }
+
+                player.teleportAsync(loc);
+
+            });
+
+        });
+
         Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
 
         if(!player.isOp()) {
