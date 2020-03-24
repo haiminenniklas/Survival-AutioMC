@@ -2,6 +2,8 @@ package me.tr.survival.main.other;
 
 import com.sun.management.OperatingSystemMXBean;
 import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -479,6 +481,15 @@ public class Util {
         } catch (ClassNotFoundException e) {
             throw new IOException("Unable to decode class type.", e);
         }
+    }
+
+    public static void sendClickableText(Player player, String title, String command, String hoverText) {
+        TextComponent comp = new TextComponent(title);
+
+        comp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+        comp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(hoverText)));
+
+        player.spigot().sendMessage(comp);
     }
 
 }

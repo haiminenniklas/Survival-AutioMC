@@ -65,15 +65,15 @@ public class Profile {
         Gui gui = new Gui("Pelaajan tiedot", 5 * 9);
         HashMap<String, Object> data = PlayerData.getData(targetUUID);
 
-        gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§6Profiili", Arrays.asList(
+        gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§2Profiili", Arrays.asList(
                 "§7§m--------------------",
-                "§7Nimi: §6" + target.getName(),
+                "§7Nimi: §a" + target.getName(),
                 " ",
-                "§7Arvo: §6" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
+                "§7Arvo: §r" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
                 "§7Kristallit: §b" + Crystals.get(targetUUID),
-                "§7Rahatilanne: §a" + Balance.get(targetUUID),
+                "§7Rahatilanne: §e" + Balance.get(targetUUID),
                 " ",
-                "§7Liittynyt: §6" + data.get("joined"),
+                "§7Liittynyt: §a" + data.get("joined"),
                 "§7§m--------------------"
         )), 13);
 
@@ -112,7 +112,7 @@ public class Profile {
             other_percentage = 0;
         }
 
-        gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§6Tuhotut blockit", Arrays.asList(
+        gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§2Tuhotut blockit", Arrays.asList(
                 "§7§m--------------------",
                 "§7Yhteensä: §e" + Ores.getTotal(targetUUID),
                 " ",
@@ -124,11 +124,11 @@ public class Profile {
                 "§7§m--------------------"
         )), 19);
 
-        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§6Kodit", Arrays.asList(
+        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§2Kodit", Arrays.asList(
                 "§7§m--------------------",
                 "§7Kodit: §e" + new Homes(target).getHomesAmount(),
                 " ",
-                "§6Klikkaa nähdäksesi kotisi!",
+                "§aKlikkaa nähdäksesi kotisi!",
                 "§7§m--------------------"
         ))) {
             @Override
@@ -138,9 +138,9 @@ public class Profile {
             }
         });
 
-        gui.addButton(new Button(1, 25, ItemUtil.makeItem(Material.LEGACY_REDSTONE_COMPARATOR, 1, "§6Asetukset", Arrays.asList(
+        gui.addButton(new Button(1, 25, ItemUtil.makeItem(Material.LEGACY_REDSTONE_COMPARATOR, 1, "§2Asetukset", Arrays.asList(
                 "§7§m--------------------",
-                "§6Klikkaa avataksesi asetukset!",
+                "§aKlikkaa avataksesi asetukset!",
                 "§7§m--------------------"
         ))) {
             @Override

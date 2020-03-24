@@ -27,7 +27,7 @@ public class HomeCommand implements CommandExecutor {
                     OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
                     if(!PlayerData.isLoaded(target.getUniqueId())) {
-                        Chat.sendMessage(player, "Pelaajan §6" + target.getName() + " §7koteja ei ole ladattu. Tee §6/debug load "
+                        Chat.sendMessage(player, "Pelaajan §a" + target.getName() + " §7koteja ei ole ladattu. Tee §a/debug load "
                                 + target.getName() + " §7ja kokeile uudestaan!");
                         return true;
                     } else {

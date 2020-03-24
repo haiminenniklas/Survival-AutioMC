@@ -1,5 +1,6 @@
 package me.tr.survival.main.commands;
 
+import com.comphenix.protocol.utility.MinecraftReflection;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
@@ -57,20 +58,20 @@ public class Essentials implements CommandExecutor, Listener {
                 if(args.length < 1) {
 
                     player.sendMessage("§7§m-----------------------");
-                    player.sendMessage(" §6§lApua-valikko");
-                    player.sendMessage( "§7§oKirjoita §6§o/apua <...>");
+                    player.sendMessage(" §2§lApua-valikko");
+                    player.sendMessage( "§7§oKirjoita §a§o/apua <...>");
                     player.sendMessage(" ");
-                    player.sendMessage(" §6...komennot §7Hyödylliset komennot");
+                    player.sendMessage(" §a...komennot §7Hyödylliset komennot");
                     //player.sendMessage(" §6...vaihto §7Tietoa vaihtokaupasta");
-                    player.sendMessage(" §6...huutokauppa §7Tietoa huutokaupasta");
-                    player.sendMessage(" §6...arvot §7Palvelimen VIP-arvot");
-                    player.sendMessage(" §6...aloitus §7Vinkit survivalin aloitukseen");
-                    player.sendMessage(" §6...tehostukset §7Mitä tehostukset ovat?");
-                    player.sendMessage(" §6...asetukset §7Mitkä asetukset?");
-                    player.sendMessage(" §6...valuutta §7Miten raha toimii täällä?");
-                    player.sendMessage(" §6...tehtävät §7Miten suoritat tehtäviä");
-                    player.sendMessage(" §6...matkustaminen §7Miten toimii??");
-                    player.sendMessage(" §6...reppu §7Kätevä tapa tallettaa tavarat");
+                    player.sendMessage(" §a...huutokauppa §7Tietoa huutokaupasta");
+                    player.sendMessage(" §a...arvot §7Palvelimen VIP-arvot");
+                    player.sendMessage(" §a...aloitus §7Vinkit survivalin aloitukseen");
+                    player.sendMessage(" §a...tehostukset §7Mitä tehostukset ovat?");
+                    player.sendMessage(" §a...asetukset §7Mitkä asetukset?");
+                    player.sendMessage(" §a...valuutta §7Miten raha toimii täällä?");
+                    player.sendMessage(" §a...tehtävät §7Miten suoritat tehtäviä");
+                    player.sendMessage(" §a...matkustaminen §7Miten toimii??");
+                    player.sendMessage(" §a...reppu §7Kätevä tapa tallettaa tavarat");
                     player.sendMessage("§7§m-----------------------");
 
                 } else {
@@ -78,23 +79,23 @@ public class Essentials implements CommandExecutor, Listener {
                     if(args[0].equalsIgnoreCase("komennot")) {
 
                         Gui.openGui(player, "Apua (Komennot)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Hyödylliset komennot", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Hyödylliset komennot", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Hyödylliset komennot:",
-                                    "  §6/profiili §7tämä valikko",
-                                    "  §6/rtp §7vie sinut arämaahan",
-                                    "  §6/msg §7yksityisviestit",
-                                    "  §6/tpa §7teleporttauspyyntö",
-                                    "  §6/warp §7palvelimen warpit",
+                                    "  §a/profiili §7tämä valikko",
+                                    "  §a/rtp §7vie sinut arämaahan",
+                                    "  §a/msg §7yksityisviestit",
+                                    "  §a/tpa §7teleporttauspyyntö",
+                                    "  §a/warp §7palvelimen warpit",
                                     "  §9/discord §7Discord-yhteisö",
-                                    "  §6/huutokauppa §7huutokauppa",
-                                    "  §a/osta §7verkkokauppa",
+                                    "  §a/huutokauppa §7huutokauppa",
+                                    "  §e/osta §7verkkokauppa",
                                     "§7§m--------------------"
                             )), 13);
                         });
                     } else if(args[0].equalsIgnoreCase("vaihto")) {
                         Gui.openGui(player, "Apua (Vaihtokauppa)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Niin mikä?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Niin mikä?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Palvelimellemme on rakennettu",
                                     " §6vaihtokauppa§7-järjestelmä, jonka",
@@ -105,7 +106,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m--------------------"
                             )), 12);
 
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Miten toimii?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten toimii?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Vaihtokauppa tapahtuu niinkin",
                                     " §7yksinkertaisesti siten, että",
@@ -142,7 +143,7 @@ public class Essentials implements CommandExecutor, Listener {
 
                     } else if(args[0].equalsIgnoreCase("aloitus")) {
                         Gui.openGui(player, "Apua (Aloittaminen)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Miten aloitan Survivalin?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten aloitan Survivalin?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Tätä sivua ei olla tehty",
                                     " §7valmiiksi. Muistathan hoputtaa",
@@ -152,7 +153,7 @@ public class Essentials implements CommandExecutor, Listener {
                         });
                     } else if(args[0].equalsIgnoreCase("tehostukset")) {
                         Gui.openGui(player, "Apua (Tehostukset)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Mitkä ihmeen tehostukset?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitkä ihmeen tehostukset?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Palvelimellamme on käytössä",
                                     " §7ns. §atehostuksia§7, joiden",
@@ -168,7 +169,7 @@ public class Essentials implements CommandExecutor, Listener {
                         });
                     } else if(args[0].equalsIgnoreCase("asetukset")) {
                         Gui.openGui(player, "Apua (Asetukset)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Mitä hyödyn?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitä hyödyn?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Olemme tehneet juuri teitä",
                                     " §6pelaajia §7varten palvelimellemme",
@@ -183,7 +184,7 @@ public class Essentials implements CommandExecutor, Listener {
                         });
                     } else if(args[0].equalsIgnoreCase("valuutta")) {
                         Gui.openGui(player, "Apua (Raha/Valuutta)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Miten toimii?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten toimii?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Palvelimellamme on valuutta §eEuro",
                                     " §7(§e€§7), jolla voit ostaa huuto-",
@@ -199,7 +200,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §a1000€§7!",
                                     "§7§m--------------------"
                             )), 12);
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Mitkä kristallit?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitkä kristallit?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Palvelimellamme on kuitenkin",
                                     " §7toisenlainenkin §6valuutta§7. Nämä",
@@ -218,7 +219,7 @@ public class Essentials implements CommandExecutor, Listener {
                         });
                     } else if(args[0].equalsIgnoreCase("tehtävät")) {
                         Gui.openGui(player, "Apua (Tehtävät)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Mitä tehtävät ovat?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitä tehtävät ovat?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Pitääksemme pelaamisen mielekkäänä",
                                     " §7ja hauskana, olemme lisänneet",
@@ -231,7 +232,7 @@ public class Essentials implements CommandExecutor, Listener {
                         });
                     } else if(args[0].equalsIgnoreCase("matkustaminen")) {
                         Gui.openGui(player, "Apua (Matkustaminen)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Mitä tarkoittaa?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitä tarkoittaa?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Palvelimellamme voit matkustaa",
                                     " §7sekä §5Endiin§7, että §cNetheriin§7!",
@@ -248,7 +249,7 @@ public class Essentials implements CommandExecutor, Listener {
                         });
                     } else if(args[0].equalsIgnoreCase("reppu")) {
                         Gui.openGui(player, "Apua (Matkustaminen)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Mitkä ihmeen reput?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitkä ihmeen reput?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Kaikki me tiedämme, että on",
                                     " §7olemassa §5Ender chestit§7, ",
@@ -267,7 +268,7 @@ public class Essentials implements CommandExecutor, Listener {
                         });
                     } else if(args[0].equalsIgnoreCase("huutokauppa")) {
                         Gui.openGui(player, "Apua (Huutokauppa)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Miten tienaan rahaa?", Arrays.asList(
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten tienaan rahaa?", Arrays.asList(
                                     "§7§m--------------------",
                                     " §7Tätä sivua ei olla tehty",
                                     " §7valmiiksi. Muistathan hoputtaa",
@@ -294,7 +295,7 @@ public class Essentials implements CommandExecutor, Listener {
 
             } else if(cmd.getLabel().equalsIgnoreCase("discord")) {
 
-                Chat.sendMessage(player, "Discord: §6https://discord.gg/MPv4W3");
+                Chat.sendMessage(player, "Discord: §9https://discord.gg/");
 
             } else if(cmd.getLabel().equalsIgnoreCase("clear")) {
 
@@ -319,9 +320,9 @@ public class Essentials implements CommandExecutor, Listener {
 
                     for(World w : Bukkit.getWorlds()) {
                         if(player.getWorld().getName().equalsIgnoreCase(w.getName())) {
-                            player.sendMessage("§7- §6" + w.getName() + " §8(sinä)");
+                            player.sendMessage("§7- §a" + w.getName() + " §8(sinä)");
                         } else {
-                            player.sendMessage("§7- §6" + w.getName());
+                            player.sendMessage("§7- §a" + w.getName());
                         }
                     }
 
@@ -370,7 +371,7 @@ public class Essentials implements CommandExecutor, Listener {
                 if(Ranks.isStaff(player.getUniqueId())) {
 
                     if(args.length < 1) {
-                        Chat.sendMessage(player, "Käytä §6/invsee <pelaaja>");
+                        Chat.sendMessage(player, "Käytä §a/invsee <pelaaja>");
                     } else {
 
                         Player target = Bukkit.getPlayer(args[0]);

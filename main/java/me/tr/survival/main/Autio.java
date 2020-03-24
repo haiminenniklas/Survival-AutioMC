@@ -142,7 +142,7 @@ public class Autio {
 
     public static void loadPlayer(Player player) {
         Autio.async(() -> {
-           PlayerData.savePlayer(player.getUniqueId());
+           PlayerData.loadPlayer(player.getUniqueId());
         });
     }
 
@@ -186,8 +186,8 @@ public class Autio {
     public static void sendTablist(Player player) {
         PacketContainer pc = getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
 
-        pc.getChatComponents().write(0, WrappedChatComponent.fromText("\n  §6§lNUOTIO§7 - §aSurvival  \n"))
-                .write(1, WrappedChatComponent.fromText("\n  §7Paikalla:  \n  §8⇻§6" + Bukkit.getOnlinePlayers().size() + "§8⇺  \n"));
+        pc.getChatComponents().write(0, WrappedChatComponent.fromText("\n  §2§lSorsaMC§7 - §aSurvival  \n"))
+                .write(1, WrappedChatComponent.fromText("\n  §7Paikalla:  \n  §8⇻§a" + Bukkit.getOnlinePlayers().size() + "§8⇺  \n"));
         try
         {
             getProtocolManager().sendServerPacket(player, pc);

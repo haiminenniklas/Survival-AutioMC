@@ -25,7 +25,7 @@ public class AuctionCommands implements CommandExecutor {
                         if(args.length >= 2) {
                             player.performCommand("ah sell " + args[1]);
                         } else {
-                            Chat.sendMessage(player, "Käytä &6/huutokauppa myy <hinta>");
+                            Chat.sendMessage(player, "Käytä §a/huutokauppa myy <hinta>");
                         }
 
                     } else if(args[0].equalsIgnoreCase("avaa")) {

@@ -39,10 +39,10 @@ other:
 
 chat:
   prefixes:
-    default: '&6&lNuotio &7»'
-    error: '&6&lVirhe &7»'
-    afk: '&6&lAFK &7»'
-    debug: '&6&lVirheenkorjaus &7»'
+    default: '&2&lSorsaMC &7»'
+    error: '&2&lVirhe &7»'
+    afk: '&2&lAFK &7»'
+    debug: '&2&lVirheenkorjaus &7»'
   format: '%rank%%name%: &f%message%'
 
 messages:

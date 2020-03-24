@@ -34,7 +34,7 @@ public class Warp {
     }
 
     public void teleport(Player player) {
-        Chat.sendMessage(player, "Sinua viedään warpille §6" + this.displayName + "§7...");
+        Chat.sendMessage(player, "Sinua viedään warpille §a" + this.displayName + "§7...");
         player.teleport(new Location(this.world, this.x, this.y, this.z, this.yaw, this.pitch));
     }
 

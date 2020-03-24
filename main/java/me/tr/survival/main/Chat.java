@@ -114,7 +114,7 @@ public class Chat implements Listener {
                 gui.close(clicker);
                 Chat.settings.put("slow", !(boolean)Chat.settings.get("slow"));
                 String isSlowed = ((boolean)Chat.settings.get("slow")) ? "§c§lHIDASTETTU" : "§a§lTAVALLINEN";
-                Chat.sendMessage(clicker, "Chatin nopeus: " + isSilenced);
+                Chat.sendMessage(clicker, "Chatin nopeus: " + isSlowed);
             }
         });
 
@@ -156,6 +156,7 @@ public class Chat implements Listener {
 
         if(!Settings.get(player.getUniqueId(), "chat")) {
             Chat.sendMessage(player, "Sinulla on chat poissa päältä!");
+            e.setCancelled(true);
             return;
         }
 
@@ -173,9 +174,14 @@ public class Chat implements Listener {
 
         if(sentMessages.containsKey(uuid)) {
             long lastSent = sentMessages.get(uuid);
-            if((System.currentTimeMillis() - lastSent) / 1000 <= 3 && (boolean) Chat.settings.get("slow")) {
+            if((System.currentTimeMillis() - lastSent) / 1000 <= 30 && (boolean) Chat.settings.get("slow")) {
                 e.setCancelled(true);
-                Chat.sendMessage(player, "Chat on hidastetussa tilassa! Voit lähettää viestin §63s §7välein!");
+                Chat.sendMessage(player, "Chat on hidastetussa tilassa! Voit lähettää viestejä §c30 sekunnin §7välein!");
+                return;
+            } else if((System.currentTimeMillis() - lastSent) / 1000 <= 3 && !Ranks.isVIP(uuid)) {
+                e.setCancelled(true);
+                Chat.sendMessage(player, "Voit lähettää viestejä vain §c3 sekunnin §7välein! Ohittaaksesi tämän rajan " +
+                        " tarvitset vähintään §a§lPremium§7-arvon! Lisätietoa §a/kauppa§7!");
                 return;
             }
         }

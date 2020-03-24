@@ -15,6 +15,7 @@ import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import me.tr.survival.main.util.staff.StaffManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -76,7 +77,7 @@ public class Events implements Listener {
     public void onLevelUp(LevelUpEvent e){
         Player player = e.getPlayer();
 
-        Util.sendNotification(player, "§a§lTASO! §7Nousit tasolle §6" + e.getLevel() + "§7!");
+        Util.sendNotification(player, "§a§lTASO! §7Nousit tasolle §a" + e.getLevel() + "§7!");
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
     }
@@ -108,10 +109,12 @@ public class Events implements Listener {
         FileConfiguration config = Main.getInstance().getConfig();
 
         player.sendMessage("§7§m--------------------------");
-        player.sendMessage("§7Tervetuloa §6§lNuotion §aSurvivaliin§7!");
+        player.sendMessage(" §7Tervetuloa §a" + player.getName() + " §7meidän Survival-");
+        player.sendMessage(" §7palvelimellemme! Alla löydät muutama nappia, joista löydät");
+        player.sendMessage( "§7hyödyllistä tietoa, asetuksia ja ominaisuuksia. Alkuun");
+        player.sendMessage(" §7pääset myös komennolla §a/apua§7!");
         player.sendMessage(" ");
-        player.sendMessage("§7Pelaajia paikalla: §6" + Bukkit.getOnlinePlayers().size());
-        player.sendMessage("§7Apua: §6/apua");
+        player.sendMessage(" §7Mukavia pelihetkiä!");
         player.sendMessage(" ");
         TextComponent mail = new TextComponent(" §d§lPOSTI  ");
 
@@ -136,7 +139,7 @@ public class Events implements Listener {
 
         player.sendMessage(" ");
 
-        player.sendMessage("§6http://nuotio.xyz");
+        player.sendMessage(" §ahttp://sorsamc.net");
         player.sendMessage("§7§m--------------------------");
 
 
@@ -154,6 +157,10 @@ public class Events implements Listener {
         }
 
         e.setJoinMessage(null);
+
+         if(StaffManager.hidden.contains(player.getUniqueId())) {
+             Chat.sendMessage(player, "Olet piilossa pelaajilta!");
+         }
 
         /*if(Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) {
             e.setJoinMessage(
@@ -198,9 +205,8 @@ public class Events implements Listener {
         Main.getInstance().getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> PlayerData.savePlayer(player.getUniqueId()));
 
         if(Ranks.isVIP(player.getUniqueId()) || Ranks.isStaff(player.getUniqueId())) {
-            e.setQuitMessage(
-                    ChatColor.translateAlternateColorCodes('&',
-                            Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
+            //e.setQuitMessage(ChatColor.translateAlternateColorCodes('&', Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
+            e.setQuitMessage(null);
         } else {
             e.setQuitMessage(null);
         }
@@ -443,7 +449,7 @@ public class Events implements Listener {
             if(random <= 0.25) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.GOLD_ORE && Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
@@ -451,7 +457,7 @@ public class Events implements Listener {
             if(random <= 0.03) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.IRON_ORE && Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
@@ -459,7 +465,7 @@ public class Events implements Listener {
             if(random <= 0.02) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.COAL_ORE) {
@@ -467,28 +473,28 @@ public class Events implements Listener {
             if(random <= 0.005) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.EMERALD_ORE) {
             if(random <= 0.5) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.LAPIS_ORE) {
             if(random <= 0.05) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         } else if(block.getType() == Material.REDSTONE_ORE) {
             if(random <= 0.07) {
                 int add = new Random().nextInt(5) + 1;
                 Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §6" + add  + " §7kristallia!");
+                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         }

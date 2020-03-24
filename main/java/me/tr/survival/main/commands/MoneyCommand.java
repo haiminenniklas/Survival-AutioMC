@@ -25,12 +25,12 @@ public class MoneyCommand implements CommandExecutor {
 
             if(command.getLabel().equalsIgnoreCase("bal")) {
                 if(args.length == 0){
-                    Chat.sendMessage(player, "Rahatilanne: §6" + Balance.get(uuid) + "€");
-                    Chat.sendMessage(player, "Kristallit: §6" + Crystals.get(player.getUniqueId()));
+                    Chat.sendMessage(player, "Rahatilanne: §e" + Balance.get(uuid) + "€");
+                    Chat.sendMessage(player, "Kristallit: §b" + Crystals.get(player.getUniqueId()));
                 } else if(args.length > 0) {
                     if(!player.isOp()){
-                        Chat.sendMessage(player, "Rahatilanne: §6" + Balance.get(uuid) + "€");
-                        Chat.sendMessage(player, "Kristallit: §6" + Crystals.get(player.getUniqueId()));
+                        Chat.sendMessage(player, "Rahatilanne: §e" + Balance.get(uuid) + "€");
+                        Chat.sendMessage(player, "Kristallit: §b" + Crystals.get(player.getUniqueId()));
                     } else {
 
                         if(args.length == 1 && args[0].equalsIgnoreCase("help")) {
@@ -78,7 +78,7 @@ public class MoneyCommand implements CommandExecutor {
             } else if(command.getLabel().equalsIgnoreCase("pay")) {
 
                 if(args.length < 2) {
-                    Chat.sendMessage(player, "Käytä: §6/maksa <pelaaja> <määrä>");
+                    Chat.sendMessage(player, "Käytä: §a/maksa <pelaaja> <määrä>");
                 } else {
 
                     Player target = Bukkit.getPlayer(args[0]);
@@ -108,8 +108,8 @@ public class MoneyCommand implements CommandExecutor {
                         Balance.remove(uuid, amount);
                         Balance.add(target.getUniqueId(), amount);
 
-                        Chat.sendMessage(player, "Annoit §a" + amount + "€ §7pelaajalle §6" + target.getName() + "§7!");
-                        Chat.sendMessage(target, "Sait §a" + amount + "€ §7pelaajalta §6" + player.getName() + "§7!");
+                        Chat.sendMessage(player, "Annoit §e" + amount + "€ §7pelaajalle §a" + target.getName() + "§7!");
+                        Chat.sendMessage(target, "Sait §e" + amount + "€ §7pelaajalta §a" + player.getName() + "§7!");
 
                     }
 

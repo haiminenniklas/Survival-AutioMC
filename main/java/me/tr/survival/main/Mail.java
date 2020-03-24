@@ -124,12 +124,12 @@ public class Mail {
             }
         });
 
-        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.PAPER, 1, "§6Arvat", Arrays.asList(
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.PAPER, 1, "§2Arvat", Arrays.asList(
                 "§7§m--------------------",
                 "",
                 " §7Kun äänestät palvelinta       ",
                 " §7komennolla §a/vote§7, saat      ",
-                " §7itsellesi §6yhden arvan§7,    ",
+                " §7itsellesi §eyhden arvan§7,    ",
                 " §7jolla voit voittaa itsellesi  ",
                 " §7jopa §6§lPremium§7-arvon!     ",
                 " §7Arpoja voi myös voittaa",
@@ -137,7 +137,7 @@ public class Mail {
                 "",
                 " §7Arvat: §e" + Mail.getTickets(player),
                 "",
-                " §6Klikkaa avataksesi arvan!     ",
+                " §aKlikkaa avataksesi arvan!     ",
                 "",
                 "§7§m--------------------"
         ))) {
@@ -148,7 +148,7 @@ public class Mail {
             }
         });
 
-        gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Kertoimet", Arrays.asList(
+        gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Kertoimet", Arrays.asList(
                 "§7§m--------------------",
                 "",
                 "§7Mitä pitempään käyt putkeen",

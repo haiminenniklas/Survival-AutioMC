@@ -1,7 +1,7 @@
-name: AutioMC
+name: SorsaSurvival
 version: 0.8
 main: me.tr.survival.main.Main
-description: Survival for AutioMC
+description: SorsaMC survival plugin
 api-version: 1.13
 depend: [UltimateTimber, LuckPerms, ProtocolLib, PlayerParticles]
 
@@ -186,3 +186,5 @@ commands:
   kosmetiikka:
     description: Kosmetiikka
     aliases: [cosmetics, particles, partikkelit, nuolijanat, arrowtrail]
+  vip:
+    description: Vip command

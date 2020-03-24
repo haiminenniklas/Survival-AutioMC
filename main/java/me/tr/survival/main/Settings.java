@@ -28,7 +28,7 @@ public class Settings {
         Gui gui = new Gui("Asetukset", 27);
         UUID uuid = player.getUniqueId();
 
-        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.OAK_SIGN, 1, "§6Scoreboard", Arrays.asList(
+        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAINTING, 1, "§2Scoreboard", Arrays.asList(
                 "§7§m--------------------",
                 "§7Tila: " + settingText(Settings.get(uuid, "scoreboard")),
                 " ",
@@ -37,7 +37,7 @@ public class Settings {
                 "§7§oikkuna, jossa on näkyvillä",
                 "§7§ohyödyllistä informaatiota",
                 "",
-                "§6Klikkaa vaihtaaksesi asetusta!",
+                "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m--------------------"
         ))) {
 
@@ -50,7 +50,7 @@ public class Settings {
             }
         });
 
-        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§6Yksityinen tila", Arrays.asList(
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§2Yksityinen tila", Arrays.asList(
                 "§7§m--------------------",
                 "§7Tila: " + settingText(Settings.get(uuid, "privacy")),
                 " ",
@@ -58,7 +58,7 @@ public class Settings {
                 "§7§oet näe enää yksityisviestejä",
                 "§7§omuilta pelaajilta",
                 "",
-                "§6Klikkaa vaihtaaksesi asetusta!",
+                "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m--------------------"
         ))) {
 
@@ -70,7 +70,7 @@ public class Settings {
             }
         });
 
-        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§6Chat", Arrays.asList(
+        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§2Chat", Arrays.asList(
                 "§7§m--------------------",
                 "§7Tila: " + settingText(Settings.get(uuid, "chat")),
                 " ",
@@ -78,7 +78,7 @@ public class Settings {
                 "§7§oet näe enää chat-viestejä"  ,
                 "§7§omuilta pelaajilta",
                 "",
-                "§6Klikkaa vaihtaaksesi asetusta!",
+                "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m--------------------"
         ))) {
 
@@ -90,7 +90,7 @@ public class Settings {
             }
         });
 
-        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.OAK_SAPLING, 1, "§6Puun kaato", Arrays.asList(
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.OAK_SAPLING, 1, "§2Puun kaato", Arrays.asList(
                 "§7§m--------------------",
                 "§7Tila: " + settingText(UltimateTimber.getInstance().getChoppingManager().isChopping(player)),
                 " ",
@@ -99,7 +99,7 @@ public class Settings {
                 "§7§okun kaadat ensimmäisen palikan",
                 "§7§osiitä!",
                 "",
-                "§6Klikkaa vaihtaaksesi asetusta!",
+                "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m--------------------"
         ))) {
 
@@ -111,9 +111,9 @@ public class Settings {
             }
         });
 
-        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.CLOCK, 1, "§6Sää ja aika", Arrays.asList(
+        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.CLOCK, 1, "§2Sää ja aika", Arrays.asList(
                 "§7§m--------------------",
-                "§6Klikkaa vaihtaakesi sinun säätä ja aikaa",
+                "§aKlikkaa vaihtaakesi sinun säätä ja aikaa",
                 "§7§m--------------------"
         ))) {
 
@@ -136,10 +136,10 @@ public class Settings {
             }
         });
 
-        gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§6Virheenkorjaus", Arrays.asList(
+        gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§2Virheenkorjaus", Arrays.asList(
                 "§7Jos asetuksissa ilmenee virheitä,",
                 "§7tai jokin ei toimi, niin kokeile",
-                "§7komentoa §6/debug §7tai",
+                "§7komentoa §a/debug §7tai",
                 "§7poistu palvelimelta ja liity",
                 "§7tänne uudestaan!"
         )), 26);
@@ -177,7 +177,7 @@ public class Settings {
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective obj = board.registerNewObjective("AutioMC", "dummy", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName("  §6§lNUOTIO §8| §7Survival  ");
+        obj.setDisplayName("  §2§lSorsaMC §8| §7Survival  ");
 
         obj.getScore("§7 §6 §k").setScore(15);
         obj.getScore("§7» Kristallit").setScore(14);
@@ -192,7 +192,7 @@ public class Settings {
 
         Team moneyCounter = board.registerNewTeam("blocks");
         moneyCounter.addEntry(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED);
-        moneyCounter.setPrefix("§6" + Balance.get(player.getUniqueId()) + "€");
+        moneyCounter.setPrefix("§e" + Balance.get(player.getUniqueId()) + "€");
         obj.getScore(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED).setScore(10);
 
         obj.getScore("§7 §9 §l").setScore(9);
@@ -208,18 +208,18 @@ public class Settings {
 
         Team players = board.registerNewTeam("players");
         players.addEntry(ChatColor.LIGHT_PURPLE + "" + ChatColor.GREEN + "" + ChatColor.RED);
-        players.setPrefix("§6" + Bukkit.getOnlinePlayers().size());
+        players.setPrefix("§a" + Bukkit.getOnlinePlayers().size());
         obj.getScore(ChatColor.LIGHT_PURPLE + "" + ChatColor.GREEN + "" + ChatColor.RED).setScore(4);
 
         obj.getScore("§7 §1 §k").setScore(3);
-        obj.getScore("       §6nuotio.xyz").setScore(2);
+        obj.getScore("       §2sorsamc.net").setScore(2);
 
         Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
 
             board.getTeam("crystals").setPrefix("§b" + Crystals.get(player.getUniqueId()));
-            board.getTeam("blocks").setPrefix("§6" + Balance.get(player.getUniqueId()) + "€");
+            board.getTeam("blocks").setPrefix("§a" + Balance.get(player.getUniqueId()) + "€");
             board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
-            board.getTeam("players").setPrefix("§6" + Bukkit.getOnlinePlayers().size());
+            board.getTeam("players").setPrefix("§a" + Bukkit.getOnlinePlayers().size());
 
         }, 0, 20 * 2);
 

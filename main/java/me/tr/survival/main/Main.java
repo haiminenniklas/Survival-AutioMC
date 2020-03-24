@@ -79,7 +79,7 @@ public final class Main extends JavaPlugin implements Listener {
         }
 
         Autio.logColored("§a---------------------------");
-        Autio.logColored(" §aEnabling AutioCore....");
+        Autio.logColored(" §aEnabling Survival....");
 
         long start = System.currentTimeMillis();
 
@@ -115,7 +115,7 @@ public final class Main extends JavaPlugin implements Listener {
 
         pm.registerEvents(this, this);
         pm.registerEvents(new Events(), this);
-        pm.registerEvents(new EnderpearlCooldown(), this);
+        //pm.registerEvents(new EnderpearlCooldown(), this);
         pm.registerEvents(new Chat(), this);
         pm.registerEvents(new StaffManager(), this);
         pm.registerEvents(new Essentials(), this);
@@ -177,6 +177,7 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("invsee").setExecutor(new Essentials());
 
         getCommand("kosmetiikka").setExecutor(new Particles());
+        getCommand("vip").setExecutor(new VipCommand());
 
         // Autosave code...
 
@@ -248,7 +249,7 @@ public final class Main extends JavaPlugin implements Listener {
     public void onDisable() {
 
         Autio.logColored("§a---------------------------");
-        Autio.logColored(" §aDisabling AutioCore....");
+        Autio.logColored(" §aDisabling Survival....");
 
         Autio.log(" ");
         Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
@@ -288,7 +289,7 @@ public final class Main extends JavaPlugin implements Listener {
                         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                         if(!PlayerData.isLoaded(target.getUniqueId())) {
                             Chat.sendMessage(player, "Pelaajan " + target.getName() + " tietoja ei ole ladattu, joten ne tallennetaan tyhjänä");
-                            TextComponent message = new TextComponent( "§6§lHaluatko jatkaa?" );
+                            TextComponent message = new TextComponent( "§a§lHaluatko jatkaa?" );
                             message.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/save " + target.getName() + " yes" ) );
                             message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder( "Haluatko varmasti jatkaa?" ).create() ) );
                             player.spigot().sendMessage(message);
@@ -336,7 +337,7 @@ public final class Main extends JavaPlugin implements Listener {
                             return true;
                         }
                         Autio.teleportToSpawn(target);
-                        Chat.sendMessage(player, "Pelaaja §6" + target.getName() + " §7vietiin spawnille!");
+                        Chat.sendMessage(player, "Pelaaja §a" + target.getName() + " §7vietiin spawnille!");
                     }
                 }
 
@@ -372,7 +373,7 @@ public final class Main extends JavaPlugin implements Listener {
                         if(args[0].equalsIgnoreCase("set")) {
 
                             Level.set(target, value);
-                            Chat.sendMessage(player, "Pelaajan §6" + target.getName() + "§7 leveli on nyt §6" + value);
+                            Chat.sendMessage(player, "Pelaajan §a" + target.getName() + "§7 leveli on nyt §6" + value);
 
                         } else if(args[0].equalsIgnoreCase("add")) {
 
@@ -398,14 +399,14 @@ public final class Main extends JavaPlugin implements Listener {
             } else if(command.getLabel().equalsIgnoreCase("ping")) {
 
                 if(args.length < 1) {
-                    Chat.sendMessage(player, "Viiveesi: §6" + Util.getPing(player) + "ms");
+                    Chat.sendMessage(player, "Viiveesi: §a" + Util.getPing(player) + "ms");
                 } else {
                     Player target = Bukkit.getPlayer(args[0]);
                     if(target == null) {
                         Chat.sendMessage(player, "Pelaajaa ei löydetty!");
                         return true;
                     }
-                    Chat.sendMessage(player, "Pelaajan §6" + target.getName() +  " §7viive: §6" + Util.getPing(target) + "ms");
+                    Chat.sendMessage(player, "Pelaajan §6" + target.getName() +  " §7viive: §a" + Util.getPing(target) + "ms");
 
                 }
 
@@ -415,7 +416,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                     if(args.length == 0) {
 
-                        player.sendMessage("§6/speed <amount>");
+                        player.sendMessage("§a/speed <amount>");
 
                     } else if(args.length >= 1) {
 
@@ -564,7 +565,7 @@ public final class Main extends JavaPlugin implements Listener {
                         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
                         if(!PlayerData.isLoaded(target.getUniqueId())) {
-                            Chat.sendMessage(player, "Pelaajan §6" + target.getName() + " §7koteja ei ole ladattu. Tee §6/debug load "
+                            Chat.sendMessage(player, "Pelaajan §a" + target.getName() + " §7koteja ei ole ladattu. Tee §a/debug load "
                                     + target.getName() + " §7ja kokeile uudestaan!");
                             return true;
                         } else {
@@ -614,7 +615,7 @@ public final class Main extends JavaPlugin implements Listener {
                             return true;
                         }
                         Util.heal(target);
-                        Chat.sendMessage(player, "Paransit pelaajan §6" + target.getName() + "§7!");
+                        Chat.sendMessage(player, "Paransit pelaajan §a" + target.getName() + "§7!");
                     }
                 }
             } else if(command.getLabel().equalsIgnoreCase("time")) {
@@ -623,7 +624,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                     if(args.length < 1) {
 
-                        Chat.sendMessage(player, "§7Käytä: §6/aika <day|night|noon>");
+                        Chat.sendMessage(player, "§7Käytä: §a/aika <day|night|noon>");
 
                     } else {
 
@@ -632,15 +633,15 @@ public final class Main extends JavaPlugin implements Listener {
                         switch(args[0]) {
                             case "day":
                                 world.setTime(Times.DAY);
-                                Chat.sendMessage(player, "Aika asetettiin §6päiväksi§7!");
+                                Chat.sendMessage(player, "Aika asetettiin §apäiväksi§7!");
                                 break;
                             case "night":
                                 world.setTime(Times.NIGHT);
-                                Chat.sendMessage(player, "Aika asetettiin §6yöksi§7!");
+                                Chat.sendMessage(player, "Aika asetettiin §ayöksi§7!");
                                 break;
                             case "noon":
                                 world.setTime(Times.NOON);
-                                Chat.sendMessage(player, "Aika asetettiin §6keskipäiväksi§7!");
+                                Chat.sendMessage(player, "Aika asetettiin §akeskipäiväksi§7!");
                                 break;
                             default:
                                 long value;
@@ -651,7 +652,7 @@ public final class Main extends JavaPlugin implements Listener {
                                     break;
                                 }
                                 world.setTime(value);
-                                Chat.sendMessage(player, "Aika asetettiin: §6" + value + "§7!");
+                                Chat.sendMessage(player, "Aika asetettiin: §a" + value + "§7!");
                         }
 
                     }
@@ -681,12 +682,12 @@ public final class Main extends JavaPlugin implements Listener {
                             target.setAllowFlight(true);
                             target.setFlying(true);
                             Chat.sendMessage(target, "Lento §apäällä§7!");
-                            Chat.sendMessage(player, "Lento §apäällä§7 pelaajalla §6" + target.getName() + "§7!");
+                            Chat.sendMessage(player, "Lento §apäällä§7 pelaajalla §a" + target.getName() + "§7!");
                         } else {
                             target.setAllowFlight(false);
                             target.setFlying(false);
                             Chat.sendMessage(target, "Lento §cpois päältä§7!");
-                            Chat.sendMessage(player, "Lento §cpois päältä§7 pelaajalla §6" + target.getName() + "§7!");
+                            Chat.sendMessage(player, "Lento §cpois päältä§7 pelaajalla §a" + target.getName() + "§7!");
                         }
                     }
                 }
@@ -696,7 +697,7 @@ public final class Main extends JavaPlugin implements Listener {
                 if(player.isOp()) {
 
                     if(args.length < 2) {
-                        Chat.sendMessage(player, "Käytä: §6/lumoa <lumous> <taso>");
+                        Chat.sendMessage(player, "Käytä: §a/lumoa <lumous> <taso>");
                     } else {
 
                         if(player.getInventory().getItemInMainHand() == null) {
@@ -764,19 +765,19 @@ public final class Main extends JavaPlugin implements Listener {
                                 if(args[0].equalsIgnoreCase("add")) {
 
                                     Crystals.add(target.getUniqueId(), value);
-                                    Chat.sendMessage(player, "Lisätty §6" + value +  " §7kristallia pelaajalle §6" + target.getName());
+                                    Chat.sendMessage(player, "Lisätty §b" + value +  " §7kristallia pelaajalle §a" + target.getName());
 
                                 } else if(args[0].equalsIgnoreCase("set")) {
 
                                     Crystals.set(target.getUniqueId(), value);
-                                    Chat.sendMessage(player, "Pelaajalle §6" + target.getName() + " §7asetettu §6" + value + " §7kristallia!");
+                                    Chat.sendMessage(player, "Pelaajalle §a" + target.getName() + " §7asetettu §b" + value + " §7kristallia!");
 
                                 }
 
                             } else {
 
                                 if(args[0].equalsIgnoreCase("get")) {
-                                    Chat.sendMessage(player, "Pelaajan §6" + target.getName() + "§7 kristallit: §6" + Crystals.get(target.getUniqueId()));
+                                    Chat.sendMessage(player, "Pelaajan §a" + target.getName() + "§7 kristallit: §b" + Crystals.get(target.getUniqueId()));
                                 }
 
                             }
@@ -786,7 +787,7 @@ public final class Main extends JavaPlugin implements Listener {
                     }
 
                 } else {
-                    Chat.sendMessage(player, "Kristallit: §6" + Crystals.get(player.getUniqueId()));
+                    Chat.sendMessage(player, "Kristallit: §b" + Crystals.get(player.getUniqueId()));
                 }
 
             } else if(command.getLabel().equalsIgnoreCase("rtp")) {
@@ -844,7 +845,7 @@ public final class Main extends JavaPlugin implements Listener {
                                 }
 
                                 player.sendMessage("§7--------------------------");
-                                player.sendMessage("§7Pelaajan §6" + target.getName() + "§7 IP-osoitteet:");
+                                player.sendMessage("§7Pelaajan §a" + target.getName() + "§7 IP-osoitteet:");
                                 player.sendMessage(sb.toString());
                                 player.sendMessage("§7--------------------------");
                             } else {
@@ -869,7 +870,7 @@ public final class Main extends JavaPlugin implements Listener {
             } else if(command.getLabel().equalsIgnoreCase("skull")) {
                 if(player.isOp()) {
                     if(args.length < 1) {
-                        Chat.sendMessage(player, "§7Käytä: §6/skull <player>");
+                        Chat.sendMessage(player, "§7Käytä: §a/skull <player>");
                     } else {
                         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                         player.getInventory().addItem(ItemUtil.makeSkullItem(target.getName(), 1, "§6" + target.getName()));
@@ -929,7 +930,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                             if(args[0].equalsIgnoreCase("load")) {
 
-                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Pelaajan §6" + target.getName() + " §7tietoja haetaan tietokannasta...");
+                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Pelaajan §a" + target.getName() + " §7tietoja haetaan tietokannasta...");
                                 PlayerData.loadPlayer(target.getUniqueId());
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
 
@@ -942,7 +943,7 @@ public final class Main extends JavaPlugin implements Listener {
                                 }
 
                                 Autio.updatePlayer(newTarget);
-                                Chat.sendMessage(player, "Päivitit asetukset ja tagin pelaajalta §6" + target.getName() + "§7!");
+                                Chat.sendMessage(player, "Päivitit asetukset ja tagin pelaajalta §a" + target.getName() + "§7!");
                             }
                         }
 

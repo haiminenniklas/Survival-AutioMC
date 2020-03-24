@@ -49,7 +49,7 @@ public class TpaCommand implements CommandExecutor, Listener {
             } else if(command.getLabel().equalsIgnoreCase("tpaccept")) {
 
                 if(TeleportManager.getRequestsFromRecipient(player.getUniqueId()).isEmpty()) {
-                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole aktiivisia Teleport-pyyntöjä tällä hetkellä!");
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole aktiivisia §eTeleport§7-pyyntöjä tällä hetkellä!");
                     return true;
                 }
 
@@ -75,7 +75,7 @@ public class TpaCommand implements CommandExecutor, Listener {
                         }
                     }
 
-                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei löydetty Teleport-pyyntöjä pelaajalta §6" + target.getName() + "§7...");
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei löydetty §eTeleport§7-pyyntöjä pelaajalta §a" + target.getName() + "§7...");
 
                 }
 
@@ -83,7 +83,7 @@ public class TpaCommand implements CommandExecutor, Listener {
 
                 if(args.length < 1) {
 
-                    Chat.sendMessage(player, "Käyttö: §6/tpahere");
+                    Chat.sendMessage(player, "Käyttö: §a/tpahere");
 
                 } else {
                     Player target = Bukkit.getPlayer(args[0]);
@@ -101,7 +101,7 @@ public class TpaCommand implements CommandExecutor, Listener {
                 if(Ranks.isStaff(player.getUniqueId())) {
 
                     if(args.length < 1) {
-                        Chat.sendMessage(player, "Käyttö: §6/tp (<pelaaja> | <x> <y> <z>) ([x] [y] [z] | [pelaaja2])");
+                        Chat.sendMessage(player, "Käyttö: §a/tp (<pelaaja> | <x> <y> <z>) ([x] [y] [z] | [pelaaja2])");
                     } else {
 
                         Player target = Bukkit.getPlayer(args[0]);
@@ -137,7 +137,7 @@ public class TpaCommand implements CommandExecutor, Listener {
 
                             Location loc = new Location(player.getWorld(), x, y, z);
                             player.teleport(loc);
-                            Chat.sendMessage(player, "Sinua viedään sijaintiin §6" + x + "," + y + "," + z + "§7!");
+                            Chat.sendMessage(player, "Sinua viedään sijaintiin §a" + ((int)x) + ", " + ((int)y) + ", " + ((int)z) + "§7!");
 
                         } else {
 
@@ -158,7 +158,7 @@ public class TpaCommand implements CommandExecutor, Listener {
 
                             Location loc = new Location(player.getWorld(), x, y, z);
                             target.teleport(loc);
-                            Chat.sendMessage(player, "Pelaaja §6" + target.getName() + " §7viety sijaintiin §6" + x + "," + y + "," + z + "§7!");
+                            Chat.sendMessage(player, "Pelaaja §a" + target.getName() + " §7viety sijaintiin §a" + ((int)x) + ", " + ((int)y) + ", " + ((int)z) + "§7!");
 
                         }
 
@@ -172,7 +172,7 @@ public class TpaCommand implements CommandExecutor, Listener {
                 if(Ranks.isStaff(player.getUniqueId())) {
 
                     if(args.length < 1) {
-                        Chat.sendMessage(player, "Käyttö: §6/tphere <pelaaja>");
+                        Chat.sendMessage(player, "Käyttö: §a/tphere <pelaaja>");
                     } else {
 
                         Player target = Bukkit.getPlayer(args[0]);
@@ -191,7 +191,7 @@ public class TpaCommand implements CommandExecutor, Listener {
                 }
             } else if(command.getLabel().equalsIgnoreCase("tpdeny")) {
                 if(TeleportManager.getRequestsFromRecipient(player.getUniqueId()).isEmpty()) {
-                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole aktiivisia Teleport-pyyntöjä tällä hetkellä!");
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole aktiivisia §eTeleport§7-pyyntöjä tällä hetkellä!");
                     return true;
                 }
 
@@ -217,7 +217,7 @@ public class TpaCommand implements CommandExecutor, Listener {
                         }
                     }
 
-                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei löydetty Teleport-pyyntöjä pelaajalta §6" + target.getName() + "§7...");
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei löydetty Teleport-pyyntöjä pelaajalta §a" + target.getName() + "§7...");
 
                 }
             }

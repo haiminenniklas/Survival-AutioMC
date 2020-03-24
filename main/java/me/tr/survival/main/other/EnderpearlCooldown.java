@@ -34,7 +34,7 @@ public class EnderpearlCooldown implements Listener {
             if(item.getType() == Material.ENDER_PEARL){
                 if (cooldown.containsKey(uuid)) {
                     e.setCancelled(true);
-                    Chat.sendMessage(player, "Odota vielä §6" + cooldown.get(uuid) + "s §7tehdäksesi tuon uudestaan!!");
+                    Chat.sendMessage(player, "Odota vielä §c" + cooldown.get(uuid) + "s §7tehdäksesi tuon uudestaan!!");
                     return;
                 } else {
 

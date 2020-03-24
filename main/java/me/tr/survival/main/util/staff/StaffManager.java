@@ -28,7 +28,7 @@ import java.util.*;
 public class StaffManager implements Listener, CommandExecutor {
 
     private static Map<UUID, Map<Material, Integer>> blocksPerHour = new HashMap<>();
-    private static List<UUID> hidden = new ArrayList<>();
+    public static List<UUID> hidden = new ArrayList<>();
 
     public static int getBlockMinedPerHour(UUID uuid, Material mat) {
 
@@ -166,8 +166,7 @@ public class StaffManager implements Listener, CommandExecutor {
 
     public static void hide(Player player) {
         hidden.add(player.getUniqueId());
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
+        //Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
 
 
         player.setPlayerListName("§7" + player.getName() + " §8[PIILOSSA]");
@@ -187,9 +186,7 @@ public class StaffManager implements Listener, CommandExecutor {
 
         player.setPlayerListName(player.getName());
 
-        Bukkit.broadcastMessage(
-                ChatColor.translateAlternateColorCodes('&',
-                        Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
+        //Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
 
         for(Player online : Bukkit.getOnlinePlayers()) {
 
