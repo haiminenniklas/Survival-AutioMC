@@ -136,7 +136,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     " ",
                                     " §7Lisää VIP-arvoista",
                                     " §7verkkokaupassamme:",
-                                    " §awww.nuotio.xyz/kauppa",
+                                    " §awww.sorsa.gg/kauppa",
                                     "§7§m--------------------"
                             )), 13);
                         });
@@ -243,7 +243,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7ja sen resepti löytyy §bnettisivuiltamme§7!",
                                     " ",
                                     " §7Lisätietoa matkustamisesta: §6/matkustaminen",
-                                    " §7Nettisivumme: §6www.nuotio.xyz",
+                                    " §7Nettisivumme: §6www.sorsa.gg",
                                     "§7§m--------------------"
                             )), 13);
                         });
@@ -289,13 +289,13 @@ public class Essentials implements CommandExecutor, Listener {
                         sb.append(args[i] + " ");
                     }
 
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', sb.toString()));
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "➤ &2&lILMOITUS " + sb.toString()));
 
                 }
 
             } else if(cmd.getLabel().equalsIgnoreCase("discord")) {
 
-                Chat.sendMessage(player, "Discord: §9https://discord.gg/");
+                Chat.sendMessage(player, "Discord: §9www.sorsa.gg/discord");
 
             } else if(cmd.getLabel().equalsIgnoreCase("clear")) {
 

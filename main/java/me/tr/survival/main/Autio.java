@@ -10,22 +10,35 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.booster.Boosters;
+import me.tr.survival.main.util.staff.StaffManager;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.query.QueryOptions;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
 public class Autio {
 
     public static void teleportToSpawn(Player player) {
-        player.teleport(Autio.getSpawn());
+        player.teleportAsync(Autio.getSpawn());
+        if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
+            Util.heal(player);
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24d);
+            player.setHealth(24d);
+        } else {
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
+            player.setHealth(20d);
+            Util.heal(player);
+        }
     }
 
     public static void log(String msg) {
@@ -54,7 +67,7 @@ public class Autio {
     }
 
     public static void teleportToNether(Player player) {
-        player.teleport(new Location(Bukkit.getWorld("world_nether"), 0.5, 52, 0.5));
+        player.teleportAsync(new Location(Bukkit.getWorld("world_nether"), 0.5, 52, 0.5));
     }
 
     public static void every(int seconds, Runnable task, boolean async) {
@@ -118,6 +131,37 @@ public class Autio {
         float pitch = Float.parseFloat(config.getString("spawn.pitch"));
 
         World world = Bukkit.getWorld(config.getString("spawn.world"));
+
+        return new Location(world, x, y, z, yaw, pitch);
+
+    }
+
+
+    public static void setDeathSpawn(Location loc) {
+
+        FileConfiguration config = Main.getInstance().getConfig();
+        config.set("deathspawn.x", loc.getX());
+        config.set("deathspawn.y", loc.getY());
+        config.set("deathspawn.z", loc.getZ());
+        config.set("deathspawn.yaw", String.valueOf(loc.getYaw()));
+        config.set("deathspawn.pitch", String.valueOf(loc.getPitch()));
+        config.set("deathspawn.world", loc.getWorld().getName());
+
+        Main.getInstance().saveConfig();
+    }
+
+    public static Location getDeathSpawn() {
+
+        FileConfiguration config = Main.getInstance().getConfig();
+
+        double x = config.getDouble("deathspawn.x");
+        double y = config.getDouble("deathspawn.y");
+        double z = config.getDouble("deathspawn.z");
+
+        float yaw = Float.parseFloat(config.getString("deathspawn.yaw"));
+        float pitch = Float.parseFloat(config.getString("deathspawn.pitch"));
+
+        World world = Bukkit.getWorld(config.getString("deathspawn.world"));
 
         return new Location(world, x, y, z, yaw, pitch);
 
@@ -187,7 +231,7 @@ public class Autio {
         PacketContainer pc = getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
 
         pc.getChatComponents().write(0, WrappedChatComponent.fromText("\n  §2§lSorsaMC§7 - §aSurvival  \n"))
-                .write(1, WrappedChatComponent.fromText("\n  §7Paikalla:  \n  §8⇻§a" + Bukkit.getOnlinePlayers().size() + "§8⇺  \n"));
+                .write(1, WrappedChatComponent.fromText("\n  §7Paikalla:  \n  §8⇻§a" + getOnlinePlayers().size() + "§8⇺  \n"));
         try
         {
             getProtocolManager().sendServerPacket(player, pc);
@@ -297,6 +341,18 @@ public class Autio {
            }
        }.runTaskTimer(Main.getInstance(), 0, 20);
 
+    }
+
+    public static List<Player> getOnlinePlayers() {
+
+        List<Player> online = new ArrayList<>();
+
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            if(StaffManager.hidden.contains(player.getUniqueId())) continue;
+            online.add(player);
+        }
+
+        return online;
     }
 
 }

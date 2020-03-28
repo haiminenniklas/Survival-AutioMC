@@ -39,7 +39,7 @@ public class StaffManager implements Listener, CommandExecutor {
 
                 int minedTotal = blockData.get(mat);
                 long hoursPlayed = ((System.currentTimeMillis() - Util.getWhenLogged(uuid)) / 1000 / 60 / 60) + 1;
-                System.out.println("BPH -> " + (System.currentTimeMillis() - Util.getWhenLogged(uuid)) + " / " + hoursPlayed + " / " + minedTotal);
+                //System.out.println("BPH -> " + (System.currentTimeMillis() - Util.getWhenLogged(uuid)) + " / " + hoursPlayed + " / " + minedTotal);
 
                 return minedTotal / (int) hoursPlayed;
 
@@ -116,6 +116,8 @@ public class StaffManager implements Listener, CommandExecutor {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
+                StaffManager.hide(clicker);
+                Chat.sendMessage(clicker, "Olet nyt piilossa! Tee §a/staff §7tullaksesi takaisin näkyviin!");
                 TeleportRequest request = new TeleportRequest(player, target, TeleportManager.Teleport.FORCE);
                 request.ask();
             }
@@ -174,6 +176,7 @@ public class StaffManager implements Listener, CommandExecutor {
         for(Player online : Bukkit.getOnlinePlayers()) {
 
             if(online.getUniqueId().equals(player.getUniqueId())) continue;
+            if(Ranks.isStaff(online.getUniqueId())) continue;
             online.hidePlayer(Main.getInstance(), player);
 
         }

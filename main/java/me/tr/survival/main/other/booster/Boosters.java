@@ -233,6 +233,8 @@ public class Boosters implements Listener {
 
         Autio.every(60, () -> {
 
+            if(getActive().size() < 1) return;
+
             for(Map.Entry<String, HashMap<UUID, Long>> e : getActive().entrySet()) {
                 Booster booster = getBoosterByName(e.getKey());
                 if(booster == null) continue;

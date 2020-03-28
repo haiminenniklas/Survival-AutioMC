@@ -7,6 +7,7 @@ import dev.esophose.playerparticles.particles.ParticleGroup;
 import dev.esophose.playerparticles.particles.ParticlePair;
 import dev.esophose.playerparticles.styles.*;
 import me.tr.survival.main.database.PlayerData;
+import me.tr.survival.main.other.PlayerGlowManager;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
@@ -94,7 +95,7 @@ public class Particles implements Listener, CommandExecutor {
                // System.out.println(((isUsingDefaultParticle(player) ? "default" : String.valueOf(getCurrentParticle(player).getId()))));
                // System.out.println(((isUsingDefaultArrowTrail(player) ? "default" : String.valueOf(getCurrentArrowTrail(player).getId()))));
 
-                gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.HEART_OF_THE_SEA, 1, "§aPartikkelit", Arrays.asList(
+                gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.HEART_OF_THE_SEA, 1, "§aPartikkelit", Arrays.asList(
                         "§7§m--------------------",
                         " §7Klikkaa hallinnoidaksesi",
                         " §apartikkeliefektejäsi§7!",
@@ -109,7 +110,22 @@ public class Particles implements Listener, CommandExecutor {
                     }
                 });
 
-                gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.BOW, 1, "§bNuolijanat", Arrays.asList(
+                gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.GLOWSTONE_DUST, 1, "§dHehkuefekti", Arrays.asList(
+                        "§7§m--------------------",
+                        " §7Klikkaa hallinnoidaksesi",
+                        " §dHehkuefektejä§7!",
+                        "§7§m--------------------"
+                ))) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+
+                        gui.close(player);
+                        PlayerGlowManager.openMenu(player);
+
+                    }
+                });
+
+                gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.BOW, 1, "§bNuolijanat", Arrays.asList(
                         "§7§m--------------------",
                         " §7Klikkaa hallinnoidaksesi",
                         " §bnuolijanojasi§7!",

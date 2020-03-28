@@ -121,6 +121,11 @@ public class TpaCommand implements CommandExecutor, Listener {
                                 return true;
                             }
 
+                            if(target.getName().equalsIgnoreCase(target2.getName())) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Et voi lähettää pelaajaa hänen omaan sijaintiinsa!");
+                                return true;
+                            }
+
                             TeleportRequest request = new TeleportRequest(target, target2, TeleportManager.Teleport.FORCE);
                             request.ask();
                         } else if(args.length == 3){

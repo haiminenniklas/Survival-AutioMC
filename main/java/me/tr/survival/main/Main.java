@@ -136,7 +136,6 @@ public final class Main extends JavaPlugin implements Listener {
         Autio.logColored(" §aRegistering plugin commands....");
 
         getCommand("home").setExecutor(new HomeCommand());
-        getCommand("rank").setExecutor(new RankCommand());
 
         getCommand("tpa").setExecutor(new TpaCommand());
         getCommand("tpaccept").setExecutor(new TpaCommand());
@@ -178,6 +177,7 @@ public final class Main extends JavaPlugin implements Listener {
 
         getCommand("kosmetiikka").setExecutor(new Particles());
         getCommand("vip").setExecutor(new VipCommand());
+        getCommand("hehku").setExecutor(new PlayerGlowManager());
 
         // Autosave code...
 
@@ -237,6 +237,13 @@ public final class Main extends JavaPlugin implements Listener {
         } else {
             Autio.log(" §cCould not find Vault! Disabling plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
+        }
+
+        Autio.log(" §aSetupping Glow Effects");
+        try {
+            PlayerGlowManager.setupColorTeams();
+        } catch(Exception ex) {
+            // Ignore error
         }
 
         Autio.logColored("§a Enabled AutioCore! (It took " + (System.currentTimeMillis() - start) +
@@ -416,7 +423,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                     if(args.length == 0) {
 
-                        player.sendMessage("§a/speed <amount>");
+                        player.sendMessage("§c/speed <amount>");
 
                     } else if(args.length >= 1) {
 
@@ -436,7 +443,7 @@ public final class Main extends JavaPlugin implements Listener {
                         float speed = value / 10;
                         if(!player.isFlying()) {
                             player.setWalkSpeed(speed);
-                            Chat.sendMessage(player, "Kävelynopeys nyt " + value + " (" + speed + ")");
+                            Chat.sendMessage(player, "Kävelynopeus nyt " + value + " (" + speed + ")");
                         } else {
                             player.setFlySpeed(speed);
                             Chat.sendMessage(player, "Lentonopeus nyt " + value + " (" + speed + ")");
@@ -818,6 +825,9 @@ public final class Main extends JavaPlugin implements Listener {
                             String msg = (!current) ? "§apäällä" : "§cpois päältä";
                             Chat.sendMessage(player, "Tietojen tallentaminen lokiin " + msg);
 
+                        } else if(args[0].equalsIgnoreCase("setdeathspawn")) {
+                            Autio.setDeathSpawn(player.getLocation());
+                            Chat.sendMessage(player, "Kuolemansaaren spawni asetettu!");
                         }
                     }
                 }

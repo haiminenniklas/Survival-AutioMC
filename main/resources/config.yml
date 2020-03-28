@@ -22,6 +22,14 @@ spawn:
   pitch: '0.0'
   world: 'world'
 
+deathspawn:
+  x: 0
+  y: 30
+  z: 0
+  yaw: '0.0'
+  pitch: '0.0'
+  world: 'world'
+
 effects:
   teleport:
     enabled: true

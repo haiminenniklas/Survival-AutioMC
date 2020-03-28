@@ -44,7 +44,7 @@ public class TeleportRequest {
         this.here = here;
 
         if(Settings.get(two.getUniqueId(), "privacy") && this.getType() != TeleportManager.Teleport.FORCE) {
-            Chat.sendMessage(one, Chat.Prefix.ERROR, "Pelaajalla §6" + two.getName() + " §7on yksityinen tila päällä!");
+            Chat.sendMessage(one, Chat.Prefix.ERROR, "Pelaajalla §a" + two.getName() + " §7on yksityinen tila päällä!");
             return;
         }
 
@@ -71,7 +71,7 @@ public class TeleportRequest {
             accept.addExtra(deny);
 
             two.sendMessage("§7§m--------------------------");
-            two.sendMessage(" §7Pelaaja §6" + one.getName() + " §7pyytää");
+            two.sendMessage(" §7Pelaaja §a" + one.getName() + " §7pyytää");
             if(here) {
                 two.sendMessage(" §7pyytää sinua hänen luokseen!");
             } else {
@@ -80,7 +80,7 @@ public class TeleportRequest {
             two.sendMessage(" ");
             two.spigot().sendMessage(accept);
             two.sendMessage(" ");
-            two.sendMessage(" §7Sinulla on §660 sekuntia §7aikaa hyväksyä");
+            two.sendMessage(" §7Sinulla on §a60 sekuntia §7aikaa hyväksyä");
             two.sendMessage("§7§m--------------------------");
 
             Chat.sendMessage(one, "Lähetit §eteleporttaus§7-pyynnön pelaajalle §6" + two.getName() + "§7!" +
@@ -93,8 +93,8 @@ public class TeleportRequest {
 
                 if(!this.expired) {
                     this.setExpired(true);
-                    Chat.sendMessage(one, "Teleporttauspyyntö pelaajalle §6" + two.getName() + " §7on nyt umpeutunut!");
-                    Chat.sendMessage(two, "Teleporttauspyyntö pelaajalta §6" + one.getName() + " §7on nyt umpeutunut!");
+                    Chat.sendMessage(one, "Teleporttauspyyntö pelaajalle §a" + two.getName() + " §7on nyt umpeutunut!");
+                    Chat.sendMessage(two, "Teleporttauspyyntö pelaajalta §a" + one.getName() + " §7on nyt umpeutunut!");
                     remove();
                 }
 
@@ -111,8 +111,8 @@ public class TeleportRequest {
         if(this.isExpired()) {
             Chat.sendMessage(two, Chat.Prefix.ERROR, "Teleporttauspyyntö pelaajalta §6" + one.getName() + " §7on jo umpeutunut!");
         } else {
-            Chat.sendMessage(two, "§7Kielsit teleporttauspyynnön pelaajalta §6" + one.getName());
-            Chat.sendMessage(one, "§7Pelaaja §6" + two.getName() + " §7kielsi sinun teleporttauspyyntösi!");
+            Chat.sendMessage(two, "§7Kielsit teleporttauspyynnön pelaajalta §a" + one.getName());
+            Chat.sendMessage(one, "§7Pelaaja §a" + two.getName() + " §7kielsi sinun teleporttauspyyntösi!");
         }
 
         remove();
@@ -124,7 +124,7 @@ public class TeleportRequest {
         this.accepted = true;
 
         if(this.isExpired()) {
-            Chat.sendMessage(two, Chat.Prefix.ERROR, "Teleporttauspyyntö pelaajalta §6" + one.getName() + " §7on jo umpeutunut!");
+            Chat.sendMessage(two, Chat.Prefix.ERROR, "Teleporttauspyyntö pelaajalta §a" + one.getName() + " §7on jo umpeutunut!");
         } else {
 
             if(this.getType() == TeleportManager.Teleport.FORCE) {
@@ -132,11 +132,11 @@ public class TeleportRequest {
             } else {
 
                 if(!this.here) {
-                    Chat.sendMessage(two, "Hyväksyit Teleport-pyynnön pelaajalta §6" + one.getName() + "§7!");
-                    Chat.sendMessage(one, "Pelaaja §6" + two.getName() + " §7hyväksyi Teleport-pyyntösi! Teleportataan §e3 sekunnin §7kuluttua!");
+                    Chat.sendMessage(two, "Hyväksyit Teleport-pyynnön pelaajalta §a" + one.getName() + "§7!");
+                    Chat.sendMessage(one, "Pelaaja §a" + two.getName() + " §7hyväksyi Teleport-pyyntösi! Teleportataan §e3 sekunnin §7kuluttua!");
                 } else {
-                    Chat.sendMessage(two, "Hyväksyit Teleport-pyynnön pelaajalta §6" + one.getName() + "§7! Teleportataan §e3 sekunnin §7kuluttua!");
-                    Chat.sendMessage(one, "Pelaaja §6" + two.getName() + " §7hyväksyi Teleport-pyyntösi!");
+                    Chat.sendMessage(two, "Hyväksyit Teleport-pyynnön pelaajalta §a" + one.getName() + "§7! Teleportataan §e3 sekunnin §7kuluttua!");
+                    Chat.sendMessage(one, "Pelaaja §a" + two.getName() + " §7hyväksyi Teleport-pyyntösi!");
                 }
 
                 Autio.after(3, () -> this.teleport() );

@@ -20,14 +20,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class Backpack implements CommandExecutor, Listener {
 
@@ -109,16 +108,70 @@ public class Backpack implements CommandExecutor, Listener {
         Level level =  getLevel(player.getUniqueId());
 
         ItemStack[] items = getSavedInventory(uuid);
-        Inventory inv = Bukkit.createInventory(null, level.size, "Reppu (" + level.displayName + "§8)");
+        Inventory inv = Bukkit.createInventory(null, level.size + 9, "Reppu (" + level.displayName + "§8)");
 
-        for(ItemStack item : items) {
+        int[] firstGlassPanes = new int[] {
+          0,1,2,3,5,6,7,8
+        };
+
+        for(int i = 0; i < firstGlassPanes.length; i++) {
+            inv.setItem(firstGlassPanes[i], ItemUtil.makeItem(Material.PINK_STAINED_GLASS_PANE));
+        }
+
+        String upgradeText = (getLevel(uuid) == Level.THREE) ? "§c§lREPPUSI ON YLIMMÄLLÄ TASOLLA" : "§a§lKLIKKAA PÄIVITTÄÄKSESI";
+
+        inv.setItem(4, ItemUtil.makeItem(Material.EXPERIENCE_BOTTLE, 1, "§eReppusi", Arrays.asList(
+                "§7§m--------------------",
+                " §7Reppusi taso: §a" + getLevelNumber(uuid),
+                " ",
+                " " + upgradeText,
+                "§7§m--------------------"
+        )));
+
+        int itemIndex = 0;
+        for(int i = 9; i < level.size; i++) {
+
+            ItemStack item = items[itemIndex];
             if(item == null) continue;
             if(item.getType() == Material.AIR) continue;
-            inv.addItem(item);
+
+            inv.setItem(i, item);
+
+        }
+
+        for(int i = level.size; i < level.size + 9; i++) {
+            inv.setItem(i, ItemUtil.makeItem(Material.PINK_STAINED_GLASS_PANE));
         }
 
         player.openInventory(inv);
 
+
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onInvClick(InventoryClickEvent e) {
+
+        Player player = (Player) e.getWhoClicked();
+
+        if(e.getView().getTitle().startsWith("Reppu")) {
+
+            if(e.getCurrentItem() != null && e.getClickedInventory() != null) {
+
+                ItemStack item = e.getCurrentItem();
+                if(item.getType() == Material.PINK_STAINED_GLASS_PANE) {
+                    e.setCancelled(true);
+                } else if(item.getType() == Material.EXPERIENCE_BOTTLE) {
+                    if(item.hasItemMeta()) {
+                        if(item.getItemMeta().getDisplayName().equalsIgnoreCase("§eReppusi")) {
+                            e.setCancelled(true);
+                            upgradeConfirm(player);
+                        }
+                    }
+                }
+
+            }
+
+        }
 
     }
 
@@ -130,7 +183,11 @@ public class Backpack implements CommandExecutor, Listener {
         Inventory inv = e.getInventory();
         if(e.getView().getTitle().startsWith("Reppu")) {
 
-            saveInventory(player.getUniqueId(), inv.getContents());
+            List<ItemStack> correctInv = new ArrayList<>();
+            for(int i = 9; i < inv.getSize() - 9; i++) {
+                correctInv.add(inv.getItem(i));
+            }
+            saveInventory(player.getUniqueId(), correctInv.toArray(new ItemStack[0]));
             //Chat.sendMessage(player, "Reppusi tallennettiin!");
 
         } else if(e.getView().getTitle().startsWith("Tarkastele reppua")) {
@@ -142,7 +199,6 @@ public class Backpack implements CommandExecutor, Listener {
             playerName = playerName.replace("(", "");
 
             OfflinePlayer target = Bukkit.getOfflinePlayer(playerName);
-
             saveInventory(target.getUniqueId(), inv.getContents());
 
             Chat.sendMessage(player, "Tallennettiin pelaajan §6" + playerName + " §7reppu!");
@@ -207,6 +263,16 @@ public class Backpack implements CommandExecutor, Listener {
 
     }
 
+    public static int getLevelNumber(UUID uuid) {
+        if(getLevel(uuid) == Level.ONE) {
+            return 1;
+        } else if(getLevel(uuid) == Level.TWO) {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
+
     public static void setLevel(UUID uuid, Level level) {
 
         if(!PlayerData.isLoaded(uuid)) {
@@ -230,7 +296,7 @@ public class Backpack implements CommandExecutor, Listener {
 
         Gui.openGui(player, "Päivitä reppusi", 27, (gui) -> {
 
-            gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahivsta", Arrays.asList(
+            gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
                     "§7§m--------------------",
                     " §7Klikkaa vahvistaaksesi päivityksen!",
                     " §7Päivitys maksaa: §b" + finalPrice + " kristallia§7!",
@@ -314,8 +380,8 @@ public class Backpack implements CommandExecutor, Listener {
     public enum Level {
 
         ONE(9, "§a§lLEVEL 1"),
-        TWO(27, "§e§lLEVEL 2"),
-        THREE(54, "§c§lLEVEL 3");
+        TWO(18, "§e§lLEVEL 2"),
+        THREE(36, "§c§lLEVEL 3");
 
         private int size;
         private String displayName;

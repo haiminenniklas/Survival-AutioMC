@@ -210,11 +210,12 @@ public class Profile {
             }
         });
 
-        gui.addButton(new Button(1, 42, ItemUtil.makeItem(Material.NETHER_STAR, 1, "§bPartikkelit", Arrays.asList(
+        gui.addButton(new Button(1, 42, ItemUtil.makeItem(Material.NETHER_STAR, 1, "§bKosmetiikka", Arrays.asList(
                 "§7§m--------------------",
                 " §7Tästä klikkaamalla pääset",
-                " §7katsomaan §bpartikkeliefektejä",
-                " §7jotka ovat sinulle avoinna!",
+                " §7katsomaan §bkosmetiisia efektejä",
+                " §7ja §bominaisuuksia §7jotka ovat",
+                " §7sinulle avoinna!",
                 "§7§m--------------------"
         ))) {
             @Override

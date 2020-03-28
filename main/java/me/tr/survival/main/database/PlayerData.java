@@ -60,6 +60,7 @@ public class PlayerData {
 
         empty.put("arrowtrail", "default");
         empty.put("particle", "default");
+        empty.put("glow_effect", "default");
 
 
         player_data.put(uuid, empty);
@@ -177,6 +178,13 @@ public class PlayerData {
                     data.put("particle", "default");
                 }
 
+                ResultSet glowResult = SQL.query("SELECT * FROM `glow_effect` WHERE `uuid` = '" + uuid + "';");
+                if(glowResult.next()) {
+                    data.put("glow_effect", glowResult.getString("effect"));
+                } else {
+                    data.put("glow_effect", "default");
+                }
+
 
                 player_data.put(uuid, data);
 
@@ -237,7 +245,9 @@ public class PlayerData {
 
                 "UPDATE `backpacks` SET `level` = '" + data.get("backpack_level") + "', `saved_inventory` = '" + data.get("backpack_inventory") + "' WHERE `uuid` = '" + uuid + "';",
 
-                "UPDATE `particles` SET `arrowtrail` = '" + data.get("arrowtrail") + "', `particle` = '" + data.get("particle") + "' WHERE `uuid` = '" + uuid + "';"
+                "UPDATE `particles` SET `arrowtrail` = '" + data.get("arrowtrail") + "', `particle` = '" + data.get("particle") + "' WHERE `uuid` = '" + uuid + "';",
+
+                "UPDATE `glow_effect` SET `effect` = '" + data.get("glow_effect") + "' WHERE `uuid` = '" + uuid + "'; "
         };
 
         String[] saveQueries = new String[] {
@@ -257,7 +267,9 @@ public class PlayerData {
 
                 "INSERT INTO `backpacks` VALUES('" + uuid + "', '" + data.get("backpack_level") + "', '" + data.get("backpack_inventory") + "');",
 
-                "INSERT INTO `particles` VALUES('" + uuid + "', '" + data.get("arrowtrail") + "', '" + data.get("particle") + "');"
+                "INSERT INTO `particles` VALUES('" + uuid + "', '" + data.get("arrowtrail") + "', '" + data.get("particle") + "');",
+
+                "INSERT INTO `glow_effect` VALUES('" + uuid + "', '" + data.get("glow_effect") + "');"
         };
 
         try {

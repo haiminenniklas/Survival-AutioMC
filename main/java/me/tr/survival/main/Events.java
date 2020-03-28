@@ -6,6 +6,7 @@ import com.destroystokyo.paper.event.server.ServerExceptionEvent;
 import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.CountdownTimer;
+import me.tr.survival.main.other.PlayerGlowManager;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.backpacks.Backpack;
@@ -46,15 +47,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class Events implements Listener {
 
     public static final HashMap<UUID, Boolean> adminMode = new HashMap<>();
     public static final HashMap<UUID, Location> lastLocation = new HashMap<>();
+    public static final ArrayList<UUID> deathIsland = new ArrayList<>();
 
     @EventHandler
     public void onException(ServerExceptionEvent e) {
@@ -64,7 +63,7 @@ public class Events implements Listener {
             if(player.isOp() && adminMode.containsKey(player.getUniqueId())) {
                 if(adminMode.get(player.getUniqueId())) {
 
-                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Virhe: §6" + e.getException().getMessage());
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Tapahtui virhe: §c" + e.getException().getMessage());
 
                 }
             }
@@ -106,9 +105,10 @@ public class Events implements Listener {
     public void onJoin(PlayerJoinEvent e) {
 
         Player player = e.getPlayer();
+        UUID uuid = player.getUniqueId();
         FileConfiguration config = Main.getInstance().getConfig();
 
-        player.sendMessage("§7§m--------------------------");
+        player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         player.sendMessage(" §7Tervetuloa §a" + player.getName() + " §7meidän Survival-");
         player.sendMessage(" §7palvelimellemme! Alla löydät muutama nappia, joista löydät");
         player.sendMessage( "§7hyödyllistä tietoa, asetuksia ja ominaisuuksia. Alkuun");
@@ -139,9 +139,13 @@ public class Events implements Listener {
 
         player.sendMessage(" ");
 
-        player.sendMessage(" §ahttp://sorsamc.net");
-        player.sendMessage("§7§m--------------------------");
+        player.sendMessage(" §ahttp://www.sorsa.gg");
+        player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
+        // Enable glow
+        if(!PlayerGlowManager.getGlowColor(uuid).equalsIgnoreCase("default")) {
+            PlayerGlowManager.enableGlow(player, ChatColor.valueOf(PlayerGlowManager.getGlowColor(uuid)));
+        }
 
         // Setup backpacks
 
@@ -292,41 +296,6 @@ public class Events implements Listener {
  */
         lastLocation.put(player.getUniqueId(), player.getLocation());
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                player.spigot().respawn();
-                Autio.teleportToSpawn(player);
-                cancel();
-            }
-        }.runTaskLater(Main.getInstance(), 5);
-
-        player.setHealth(20d);
-
-        if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
-            Util.heal(player);
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24d);
-            player.setHealth(24d);
-        } else {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
-        }
-
-        if(!player.hasPermission("deathisland.bypass")) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 999, true, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 999, true, false));
-
-            CountdownTimer timer = new CountdownTimer(Main.getInstance(), 30, () -> {},
-                    () -> {
-                        Util.heal(player);
-                        Autio.teleportToSpawn(player);
-                        player.sendTitle(new Title("§a§lTAKAISIN", "§7Olet taas elossa!", 15, 20, 15));
-                    }, (t) -> player.sendTitle(new Title("§c§lKUOLIT", "§7Pääset §c" + t.getSecondsLeft() + "s §7päästä takaisin!", 15, 20, 15)));
-
-// Start scheduling, don't use the "run" method unless you want to skip a second
-            timer.scheduleTimer();
-
-        }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -347,6 +316,11 @@ public class Events implements Listener {
 
         Player player = e.getPlayer();
         FileConfiguration config = Main.getInstance().getConfig();
+
+        if(deathIsland.contains(player.getUniqueId())) {
+            e.setCancelled(true);
+            return;
+        }
 
         if(config.getBoolean("effects.teleport.enabled")) {
 
@@ -372,13 +346,39 @@ public class Events implements Listener {
         } else {
             e.setCancelled(false);
         }
-        Bukkit.broadcastMessage(String.valueOf(e.isCancelled()));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent e) {
 
         Player player = e.getPlayer();
+
+        if(!player.hasPermission("deathisland.bypass") && !deathIsland.contains(player.getUniqueId())) {
+            player.teleport(Autio.getDeathSpawn());
+            Util.heal(player);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 999, true, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1, true, false));
+
+            player.playSound(player.getLocation(), Sound.MUSIC_DISC_13, 1, 1);
+
+            deathIsland.add(player.getUniqueId());
+
+            CountdownTimer timer = new CountdownTimer(Main.getInstance(), 30, () -> {},
+                    () -> {
+                        player.sendTitle(new Title("§a§lTAKAISIN", "§7Olet taas elossa!", 15, 20, 15));
+                        Autio.teleportToSpawn(player);
+                        deathIsland.remove(player.getUniqueId());
+                    }, (t) -> {
+                player.sendTitle(new Title("§c§lKUOLIT", "§7Pääset §c" + t.getSecondsLeft() + "s §7päästä takaisin!", 15, 20, 15));
+            });
+
+// Start scheduling, don't use the "run" method unless you want to skip a second
+            timer.scheduleTimer();
+
+        } else {
+            Autio.teleportToSpawn(player);
+        }
+
 
     }
 

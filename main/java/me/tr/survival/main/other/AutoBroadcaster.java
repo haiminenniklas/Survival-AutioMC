@@ -12,7 +12,7 @@ public class AutoBroadcaster {
 
     public static BukkitTask start() {
         BukkitTask task = Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
-            Bukkit.broadcastMessage("§7§m-----------------------------");
+            Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
             int random = new Random().nextInt(getMessages().size());
             String messageRaw = getMessages().get(random);
@@ -20,7 +20,8 @@ public class AutoBroadcaster {
             for(int i = 0; i < splitted.length; i++) {
                 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', splitted[i]));
             }
-            Bukkit.broadcastMessage("§7§m-----------------------------");
+            //Bukkit.broadcastMessage("§7§m-----------------------------");
+            Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         }, 20, 20 * 60 * Main.getInstance().getConfig().getInt("auto-broadcaster.interval-in-minutes"));
 
         return task;

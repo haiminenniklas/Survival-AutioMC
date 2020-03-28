@@ -71,7 +71,8 @@ public class SQL {
                 "CREATE TABLE IF NOT EXISTS `mail` (`uuid` VARCHAR(120), `last_mail` BIGINT(11), `streak` int(11), `tickets` int(11), PRIMARY KEY(`uuid`));",
                 "CREATE TABLE IF NOT EXISTS `warps` (`name` VARCHAR(32), `display_name` TEXT, `loc_x` int(11), `loc_y` int(11), `loc_z` int(11), `loc_pitch` float, `loc_yaw` float, `world` TEXT, `description` LONGTEXT, PRIMARY KEY(`name`));",
                 "CREATE TABLE IF NOT EXISTS `backpacks` (`uuid` VARCHAR(120) PRIMARY KEY NOT NULL, `level` TEXT, `saved_inventory` TEXT);",
-                "CREATE TABLE IF NOT EXISTS `particles` (`uuid` VARCHAR(120) PRIMARY KEY NOT NULL, `arrowtrail` TEXT, `particle` TEXT);"
+                "CREATE TABLE IF NOT EXISTS `particles` (`uuid` VARCHAR(120) PRIMARY KEY NOT NULL, `arrowtrail` TEXT, `particle` TEXT);",
+                "CREATE TABLE IF NOT EXISTS `glow_effect` (`uuid` VARCHAR(120) PRIMARY KEY NOT NULL, `effect` TEXT);"
 
         };
 

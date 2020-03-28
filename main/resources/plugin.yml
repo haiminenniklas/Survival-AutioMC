@@ -21,16 +21,16 @@ commands:
   home:
     description: Koti
     aliases: [koti, homes, delhome]
-  arvo:
-    description: Arvojen hallinta
-    aliases: [rank]
+  #arvo:
+   # description: Arvojen hallinta
+    #aliases: [rank]
   spawn:
     description: Vie Spawnille
   setspawn:
     description: Aseta Spawn
-  level:
-    description: Hallinnoi Leveleitä
-    aliases: [lvl]
+  #level:
+   # description: Hallinnoi Leveleitä
+   # aliases: [lvl]
   ping:
     description: Viive
     aliases: [viive]
@@ -68,6 +68,7 @@ commands:
     description: RTP
   autio:
     description: Autio
+    aliases: [sorsa, sorsamc]
   seen:
     description: Pelaajan vanhat osoitteet
     aliases: [history]
@@ -78,8 +79,8 @@ commands:
     description: Pelaajan kallo
   debug:
     description: Virheenkorjaus
-  admin:
-    description: Admin-toimintoja
+ # admin:
+  #  description: Admin-toimintoja
   posti:
     description: Posti
     aliases: [mail, kirje]
@@ -188,3 +189,6 @@ commands:
     aliases: [cosmetics, particles, partikkelit, nuolijanat, arrowtrail]
   vip:
     description: Vip command
+  hehku:
+    description: Hehkuefektit
+    aliases: [glow, hehkuefektit]

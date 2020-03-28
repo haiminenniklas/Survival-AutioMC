@@ -7,6 +7,7 @@ import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,6 +28,7 @@ public class Chat implements Listener {
 
     private static HashMap<String, Object> settings = new HashMap<>();
     private static HashMap<UUID, Long> sentMessages = new HashMap<>();
+    private static HashMap<UUID, String> lastMessage = new HashMap<>();
 
     public static void init() {
         Chat.settings.put("mute", false);
@@ -143,7 +145,7 @@ public class Chat implements Listener {
             }
         }
 
-        Bukkit.broadcastMessage("§6§lChat tyhjennetty!");
+        Bukkit.broadcastMessage("§c§lChat tyhjennetty!");
         Util.broadcastSound(Sound.BLOCK_ANVIL_BREAK);
 
     }
@@ -172,6 +174,24 @@ public class Chat implements Listener {
             return;
         }
 
+        if(lastMessage.containsKey(uuid)) {
+
+            String last = lastMessage.get(uuid);
+            if(!last.equalsIgnoreCase(e.getMessage())) {
+
+                double similiarity = Util.similarity(e.getMessage(), last);
+                if(similiarity >= 0.75) {
+                    Chat.sendMessage(player, Prefix.ERROR, "Viestisi muistuttaa liikaa vanhaa viestiäsi!");
+                }
+
+            } else {
+                Chat.sendMessage(player, Prefix.ERROR, "Et voi lähettää samaa viestiä uudestaan!");
+            }
+
+        }
+
+        lastMessage.put(uuid, e.getMessage());
+
         if(sentMessages.containsKey(uuid)) {
             long lastSent = sentMessages.get(uuid);
             if((System.currentTimeMillis() - lastSent) / 1000 <= 30 && (boolean) Chat.settings.get("slow")) {
@@ -189,7 +209,11 @@ public class Chat implements Listener {
         sentMessages.put(uuid, System.currentTimeMillis());
 
         //e.setFormat(Chat.getFormat(player, e.getMessage()));
-        e.setFormat((ChatColor.translateAlternateColorCodes('&', Autio.getPrefix(player) + " " + player.getName()).trim() + "§r: %2$s"));
+        if(Ranks.isStaff(uuid)) {
+            e.setFormat((ChatColor.translateAlternateColorCodes('&', Autio.getPrefix(player) + player.getName()).trim() + ChatColor.translateAlternateColorCodes('&', "&r: %2$s")));
+        } else {
+            e.setFormat((ChatColor.translateAlternateColorCodes('&', Autio.getPrefix(player) + player.getName()).trim() + "§r: %2$s"));
+        }
 
         /*if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {
             e.setCancelled(true);

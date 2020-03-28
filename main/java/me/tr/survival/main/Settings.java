@@ -113,7 +113,8 @@ public class Settings {
 
         gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.CLOCK, 1, "§2Sää ja aika", Arrays.asList(
                 "§7§m--------------------",
-                "§aKlikkaa vaihtaakesi sinun säätä ja aikaa",
+                "§aKlikkaa vaihtaakesi sinun",
+                "§asäätäsi ja aikaasi",
                 "§7§m--------------------"
         ))) {
 
@@ -212,14 +213,14 @@ public class Settings {
         obj.getScore(ChatColor.LIGHT_PURPLE + "" + ChatColor.GREEN + "" + ChatColor.RED).setScore(4);
 
         obj.getScore("§7 §1 §k").setScore(3);
-        obj.getScore("       §2sorsamc.net").setScore(2);
+        obj.getScore("       §2sorsa.gg").setScore(2);
 
         Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
 
             board.getTeam("crystals").setPrefix("§b" + Crystals.get(player.getUniqueId()));
             board.getTeam("blocks").setPrefix("§a" + Balance.get(player.getUniqueId()) + "€");
             board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
-            board.getTeam("players").setPrefix("§a" + Bukkit.getOnlinePlayers().size());
+            board.getTeam("players").setPrefix("§a" + Autio.getOnlinePlayers().size());
 
         }, 0, 20 * 2);
 
