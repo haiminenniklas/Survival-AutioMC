@@ -22,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.*;
 
@@ -85,6 +86,19 @@ public class StaffManager implements Listener, CommandExecutor {
             }
         });
 
+        gui.addButton(new Button(1, 1, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eSää", Arrays.asList(
+                "§7§m--------------------",
+                " §7Muokkaa maailman säätä",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                weatherGui(clicker);
+
+            }
+        });
+
         gui.open(player);
 
     }
@@ -137,7 +151,7 @@ public class StaffManager implements Listener, CommandExecutor {
             }
         });
 
-        gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.PAPER, 1, "§cYlläpitopaneeli", Arrays.asList(
+        gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.ARROW, 1, "§cYlläpitopaneeli", Arrays.asList(
                 "§7§m--------------------",
                 " §7Klikkaa avataksesi",
                 " §cylläpitopaneelin§7!",
@@ -276,8 +290,56 @@ public class StaffManager implements Listener, CommandExecutor {
 
         }
 
-
     }
 
+    public static void weatherGui(Player player) {
+        Gui gui = new Gui("Säätila", 27);
+
+        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§a§lSelkeä")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(player);
+                player.getWorld().setThunderDuration(0);
+                player.getWorld().setWeatherDuration(0);
+                player.getWorld().setThundering(false);
+                player.getWorld().setStorm(false);
+                Chat.sendMessage(clicker, "Sää vaihdettu selkeäksi!");
+            }
+        });
+
+        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§9§lSateinen")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(player);
+                player.getWorld().setStorm(true);
+                Chat.sendMessage(clicker, "Sää vaihdettu sateiseksi!");
+            }
+        });
+
+        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.PAPER, 1, "§b§lMyrsykyinen")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(player);
+                player.getWorld().setThundering(true);
+                player.getWorld().setStorm(true);
+                Chat.sendMessage(clicker, "Sää vaihdettu myrskyiseksi!");
+            }
+        });
+
+        gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.ARROW, 1, "§cYlläpitopaneeli", Arrays.asList(
+                "§7§m--------------------",
+                " §7Klikkaa avataksesi",
+                " §cylläpitopaneelin§7!",
+                "§7§m--------------------"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                StaffManager.panel(player);
+            }
+        });
+
+        gui.open(player);
+    }
 
 }

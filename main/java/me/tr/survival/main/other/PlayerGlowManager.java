@@ -50,7 +50,7 @@ public class PlayerGlowManager implements CommandExecutor {
             int colorIndex = 0;
             for(int i = 10; i < 35; i++) {
 
-                if(i == 17 || i == 18 || i == 27) continue;
+                if(i == 17 || i == 18 || i == 26 || i == 27) continue;
 
                 ChatColor color = ChatColor.values()[colorIndex];
                // if(color == null) continue;
@@ -61,7 +61,7 @@ public class PlayerGlowManager implements CommandExecutor {
                     continue;
                 }
 
-                Button btn = new Button(1,  i, ItemUtil.makeItem(Util.ChatColorToDye(color), 1, color + Util.translateChatColor(color), Arrays.asList(
+                Button btn = new Button(1,  i, ItemUtil.makeItem(Util.ChatColorToDye(color), 1, color + Util.translateChatColor(color) + " ss", Arrays.asList(
                         "§7§m--------------------",
                         " §7Klikkaa vaihtaaksesi",
                         " §dhehkusi §7väriin",

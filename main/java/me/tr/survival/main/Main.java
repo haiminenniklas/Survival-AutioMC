@@ -1207,40 +1207,7 @@ public final class Main extends JavaPlugin implements Listener {
             } else if(command.getLabel().equalsIgnoreCase("weather")) {
                 if(Ranks.isStaff(uuid)) {
 
-                    Gui gui = new Gui("Säätila", 27);
-
-                    gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§a§lSelkeä")) {
-                        @Override
-                        public void onClick(Player clicker, ClickType clickType) {
-                            gui.close(player);
-                            player.getWorld().setThunderDuration(0);
-                            player.getWorld().setWeatherDuration(0);
-                            player.getWorld().setThundering(false);
-                            player.getWorld().setStorm(false);
-                            Chat.sendMessage(clicker, "Sää vaihdettu selkeäksi!");
-                        }
-                    });
-
-                    gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§9§lSateinen")) {
-                        @Override
-                        public void onClick(Player clicker, ClickType clickType) {
-                            gui.close(player);
-                            player.getWorld().setStorm(true);
-                            Chat.sendMessage(clicker, "Sää vaihdettu sateiseksi!");
-                        }
-                    });
-
-                    gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.PAPER, 1, "§b§lMyrsykyinen")) {
-                        @Override
-                        public void onClick(Player clicker, ClickType clickType) {
-                            gui.close(player);
-                            player.getWorld().setThundering(true);
-                            player.getWorld().setStorm(true);
-                            Chat.sendMessage(clicker, "Sää vaihdettu myrskyiseksi!");
-                        }
-                    });
-
-                    gui.open(player);
+                    StaffManager.weatherGui(player);
 
                 }
             } else if(command.getLabel().equalsIgnoreCase("join")) {

@@ -137,6 +137,9 @@ public class Backpack implements CommandExecutor, Listener {
 
             inv.setItem(i, item);
 
+            itemIndex += 1;
+            if(itemIndex >= items.length) break;
+
         }
 
         for(int i = level.size; i < level.size + 9; i++) {
@@ -152,6 +155,7 @@ public class Backpack implements CommandExecutor, Listener {
     public void onInvClick(InventoryClickEvent e) {
 
         Player player = (Player) e.getWhoClicked();
+        UUID uuid = player.getUniqueId();
 
         if(e.getView().getTitle().startsWith("Reppu")) {
 
@@ -159,12 +163,21 @@ public class Backpack implements CommandExecutor, Listener {
 
                 ItemStack item = e.getCurrentItem();
                 if(item.getType() == Material.PINK_STAINED_GLASS_PANE) {
-                    e.setCancelled(true);
+
+                    int index = e.getSlot();
+                    if(index >= e.getInventory().getSize() - 9 && index < e.getInventory().getSize()) {
+                        e.setCancelled(true);
+                    } else if(index >= 0 && index <= 8) {
+                        e.setCancelled(true);
+                    }
+
                 } else if(item.getType() == Material.EXPERIENCE_BOTTLE) {
                     if(item.hasItemMeta()) {
                         if(item.getItemMeta().getDisplayName().equalsIgnoreCase("§eReppusi")) {
                             e.setCancelled(true);
-                            upgradeConfirm(player);
+                            if(getLevel(uuid) != Level.THREE) {
+                                upgradeConfirm(player);
+                            }
                         }
                     }
                 }
@@ -183,11 +196,14 @@ public class Backpack implements CommandExecutor, Listener {
         Inventory inv = e.getInventory();
         if(e.getView().getTitle().startsWith("Reppu")) {
 
-            List<ItemStack> correctInv = new ArrayList<>();
-            for(int i = 9; i < inv.getSize() - 9; i++) {
-                correctInv.add(inv.getItem(i));
+            Inventory correctInv = Bukkit.createInventory(null, getLevel(player.getUniqueId()).size);
+            for(int i = 0; i < inv.getSize(); i++) {
+                // Remove the inaccessible rows from the calculations
+                if(i < 9) continue;
+                if(i >= inv.getSize() - 9 && i < inv.getSize()) continue;
+                correctInv.addItem(inv.getItem(i));
             }
-            saveInventory(player.getUniqueId(), correctInv.toArray(new ItemStack[0]));
+            saveInventory(player.getUniqueId(), correctInv.getContents());
             //Chat.sendMessage(player, "Reppusi tallennettiin!");
 
         } else if(e.getView().getTitle().startsWith("Tarkastele reppua")) {
