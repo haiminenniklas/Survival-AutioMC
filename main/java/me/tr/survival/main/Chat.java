@@ -181,11 +181,15 @@ public class Chat implements Listener {
 
                 double similiarity = Util.similarity(e.getMessage(), last);
                 if(similiarity >= 0.75) {
+                    e.setCancelled(true);
                     Chat.sendMessage(player, Prefix.ERROR, "Viestisi muistuttaa liikaa vanhaa viestiäsi!");
+                    return;
                 }
 
             } else {
+                e.setCancelled(true);
                 Chat.sendMessage(player, Prefix.ERROR, "Et voi lähettää samaa viestiä uudestaan!");
+                return;
             }
 
         }

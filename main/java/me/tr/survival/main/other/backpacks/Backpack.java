@@ -121,11 +121,11 @@ public class Backpack implements CommandExecutor, Listener {
         String upgradeText = (getLevel(uuid) == Level.THREE) ? "§c§lREPPUSI ON YLIMMÄLLÄ TASOLLA" : "§a§lKLIKKAA PÄIVITTÄÄKSESI";
 
         inv.setItem(4, ItemUtil.makeItem(Material.EXPERIENCE_BOTTLE, 1, "§eReppusi", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Reppusi taso: §a" + getLevelNumber(uuid),
                 " ",
                 " " + upgradeText,
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )));
 
         int itemIndex = 0;
@@ -198,10 +198,15 @@ public class Backpack implements CommandExecutor, Listener {
 
             Inventory correctInv = Bukkit.createInventory(null, getLevel(player.getUniqueId()).size);
             for(int i = 0; i < inv.getSize(); i++) {
+
+                ItemStack item = inv.getItem(i);
+                if(item == null) {
+                    item = new ItemStack(Material.AIR);
+                }
                 // Remove the inaccessible rows from the calculations
                 if(i < 9) continue;
                 if(i >= inv.getSize() - 9 && i < inv.getSize()) continue;
-                correctInv.addItem(inv.getItem(i));
+                correctInv.addItem(item);
             }
             saveInventory(player.getUniqueId(), correctInv.getContents());
             //Chat.sendMessage(player, "Reppusi tallennettiin!");

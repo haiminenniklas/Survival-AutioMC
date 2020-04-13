@@ -41,7 +41,7 @@ public class Mail {
         }
 
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(dailyMat, 1, "§aPäivittäinen", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "",
                 "§7 " + canOpen,
                 "",
@@ -55,7 +55,7 @@ public class Mail {
                 "§7 - §b+ " + (2 * multiplier) + " timanttia §7(§aPremium§7)",
                 "§7 - §a+ " + (multiplier) + " emeraldia §7(§aPremium§7)",
                 "§7 - §b+ " + (5 * multiplier) + " kristallia §7(§aPremium§6+§7)",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -78,7 +78,7 @@ public class Mail {
                 int multiplier = getMultiplier(clicker);
 
                 clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
-                clicker.sendMessage("§7§m--------------------");
+                clicker.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                 if(multiplier > 1) {
                     clicker.sendMessage("§7Kerroin §b§l" + multiplier + "x§7!");
@@ -117,7 +117,7 @@ public class Mail {
                     clicker.sendMessage("§a§l+" + (multiplier) + " emerald");
                 }
 
-                clicker.sendMessage("§7§m--------------------");
+                clicker.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                 Mail.setLastMail(clicker.getUniqueId());
 
@@ -125,7 +125,7 @@ public class Mail {
         });
 
         gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.PAPER, 1, "§2Arvat", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "",
                 " §7Kun äänestät palvelinta       ",
                 " §7komennolla §a/vote§7, saat      ",
@@ -139,7 +139,7 @@ public class Mail {
                 "",
                 " §aKlikkaa avataksesi arvan!     ",
                 "",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -149,7 +149,7 @@ public class Mail {
         });
 
         gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Kertoimet", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "",
                 "§7Mitä pitempään käyt putkeen",
                 "§7hakemassa palvelimen §apäivittäisen",
@@ -160,7 +160,7 @@ public class Mail {
                 "§7- §e§l+14pv §7-> §b§l+3 kristallia",
                 "§7- §c§l+21pv §7-> §b§l3x",
                 "",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )), 26);
 
         gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {

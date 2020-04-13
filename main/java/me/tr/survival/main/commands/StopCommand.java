@@ -22,7 +22,8 @@ public class StopCommand implements CommandExecutor {
             if(sender.isOp()) {
 
                 for(Player player : Bukkit.getOnlinePlayers()) {
-                    player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");
+                   // player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");
+                    Autio.sendBungeeMessage(player, "Connect", "lobby");
                 }
 
                 new BukkitRunnable() {

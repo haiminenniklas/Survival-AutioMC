@@ -38,10 +38,21 @@ public class PlayerGlowManager implements CommandExecutor {
         return true;
     }
 
+    private static ChatColor[] enabledColors = new ChatColor[] {
+            ChatColor.GREEN,
+            ChatColor.BLUE,
+            ChatColor.AQUA,
+            ChatColor.RED,
+            ChatColor.LIGHT_PURPLE,
+            ChatColor.YELLOW,
+            ChatColor.BLACK,
+            ChatColor.GOLD
+    };
+
     public static void openMenu(Player player) {
 
         if(!Ranks.hasRank(player, "kuningas") && !Ranks.isStaff(player.getUniqueId())) {
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän toimintoon vaaditaan vähintään §6§lKUNINGAS§7 arvo!");
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän toimintoon vaaditaan vähintään §2§lSORSA§7-arvo!");
             return;
         }
 
@@ -52,21 +63,22 @@ public class PlayerGlowManager implements CommandExecutor {
 
                 if(i == 17 || i == 18 || i == 26 || i == 27) continue;
 
-                ChatColor color = ChatColor.values()[colorIndex];
+                ChatColor color = enabledColors[colorIndex];
                // if(color == null) continue;
 
-                if(color == ChatColor.GRAY || color == ChatColor.WHITE || color == ChatColor.DARK_PURPLE || color == ChatColor.DARK_RED
-                    || color == ChatColor.DARK_GRAY || color == ChatColor.DARK_BLUE){
+                // GREEN, BLUE, AQUA, RED, LIGHT_PURPLE, YELLOW, BLACK, GOLD
+
+                if(!Arrays.asList(enabledColors).contains(color)){
                     colorIndex += 1;
                     continue;
                 }
 
                 Button btn = new Button(1,  i, ItemUtil.makeItem(Util.ChatColorToDye(color), 1, color + Util.translateChatColor(color) + " ss", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         " §7Klikkaa vaihtaaksesi",
                         " §dhehkusi §7väriin",
                         " " + color + Util.translateChatColor(color) + "§7!",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -79,7 +91,7 @@ public class PlayerGlowManager implements CommandExecutor {
                 gui.addButton(btn);
 
                 colorIndex += 1;
-                if(colorIndex > ChatColor.values().length) break;
+                if(colorIndex >= enabledColors.length) break;
 
             }
 

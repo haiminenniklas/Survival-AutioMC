@@ -21,7 +21,7 @@ public class VipCommand implements CommandExecutor {
         if(sender.isOp()) {
 
             if(args.length < 2) {
-                sender.sendMessage("§c/vip <player> <rank>");
+                sender.sendMessage("§c/givevip <player> <rank>");
                 return true;
             } else {
 

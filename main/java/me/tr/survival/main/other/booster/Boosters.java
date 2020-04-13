@@ -60,7 +60,7 @@ public class Boosters implements Listener {
                 if(inv.getItem(i) != null) continue;
 
                 List<String> lore = new ArrayList<>();
-                lore.add("§7§m--------------------");
+                lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                 lore.add("§7 ");
 
                 if(isActive(booster)) {
@@ -94,7 +94,7 @@ public class Boosters implements Listener {
                 lore.add("§7 ");
                 lore.add(" §7§oTehostus vaikuttaa kaikkiin");
                 lore.add(" §7§opelaajiin palvelimella!");
-                lore.add("§7§m--------------------");
+                lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                 if(!isActive(booster)) {
                     lore.add("§a§lKLIKKAA AKTIVOIDAKSESI!");
                 }
@@ -140,7 +140,7 @@ public class Boosters implements Listener {
         for(int i : itemSlots) {
             if(gui.getButton(i) == null) {
                 gui.addItem(1, ItemUtil.makeItem(Material.TURTLE_EGG, 1, "§6Tulossa...", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         " §7Tähän ei ole vielä keksitty",
                         " §7mitään. Jos sinulla on joitain",
                         " §7mahdollisia ideoita, kerro se",
@@ -148,7 +148,7 @@ public class Boosters implements Listener {
                         " §7(§9/discord§7)!",
                         " §7Hyvästä ideasta saattaa seurata",
                         " §7palkkio! ;)",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 )), i);
             }
         }
@@ -249,7 +249,7 @@ public class Boosters implements Listener {
     }
 
     public static void deactivate(Booster booster) {
-        Bukkit.broadcastMessage("§7§m--------------------");
+        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §c§lTEHOSTUS LOPPUI §7(" + booster.getDisplayName() + "§7)");
         Bukkit.broadcastMessage(" ");
@@ -260,10 +260,16 @@ public class Boosters implements Listener {
         }
 
         Bukkit.broadcastMessage(" ");
-        Bukkit.broadcastMessage("§7§m--------------------");
+        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
         Boosters.getActive().remove(booster.getDisplayName());
         getInCooldown().put(booster.getDisplayName(), System.currentTimeMillis());
+
+        if(booster == Booster.EXTRA_HEARTS) {
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
+            }
+        }
 
         Util.broadcastSound(Sound.BLOCK_NOTE_BLOCK_PLING);
     }
@@ -294,7 +300,7 @@ public class Boosters implements Listener {
         Boosters.getActive().put(booster.getDisplayName(), map);
 
 
-        Bukkit.broadcastMessage("§7§m--------------------");
+        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §a§lTEHOSTUS AKTIVOITU §7(" + booster.getDisplayName() + "§7)");
         Bukkit.broadcastMessage(" ");
@@ -303,7 +309,7 @@ public class Boosters implements Listener {
             Bukkit.broadcastMessage(" §7Kesto: §c" + booster.getDuration() + "min");
         }
         Bukkit.broadcastMessage(" ");
-        Bukkit.broadcastMessage("§7§m--------------------");
+        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
         Util.broadcastSound(Sound.BLOCK_NOTE_BLOCK_PLING);
 

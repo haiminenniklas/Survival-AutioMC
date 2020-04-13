@@ -53,10 +53,10 @@ public class PlayerWeather {
         });
 
         gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.BARRIER, 1, "§6Tyhjennä", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "§cKlikkaa resetoidaksesi",
                 "§csään ja ajan!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {

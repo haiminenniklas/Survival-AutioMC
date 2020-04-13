@@ -5,6 +5,9 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.google.common.collect.Iterables;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
@@ -170,7 +173,7 @@ public class Autio {
     public static void updateTag(Player player) {
 
         String color = "&" + Ranks.getRankColor(Ranks.getRank(player.getUniqueId())).getChar();
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "nte player " + player.getName() + " prefix " + color);
+       // Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "nte player " + player.getName() + " prefix " + color);
 
     }
 
@@ -302,7 +305,8 @@ public class Autio {
                 if(timer < 0) {
 
                     for(Player player : Bukkit.getOnlinePlayers()) {
-                        player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");
+                        //player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");
+                        sendBungeeMessage(player, "Connect", "lobby");
                     }
 
                     Bukkit.shutdown();
@@ -353,6 +357,19 @@ public class Autio {
         }
 
         return online;
+    }
+
+    public static void sendBungeeMessage(Player player, String subchannel, String... arguments) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF(subchannel);
+        for(String arg : arguments) {
+            out.writeUTF(arg);
+        }
+        player.sendPluginMessage(Main.getInstance(), "BungeeCord", out.toByteArray());
+    }
+
+    public static void sendBungeeMessage(String subchannel, String... arguments) {
+        sendBungeeMessage(Iterables.getFirst(Bukkit.getOnlinePlayers(), null), subchannel, arguments);
     }
 
 }

@@ -1,5 +1,7 @@
 package me.tr.survival.main;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.commands.*;
 import me.tr.survival.main.database.PlayerAliases;
@@ -40,12 +42,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
-public final class Main extends JavaPlugin implements Listener {
+public final class Main extends JavaPlugin implements Listener, PluginMessageListener {
 
     public static Main instance;
     public static Main getInstance() {
@@ -70,6 +73,10 @@ public final class Main extends JavaPlugin implements Listener {
 
         Main.instance = this;
         Main.luckPerms = LuckPermsProvider.get();
+
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+
         if (Bukkit.getPluginManager().getPlugin("PlayerParticles") != null) {
             Main.particlesAPI = PlayerParticlesAPI.getInstance();
         } else {
@@ -176,7 +183,7 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("invsee").setExecutor(new Essentials());
 
         getCommand("kosmetiikka").setExecutor(new Particles());
-        getCommand("vip").setExecutor(new VipCommand());
+        getCommand("givevip").setExecutor(new VipCommand());
         getCommand("hehku").setExecutor(new PlayerGlowManager());
 
         // Autosave code...
@@ -275,6 +282,18 @@ public final class Main extends JavaPlugin implements Listener {
         }
         Autio.logColored("§a---------------------------");
 
+    }
+
+    @Override
+    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+        if (!channel.equals("BungeeCord")) {
+            return;
+        }
+        ByteArrayDataInput in = ByteStreams.newDataInput(message);
+        String subchannel = in.readUTF();
+        if (subchannel.equals("")) {
+
+        }
     }
 
     @Override

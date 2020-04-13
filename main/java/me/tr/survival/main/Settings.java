@@ -29,7 +29,7 @@ public class Settings {
         UUID uuid = player.getUniqueId();
 
         gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAINTING, 1, "§2Scoreboard", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "§7Tila: " + settingText(Settings.get(uuid, "scoreboard")),
                 " ",
                 "§7§oKun tämä asetus on päällä,",
@@ -38,7 +38,7 @@ public class Settings {
                 "§7§ohyödyllistä informaatiota",
                 "",
                 "§aKlikkaa vaihtaaksesi asetusta!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
 
             @Override
@@ -51,7 +51,7 @@ public class Settings {
         });
 
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§2Yksityinen tila", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "§7Tila: " + settingText(Settings.get(uuid, "privacy")),
                 " ",
                 "§7§oKun tämä asetus on päällä,",
@@ -59,7 +59,7 @@ public class Settings {
                 "§7§omuilta pelaajilta",
                 "",
                 "§aKlikkaa vaihtaaksesi asetusta!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
 
             @Override
@@ -71,7 +71,7 @@ public class Settings {
         });
 
         gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§2Chat", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "§7Tila: " + settingText(Settings.get(uuid, "chat")),
                 " ",
                 "§7§oKun tämä asetus on pois päältä,",
@@ -79,7 +79,7 @@ public class Settings {
                 "§7§omuilta pelaajilta",
                 "",
                 "§aKlikkaa vaihtaaksesi asetusta!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
 
             @Override
@@ -91,7 +91,7 @@ public class Settings {
         });
 
         gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.OAK_SAPLING, 1, "§2Puun kaato", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "§7Tila: " + settingText(UltimateTimber.getInstance().getChoppingManager().isChopping(player)),
                 " ",
                 "§7§oKun tämä asetus on päällä,",
@@ -100,7 +100,7 @@ public class Settings {
                 "§7§osiitä!",
                 "",
                 "§aKlikkaa vaihtaaksesi asetusta!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
 
             @Override
@@ -112,10 +112,10 @@ public class Settings {
         });
 
         gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.CLOCK, 1, "§2Sää ja aika", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "§aKlikkaa vaihtaakesi sinun",
                 "§asäätäsi ja aikaasi",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
 
             @Override
@@ -213,7 +213,7 @@ public class Settings {
         obj.getScore(ChatColor.LIGHT_PURPLE + "" + ChatColor.GREEN + "" + ChatColor.RED).setScore(4);
 
         obj.getScore("§7 §1 §k").setScore(3);
-        obj.getScore("       §2sorsa.gg").setScore(2);
+        obj.getScore("       §2sorsamc.fi").setScore(2);
 
         Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
 

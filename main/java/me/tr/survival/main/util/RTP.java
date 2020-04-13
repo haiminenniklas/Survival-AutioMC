@@ -4,16 +4,14 @@ import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.other.Util;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class RTP {
 
@@ -34,15 +32,15 @@ public class RTP {
             World world = player.getWorld();
             Location loc = randomLocation(player.getWorld());
 
-            world.getChunkAtAsync(loc, (chunk) -> {
 
-                if(!chunk.isLoaded()) {
-                    chunk.load();
-                }
+            CompletableFuture<Chunk> chunkFuture  = world.getChunkAtAsync(loc);
+            Chunk chunk = chunkFuture.join();
 
-                player.teleportAsync(loc);
+            if(!chunk.isLoaded()) {
+                chunk.load();
+            }
 
-            });
+            Autio.afterAsync(1, () -> player.teleportAsync(loc));
 
         });
 

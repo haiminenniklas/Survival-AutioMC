@@ -154,7 +154,7 @@ public class Events implements Listener {
              if(bLvl == Backpack.Level.ONE) {
                  Backpack.setLevel(player.getUniqueId(), Backpack.Level.TWO);
              }
-        } else if(Ranks.hasRank(player, "kuningas")) {
+        } else if(Ranks.hasRank(player, "sorsa")) {
              if(bLvl != Backpack.Level.THREE) {
                  Backpack.setLevel(player.getUniqueId(), Backpack.Level.THREE);
              }
@@ -363,22 +363,43 @@ public class Events implements Listener {
 
             deathIsland.add(player.getUniqueId());
 
-            CountdownTimer timer = new CountdownTimer(Main.getInstance(), 30, () -> {},
-                    () -> {
+            new BukkitRunnable() {
+
+                int timer = 30;
+
+                @Override
+                public void run() {
+
+                    if(timer > 0) {
+                        player.sendTitle(new Title("§c§lKUOLIT", "§7Pääset §c" + timer + "s §7päästä takaisin!", 15, 20, 15));
+                        timer--;
+                    } else {
+
                         player.sendTitle(new Title("§a§lTAKAISIN", "§7Olet taas elossa!", 15, 20, 15));
                         Autio.teleportToSpawn(player);
                         deathIsland.remove(player.getUniqueId());
-                    }, (t) -> {
-                player.sendTitle(new Title("§c§lKUOLIT", "§7Pääset §c" + t.getSecondsLeft() + "s §7päästä takaisin!", 15, 20, 15));
-            });
 
-// Start scheduling, don't use the "run" method unless you want to skip a second
-            timer.scheduleTimer();
+                    }
+
+                }
+            }.runTaskTimerAsynchronously(Main.getInstance(), 0, 20);
 
         } else {
             Autio.teleportToSpawn(player);
         }
 
+
+    }
+
+    @EventHandler
+    public void onCommandPreProcessEvent(PlayerCommandPreprocessEvent e) {
+
+        Player player = e.getPlayer();
+        if(deathIsland.contains(player.getUniqueId())) {
+            if(player.isOp()) return;
+            e.setCancelled(true);
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Kun olet odottamassa pääsyä takaisin elävien joukkoon et voi suorittaa mitään komentoja!");
+        }
 
     }
 

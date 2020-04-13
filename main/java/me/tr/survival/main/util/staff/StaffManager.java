@@ -23,6 +23,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
@@ -187,6 +189,9 @@ public class StaffManager implements Listener, CommandExecutor {
 
         player.setPlayerListName("§7" + player.getName() + " §8[PIILOSSA]");
 
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999, 999999));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 999999));
+
         for(Player online : Bukkit.getOnlinePlayers()) {
 
             if(online.getUniqueId().equals(player.getUniqueId())) continue;
@@ -211,6 +216,8 @@ public class StaffManager implements Listener, CommandExecutor {
 
             online.showPlayer(Main.getInstance(), player);
         }
+
+        Util.heal(player);
 
         Chat.sendMessage(player, "Olet nyt esillä kaikille!");
     }

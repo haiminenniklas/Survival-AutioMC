@@ -70,7 +70,7 @@ public class TeleportRequest {
             accept.addExtra("  ");
             accept.addExtra(deny);
 
-            two.sendMessage("§7§m--------------------------");
+            two.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
             two.sendMessage(" §7Pelaaja §a" + one.getName() + " §7pyytää");
             if(here) {
                 two.sendMessage(" §7pyytää sinua hänen luokseen!");
@@ -81,7 +81,7 @@ public class TeleportRequest {
             two.spigot().sendMessage(accept);
             two.sendMessage(" ");
             two.sendMessage(" §7Sinulla on §a60 sekuntia §7aikaa hyväksyä");
-            two.sendMessage("§7§m--------------------------");
+            two.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
             Chat.sendMessage(one, "Lähetit §eteleporttaus§7-pyynnön pelaajalle §6" + two.getName() + "§7!" +
                     " Pyyntö umpeutuu automaattisesti §e60 sekunnin §7kuluttua...");

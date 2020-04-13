@@ -193,15 +193,15 @@ public class PlayerData {
 
             } else {
                 loadNull(uuid, true);
+                return false;
             }
 
 
         } catch(SQLException ex) {
             ex.printStackTrace();
             loadNull(uuid, false);
+            return false;
         }
-
-        return false;
 
     }
 

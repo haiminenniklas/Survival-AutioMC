@@ -37,7 +37,7 @@ public class Profile {
 
                     Gui gui = new Gui("Ei löydetty", 27);
                     gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§c§lEI LÖYDETTY", Arrays.asList(
-                            "§7§m--------------------",
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                             " §7Pelaajan §6" + target.getName() + " §7tietoja",
                             " §7ei löydetty. Ehkei hän ole ikinä",
                             " §7liittynyt, tai hänen tietojaan ei",
@@ -45,7 +45,7 @@ public class Profile {
                             " §7uudestaan!",
                             "",
                             "§7 Omat tiedot saat §6/tiedot§7!",
-                            "§7§m--------------------"
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                     )), 13);
                     Autio.task(() -> {
                         gui.open(opener);
@@ -66,15 +66,15 @@ public class Profile {
         HashMap<String, Object> data = PlayerData.getData(targetUUID);
 
         gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§2Profiili", Arrays.asList(
-                "§7§m--------------------",
-                "§7Nimi: §a" + target.getName(),
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Nimi: §a" + target.getName(),
                 " ",
-                "§7Arvo: §r" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
-                "§7Kristallit: §b" + Crystals.get(targetUUID),
-                "§7Rahatilanne: §e" + Balance.get(targetUUID),
+                " §7Arvo: §r" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
+                " §7Kristallit: §b" + Crystals.get(targetUUID),
+                " §7Rahatilanne: §e" + Balance.get(targetUUID),
                 " ",
-                "§7Liittynyt: §a" + data.get("joined"),
-                "§7§m--------------------"
+                " §7Liittynyt: §a" + data.get("joined"),
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )), 13);
 
         double diamond_percentage;
@@ -113,23 +113,23 @@ public class Profile {
         }
 
         gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§2Tuhotut blockit", Arrays.asList(
-                "§7§m--------------------",
-                "§7Yhteensä: §e" + Ores.getTotal(targetUUID),
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Yhteensä: §e" + Ores.getTotal(targetUUID),
                 " ",
-                "§7Timantti: §b" + Ores.getDiamonds(targetUUID) + " §7§o(" + diamond_percentage +  "%)",
-                "§7Kulta: §6" + Ores.getGold(targetUUID) + " §7§o(" + gold_percentage +  "%)",
-                "§7Rauta: §f" + Ores.getIron(targetUUID) + " §7§o(" + iron_percentage +  "%)",
-                "§7Hiili: §8" + Ores.getCoal(targetUUID)  +" §7§o(" + coal_percentage +  "%)",
-                "§7Muu: §e" + Ores.getOther(targetUUID) + " §7§o(" + other_percentage +  "%)",
-                "§7§m--------------------"
+                " §7Timantti: §b" + Ores.getDiamonds(targetUUID) + " §7§o(" + diamond_percentage +  "%)",
+                " §7Kulta: §6" + Ores.getGold(targetUUID) + " §7§o(" + gold_percentage +  "%)",
+                " §7Rauta: §f" + Ores.getIron(targetUUID) + " §7§o(" + iron_percentage +  "%)",
+                " §7Hiili: §8" + Ores.getCoal(targetUUID)  +" §7§o(" + coal_percentage +  "%)",
+                " §7Muu: §e" + Ores.getOther(targetUUID) + " §7§o(" + other_percentage +  "%)",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )), 19);
 
         gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§2Kodit", Arrays.asList(
-                "§7§m--------------------",
-                "§7Kodit: §e" + new Homes(target).getHomesAmount(),
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Kodit: §e" + new Homes(target).getHomesAmount(),
                 " ",
-                "§aKlikkaa nähdäksesi kotisi!",
-                "§7§m--------------------"
+                " §aKlikkaa nähdäksesi kotisi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -139,9 +139,9 @@ public class Profile {
         });
 
         gui.addButton(new Button(1, 25, ItemUtil.makeItem(Material.LEGACY_REDSTONE_COMPARATOR, 1, "§2Asetukset", Arrays.asList(
-                "§7§m--------------------",
-                "§aKlikkaa avataksesi asetukset!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §aKlikkaa avataksesi asetukset!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -153,12 +153,12 @@ public class Profile {
         // 39 40 41
 
         gui.addButton(new Button(1, 38, ItemUtil.makeItem(Material.EMERALD, 1, "§aTehostukset", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Tästä klikkaamalla pääset",
                 " §atehostuksien §7valikkoon",
                 " §7joilla voit hieman tehostaa",
                 " §7pelin kulkua! ;)",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -168,7 +168,7 @@ public class Profile {
         });
 
         gui.addItem(1, ItemUtil.makeSkullItem("MHF_Question", 1, "§6Apua", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Hyödylliset komennot:",
                 "  §6/profiili §7tämä valikko",
                 "  §6/rtp §7vie sinut arämaahan",
@@ -178,14 +178,14 @@ public class Profile {
                 "  §9/discord §7Discord-yhteisö",
                 "  §6/huutokauppa §7huutokauppa",
                 "  §a/osta §7verkkokauppa",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )), 39);
 
         gui.addButton(new Button(1, 40, ItemUtil.makeItem(Material.MAP, 1, "§eMatkustaminen", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Tästä klikkaamalla, pääset",
                 " §7matkustamaan eri §emaailmoihin§7!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -197,11 +197,11 @@ public class Profile {
 
 
         gui.addButton(new Button(1, 41, ItemUtil.makeItem(Material.PAPER, 1, "§dPosti", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Tästä klikkaamalla pääset",
                 " §7katsomaan §dpäivittäisiä",
                 " §dtoimituksiasi§7!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -211,12 +211,12 @@ public class Profile {
         });
 
         gui.addButton(new Button(1, 42, ItemUtil.makeItem(Material.NETHER_STAR, 1, "§bKosmetiikka", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Tästä klikkaamalla pääset",
                 " §7katsomaan §bkosmetiisia efektejä",
                 " §7ja §bominaisuuksia §7jotka ovat",
                 " §7sinulle avoinna!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {

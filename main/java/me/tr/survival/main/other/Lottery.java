@@ -39,7 +39,7 @@ public class Lottery {
             Prize prize = findPrize();
             if(prize != null) {
 
-                player.sendMessage("§7§m--------------------");
+                player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                 player.sendMessage("  §6§lONNEA!");
                 player.sendMessage(" ");
                 player.sendMessage(" §7Voitit palkinnon");
@@ -47,7 +47,7 @@ public class Lottery {
                 player.sendMessage(" ");
                 player.sendMessage(" §7Muista tehdä §a/vote§7,");
                 player.sendMessage(" §7saadaksesi lisää arpoja!");
-                player.sendMessage("§7§m--------------------");
+                player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                 switch(prize) {
                     case VIP:
@@ -75,13 +75,13 @@ public class Lottery {
             }
         }
 
-        player.sendMessage("§7§m--------------------");
+        player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         player.sendMessage("  §c§lEi voittoa...");
         player.sendMessage(" ");
         player.sendMessage(" §7Tällä kertaa kohdallesi ei");
         player.sendMessage(" §7iskenyt voittoa. Yritäthän");
         player.sendMessage(" §7silti uudestaan myöhemmin!");
-        player.sendMessage("§7§m--------------------");
+        player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
         return null;
     }

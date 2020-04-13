@@ -122,7 +122,7 @@ public class MoneyManager implements CommandExecutor, Listener {
         Gui.openGui(player, "Finanssivalvonta", 27, (gui) -> {
 
             gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.DIAMOND, 1, "§bVaihda rahaa", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Onko sinulla liian paljon",
                     " §arahaa§7, mitä et voi käyttää?",
                     " §7Voit vaihtaa rahasi §bkristalleihin§7,",
@@ -131,7 +131,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                     "",
                     " §6Klikkaa päästäksesi",
                     " §6vaihtamaan rahaa!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -141,17 +141,17 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§aRahatilanne", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Saldo: §a" + Balance.get(player.getUniqueId()) + "€",
                     " §7Kristallit: §b" + Crystals.get(player.getUniqueId()),
                     " ",
                     " §7Lisätietoa valuutoista",
                     " §6/apua valuutta",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             )), 13);
 
             gui.addButton(new Button(1, 16, ItemUtil.makeItem(Material.PAPER,1, "Shekki", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Haluatko pitää siirtää tai",
                     " §7säilyttää rahaa hieman",
                     " §eperinteisemmällä §7tavalla?",
@@ -164,7 +164,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                     " ",
                     " §6Klikkaa kirjoittaaksesi",
                     " §6shekkejä!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -182,11 +182,11 @@ public class MoneyManager implements CommandExecutor, Listener {
         Gui.openGui(player, "Vaihda valuuttaa", 27, (gui) -> {
 
             gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.DIAMOND, 1, "§b1 kristalli", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Vaadittu raha: §a" + getMoneyString(player, 1) + "€",
                     " ",
                     " §6Klikkaa vaihtaaksesi!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -195,11 +195,11 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.DIAMOND, 1, "§b10 kristallia", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Vaadittu raha: §a" + getMoneyString(player, 10) + "€",
                     " ",
                     " §6Klikkaa vaihtaaksesi!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -208,11 +208,11 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.DIAMOND, 1, "§b50 kristallia", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Vaadittu raha: §a" + getMoneyString(player, 50) + "€",
                     " ",
                     " §6Klikkaa vaihtaaksesi!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -221,11 +221,11 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.DIAMOND, 1, "§b100 kristallia", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Vaadittu raha: §a" + getMoneyString(player, 100) + "€",
                     " ",
                     " §6Klikkaa vaihtaaksesi!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -234,11 +234,11 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.DIAMOND, 1, "§b1250 kristallia", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Vaadittu raha: §a" + getMoneyString(player, 250) + "€",
                     " ",
                     " §6Klikkaa vaihtaaksesi!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -247,12 +247,12 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Muu määrä?", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Jos haluat muuntaa jonkin",
                     " §7toisen määrän, se onnistuu",
                     " §7komennolla",
                     " §6/vaihda <määrä kristalleja>§7!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             )), 16);
 
             gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
@@ -271,9 +271,9 @@ public class MoneyManager implements CommandExecutor, Listener {
 
         Gui.openGui(player, "Kirjoita shekkejä", 27, (gui) -> {
             gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.PAPER, 1, "§a50€", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §6Klikkaa kirjoittaaksesi!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -283,9 +283,9 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§a100€", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §6Klikkaa kirjoittaaksesi!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -295,9 +295,9 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.PAPER, 1, "§a250€", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §6Klikkaa kirjoittaaksesi!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -307,9 +307,9 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§a1000€", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §6Klikkaa kirjoittaaksesi!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -320,9 +320,9 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.PAPER, 1, "§a2500€", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §6Klikkaa kirjoittaaksesi!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -332,12 +332,12 @@ public class MoneyManager implements CommandExecutor, Listener {
             });
 
             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Muu määrä?", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Jos haluat kirjoittaa jonkin",
                     " §7toisen määrän, se onnistuu",
                     " §7komennolla",
                     " §6/shekki <haluttu rahamäärä>§7!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             )), 16);
 
 
@@ -440,9 +440,9 @@ public class MoneyManager implements CommandExecutor, Listener {
             Gui.openGui(player, "Varmista Shekin nosto (" + foundValue + "€)", 27, (gui) -> {
 
                 gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahivsta", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         " §7Klikkaa vahvistaaksesi noston!",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -454,9 +454,9 @@ public class MoneyManager implements CommandExecutor, Listener {
                 });
 
                 gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         "§7 Klikkaa peruuttaaksesi noston!",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {

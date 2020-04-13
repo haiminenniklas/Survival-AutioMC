@@ -58,12 +58,12 @@ public class TravelManager implements CommandExecutor, Listener {
         Gui.openGui(player, "Matkusta", 27, (gui) -> {
 
             gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.NETHERRACK, 1, "§cNether", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Klikkaa matkustaaksesi",
                     " §cNetheriin§7! ",
                     " ",
                     " §7Hinta: §a§lILMAINEN",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -75,7 +75,7 @@ public class TravelManager implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.END_STONE, 1, "§5End", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Klikkaa matkustaaksesi",
                     " §5Endiin§7! ",
                     " ",
@@ -84,7 +84,7 @@ public class TravelManager implements CommandExecutor, Listener {
                     " ",
                     " §7§oTietoa Helmistä: ",
                     " §6/apua matkustaminen§7!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -176,7 +176,7 @@ public class TravelManager implements CommandExecutor, Listener {
         return Util.makeEnchanted(ItemUtil.makeItem(Material.ENDER_PEARL, 1, "§6§lHelmi", Arrays.asList(
                 "§7Tämä esine toimii avaimena",
                 "§5Endiin§7! Käytä tätä spawnilla",
-                "§7tai komennolla §6/matkusta§7!"
+                "§7tai komennolla §a/matkusta§7!"
         )));
     }
 

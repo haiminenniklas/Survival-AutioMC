@@ -187,8 +187,8 @@ commands:
   kosmetiikka:
     description: Kosmetiikka
     aliases: [cosmetics, particles, partikkelit, nuolijanat, arrowtrail]
-  vip:
-    description: Vip command
+  givevip:
+    description: Give Vip command
   hehku:
     description: Hehkuefektit
     aliases: [glow, hehkuefektit]

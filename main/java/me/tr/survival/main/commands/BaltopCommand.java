@@ -32,7 +32,7 @@ public class BaltopCommand implements CommandExecutor {
                     Map<UUID, Integer> map = Util.sortByValue(rawMap);
 
                     List<String> lore = new ArrayList<>();
-                    lore.add("§7§m--------------------");
+                    lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                     int looped = 1;
                     for(Map.Entry<UUID, Integer> e : map.entrySet()) {
@@ -44,7 +44,7 @@ public class BaltopCommand implements CommandExecutor {
 
                     }
 
-                    lore.add("§7§m--------------------");
+                    lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                     Autio.task(() -> {
                         Gui.openGui(player, "TOP 10 - Rikkaimmat", 27, (gui) -> {
