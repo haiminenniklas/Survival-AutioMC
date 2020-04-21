@@ -10,6 +10,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.database.PlayerData;
+import me.tr.survival.main.other.PlayerGlowManager;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.booster.Boosters;
@@ -24,23 +25,25 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class Autio {
 
+    private static Map<UUID, Long> debugs = new HashMap<>();
+
     public static void teleportToSpawn(Player player) {
-        player.teleportAsync(Autio.getSpawn());
+        CompletableFuture<Boolean> result = player.teleportAsync(Autio.getSpawn());
+        if(!result.join()) {
+            player.teleport(Autio.getSpawn());
+        }
         if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
-            Util.heal(player);
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24d);
             player.setHealth(24d);
         } else {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
             player.setHealth(20d);
-            Util.heal(player);
         }
     }
 
@@ -210,10 +213,34 @@ public class Autio {
     }
 
     public static void runDebug(Player player) {
+
+        UUID uuid = player.getUniqueId();
+
+        if(!player.isOp()) {
+
+            if(!debugs.containsKey(uuid)) {
+                debugs.put(uuid, System.currentTimeMillis());
+            } else {
+
+                long lastRun = debugs.get(uuid);
+                long now = System.currentTimeMillis();
+
+                if(now - lastRun < 1000 * 60 * 5) {
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Palvelimen suorituskyvyn suojaamiseksi, pystyt käynnistämään virheenkorjauksen §c5 minuutin §7välein!");
+                    return;
+                } else {
+                    debugs.remove(uuid);
+                }
+
+            }
+
+        }
+
         Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjataan yleiset virheet ja bugit...");
         Autio.updatePlayer(player);
         Boosters.debug();
         Particles.reloadParticles(player);
+        PlayerGlowManager.disableGlow(player);
         Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjattu! Jos mikään ei muuttunut yritä poistua ja liittyä palvelimelle uudestaan!" +
                 " Jos muutosta ei vieläkään näy, laita ilmoitus ylläpidollemme Discordissa kanavalla §9#ilmoita-bugeista§7!");
     }
@@ -307,6 +334,7 @@ public class Autio {
                     for(Player player : Bukkit.getOnlinePlayers()) {
                         //player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");
                         sendBungeeMessage(player, "Connect", "lobby");
+                        sendBungeeMessage(player, "Message", player.getName(), Chat.getPrefix() + " Palvelin, jossa aikaisemmin olit suljettiin ja sinut vietiin aulaamme. Odotathan noin §aminuutin§7, jotta palvelin saadaan uudelleen toimintaan!");
                     }
 
                     Bukkit.shutdown();

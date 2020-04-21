@@ -18,9 +18,9 @@ public class CustomEndPearlRecipe extends Recipe {
     @Override
     public String[] getShape() {
         return new String[] {
-                "GGG",
-                "GEG",
-                "GGG"
+                "DEG",
+                "EPE",
+                "GED"
 
         };
     }
@@ -30,7 +30,9 @@ public class CustomEndPearlRecipe extends Recipe {
         Map<Character, ItemStack> map = new HashMap<>();
 
         map.put('G', ItemUtil.makeItem(Material.GOLD_BLOCK));
-        map.put('E', ItemUtil.makeItem(Material.ENDER_PEARL));
+        map.put('D', ItemUtil.makeItem(Material.DIAMOND_BLOCK));
+        map.put('E', ItemUtil.makeItem(Material.DIAMOND_BLOCK));
+        map.put('P', ItemUtil.makeItem(Material.ENDER_PEARL));
 
         return map;
     }

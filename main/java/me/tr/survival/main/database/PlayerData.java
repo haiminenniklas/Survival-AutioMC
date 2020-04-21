@@ -21,7 +21,7 @@ public class PlayerData {
 
         // Basic User Data
         empty.put("player_name", player.getName());
-        empty.put("money", 0);
+        empty.put("money", 1000);
         empty.put("rank", "default");
         empty.put("joined", Util.getToday());
         empty.put("save", save);
@@ -47,10 +47,11 @@ public class PlayerData {
         empty.put("xp", 0);
         empty.put("total_xp", 0);
 
-        empty.put("scoreboard", false);
+        empty.put("scoreboard", true);
         empty.put("privacy", false);
         empty.put("chat", true);
-        empty.put("treefall", false);
+        empty.put("treefall", true);
+        empty.put("chat_mentions", true);
 
         empty.put("last_mail", System.currentTimeMillis() - 1000 * 60 * 60 * 24);
         empty.put("streak", 0);
@@ -60,7 +61,9 @@ public class PlayerData {
 
         empty.put("arrowtrail", "default");
         empty.put("particle", "default");
-        empty.put("glow_effect", "default");
+        empty.put("glow_effect", false);
+        empty.put("kill_message", "default");
+        empty.put("death_message", "default");
 
 
         player_data.put(uuid, empty);
@@ -135,12 +138,14 @@ public class PlayerData {
                     data.put("privacy", settingsResult.getBoolean("privacy"));
                     data.put("chat", settingsResult.getBoolean("chat"));
                     data.put("treefall", settingsResult.getBoolean("treefall"));
+                    data.put("chat_mentions", settingsResult.getBoolean("chat_mentions"));
 
                 } else {
-                    data.put("scoreboard", false);
+                    data.put("scoreboard", true);
                     data.put("privacy", false);
                     data.put("chat", true);
                     data.put("treefall", true);
+                    data.put("chat_mentions", true);
                 }
 
                 ResultSet mailResult = SQL.query("SELECT * FROM `mail` WHERE `uuid` = '" + uuid + "';");
@@ -178,11 +183,15 @@ public class PlayerData {
                     data.put("particle", "default");
                 }
 
-                ResultSet glowResult = SQL.query("SELECT * FROM `glow_effect` WHERE `uuid` = '" + uuid + "';");
+                ResultSet glowResult = SQL.query("SELECT * FROM `vip_settings` WHERE `uuid` = '" + uuid + "';");
                 if(glowResult.next()) {
-                    data.put("glow_effect", glowResult.getString("effect"));
+                    data.put("glow_effect", glowResult.getBoolean("glow_effect"));
+                    data.put("kill_message", glowResult.getString("kill_message"));
+                    data.put("death_message", glowResult.getString("death_message"));
                 } else {
-                    data.put("glow_effect", "default");
+                    data.put("glow_effect", false);
+                    data.put("kill_message", "default");
+                    data.put("death_message", "default");
                 }
 
 
@@ -238,7 +247,7 @@ public class PlayerData {
                 //"UPDATE `levels` SET `level` = " + data.get("level") + ", `xp` = " + data.get("xp") + ", `total_xp` = " + data.get("xp") + " WHERE `uuid` = '" + uuid + "';",
 
                 "UPDATE `settings` SET `scoreboard` = '" + data.get("scoreboard") + "', `privacy` = '" + data.get("privacy") + "', `chat` = '" + data.get("chat") +
-                        "', `treefall` = '" + data.get("treefall") + "' WHERE `uuid` = '" + uuid + "';",
+                        "', `treefall` = '" + data.get("treefall") + "', `chat_mentions` = '" + data.get("chat_mentions") + "' WHERE `uuid` = '" + uuid + "';",
 
                 "UPDATE `mail` SET `last_mail` = " + data.get("last_mail") + ", `streak` = " + data.get("streak") + ", `tickets` = " + data.get("tickets") +
                         " WHERE `uuid` = '" + uuid + "';",
@@ -247,7 +256,8 @@ public class PlayerData {
 
                 "UPDATE `particles` SET `arrowtrail` = '" + data.get("arrowtrail") + "', `particle` = '" + data.get("particle") + "' WHERE `uuid` = '" + uuid + "';",
 
-                "UPDATE `glow_effect` SET `effect` = '" + data.get("glow_effect") + "' WHERE `uuid` = '" + uuid + "'; "
+                "UPDATE `vip_settings` SET `glow_effect` = '" + data.get("glow_effect") + "', `death_message` = '" + data.get("death_message") + "', `kill_message` = '"
+                        + data.get("kill_message") + "' WHERE `uuid` = '" + uuid + "'; "
         };
 
         String[] saveQueries = new String[] {
@@ -261,7 +271,7 @@ public class PlayerData {
 
                // "INSERT INTO `levels` VALUES('" + uuid + "', " + data.get("level") + ", " + data.get("xp") + ", " + data.get("total_xp") + ");",
 
-                "INSERT INTO `settings` VALUES('" + uuid + "', '" + data.get("scoreboard") + "', '" + data.get("privacy") + "', '" + data.get("chat") + "', 'false');",
+                "INSERT INTO `settings` VALUES('" + uuid + "', '" + data.get("scoreboard") + "', '" + data.get("privacy") + "', '" + data.get("chat") + "', 'false', '" + data.get("chat_mentions") + "');",
 
                 "INSERT INTO `mail` VALUES('" + uuid  +"', " + data.get("last_mail") + ", " + data.get("streak") + ", " + data.get("tickets") + ");",
 
@@ -269,7 +279,7 @@ public class PlayerData {
 
                 "INSERT INTO `particles` VALUES('" + uuid + "', '" + data.get("arrowtrail") + "', '" + data.get("particle") + "');",
 
-                "INSERT INTO `glow_effect` VALUES('" + uuid + "', '" + data.get("glow_effect") + "');"
+                "INSERT INTO `vip_settings` VALUES('" + uuid + "', '" + data.get("glow_effect") + "', '" + data.get("death_message") + "', '" + data.get("kill_message") + "');"
         };
 
         try {

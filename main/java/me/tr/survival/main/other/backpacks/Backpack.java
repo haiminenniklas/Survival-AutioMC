@@ -12,6 +12,7 @@ import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -89,7 +90,7 @@ public class Backpack implements CommandExecutor, Listener {
     public static void openOther(Player opener, OfflinePlayer target) {
 
         ItemStack[] items = getSavedInventory(target.getUniqueId());
-        Inventory inv = Bukkit.createInventory(null, 54, "Tarkastele reppua (" + target.getName() + ")");
+        Inventory inv = Bukkit.createInventory(null, getLevel(target.getUniqueId()).size, "Tarkastele reppua (" + target.getName() + ")");
 
         for(ItemStack item : items) {
             if(item == null) continue;
@@ -108,7 +109,7 @@ public class Backpack implements CommandExecutor, Listener {
         Level level =  getLevel(player.getUniqueId());
 
         ItemStack[] items = getSavedInventory(uuid);
-        Inventory inv = Bukkit.createInventory(null, level.size + 9, "Reppu (" + level.displayName + "§8)");
+        Inventory inv = Bukkit.createInventory(null, level.size + 18, "Reppu (" + level.displayName + "§8)");
 
         int[] firstGlassPanes = new int[] {
           0,1,2,3,5,6,7,8
@@ -129,7 +130,7 @@ public class Backpack implements CommandExecutor, Listener {
         )));
 
         int itemIndex = 0;
-        for(int i = 9; i < level.size; i++) {
+        for(int i = 9; i < level.size + 9; i++) {
 
             ItemStack item = items[itemIndex];
             if(item == null) continue;
@@ -142,7 +143,7 @@ public class Backpack implements CommandExecutor, Listener {
 
         }
 
-        for(int i = level.size; i < level.size + 9; i++) {
+        for(int i = level.size + 9; i < level.size + 18; i++) {
             inv.setItem(i, ItemUtil.makeItem(Material.PINK_STAINED_GLASS_PANE));
         }
 
@@ -171,7 +172,7 @@ public class Backpack implements CommandExecutor, Listener {
                         e.setCancelled(true);
                     }
 
-                } else if(item.getType() == Material.EXPERIENCE_BOTTLE) {
+                } else if(item.getType() == Material.EXPERIENCE_BOTTLE && e.getSlot() == 4) {
                     if(item.hasItemMeta()) {
                         if(item.getItemMeta().getDisplayName().equalsIgnoreCase("§eReppusi")) {
                             e.setCancelled(true);
@@ -318,10 +319,10 @@ public class Backpack implements CommandExecutor, Listener {
         Gui.openGui(player, "Päivitä reppusi", 27, (gui) -> {
 
             gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Klikkaa vahvistaaksesi päivityksen!",
                     " §7Päivitys maksaa: §b" + finalPrice + " kristallia§7!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -333,9 +334,9 @@ public class Backpack implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     "§7 Klikkaa peruuttaaksesi päivityksen!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -361,12 +362,20 @@ public class Backpack implements CommandExecutor, Listener {
 
         if(Crystals.canRemove(uuid, price)) {
 
-            Crystals.add(uuid, -price);
-
             if(addLevel(uuid)) {
-                Chat.sendMessage(player, "Reppusi päivitettiin! Avaa reppusi komennolla §6/reppu");
+
+                Crystals.add(uuid, -price);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+
+                player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                player.sendMessage(" §a§lREPPU PÄIVITETTIIN!");
+                player.sendMessage(" ");
+                player.sendMessage(" §7Reppusi taso: " + getLevel(uuid).displayName);
+                player.sendMessage(" ");
+                player.sendMessage(" §7Avaa reppu komennolla §a/reppu");
+                player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
             } else {
-                Chat.sendMessage(player, "Reppusi on jo ylimmällä tasolla!");
+                Chat.sendMessage(player, Chat.Prefix.ERROR, "Reppusi on jo ylimmällä tasolla!");
             }
 
         } else {

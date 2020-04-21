@@ -2,6 +2,7 @@ package me.tr.survival.main;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import com.nametagedit.plugin.NametagEdit;
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.commands.*;
 import me.tr.survival.main.database.PlayerAliases;
@@ -74,25 +75,15 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         Main.instance = this;
         Main.luckPerms = LuckPermsProvider.get();
 
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
-
-        if (Bukkit.getPluginManager().getPlugin("PlayerParticles") != null) {
-            Main.particlesAPI = PlayerParticlesAPI.getInstance();
-        } else {
-            Autio.log("§cCould not find PlayerParticles plugin, disabling...");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
 
         Autio.logColored("§a---------------------------");
-        Autio.logColored(" §aEnabling Survival....");
+        Autio.logColored(" §aEnabling SorsaSurvival....");
 
         long start = System.currentTimeMillis();
 
-        Autio.log(" ");
-        Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
-        Autio.log(" ");
+        Autio.logColored(" ");
+        Autio.logColored(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
+        Autio.logColored(" ");
 
         Autio.logColored(" §aSetupping configs and database...");
 
@@ -131,12 +122,30 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         pm.registerEvents(new MoneyManager(), this);
         pm.registerEvents(new Backpack(), this);
         pm.registerEvents(new Particles(), this);
+        pm.registerEvents(new PlayerDeathMessageManager(), this);
+
+        Autio.logColored(" §aRegistering messaging channels for BungeeCord...");
+
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+
+        Autio.logColored(" §aRegistering PlayerParticlesAPI...");
+
+        if (Bukkit.getPluginManager().getPlugin("PlayerParticles") != null) {
+            Main.particlesAPI = PlayerParticlesAPI.getInstance();
+        } else {
+            Autio.log("§cCould not find PlayerParticles plugin, disabling...");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
+
+        Autio.logColored(" §aDisabling Announcement of Advancements...");
 
         // Disable Advancement announcing
         for(World world : Bukkit.getWorlds()) {
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         }
-        Autio.logColored(" §aDisabled Announcement of Advancements!");
 
         // Commands
 
@@ -211,7 +220,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
             try {
 
-                Autio.log("Trying to refresh SQL connection...");
+                Autio.logColored(" §eTrying to refresh SQL connection...");
 
                 SQL.getConnection().close();
                 SQL.setup();
@@ -246,14 +255,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        Autio.log(" §aSetupping Glow Effects");
-        try {
-            PlayerGlowManager.setupColorTeams();
-        } catch(Exception ex) {
-            // Ignore error
-        }
-
-        Autio.logColored("§a Enabled AutioCore! (It took " + (System.currentTimeMillis() - start) +
+        Autio.logColored("§a Enabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
                 "ms / " + ((System.currentTimeMillis() - start) / 1000) + "s)");
         Autio.logColored("§a---------------------------");
 
@@ -263,11 +265,13 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
     public void onDisable() {
 
         Autio.logColored("§a---------------------------");
-        Autio.logColored(" §aDisabling Survival....");
+        Autio.logColored(" §aDisabling SorsaSurvival....");
 
         Autio.log(" ");
         Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
         Autio.log(" ");
+
+        long start = System.currentTimeMillis();
 
         Autio.logColored(" §aSaving config...");
 
@@ -280,6 +284,10 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         } catch(SQLException ex) {
             ex.printStackTrace();
         }
+
+        Autio.logColored("§a Disabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
+                "ms / " + ((System.currentTimeMillis() - start) / 1000) + "s)");
+
         Autio.logColored("§a---------------------------");
 
     }
@@ -440,11 +448,12 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
                 if(player.isOp()) {
 
-                    if(args.length == 0) {
+                    if(args.length < 1) {
 
-                        player.sendMessage("§c/speed <amount>");
+                        Chat.sendMessage(player, "Käytä /speed <nopeus>");
+                        Chat.sendMessage(player, "Nopeudet: 1-10 (normaali on 2)");
 
-                    } else if(args.length >= 1) {
+                    } else {
 
                         float value;
                         try {
@@ -488,25 +497,69 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             Chat.sendMessage(player, "Pelimuoto Creative");
                         }
 
-                    } else if(args.length >= 1) {
+                    } else {
 
-                        if(args[0].equalsIgnoreCase("s") || args[0].equalsIgnoreCase("survival")
-                            || args[0].equalsIgnoreCase("0")) {
+                        if(args.length == 1) {
+                            if(args[0].equalsIgnoreCase("s") || args[0].equalsIgnoreCase("survival")
+                                    || args[0].equalsIgnoreCase("0")) {
 
-                            player.setGameMode(GameMode.SURVIVAL);
-                            Chat.sendMessage(player, "Pelimuoto Survival");
-                            Util.heal(player);
+                                player.setGameMode(GameMode.SURVIVAL);
+                                Chat.sendMessage(player, "Pelimuoto Survival");
+                                Util.heal(player);
 
-                        } else if(args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("creative") ||
-                            args[0].equalsIgnoreCase("1")) {
+                            } else if(args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("creative") ||
+                                    args[0].equalsIgnoreCase("1")) {
 
-                            player.setGameMode(GameMode.CREATIVE);
-                            Chat.sendMessage(player, "Pelimuoto Creative");
+                                player.setGameMode(GameMode.CREATIVE);
+                                Chat.sendMessage(player, "Pelimuoto Creative");
 
-                        } else if(args[0].equalsIgnoreCase("spectator") || args[0].equalsIgnoreCase("3")
-                                || args[0].equalsIgnoreCase("sp")) {
-                            player.setGameMode(GameMode.SPECTATOR);
-                            Chat.sendMessage(player, "Pelimuoto Spectator");
+                            } else if(args[0].equalsIgnoreCase("adventure") || args[0].equalsIgnoreCase("2")
+                                    || args[0].equalsIgnoreCase("a")) {
+                                player.setGameMode(GameMode.ADVENTURE);
+                                Chat.sendMessage(player, "Pelimuoto Adventure");
+
+                            } else if(args[0].equalsIgnoreCase("spectator") || args[0].equalsIgnoreCase("3")
+                                    || args[0].equalsIgnoreCase("sp")) {
+
+                                player.setGameMode(GameMode.SPECTATOR);
+                                Chat.sendMessage(player, "Pelimuoto Spectator");
+                            }
+                        } else {
+
+                            Player target = Bukkit.getPlayer(args[1]);
+                            if(target == null) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty...");
+                                return true;
+                            }
+
+                            if(args[0].equalsIgnoreCase("s") || args[0].equalsIgnoreCase("survival")
+                                    || args[0].equalsIgnoreCase("0")) {
+
+                                target.setGameMode(GameMode.SURVIVAL);
+                                Chat.sendMessage(player, "Pelimuoto Survival pelaajalle §a" + target.getName());
+                                Util.heal(player);
+
+                            } else if(args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("creative") ||
+                                    args[0].equalsIgnoreCase("1")) {
+
+                                target.setGameMode(GameMode.CREATIVE);
+                                Chat.sendMessage(player, "Pelimuoto Creative pelaajalle §a" + target.getName());
+
+                            } else if(args[0].equalsIgnoreCase("adventure") || args[0].equalsIgnoreCase("2")
+                                    || args[0].equalsIgnoreCase("a")) {
+
+                                target.setGameMode(GameMode.ADVENTURE);
+                                Chat.sendMessage(player, "Pelimuoto Adeventure pelaajalle §a" + target.getName());
+
+                            } else if(args[0].equalsIgnoreCase("spectator") || args[0].equalsIgnoreCase("3")
+                                    || args[0].equalsIgnoreCase("sp")) {
+
+                                target.setGameMode(GameMode.SPECTATOR);
+                                Chat.sendMessage(player, "Pelimuoto Spectator pelaajalle §a" + target.getName());
+
+                            }
+
+
                         }
 
                     }
@@ -674,7 +727,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                                 try {
                                     value = Long.parseLong(args[0]);
                                 } catch(NumberFormatException ex){
-                                    Chat.sendMessage(player, "Käytä numeroita!");
+                                    Chat.sendMessage(player, "Käytä numeroita (0-24000) tai 'day', 'night', 'noon'!");
                                     break;
                                 }
                                 world.setTime(value);
@@ -936,7 +989,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                                 player.sendMessage("§7§m--------------------");
                                 player.sendMessage("§7Versio: §6" + Bukkit.getVersion());
                                 player.sendMessage("§7Bukkit versio: §6" + Bukkit.getBukkitVersion());
-                                player.sendMessage("§7Tämänhetkinen TPS: §6" + Bukkit.getTPS()[0]);
+                                player.sendMessage("§7Tämänhetkinen TPS: §6" + Bukkit.getTPS()[0] + "§7, §6" + Bukkit.getTPS()[1] + "§7, §6" + Bukkit.getTPS()[2]);
                                 player.sendMessage("§7IP: §6" + getServer().getIp() + ":" + getServer().getPort());
                                 player.sendMessage("§7Pelaajia: §6" + Bukkit.getOnlinePlayers().size());
                                 player.sendMessage("§7Plugineita: §6" + getServer().getPluginManager().getPlugins().length);

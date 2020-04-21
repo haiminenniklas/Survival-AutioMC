@@ -31,13 +31,13 @@ public class Warps {
         if(getWarps().isEmpty()) {
             Gui gui = new Gui("Ei warppeja", 27);
             gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§cEi warppeja", Arrays.asList(
-                    "§7§m--------------------",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Warppeja ei ole tällä",
                     " §7hetkellä luotu. Voit",
                     " §7olla yhteydessä ",
                     " §6ylläpitoon§7, jos näin",
                     " §7asia ei pitäisi olla!",
-                    "§7§m--------------------"
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             )), 13);
             gui.open(player);
             return;
@@ -63,12 +63,12 @@ public class Warps {
                     continue;
 
                 List<String> lore = new ArrayList<>();
-                lore.add("§7§m--------------------");
+                lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                 String[] text = Util.splitStringEvery(warp.getDescription(), 23);
                 for(int j = 0; j < text.length; j++) {
                     lore.add(" §7" + ChatColor.translateAlternateColorCodes('&', text[j]));
                 }
-                lore.add("§7§m--------------------");
+                lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                 gui.addButton(new Button(1, i, ItemUtil.makeItem(Material.OAK_SIGN, 1,
                         ChatColor.translateAlternateColorCodes('&', warp.getDisplayName()), lore)) {

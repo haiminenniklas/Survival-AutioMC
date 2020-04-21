@@ -8,12 +8,17 @@ import me.tr.survival.main.util.Times;
 import me.tr.survival.main.util.Weathers;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.WeatherType;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 public class PlayerWeather {
 
@@ -31,6 +36,7 @@ public class PlayerWeather {
                 if(Ranks.hasRank(clicker.getUniqueId(), "premiumplus") || Ranks.isStaff(clicker.getUniqueId())) {
                     Chat.sendMessage(clicker, "Sää asetttu selkeäksi!");
                     player.setPlayerWeather(Weathers.SUNNY);
+                    panel(player);
                 } else {
                     Chat.sendMessage(player, "Tämä toiminto vaatii arvon §aPremium§6+§7!");
                 }
@@ -45,6 +51,7 @@ public class PlayerWeather {
                 if(Ranks.hasRank(clicker.getUniqueId(), "premiumplus") || Ranks.isStaff(clicker.getUniqueId())) {
                     Chat.sendMessage(clicker, "Sää asetttu sateiseksi!");
                     player.setPlayerWeather(Weathers.RAINY);
+                    panel(player);
                 } else {
                     Chat.sendMessage(player, "Tämä toiminto vaatii arvon §aPremium§6+§7!");
                 }
@@ -64,6 +71,7 @@ public class PlayerWeather {
                 clicker.resetPlayerTime();
                 clicker.resetPlayerWeather();
                 Chat.sendMessage(player, "Sää ja aika tyhjennetty!");
+                panel(player);
             }
         });
 
@@ -73,6 +81,7 @@ public class PlayerWeather {
                 gui.close(clicker);
                 Chat.sendMessage(player, "Aika asetettu päiväksi!");
                 clicker.setPlayerTime(Times.DAY, false);
+                panel(player);
             }
         });
 
@@ -82,6 +91,7 @@ public class PlayerWeather {
                 gui.close(clicker);
                 Chat.sendMessage(player, "Aika asetettu yöksi!");
                 clicker.setPlayerTime(Times.NIGHT, false);
+                panel(player);
             }
         });
 
@@ -89,7 +99,7 @@ public class PlayerWeather {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                Settings.panel(player);
+                Settings.vipPanel(player);
             }
         });
 

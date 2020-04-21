@@ -80,10 +80,10 @@ public class TravelManager implements CommandExecutor, Listener {
                     " §5Endiin§7! ",
                     " ",
                     " §7Hinta: §6§l1 Helmi",
-                    " §7Sinun helmet: §6" + getPearls(player),
+                    " §7Sinun helmesi: §6" + getPearls(player),
                     " ",
                     " §7§oTietoa Helmistä: ",
-                    " §6/apua matkustaminen§7!",
+                    " §a/apua matkustaminen§7!",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override

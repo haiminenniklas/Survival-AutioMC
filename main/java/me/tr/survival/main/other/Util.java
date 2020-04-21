@@ -1,11 +1,15 @@
 package me.tr.survival.main.other;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
 import com.sun.management.OperatingSystemMXBean;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -245,6 +249,27 @@ public class Util {
         }
     }
 
+    public static void sendPrivateSound(Player player, Sound sound) {
+
+        Location loc = player.getLocation();
+
+        PacketContainer packet = new PacketContainer(
+                PacketType.Play.Server.NAMED_SOUND_EFFECT);
+
+        packet.getModifier().writeDefaults();
+        packet.getSoundEffects().write(0, sound);
+        packet.getIntegers().write(0, loc.getBlockX()).write(1, loc.getBlockY()).write(2, loc.getBlockZ());
+        packet.getFloat().write(0, 1f);
+        packet.getFloat().write(1, 1f);
+
+        try {
+            ProtocolLibrary.getProtocolManager()
+                    .sendServerPacket(player, packet);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void bounceBack(Player player, Location from, Location to) {
         Vector direction = from.toVector().subtract(to.toVector());
         direction.setY(0);
@@ -271,7 +296,7 @@ public class Util {
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
         if(sound) {
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
+            sendPrivateSound(player, Sound.BLOCK_NOTE_BLOCK_PLING);
         }
 
     }
@@ -540,6 +565,32 @@ public class Util {
         double y = loc.getWorld().getHighestBlockYAt(loc.getBlockX(), loc.getBlockZ());
         return new Location(loc.getWorld(), loc.getX(), y + 1, loc.getZ());
 
+    }
+
+    public static List<Advancement> getDoneAdvancements(Player player) {
+
+        List<Advancement> advancements = new ArrayList<>();
+        for(Advancement advancement : getAllAdvancements()) {
+            if(player.getAdvancementProgress(advancement).isDone()) {
+                advancements.add(advancement);
+            }
+        }
+
+        return advancements;
+
+    }
+
+    public static List<Advancement> getAllAdvancements() {
+        List<Advancement> advancements = new ArrayList<>();
+
+        Iterator<Advancement> iterator = Bukkit.advancementIterator();
+        while(iterator.hasNext()) {
+
+            advancements.add(iterator.next());
+
+        }
+
+        return advancements;
     }
 
     public static Material ChatColorToDye(ChatColor color) {

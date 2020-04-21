@@ -95,7 +95,7 @@ public class Particles implements Listener, CommandExecutor {
                // System.out.println(((isUsingDefaultParticle(player) ? "default" : String.valueOf(getCurrentParticle(player).getId()))));
                // System.out.println(((isUsingDefaultArrowTrail(player) ? "default" : String.valueOf(getCurrentArrowTrail(player).getId()))));
 
-                gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.HEART_OF_THE_SEA, 1, "§aPartikkelit", Arrays.asList(
+                gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.HEART_OF_THE_SEA, 1, "§aPartikkelit", Arrays.asList(
                         "§7§m--------------------",
                         " §7Klikkaa hallinnoidaksesi",
                         " §apartikkeliefektejäsi§7!",
@@ -110,22 +110,7 @@ public class Particles implements Listener, CommandExecutor {
                     }
                 });
 
-                gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.GLOWSTONE_DUST, 1, "§dHehkuefekti", Arrays.asList(
-                        "§7§m--------------------",
-                        " §7Klikkaa hallinnoidaksesi",
-                        " §dHehkuefektejä§7!",
-                        "§7§m--------------------"
-                ))) {
-                    @Override
-                    public void onClick(Player clicker, ClickType clickType) {
-
-                        gui.close(player);
-                        PlayerGlowManager.openMenu(player);
-
-                    }
-                });
-
-                gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.BOW, 1, "§bNuolijanat", Arrays.asList(
+                gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.BOW, 1, "§bNuolijanat", Arrays.asList(
                         "§7§m--------------------",
                         " §7Klikkaa hallinnoidaksesi",
                         " §bnuolijanojasi§7!",
@@ -157,15 +142,15 @@ public class Particles implements Listener, CommandExecutor {
 
     public static void openArrowTrailGui(Player player) {
         if(Ranks.isVIP(player.getUniqueId())) {
-            Gui.openGui(player, "Nuolijanat", 54, (gui) -> {
+            Gui.openGui(player, "Nuolijanat", 45, (gui) -> {
 
                 int i = 0;
-                for(int pos = 10; pos < 44; pos++) {
+                for(int pos = 10; pos < 35; pos++) {
 
                     // 17 18 26 27 35 36
                     //int pos = i + 10;
 
-                    if(pos == 17 || pos == 18 || pos == 26 || pos == 27 || pos == 35 || pos == 36) continue;
+                    if(pos == 17 || pos == 18 || pos == 26 || pos == 27) continue;
 
                     ParticlePair loopParticle = getAllArrowTrails().get(i);
                     ParticlePair particle = findArrowTrail(loopParticle.getId());
@@ -221,7 +206,7 @@ public class Particles implements Listener, CommandExecutor {
 
                 }
 
-                gui.addButton(new Button(1, 45, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+                gui.addButton(new Button(1, 36, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(player);

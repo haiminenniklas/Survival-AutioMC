@@ -1,6 +1,7 @@
 package me.tr.survival.main.commands;
 
 import me.tr.survival.main.Autio;
+import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -24,6 +25,7 @@ public class StopCommand implements CommandExecutor {
                 for(Player player : Bukkit.getOnlinePlayers()) {
                    // player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");
                     Autio.sendBungeeMessage(player, "Connect", "lobby");
+                    Autio.sendBungeeMessage(player, "Message", player.getName(), Chat.getPrefix() + " Palvelin, jossa aikaisemmin olit suljettiin ja sinut vietiin aulaamme. Odotathan noin §aminuutin§7, jotta palvelin saadaan uudelleen toimintaan!");
                 }
 
                 new BukkitRunnable() {
@@ -31,7 +33,7 @@ public class StopCommand implements CommandExecutor {
                     public void run() {
                         Bukkit.shutdown();
                     }
-                }.runTaskLater(Main.getInstance(), 20);
+                }.runTaskLater(Main.getInstance(), 20 * 2);
             }
         }
 

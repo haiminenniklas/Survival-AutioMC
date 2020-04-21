@@ -61,8 +61,8 @@ public class Ranks {
                 return "§aPremium";
             case "premiumplus":
                 return "§aPremium§2+";
-            case "kuningas":
-                return "§6KUNINGAS";
+            case "sorsa":
+                return "§2§lSORSA";
             case "youtube":
                 return "§cYOUTUBE";
             case "twitch":
@@ -87,8 +87,8 @@ public class Ranks {
                 return ChatColor.GREEN;
             case "premiumplus":
                 return ChatColor.GREEN;
-            case "kuningas":
-                return ChatColor.GOLD;
+            case "sorsa":
+                return ChatColor.DARK_GREEN;
             case "youtube":
                 return ChatColor.DARK_RED;
             case "twitch":
@@ -113,7 +113,7 @@ public class Ranks {
     public static boolean isVIP(UUID uuid) {
         if(isStaff(uuid)) return true;
         if(isPartner(uuid)) return true;
-        return hasRank(uuid, "premium") || hasRank(uuid, "premiumplus");
+        return hasRank(uuid, "premium") || hasRank(uuid, "premiumplus") || hasRank(uuid, "sorsa");
     }
     public static boolean isPartner(UUID uuid) {
         if(isStaff(uuid)) return true;

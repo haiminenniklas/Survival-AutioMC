@@ -139,12 +139,21 @@ public class Events implements Listener {
 
         player.sendMessage(" ");
 
-        player.sendMessage(" §ahttp://www.sorsa.gg");
+        player.sendMessage(" §ahttp://www.sorsamc.fi");
         player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-        // Enable glow
-        if(!PlayerGlowManager.getGlowColor(uuid).equalsIgnoreCase("default")) {
-            PlayerGlowManager.enableGlow(player, ChatColor.valueOf(PlayerGlowManager.getGlowColor(uuid)));
+        if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
+        }
+
+        // Fix vanish
+        for(UUID vanished : StaffManager.hidden) {
+
+            Player v = Bukkit.getPlayer(vanished);
+            if(v == null) continue;
+
+            player.hidePlayer(Main.getInstance(), v);
+
         }
 
         // Setup backpacks
@@ -272,7 +281,7 @@ public class Events implements Listener {
     public void onDeath(PlayerDeathEvent e) {
 
         Player player = e.getEntity();
-/*
+/*R
         Block firstBlock = player.getLocation().getBlock();
         if(firstBlock.getType() == Material.AIR) {
 
@@ -353,15 +362,22 @@ public class Events implements Listener {
 
         Player player = e.getPlayer();
 
+        if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
+        }
+
         if(!player.hasPermission("deathisland.bypass") && !deathIsland.contains(player.getUniqueId())) {
-            player.teleport(Autio.getDeathSpawn());
-            Util.heal(player);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 999, true, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1, true, false));
 
-            player.playSound(player.getLocation(), Sound.MUSIC_DISC_13, 1, 1);
+            Autio.after(1, () -> {
+                Location deathSpawn = Autio.getDeathSpawn();
+                player.teleport(deathSpawn);
+                Util.heal(player);
 
-            deathIsland.add(player.getUniqueId());
+                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 999, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1, true, false));
+                Util.sendPrivateSound(player, Sound.MUSIC_DISC_13);
+                deathIsland.add(player.getUniqueId());
+            });
 
             new BukkitRunnable() {
 
@@ -369,20 +385,29 @@ public class Events implements Listener {
 
                 @Override
                 public void run() {
+                    if(!deathIsland.contains(player.getUniqueId())) {
+                        cancel();
+                        return;
+                    }
 
                     if(timer > 0) {
                         player.sendTitle(new Title("§c§lKUOLIT", "§7Pääset §c" + timer + "s §7päästä takaisin!", 15, 20, 15));
                         timer--;
-                    } else {
+                    } else if(timer <= 0){
 
-                        player.sendTitle(new Title("§a§lTAKAISIN", "§7Olet taas elossa!", 15, 20, 15));
-                        Autio.teleportToSpawn(player);
-                        deathIsland.remove(player.getUniqueId());
+                        Autio.task(() -> {
+                            Util.heal(player);
+                            player.sendTitle(new Title("§a§lTAKAISIN", "§7Olet taas elossa!", 15, 20, 15));
+                            deathIsland.remove(player.getUniqueId());
+                            player.stopSound(Sound.MUSIC_DISC_13);
+                            Autio.teleportToSpawn(player);
+                        });
+                        cancel();
 
                     }
 
                 }
-            }.runTaskTimerAsynchronously(Main.getInstance(), 0, 20);
+            }.runTaskTimerAsynchronously(Main.getInstance(), 25, 20);
 
         } else {
             Autio.teleportToSpawn(player);
@@ -391,10 +416,34 @@ public class Events implements Listener {
 
     }
 
+    private static final Map<UUID, Long> lastCommand = new HashMap<>();
+
     @EventHandler
     public void onCommandPreProcessEvent(PlayerCommandPreprocessEvent e) {
 
         Player player = e.getPlayer();
+        UUID uuid = player.getUniqueId();
+
+        if(!lastCommand.containsKey(uuid)) {
+
+            lastCommand.put(uuid, System.currentTimeMillis());
+
+        } else {
+
+            long last = lastCommand.get(uuid);
+            long now = System.currentTimeMillis();
+
+            if(now - last < 1000 * 2) {
+                if(!Ranks.isStaff(uuid)) {
+                    e.setCancelled(true);
+                    Chat.sendMessage(player, "Rauhoituthan noiden komentojen kanssa!");
+                }
+            } else {
+                lastCommand.remove(uuid);
+            }
+
+        }
+
         if(deathIsland.contains(player.getUniqueId())) {
             if(player.isOp()) return;
             e.setCancelled(true);
@@ -438,8 +487,10 @@ public class Events implements Listener {
 
                 if(mat == Material.IRON_ORE) {
                     item = new ItemStack(Material.IRON_INGOT);
+                    PlayerData.add(uuid, "iron", 1);
                 } else {
                     item = new ItemStack(Material.GOLD_INGOT);
+                    PlayerData.add(uuid, "gold", 1);
                 }
 
                 Util.sendNotification(player, "§a§lTEHOSTUS §7Välittömät oret!");

@@ -82,9 +82,9 @@ public class Homes {
         Gui gui = new Gui("Poiston varmistus", 27);
 
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahivsta", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Klikkaa vahvistaaksesi poiston!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -98,9 +98,9 @@ public class Homes {
         });
 
         gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "§7 Klikkaa peruuttaaksesi poiston!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -144,9 +144,9 @@ public class Homes {
             Gui gui = new Gui("Kodit", 27);
             if(homes.get(0) == null) {
                 gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #1", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         "§aKlikkaa luodaksesi uuden kodin sijaintiisi!",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -158,13 +158,13 @@ public class Homes {
             } else {
                 Home home = homes.get(0);
                 gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.RED_BED, 1, "§2Koti #1", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         "§7Sijainti §o(x, y, z)§7:",
                         " §2" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§aVasen-klikkaa: §7Teleporttaa kotiisi",
                         "§6Oikea-klikkaa: §7Poista koti",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -182,9 +182,9 @@ public class Homes {
 
             if(homes.get(1) == null) {
                 gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #2", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         "§aKlikkaa luodaksesi uuden kodin sijaintiisi!",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -196,13 +196,13 @@ public class Homes {
             } else {
                 Home home = homes.get(1);
                 gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.ORANGE_BED, 1, "§2Koti #2", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         "§7Sijainti §o(x, y, z)§7:",
                         " §2" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§aVasen-klikkaa: §7Teleporttaa kotiisi",
                         "§aOikea-klikkaa: §7Poista koti",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -220,9 +220,9 @@ public class Homes {
 
             if(homes.get(2) == null) {
                 gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #3", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         "§aKlikkaa luodaksesi uuden kodin sijaintiisi!",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -235,13 +235,13 @@ public class Homes {
             } else {
                 Home home = homes.get(2);
                 gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.GREEN_BED, 1, "§2Koti #3", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         "§7Sijainti §o(x, y, z)§7:",
                         " §2" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§aVasen-klikkaa: §7Teleporttaa kotiisi",
                         "§aOikea-klikkaa: §7Poista koti",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -271,9 +271,9 @@ public class Homes {
             Gui gui = new Gui("Kodit", 27);
             if(homes.size() < 1 || homes.get(0) == null) {
                 gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #1", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         "§aKlikkaa luodaksesi uuden kodin sijaintiisi!",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -287,13 +287,13 @@ public class Homes {
                 Home home = homes.get(0);
 
                 gui.addButton(new Button(1,11, ItemUtil.makeItem(Material.RED_BED, 1, "§2Koti #1", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         "§7Sijainti §o(x, y, z)§7:",
                         " §2" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
                         " ",
                         "§aVasen-klikkaa: §7Teleporttaa kotiisi",
                         "§aOikea-klikkaa: §7Poista koti",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {

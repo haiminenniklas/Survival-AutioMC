@@ -3,6 +3,8 @@ package me.tr.survival.main;
 import com.songoda.ultimatetimber.UltimateTimber;
 import com.songoda.ultimatetimber.manager.ChoppingManager;
 import me.tr.survival.main.database.PlayerData;
+import me.tr.survival.main.other.PlayerDeathMessageManager;
+import me.tr.survival.main.other.PlayerGlowManager;
 import me.tr.survival.main.other.PlayerWeather;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
@@ -50,13 +52,14 @@ public class Settings {
             }
         });
 
-        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§2Yksityinen tila", Arrays.asList(
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.ANVIL, 1, "§2Yksityinen tila", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "§7Tila: " + settingText(Settings.get(uuid, "privacy")),
                 " ",
-                "§7§oKun tämä asetus on päällä,",
-                "§7§oet näe enää yksityisviestejä",
-                "§7§omuilta pelaajilta",
+                "§7§oKun tämä asetus on päällä",
+                "§7§omuut pelaajat eivät voi",
+                "§7§onähdä profiiliasi ja tietojasi!",
                 "",
                 "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
@@ -111,21 +114,41 @@ public class Settings {
             }
         });
 
-        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.CLOCK, 1, "§2Sää ja aika", Arrays.asList(
+        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§2Chat-maininnat", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                "§aKlikkaa vaihtaakesi sinun",
-                "§asäätäsi ja aikaasi",
+                "§7Tila: " + settingText(Settings.get(uuid, "chat_mentions")),
+                " ",
+                "§7§oKun tämä asetus on päällä,",
+                "§7§oet saa ilmoitusta, kun",
+                "§7§opelaaja mainitsee sinut ",
+                "§7§ochatissa!",
+                "",
+                "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                if(!Ranks.isVIP(clicker.getUniqueId()) || !Ranks.isStaff(clicker.getUniqueId())) {
-                    Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §aPremium§7-arvon!");
-                } else {
-                    PlayerWeather.panel(clicker);
-                }
+                Settings.toggle(uuid, "chat_mentions");
+                Settings.panel(clicker);
+            }
+        });
+
+        String areVipSettingsApplicable = (Ranks.isVIP(player.getUniqueId())) ? "§aKlikkaa avataksesi" : "§cVaatii §aPremium§c-arvon!";
+
+        gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.GOLDEN_CARROT, 1, "§6VIP-Asetukset", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa päästäksesi",
+                " §6VIP§7-asetuksiin!",
+                " ",
+                areVipSettingsApplicable,
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                vipPanel(clicker);
             }
         });
 
@@ -133,7 +156,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                Profile.openProfile(player, player.getUniqueId());
+                Profile.openProfile(clicker, clicker.getUniqueId());
             }
         });
 
@@ -146,6 +169,165 @@ public class Settings {
         )), 26);
 
         gui.open(player);
+
+    }
+
+    public static void vipPanel(Player player) {
+
+        if(!Ranks.isVIP(player.getUniqueId())) {
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tämä toiminto vaatii vähintään §aPremium§7-arvon! Lisätietoa §a/kauppa§7!");
+            return;
+        }
+
+        UUID uuid = player.getUniqueId();
+
+        Gui.openGui(player, "VIP-asetukset", 27, (gui) -> {
+
+            String isWeatherApplicable = (!Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §aPremium§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
+
+            gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.CLOCK, 1, "§2Sää ja aika", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    "§7§oPäivitä henkilökohtaista",
+                    "§7§osäätäsi ja aikaasi",
+                    "§7§opalvelimella!",
+                    " ",
+                    isWeatherApplicable,
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    if(!Ranks.isVIP(clicker.getUniqueId()) && !Ranks.isStaff(clicker.getUniqueId())) {
+                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §aPremium§7-arvon!");
+                    } else {
+                        PlayerWeather.panel(clicker);
+                    }
+                }
+            });
+
+            String isGlowApplicable = (!Ranks.isStaff(player.getUniqueId()) && !Ranks.hasRank(player, "sorsa")) ? "§cVaatii §2§lSORSA§c-arvon!" : "§aKlikkaa vaihtaaksesi asetusta!";
+
+            gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.PHANTOM_MEMBRANE, 1, "§2Hehkumimnen", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    "§7Tila: " + settingText(Settings.get(uuid, "glow_effect")),
+                    " ",
+                    "§7§oKun tämä asetus on päällä,",
+                    "§7§osaat käyttöösi hehkuefektin",
+                    "§7§oja pelaajat voivat nähdä sinut",
+                    "§7§opalikoiden läpi!",
+                    "",
+                    isGlowApplicable,
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    PlayerGlowManager.toggle(player);
+                    Settings.vipPanel(clicker);
+                }
+            });
+
+            String areDeathMessagesApplicable = (!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §aPremium§f+§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
+
+            gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.SKELETON_SKULL, 1, "§2Kuolemaviestit", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    "§7§oPäivitä henkilökohtaista",
+                    "§7§okuolemaviestiäsi!",
+                    " ",
+                    areDeathMessagesApplicable,
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus") && !Ranks.isStaff(clicker.getUniqueId())) {
+                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §aPremium§f+§7-arvon!");
+                    } else {
+                        PlayerDeathMessageManager.deathMessagePanel(clicker);
+                    }
+                }
+            });
+
+            String areKillMessagesApplicable = (!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §aPremium§f+§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
+
+            gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.IRON_SWORD, 1, "§2Tappoviestit", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    "§7§oPäivitä henkilökohtaista",
+                    "§7§otappoviestiäsi!",
+                    " ",
+                    areKillMessagesApplicable,
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus") && !Ranks.isStaff(clicker.getUniqueId())) {
+                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §aPremium§f+§7-arvon!");
+                    } else {
+                        PlayerDeathMessageManager.killMessagePanel(clicker);
+                    }
+                }
+            });
+
+            String isFlighApplicable = (Ranks.hasRank(uuid, "sorsa")) ? "§aKlikkaa vaihtaaksesi asetusta!" : "§cVaatii §2§lSORSA§c-arvon!";
+
+            gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.FEATHER, 1, "§2Lento", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    "§7Tila: " + settingText(player.getAllowFlight()),
+                    " ",
+                    "§7§oTämän avulla pystyt",
+                    "§7lentämään spawnilla!",
+                    " ",
+                    isFlighApplicable,
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    if(!Ranks.hasRank(uuid, "sorsa") && !Ranks.isStaff(uuid)) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän toimintoon vaaditaan §2§lSORSA§7-arvo! Lisätietoa §a/kauppa§7!");
+                    } else {
+
+                        if(!player.getAllowFlight()) {
+
+                            //TODO: Check for spawn region
+
+                            player.setAllowFlight(true);
+                            player.setFlying(true);
+                            Chat.sendMessage(player, "Lentotila §apäällä§7!");
+                        } else {
+                            player.setAllowFlight(false);
+                            player.setFlying(false);
+                            Chat.sendMessage(player, "Lentotila §cpois päältä§7!");
+                        }
+
+                    }
+
+                }
+            });
+
+            gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    Settings.panel(clicker);
+                }
+            });
+
+            gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§2Virheenkorjaus", Arrays.asList(
+                    "§7Jos asetuksissa ilmenee virheitä,",
+                    "§7tai jokin ei toimi, niin kokeile",
+                    "§7komentoa §a/debug §7tai",
+                    "§7poistu palvelimelta ja liity",
+                    "§7tänne uudestaan!"
+            )), 26);
+
+        });
 
     }
 

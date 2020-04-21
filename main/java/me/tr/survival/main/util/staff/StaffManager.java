@@ -56,13 +56,31 @@ public class StaffManager implements Listener, CommandExecutor {
 
     public static void panel(Player player) {
 
-        Gui gui = new Gui("Ylläpito", 27);
+        if(!Ranks.isStaff(player.getUniqueId())) {
+            return;
+        }
 
-        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§bChat-asetukset", Arrays.asList(
-                "§7§m--------------------",
-                " §7Klikkaa avataksesi",
-                " §bChat§7-asetukset!",
-                "§7§m--------------------"
+        Gui gui = new Gui("Ylläpitopaneeli", 45);
+
+        int[] glassPanes = new int[] {
+                0,1,2,3,4,5,6,7,8,
+                9,  11,  13,  15,  17,
+                18, 20,  22,  24,  26,
+                27, 29,  31,  33,  35,
+                36,37,38,39,40,41,42,43,44
+        };
+
+        for(int i = 0; i < glassPanes.length; i++) {
+
+            gui.addItem(1, ItemUtil.makeItem(Material.RED_STAINED_GLASS_PANE, 1, ""), glassPanes[i]);
+
+        }
+
+        gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.PAPER, 1, "§bChat-asetukset", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa avataksesi chat-",
+                " §7asetukset!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -71,35 +89,66 @@ public class StaffManager implements Listener, CommandExecutor {
             }
         });
 
-        String vanishToggled = (hidden.contains(player.getUniqueId())) ? "§c§lPIILOUTUNUT" : "§a§lNÄKYVILLÄ";
+        gui.addItem(1, ItemUtil.makeItem(Material.PLAYER_HEAD, 1, "§6Pelaajan valvonta", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Katso pelaajien tietoja",
+                " §7komennolla",
+                " §6/staff <pelaaja>§7!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
 
-        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§cPiiloutuminen", Arrays.asList(
-                "§7§m--------------------",
-                " §7Tällä asetuksella voit piiloutua",
-                " §7muilta pelaajilta!",
+        )),12);
+
+        String isVanished = (hidden.contains(player.getUniqueId())) ? "§cPiiloutunut" : "§aNäkyvillä";
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.ENDER_PEARL, 1, "§9Piiloutuminen", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Piiloudu muilta pelaajilta",
+                " §7palvelimella!",
                 " ",
-                " §7Tila: " + vanishToggled,
-                "§7§m--------------------"
+                " §7Tila: " + isVanished,
+                " ",
+                " §eKlikkaa vaihtaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                toggleVanish(clicker);
+                toggleVanish(player);
+                panel(player);
             }
         });
 
-        gui.addButton(new Button(1, 1, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eSää", Arrays.asList(
-                "§7§m--------------------",
-                " §7Muokkaa maailman säätä",
-                "§7§m--------------------"
+        gui.addButton(new Button(1, 16, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eSää", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Muokkaa maailman säätä!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 weatherGui(clicker);
-
             }
         });
+
+        gui.addButton(new Button(1, 28, ItemUtil.makeItem(Material.CLOCK, 1, "§bAika", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Muokkaa maailman aikaa!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                timeGui(clicker);
+            }
+        });
+
+        int[] emptySlots = new int[] {
+          30,32,34
+        };
+
+        for(int i = 0; i < emptySlots.length; i++) {
+            gui.addItem(1, ItemUtil.makeItem(Material.EMERALD, 1, ""), emptySlots[i]);
+        }
 
         gui.open(player);
 
@@ -108,13 +157,13 @@ public class StaffManager implements Listener, CommandExecutor {
     public static void panel(Player player, Player target) {
         Gui gui = new Gui("Valvonta " + target.getName(), 27);
 
-        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§6X-RAY-tilastot", Arrays.asList(
-                "§7§m--------------------",
+        gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§6X-RAY-tilastot", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Oreja per tunti:",
                 " ",
                 " §7Timantti: §b" + getBlockMinedPerHour(target.getUniqueId(), Material.DIAMOND_ORE),
                 " §7Emerald: §a" + getBlockMinedPerHour(target.getUniqueId(), Material.EMERALD_ORE),
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -122,29 +171,29 @@ public class StaffManager implements Listener, CommandExecutor {
             }
         });
 
-        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.OAK_SIGN, 1, "§6Teleporttaa", Arrays.asList(
-                "§7§m--------------------",
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.OAK_SIGN, 1, "§6Teleporttaa", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Klikkaa teleporttaaksesi",
                 " §7pelaajan §6" + target.getName(),
                 " §7luo!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 StaffManager.hide(clicker);
-                Chat.sendMessage(clicker, "Olet nyt piilossa! Tee §a/staff §7tullaksesi takaisin näkyviin!");
+                Chat.sendMessage(clicker, "Olet nyt piilossa! Tee §a/vanish §7tullaksesi takaisin näkyviin!");
                 TeleportRequest request = new TeleportRequest(player, target, TeleportManager.Teleport.FORCE);
                 request.ask();
             }
         });
 
-        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.BOOK, 1, "§6Pelaajan profiili", Arrays.asList(
-                "§7§m--------------------",
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.BOOK, 1, "§6Pelaajan profiili", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Klikkaa avataksesi",
                 " §7pelaajan §6" + target.getName(),
                 " §7profiilin!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -153,11 +202,25 @@ public class StaffManager implements Listener, CommandExecutor {
             }
         });
 
+        gui.addButton(new Button(1, 16, ItemUtil.makeItem(Material.CHEST, 1, "§6Pelaajan reppu", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa avataksesi",
+                " §7pelaajan §6" + target.getName(),
+                " §7repun!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                Bukkit.dispatchCommand(clicker, "reppu katso " + target.getName());
+            }
+        });
+
         gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.ARROW, 1, "§cYlläpitopaneeli", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Klikkaa avataksesi",
                 " §cylläpitopaneelin§7!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -302,10 +365,13 @@ public class StaffManager implements Listener, CommandExecutor {
     public static void weatherGui(Player player) {
         Gui gui = new Gui("Säätila", 27);
 
+        if(!Ranks.isStaff(player.getUniqueId())) {
+            return;
+        }
+
         gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§a§lSelkeä")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(player);
                 player.getWorld().setThunderDuration(0);
                 player.getWorld().setWeatherDuration(0);
                 player.getWorld().setThundering(false);
@@ -317,7 +383,6 @@ public class StaffManager implements Listener, CommandExecutor {
         gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§9§lSateinen")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(player);
                 player.getWorld().setStorm(true);
                 Chat.sendMessage(clicker, "Sää vaihdettu sateiseksi!");
             }
@@ -326,7 +391,6 @@ public class StaffManager implements Listener, CommandExecutor {
         gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.PAPER, 1, "§b§lMyrsykyinen")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(player);
                 player.getWorld().setThundering(true);
                 player.getWorld().setStorm(true);
                 Chat.sendMessage(clicker, "Sää vaihdettu myrskyiseksi!");
@@ -334,10 +398,54 @@ public class StaffManager implements Listener, CommandExecutor {
         });
 
         gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.ARROW, 1, "§cYlläpitopaneeli", Arrays.asList(
-                "§7§m--------------------",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Klikkaa avataksesi",
                 " §cylläpitopaneelin§7!",
-                "§7§m--------------------"
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                StaffManager.panel(player);
+            }
+        });
+
+        gui.open(player);
+    }
+
+    public static void timeGui(Player player) {
+        Gui gui = new Gui("Maailman aika", 27);
+
+        if(!Ranks.isStaff(player.getUniqueId())) {
+            return;
+        }
+
+        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§ePäivä")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                Bukkit.dispatchCommand(clicker, "time day");
+            }
+        });
+
+        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§eKeskipäivä")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                Bukkit.dispatchCommand(clicker, "time noon");
+            }
+        });
+
+        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.PAPER, 1, "§eIlta")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                Bukkit.dispatchCommand(clicker, "time night");
+            }
+        });
+
+        gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.ARROW, 1, "§cYlläpitopaneeli", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa avataksesi",
+                " §cylläpitopaneelin§7!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {

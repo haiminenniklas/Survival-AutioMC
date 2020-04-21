@@ -271,7 +271,7 @@ public class Boosters implements Listener {
             }
         }
 
-        Util.broadcastSound(Sound.BLOCK_NOTE_BLOCK_PLING);
+        Util.broadcastSound(Sound.BLOCK_ANVIL_FALL);
     }
 
     public static long getTimeLeft(Booster booster) {
@@ -311,7 +311,7 @@ public class Boosters implements Listener {
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-        Util.broadcastSound(Sound.BLOCK_NOTE_BLOCK_PLING);
+        Util.broadcastSound(Sound.ENTITY_ENDER_DRAGON_GROWL);
 
         // Execute if booster has some immediate functionality
         booster.getCallback().execute();
@@ -355,7 +355,7 @@ public class Boosters implements Listener {
                 "§7Kun tämä tehostus on päällä, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 50, () -> {
         }, Material.DIAMOND_ORE),
         EXTRA_HEARTS(60, "§cSote-uudistus",
-                "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 15, () -> {
+                "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 30, () -> {
 
             for(Player player : Bukkit.getOnlinePlayers()) {
                 Util.heal(player);
@@ -383,7 +383,7 @@ public class Boosters implements Listener {
 
         }, Material.CHAINMAIL_CHESTPLATE),
         NO_HUNGER(25, "§6Leipäjono",
-                "§7Tällä tehostuksella et koe nälkää! Tehostus kestää §6§l25MIN§7!", 30, () -> {
+                "§7Tällä tehostuksella et koe nälkää! Tehostus kestää §6§l25MIN§7!", 45, () -> {
         }, Material.COOKED_BEEF),
 
         DOUBLE_XP(45, "§eKokemuspisteiden kapina",

@@ -4,6 +4,7 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.TravelManager;
 import me.tr.survival.main.other.Util;
+import me.tr.survival.main.other.backpacks.Backpack;
 import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.data.*;
@@ -16,10 +17,10 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class Profile {
 
@@ -29,7 +30,7 @@ public class Profile {
 
         if(!PlayerData.isLoaded(targetUUID)) {
 
-            Chat.sendMessage(opener, "Etsitään pelaajan §6" + target.getName() + " §7tietoja...");
+            Chat.sendMessage(opener, "Etsitään pelaajan §a" + target.getName() + " §7tietoja...");
 
             Autio.async(() -> {
 
@@ -38,13 +39,13 @@ public class Profile {
                     Gui gui = new Gui("Ei löydetty", 27);
                     gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§c§lEI LÖYDETTY", Arrays.asList(
                             "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                            " §7Pelaajan §6" + target.getName() + " §7tietoja",
+                            " §7Pelaajan §a" + target.getName() + " §7tietoja",
                             " §7ei löydetty. Ehkei hän ole ikinä",
                             " §7liittynyt, tai hänen tietojaan ei",
                             " §7olla vielä ladattu. Yritä myöhemmin",
                             " §7uudestaan!",
                             "",
-                            "§7 Omat tiedot saat §6/tiedot§7!",
+                            "§7 Omat tiedot saat §a/tiedot§7!",
                             "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                     )), 13);
                     Autio.task(() -> {
@@ -52,7 +53,13 @@ public class Profile {
                     });
                 } else {
                     Autio.task(() -> {
-                        openProfile(opener, targetUUID);
+
+                        if(Settings.get(targetUUID, "privacy") && !Ranks.isStaff(opener.getUniqueId())) {
+                            Chat.sendMessage(opener, Chat.Prefix.ERROR, "Tällä pelaajalla on yksityinen tila käytössä. Et siis voi nähdä hänen profiiliaan!");
+                            return;
+                        } else {
+                            openProfile(opener, targetUUID);
+                        }
                     });
                 }
 
@@ -62,8 +69,16 @@ public class Profile {
             return;
         }
 
+        if(Settings.get(targetUUID, "privacy") && !Ranks.isStaff(opener.getUniqueId())) {
+            Chat.sendMessage(opener, Chat.Prefix.ERROR, "Tällä pelaajalla on yksityinen tila käytössä. Et siis voi nähdä hänen profiiliaan!");
+            return;
+        }
+
         Gui gui = new Gui("Pelaajan tiedot", 5 * 9);
         HashMap<String, Object> data = PlayerData.getData(targetUUID);
+
+        Timestamp lastTimestamp = new Timestamp(target.getLastSeen());
+        LocalDateTime lastSeen = lastTimestamp.toLocalDateTime();
 
         gui.addItem(1, ItemUtil.makeSkullItem(target.getName(), 1, "§2Profiili", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -71,9 +86,10 @@ public class Profile {
                 " ",
                 " §7Arvo: §r" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
                 " §7Kristallit: §b" + Crystals.get(targetUUID),
-                " §7Rahatilanne: §e" + Balance.get(targetUUID),
+                " §7Rahatilanne: §e" + Balance.get(targetUUID) + "€",
                 " ",
                 " §7Liittynyt: §a" + data.get("joined"),
+                " §7Viimeksi nähty: §a" + lastSeen.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )), 13);
 
@@ -111,6 +127,7 @@ public class Profile {
         } else {
             other_percentage = 0;
         }
+
 
         gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§2Tuhotut blockit", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -171,7 +188,7 @@ public class Profile {
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Hyödylliset komennot:",
                 "  §6/profiili §7tämä valikko",
-                "  §6/rtp §7vie sinut arämaahan",
+                "  §6/rtp §7vie sinut erämaahan",
                 "  §6/msg §7yksityisviestit",
                 "  §6/tpa §7teleporttauspyyntö",
                 "  §6/warp §7palvelimen warpit",
@@ -230,6 +247,43 @@ public class Profile {
 
             }
         });
+
+        List<String> backpackLore = Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa tarkastellaksesi",
+                " §7reppuasi!",
+                " ",
+                " §7Reppusi taso: " + Backpack.getLevelNumber(targetUUID),
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        );
+
+        if(Ranks.isStaff(opener.getUniqueId()) && targetUUID != opener.getUniqueId()) {
+            backpackLore = Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Klikkaa tarkastellaksesi",
+                    " §7pelaajan §6" + target.getName(),
+                    " §7reppua!",
+                    " ",
+                    " §7Repun taso: " + Backpack.getLevelNumber(targetUUID),
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            );
+        }
+
+        gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.CHEST, 1, "§6Reppu", backpackLore)) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+
+                gui.close(clicker);
+
+                if(Ranks.isStaff(opener.getUniqueId()) && targetUUID != opener.getUniqueId()) {
+                    Bukkit.dispatchCommand(opener, "reppu katso " + target.getName());
+                } else {
+                    Backpack.openBackpack(clicker);
+                }
+
+            }
+        });
+
         gui.open(opener);
 
     }
