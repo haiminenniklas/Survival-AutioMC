@@ -256,7 +256,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         }
 
         Autio.logColored("§a Enabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
-                "ms / " + ((System.currentTimeMillis() - start) / 1000) + "s)");
+                "ms / " + ((System.currentTimeMillis() - start) / 1000.0f) + "s)");
         Autio.logColored("§a---------------------------");
 
     }
@@ -267,9 +267,9 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         Autio.logColored("§a---------------------------");
         Autio.logColored(" §aDisabling SorsaSurvival....");
 
-        Autio.log(" ");
-        Autio.log(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
-        Autio.log(" ");
+        Autio.logColored(" ");
+        Autio.logColored(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
+        Autio.logColored(" ");
 
         long start = System.currentTimeMillis();
 
@@ -286,7 +286,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         }
 
         Autio.logColored("§a Disabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
-                "ms / " + ((System.currentTimeMillis() - start) / 1000) + "s)");
+                "ms / " + ((System.currentTimeMillis() - start) / 1000.0f) + "s)");
 
         Autio.logColored("§a---------------------------");
 
@@ -358,7 +358,11 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
                 }
 
-            } else if(command.getLabel().equalsIgnoreCase("spawn")) {
+            } else if(command.getLabel().equalsIgnoreCase("vip")) {
+
+               Settings.vipPanel(player);
+
+           } else if(command.getLabel().equalsIgnoreCase("spawn")) {
 
                 if(args.length < 1) {
                     Chat.sendMessage(player, "Sinua viedään spawnille...");

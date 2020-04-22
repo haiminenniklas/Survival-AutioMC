@@ -192,3 +192,6 @@ commands:
   hehku:
     description: Hehkuefektit
     aliases: [glow, hehkuefektit]
+  vip:
+    description: Vip-ominaisuudet
+    aliases: [vipsettings]

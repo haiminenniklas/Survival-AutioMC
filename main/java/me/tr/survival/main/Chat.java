@@ -246,7 +246,7 @@ public class Chat implements Listener {
 
             if(msg.toLowerCase().contains(online.getName().toLowerCase())) {
 
-                msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a@" + online.getName() + "§7");
+                msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a@" + online.getName() + "§r");
                 Util.sendNotification(online, "§a" + player.getName() + " §7mainitsi sinut Chatissa!", Settings.get(online.getUniqueId(), "chat_mentions"));
 
             }

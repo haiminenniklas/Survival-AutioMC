@@ -28,6 +28,9 @@ public class Gui implements Listener {
     private String title;
     private int size;
 
+    private boolean partiallyTouchable;
+    private int[] allowedSlots;
+
     public Gui(String title, int size){
 
         if(!(guis.contains(this))){
@@ -37,7 +40,40 @@ public class Gui implements Listener {
         this.items = new HashMap<>();
         this.title = title;
         this.size = size;
+        this.partiallyTouchable = false;
+        this.allowedSlots = new int[0];
         init();
+    }
+
+    public boolean isPartiallyTouchable() {
+        return this.partiallyTouchable;
+    }
+
+    public void setPartiallyTouchable(boolean value) {
+        this.partiallyTouchable = value;
+    }
+
+    public int[] getAllowedSlots() {
+        return this.allowedSlots;
+    }
+
+    public void setAllowedSlots(int... slots) {
+        this.allowedSlots = slots;
+    }
+
+    public boolean clickedAllowedSlot(int clickedSlot) {
+
+        if(this.allowedSlots.length < 1) return false;
+
+        for(int i = 0; i < this.allowedSlots.length; i++) {
+            int allowedSlot = this.allowedSlots[i];
+            if(clickedSlot == allowedSlot) {
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     public HashMap<Integer, Inventory> getPages() {
