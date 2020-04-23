@@ -141,8 +141,15 @@ public class TradeManager implements CommandExecutor, Listener {
                         return true;
                     }
 
-                    Trade trade = new Trade(player.getUniqueId(), target.getUniqueId());
-                    trade.ask();
+                    if(findTrade(target.getUniqueId(), player.getUniqueId()) != null) {
+
+                        Trade trade = findTrade(target.getUniqueId(), player.getUniqueId());
+                        trade.accept();
+
+                    } else {
+                        Trade trade = new Trade(player.getUniqueId(), target.getUniqueId());
+                        trade.ask();
+                    }
 
                 }
 
@@ -219,8 +226,7 @@ public class TradeManager implements CommandExecutor, Listener {
                         public void run() {
                             if(e.getCurrentItem() != null) {
                                 ItemStack item = e.getCurrentItem().clone();
-                                System.out.println("Current Item: " + item.getType() + ";" + item.getAmount());
-                                trade.addItem(player, e.getCurrentItem());
+                                trade.addItem(player, item);
                                 cancel();
                             }
                         }

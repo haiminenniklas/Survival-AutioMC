@@ -76,6 +76,7 @@ public class Trade {
 
         if(trader.getName().equals(target.getName())) {
             Chat.sendMessage(trader, Chat.Prefix.ERROR, "Et pysty lähettämään vaihtokauppapyyntöä itsellesi!");
+            TradeManager.getOngoingTrades().remove(this);
             return;
         }
 
@@ -85,12 +86,15 @@ public class Trade {
 
         if(Settings.get(target.getUniqueId(), "privacy")) {
             Chat.sendMessage(trader, Chat.Prefix.ERROR, "Pelaajalla §a" + target.getName() + " §7on yksityinen tila päällä!");
+
+            TradeManager.getOngoingTrades().remove(this);
             return;
         }
 
         // If player tries to request from himself
         if(this.trader.equals(this.target)) {
             Chat.sendMessage(trader, Chat.Prefix.ERROR, "Et voi lähettää §6Vaihtokauppa§7-pyyntöä itsellesi!");
+            TradeManager.getOngoingTrades().remove(this);
             return;
         }
 

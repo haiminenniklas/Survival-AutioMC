@@ -338,14 +338,14 @@ public class StaffManager implements Listener, CommandExecutor {
 
                         if(minedPerHour >= 15 && minedPerHour % 5 == 0) {
 
-                            Util.broadcastStaff("§6§lXRAY §7» Pelaajan §6" + player.getName() + " §7BPH §o(blockit per tunti) §btimanteille §7on §6" + minedPerHour + "§7!");
+                            Util.broadcastStaff("§7[&c!&] §7» Pelaajan §c" + player.getName() + " §7BPH §o(blockit per tunti) §btimanteille §7on §c" + minedPerHour + "§7!");
 
                         }
 
                     } else if(block.getType() == Material.EMERALD_ORE) {
                         if(minedPerHour >= 5 && minedPerHour % 5 == 0) {
 
-                            Util.broadcastStaff("§6§lXRAY §7» Pelaajan §6" + player.getName() + " §7BPH §o(blockit per tunti) §aemeraldeille §7on §6" + minedPerHour + "§7!");
+                            Util.broadcastStaff("§7[&c!&] §7» Pelaajan §c" + player.getName() + " §7BPH §o(blockit per tunti) §aemeraldeille §7on §c" + minedPerHour + "§7!");
 
                         }
                     }
