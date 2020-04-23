@@ -62,6 +62,38 @@ public class Util {
 
     }
 
+    public static String formatTime(int seconds, boolean letters) {
+        String text = "0" + seconds;
+        if(seconds >= 10) {
+            text = String.valueOf(seconds);
+        }
+        return text + (letters ? "s" : "");
+    }
+
+    public static String formatTime(int minutes, int seconds, boolean letters) {
+        String text = "0" + minutes;
+        if(minutes >= 10) {
+            text = String.valueOf(minutes);
+        }
+        return text + (letters ? "min " : ":") + formatTime(seconds, letters);
+    }
+
+    public static String formatTime(int hours, int minutes, int seconds, boolean letters) {
+        String text = "0" + hours;
+        if(hours >= 10) {
+            text = String.valueOf(hours);
+        }
+        return text + (letters ? "h " : ":") + formatTime(minutes, seconds, letters);
+    }
+
+    public static String formatTime(int days, int hours, int minutes, int seconds, boolean letters) {
+        String text = "0" + days;
+        if(days >= 10) {
+            text = String.valueOf(days);
+        }
+        return text + (letters ? "d " : ":") + formatTime(hours, minutes, seconds, letters);
+    }
+
     public static String getToday() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDateTime now = LocalDateTime.now();

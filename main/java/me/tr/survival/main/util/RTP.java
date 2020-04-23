@@ -20,7 +20,14 @@ public class RTP {
     public static boolean teleport(Player player) {
 
         if(cooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < cooldown.get(player.getUniqueId()) ) {
-            Chat.sendMessage(player, "Sinun pitää odottaa hetki, jotta voit teleportata uudestaan..");
+            long timeLeftRaw = (cooldown.get(player.getUniqueId()) - System.currentTimeMillis()) / 1000;
+
+            long minutes = (int) timeLeftRaw / 60;
+            long seconds = timeLeftRaw - (60 * minutes);
+
+            String timeLeft = Util.formatTime((int) minutes, (int) seconds, true);
+
+            Chat.sendMessage(player, "Odota vielä §c" + timeLeft + " §7jotta voit käyttää tätä uudestaan!");
             return false;
         }
 
@@ -29,7 +36,7 @@ public class RTP {
 
         // Do the RTP in async for better performance
         Autio.async(() -> {
-            World world = player.getWorld();
+            World world = Bukkit.getWorld("world");
             Location loc = randomLocation(player.getWorld());
 
 
@@ -40,11 +47,17 @@ public class RTP {
                 chunk.load();
             }
 
-            Autio.afterAsync(1, () -> player.teleportAsync(loc));
+            Autio.afterAsync(1, () -> {
+
+                double y = world.getHighestBlockYAt(loc.getBlockX(), loc.getBlockZ());
+                final Location newLoc = new Location(world, loc.getX(), y + 1, loc.getZ());
+
+                player.teleportAsync(newLoc);
+                Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
+
+            });
 
         });
-
-        Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
 
         if(!player.isOp()) {
             cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));

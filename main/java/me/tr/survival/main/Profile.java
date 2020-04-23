@@ -98,7 +98,33 @@ public class Profile {
         }
 
         if(Settings.get(targetUUID, "privacy") && !Ranks.isStaff(opener.getUniqueId())) {
-            Chat.sendMessage(opener, Chat.Prefix.ERROR, "Tällä pelaajalla on yksityinen tila käytössä. Et siis voi nähdä hänen profiiliaan!");
+            Gui.openGui(opener, "Ei voitu avata", 27, (gui) -> {
+
+                gui.addItem(1, ItemUtil.makeItem(Material.BARRIER, 1, "§cEi voitu avata", Arrays.asList(
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                        " §7Emme voineet avata tämän",
+                        " §7pelaajan §aprofiilia§7,",
+                        " §7sillä tällä pelaajalla",
+                        " §7on §cyksityinen tila",
+                        " §7päällä!",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                )),13);
+
+                gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.BOOK, 1, "§aOma profiili", Arrays.asList(
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                        " §7Voit kuitenkin päästä",
+                        " §7katsomaan omaa §aprofiiliasi",
+                        " §7klikkaamalla §etästä§7!",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                ))) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(clicker);
+                        openProfile(clicker, clicker.getUniqueId());
+                    }
+                });
+
+            });
             return;
         }
 
@@ -268,7 +294,7 @@ public class Profile {
                 gui.close(clicker);
 
                 if(!Ranks.isVIP(clicker.getUniqueId())) {
-                    Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §a§lPremium§7-arvo tähän toimintoon!");
+                    Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §aPremium§7-arvo tähän toimintoon!");
                 } else {
                     Particles.openMainGui(clicker);
                 }

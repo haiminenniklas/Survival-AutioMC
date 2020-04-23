@@ -4,9 +4,12 @@ import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Profile;
 import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.RTP;
+import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,6 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 public class TravelManager implements CommandExecutor, Listener {
 
@@ -68,8 +72,26 @@ public class TravelManager implements CommandExecutor, Listener {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
 
-                    clicker.closeInventory();
+                    gui.close(clicker);
                     nether(clicker);
+
+                }
+            });
+
+            gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.COMPASS, 1, "§2RTP", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Klikkaa matkustaaksesi",
+                    " §7satunnaiseen paikkaan",
+                    " §2maailmassa§7!",
+                    " ",
+                    " §7Hinta: §a§lILMAINEN",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+
+                    gui.close(clicker);
+                    RTP.teleport(clicker);
 
                 }
             });
@@ -79,17 +101,13 @@ public class TravelManager implements CommandExecutor, Listener {
                     " §7Klikkaa matkustaaksesi",
                     " §5Endiin§7! ",
                     " ",
-                    " §7Hinta: §6§l1 Helmi",
-                    " §7Sinun helmesi: §6" + getPearls(player),
-                    " ",
-                    " §7§oTietoa Helmistä: ",
-                    " §a/apua matkustaminen§7!",
+                    " §7Hinta: §b§l300 kristallia",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
 
-                    clicker.closeInventory();
+                    gui.close(clicker);
                     end(clicker);
 
                 }
@@ -110,17 +128,19 @@ public class TravelManager implements CommandExecutor, Listener {
 
     public static void end(Player player) {
 
-        if(hasPearls(player)) {
-            removePearl(player);
+        if(Crystals.canRemove(player.getUniqueId(), 300)) {
             Chat.sendMessage(player, Chat.Prefix.DEFAULT, "Sinua viedään §5Endiin§7...");
 
             if(Autio.getEndWorld() != null) {
-                player.teleportAsync(Autio.getEndWorld().getSpawnLocation());
+                CompletableFuture<Boolean> canAsync = player.teleportAsync(Autio.getEndWorld().getSpawnLocation());
+                if(!canAsync.join()) {
+                    player.teleport(Autio.getEndWorld().getSpawnLocation());
+                }
             } else {
                 Chat.sendMessage(player, Chat.Prefix.ERROR, "Matkustaminen epäonnistui...");
             }
         } else {
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tarvitset §6§lHelmiä§7, jotta voit matkustaa §5Endiin§7!");
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Endiin matkustaminen maksaa §b§l300 kristallia§7!");
         }
 
 

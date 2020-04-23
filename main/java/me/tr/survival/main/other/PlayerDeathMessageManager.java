@@ -40,7 +40,7 @@ public class PlayerDeathMessageManager implements Listener {
             int index = 11;
             for(DeathMessage deathMessage : DeathMessage.values()) {
                 List<String> lore = new ArrayList<>();
-                boolean selected = (getSelectedDeathMessage(uuid) != null) && getSelectedDeathMessage(uuid) == deathMessage;
+                final boolean selected = (getSelectedDeathMessage(uuid) != null) && getSelectedDeathMessage(uuid) == deathMessage;
 
                 lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
@@ -73,8 +73,13 @@ public class PlayerDeathMessageManager implements Listener {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
-                        selectDeathMessage(clicker.getUniqueId(), deathMessage);
-                        Chat.sendMessage(player, "Valitsit kuolemanviestiksesi: " + deathMessage.title);
+                        if(!selected) {
+                            selectDeathMessage(clicker.getUniqueId(), deathMessage);
+                            Chat.sendMessage(player, "Valitsit kuolemanviestiksesi: " + deathMessage.title);
+                        } else {
+                            resetDeathMessages(clicker.getUniqueId());
+                            Chat.sendMessage(player, "Tyhjensit kuolemanviestisi!");
+                        }
                         deathMessagePanel(clicker);
                     }
                 });
@@ -108,7 +113,7 @@ public class PlayerDeathMessageManager implements Listener {
             int index = 11;
             for(KillMessage killMessage : KillMessage.values()) {
                 List<String> lore = new ArrayList<>();
-                boolean selected = (getSelectedKillMessage(uuid) != null) && getSelectedKillMessage(uuid) == killMessage;
+                final boolean selected = (getSelectedKillMessage(uuid) != null) && getSelectedKillMessage(uuid) == killMessage;
 
                 lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
@@ -141,8 +146,13 @@ public class PlayerDeathMessageManager implements Listener {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
-                        selectKillMessage(clicker.getUniqueId(), killMessage);
-                        Chat.sendMessage(player, "Valitsit tappoviestiksesi: " + killMessage.title);
+                        if(!selected) {
+                            selectKillMessage(clicker.getUniqueId(), killMessage);
+                            Chat.sendMessage(player, "Valitsit tappoviestiksesi: " + killMessage.title);
+                        } else {
+                            resetKillMessages(clicker.getUniqueId());
+                            Chat.sendMessage(player, "Tyhjensit tappoviestisi!");
+                        }
                         killMessagePanel(clicker);
                     }
                 });

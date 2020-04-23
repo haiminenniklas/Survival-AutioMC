@@ -130,17 +130,19 @@ public class Backpack implements CommandExecutor, Listener {
         )));
 
         int itemIndex = 0;
-        for(int i = 9; i < level.size + 9; i++) {
+        if(items.length >= 1) {
+            for(int i = 9; i < level.size + 9; i++) {
 
-            ItemStack item = items[itemIndex];
-            if(item == null) continue;
-            if(item.getType() == Material.AIR) continue;
+                ItemStack item = items[itemIndex];
+                if(item == null) continue;
+                if(item.getType() == Material.AIR) continue;
 
-            inv.setItem(i, item);
+                inv.setItem(i, item);
 
-            itemIndex += 1;
-            if(itemIndex >= items.length) break;
+                itemIndex += 1;
+                if(itemIndex >= items.length) break;
 
+            }
         }
 
         for(int i = level.size + 9; i < level.size + 18; i++) {

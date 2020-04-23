@@ -796,7 +796,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             return true;
                         }
 
-                        Enchantment enchantment = Enchantment.getByName(args[0]);
+                        Enchantment enchantment = Enchantment.getByName(args[0].toUpperCase());
                         if(enchantment == null) {
                             Chat.sendMessage(player, "Lumousta ei löytynyt tuolla nimellä...");
                             return true;

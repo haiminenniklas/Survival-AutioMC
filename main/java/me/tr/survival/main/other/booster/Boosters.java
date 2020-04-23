@@ -139,7 +139,7 @@ public class Boosters implements Listener {
 
         for(int i : itemSlots) {
             if(gui.getButton(i) == null) {
-                gui.addItem(1, ItemUtil.makeItem(Material.TURTLE_EGG, 1, "§6Tulossa...", Arrays.asList(
+                gui.addItem(1, ItemUtil.makeItem(Material.TURTLE_EGG, 1, "§2Tulossa...", Arrays.asList(
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         " §7Tähän ei ole vielä keksitty",
                         " §7mitään. Jos sinulla on joitain",
@@ -352,7 +352,7 @@ public class Boosters implements Listener {
                         " §7Tehostus kestää §6§l45MIN§7!", 50, () -> {
         }, Material.IRON_NUGGET),
         MORE_ORES(30, "§bMineeralimyllerrys!",
-                "§7Kun tämä tehostus on päällä, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 50, () -> {
+                "§7Kun tämä tehostus on päällä, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 125, () -> {
         }, Material.DIAMOND_ORE),
         EXTRA_HEARTS(60, "§cSote-uudistus",
                 "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 30, () -> {
@@ -365,7 +365,7 @@ public class Boosters implements Listener {
 
         }, Material.POTION),
         FIX_ITEMS(-1, "§fSepän armahdus",
-                "§7Tämä korjaa kaikki inventoryssasi olevat itemit.", 150, () -> {
+                "§7Tämä korjaa kaikki inventoryssasi olevat itemit.", 250, () -> {
 
             for(Player player : Bukkit.getOnlinePlayers()) {
                 for(ItemStack item : player.getInventory().getContents()) {

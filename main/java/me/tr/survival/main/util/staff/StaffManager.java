@@ -147,7 +147,7 @@ public class StaffManager implements Listener, CommandExecutor {
         };
 
         for(int i = 0; i < emptySlots.length; i++) {
-            gui.addItem(1, ItemUtil.makeItem(Material.EMERALD, 1, ""), emptySlots[i]);
+            gui.addItem(1, ItemUtil.makeItem(Material.EMERALD, 1, "§7Tyhjä..."), emptySlots[i]);
         }
 
         gui.open(player);

@@ -273,7 +273,7 @@ public class Settings {
                 }
             });
 
-            String isFlighApplicable = (Ranks.hasRank(uuid, "sorsa")) ? "§aKlikkaa vaihtaaksesi asetusta!" : "§cVaatii §2§lSORSA§c-arvon!";
+            String isFlighApplicable = (Ranks.hasRank(uuid, "sorsa") || Ranks.isStaff(uuid)) ? "§aKlikkaa vaihtaaksesi asetusta!" : "§cVaatii §2§lSORSA§c-arvon!";
 
             gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.FEATHER, 1, "§2Lento", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -306,6 +306,27 @@ public class Settings {
                             Chat.sendMessage(player, "Lentotila §cpois päältä§7!");
                         }
 
+                    }
+
+                }
+            });
+
+            gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.NETHER_STAR, 1, "§bKosmetiikka", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Tästä klikkaamalla pääset",
+                    " §7katsomaan §bkosmetiisia efektejä",
+                    " §7ja §bominaisuuksia §7jotka ovat",
+                    " §7sinulle avoinna!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+
+                    if(!Ranks.isVIP(clicker.getUniqueId())) {
+                        Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §a§lPremium§7-arvo tähän toimintoon!");
+                    } else {
+                        Particles.openMainGui(clicker);
                     }
 
                 }

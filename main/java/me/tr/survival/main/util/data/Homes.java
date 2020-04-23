@@ -209,7 +209,7 @@ public class Homes {
                         if(clickType == ClickType.LEFT) {
                             home.teleport(clicker);
                             gui.close(clicker);
-                            clicker.sendMessage("§6§lAutio §7» Sinua viedään kotiin §6#2§7...");
+                            Chat.sendMessage(clicker, "Sinua viedään kotiin §6#2§7... ");
                         } else if(clickType == ClickType.RIGHT) {
                             gui.close(clicker);
                             homeList.deleteHome(opener, "second_home");
@@ -300,7 +300,7 @@ public class Homes {
                         if(clickType == ClickType.LEFT) {
                             home.teleport(clicker);
                             gui.close(clicker);
-                            clicker.sendMessage("§6§lAutio §7» Sinua viedään kotiin §6#1§7... ");
+                            Chat.sendMessage(clicker, "Sinua viedään kotiin §6#1§7... ");
                         } else if(clickType == ClickType.RIGHT) {
                             gui.close(clicker);
                             homeList.deleteHome(opener, "first_home");

@@ -50,7 +50,7 @@ public abstract class Recipe {
                 new CustomIronbarRecipe(),
                 new CustomSpawnerRecipe(),
                 new CustomZombieEggRecipe(),
-                new CustomEndPearlRecipe()
+                //new CustomEndPearlRecipe()
         };
     }
 

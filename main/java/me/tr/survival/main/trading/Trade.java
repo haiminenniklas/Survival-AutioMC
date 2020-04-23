@@ -212,6 +212,7 @@ public class Trade {
     }
 
     public void deny() {
+
         Player trader = getTrader();
         Player target = getTarget();
 
@@ -225,6 +226,7 @@ public class Trade {
         Chat.sendMessage(target, "Kielsit vaihtopyynnön pelaajalta §a" + trader.getName());
 
         this.available = false;
+        TradeManager.getOngoingTrades().remove(this);
 
     }
 
@@ -295,6 +297,7 @@ public class Trade {
             if(timesLooped < 1) {
                 Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei ole tavaroita mitä palauttaa!");
             } else {
+                this.accepted.put(player.getUniqueId(), false);
                 Chat.sendMessage(player, "Tavarasi palautettiin!");
             }
 
