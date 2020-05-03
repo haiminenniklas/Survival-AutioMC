@@ -53,7 +53,8 @@ public class Lottery {
                     case VIP:
                         if(!Ranks.isStaff(player.getUniqueId()) &&
                                 !Ranks.hasRank(player.getUniqueId(), "premiumplus")
-                                && !Ranks.isPartner(player.getUniqueId())) {
+                                && !Ranks.isPartner(player.getUniqueId())
+                                && !Ranks.hasRank(player.getUniqueId(), "sorsa")) {
                             PlayerData.set(player.getUniqueId(), "rank", "premium");
                         }
                         break;
@@ -63,11 +64,11 @@ public class Lottery {
                                 ItemUtil.makeItem(Material.COOKED_PORKCHOP, 16),
                                 ItemUtil.makeItem(Material.COOKED_CHICKEN, 16));
                         break;
-                    case CRYSTALS:
-                        Crystals.add(player.getUniqueId(), 5);
-                        break;
                     case DIAMONDS:
                         player.getInventory().addItem(ItemUtil.makeItem(Material.DIAMOND, 3));
+                        break;
+                    case MONEY:
+                        MoneyManager.forceWriteCheque(player, 500);
                         break;
                 }
 
@@ -90,8 +91,8 @@ public class Lottery {
 
         FOOD(50, "§c§lRuokaa"),
         DIAMONDS(10, "§b§lTimantteja"),
-        VIP(0.01, "§a§lPremium"),
-        CRYSTALS(5, "§b§lKristalleja");
+        MONEY(33, "§e§lRahaa"),
+        VIP(0.01, "§6§lPremium");
 
         private double chance;
         private String displayName;

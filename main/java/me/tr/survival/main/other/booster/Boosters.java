@@ -6,6 +6,7 @@ import me.tr.survival.main.other.Enchant;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.callback.Callback;
+import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
@@ -70,7 +71,7 @@ public class Boosters implements Listener {
                     lore.add("§7 Aktivoinut: §a" + Bukkit.getOfflinePlayer(getActivator(booster)).getName());
                     lore.add("§7 ");
                 } else {
-                    lore.add("§7 Hinta: §b" + booster.getCost() + " kristallia");
+                    lore.add("§7 Hinta: §e" + booster.getCost() + "€");
                     lore.add("§7 ");
 
                     if(isInCooldown(booster)) {
@@ -118,8 +119,8 @@ public class Boosters implements Listener {
                         }
 
                         if(!isActive(booster)) {
-                            if(Crystals.canRemove(clicker.getUniqueId(), booster.getCost())) {
-                                Crystals.add(clicker.getUniqueId(), -booster.getCost());
+                            if(Balance.canRemove(clicker.getUniqueId(), booster.getCost())) {
+                                Balance.add(clicker.getUniqueId(), -booster.getCost());
                                 Boosters.activate(booster, clicker.getUniqueId());
                                 Chat.sendMessage(clicker, "Aktivoit tehostuksen " + booster.getDisplayName() + "§7!");
                             } else {
@@ -349,13 +350,13 @@ public class Boosters implements Listener {
 
         INSTANT_MINING(45, "§fVälittömät malmit",
                 "§7Kun tämä tehostus on päällä §fRauta §7ja §6Kulta §7-malmit sulavat heti, eikä niitä tarvitse erikseen kierrättää uunissa." +
-                        " §7Tehostus kestää §6§l45MIN§7!", 50, () -> {
+                        " §7Tehostus kestää §6§l45MIN§7!", 5000, () -> {
         }, Material.IRON_NUGGET),
         MORE_ORES(30, "§bMineeralimyllerrys!",
-                "§7Kun tämä tehostus on päällä, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 125, () -> {
+                "§7Kun tämä tehostus on päällä, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 12500, () -> {
         }, Material.DIAMOND_ORE),
         EXTRA_HEARTS(60, "§cSote-uudistus",
-                "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 30, () -> {
+                "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 3000, () -> {
 
             for(Player player : Bukkit.getOnlinePlayers()) {
                 Util.heal(player);
@@ -365,7 +366,7 @@ public class Boosters implements Listener {
 
         }, Material.POTION),
         FIX_ITEMS(-1, "§fSepän armahdus",
-                "§7Tämä korjaa kaikki inventoryssasi olevat itemit.", 250, () -> {
+                "§7Tämä korjaa kaikki inventoryssasi olevat itemit.", 25000, () -> {
 
             for(Player player : Bukkit.getOnlinePlayers()) {
                 for(ItemStack item : player.getInventory().getContents()) {
@@ -383,11 +384,11 @@ public class Boosters implements Listener {
 
         }, Material.CHAINMAIL_CHESTPLATE),
         NO_HUNGER(25, "§6Leipäjono",
-                "§7Tällä tehostuksella et koe nälkää! Tehostus kestää §6§l25MIN§7!", 45, () -> {
+                "§7Tällä tehostuksella et koe nälkää! Tehostus kestää §6§l25MIN§7!", 4500, () -> {
         }, Material.COOKED_BEEF),
 
         DOUBLE_XP(45, "§eKokemuspisteiden kapina",
-                "§7Tällä tehostuksella saat jokaisesta tappamastasi mobista §a2x §7enemmän §eXP:§7tä! Tehostus kestää §6§l45MIN§7!", 80, () -> {
+                "§7Tällä tehostuksella saat jokaisesta tappamastasi mobista §a2x §7enemmän §eXP:§7tä! Tehostus kestää §6§l45MIN§7!", 8000, () -> {
 
         }, Material.EXPERIENCE_BOTTLE),
 

@@ -45,6 +45,8 @@ public class SQL {
             String password = config.getString("mysql.password");
             String address = config.getString("mysql.address");
 
+            // pswd: uu4L3Ks3EhBMfP8u
+
             try {
                 Class.forName("com.mysql.jdbc.Driver");
                 SQL.conn = DriverManager.getConnection("jdbc:mysql://" + address + ":3306/autiomc", user, password);

@@ -3,7 +3,7 @@ version: 0.8
 main: me.tr.survival.main.Main
 description: SorsaMC survival plugin
 api-version: 1.13
-depend: [UltimateTimber, LuckPerms, ProtocolLib, PlayerParticles, Vault, NametagEdit]
+depend: [UltimateTimber, LuckPerms, ProtocolLib, PlayerParticles, Vault, NametagEdit, WorldGuard]
 
 commands:
   bal:
@@ -151,7 +151,7 @@ commands:
     aliases: [v, piiloudu]
   trade:
     description: Vaihtokauppa
-    aliases: [vaihto]
+    aliases: [vaihto, vaihda]
   baltop:
     description: Top raha
     aliases: [rahatop, btop]
@@ -164,8 +164,6 @@ commands:
   valuutta:
     description: Valuutta-asiat
     aliases: [finanssi, finances, currency]
-  vaihda:
-    description: Vaihda rahaa kristalleihin
   shekki:
     description: Kirjoita shekkejä
     aliases: [cheques, shekit]
@@ -195,3 +193,5 @@ commands:
   vip:
     description: Vip-ominaisuudet
     aliases: [vipsettings]
+  houkutin:
+    description: Spawnin houkutin

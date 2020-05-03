@@ -1,5 +1,7 @@
 package me.tr.survival.main;
 
+import me.tr.survival.main.other.Util;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -7,6 +9,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class Home {
 
@@ -15,6 +18,8 @@ public class Home {
 
     private double x, y, z;
     private World world;
+
+    private Float yaw, pitch;
 
     public Home(UUID owner, double x, double y, double z, String worldName) {
 
@@ -26,12 +31,32 @@ public class Home {
         this.z = z;
 
         this.world = Bukkit.getWorld(worldName);
-        //sss
 
     }
 
+    public Home(UUID owner, double x, double y, double z, String worldName, float yaw, float pitch) {
+
+        this.ownerUUID = owner;
+        this.owner = Bukkit.getOfflinePlayer(owner);
+
+        this.x = x;
+        this.y = y;
+        this.z = z;
+
+        this.yaw = yaw;
+        this.pitch = pitch;
+
+        this.world = Bukkit.getWorld(worldName);
+    }
+
     public Location getLocation() {
-        return new Location(this.world, this.x, this.y, this.z);
+
+        if(this.yaw == null || this.pitch == null) {
+            return new Location(this.world, this.x, this.y, this.z);
+        } else {
+            return new Location(this.world, this.x, this.y, this.z, this.yaw, this.pitch);
+        }
+
     }
 
     public boolean teleport() {
@@ -44,10 +69,12 @@ public class Home {
     }
 
     public void teleport(Player player) {
-        Chat.sendMessage(player, "Sinut viedään kotiin §63 sekunnin §7päästä...");
         Autio.afterAsync(3, () -> {
-            Chat.sendMessage(player, "Teleportataan...");
-            player.teleportAsync(this.getLocation());
+            Util.sendNotification(player, "§7Teleportataan...", true);
+            CompletableFuture<Boolean> teleport = player.teleportAsync(this.getLocation());
+            if(!teleport.join()) {
+                Chat.sendMessage(player, Chat.Prefix.ERROR, "Teleporttaus kotiin epäonnistui... Yritä pian uudestaan!");
+            }
         });
     }
 

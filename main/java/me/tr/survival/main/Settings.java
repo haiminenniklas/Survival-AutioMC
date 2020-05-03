@@ -1,12 +1,11 @@
 package me.tr.survival.main;
 
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.songoda.ultimatetimber.UltimateTimber;
 import com.songoda.ultimatetimber.manager.ChoppingManager;
 import me.tr.survival.main.database.PlayerData;
-import me.tr.survival.main.other.PlayerDeathMessageManager;
-import me.tr.survival.main.other.PlayerGlowManager;
-import me.tr.survival.main.other.PlayerWeather;
-import me.tr.survival.main.other.Ranks;
+import me.tr.survival.main.other.*;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
@@ -292,20 +291,7 @@ public class Settings {
                     if(!Ranks.hasRank(uuid, "sorsa") && !Ranks.isStaff(uuid)) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän toimintoon vaaditaan §2§lSORSA§7-arvo! Lisätietoa §a/kauppa§7!");
                     } else {
-
-                        if(!player.getAllowFlight()) {
-
-                            //TODO: Check for spawn region
-
-                            player.setAllowFlight(true);
-                            player.setFlying(true);
-                            Chat.sendMessage(player, "Lentotila §apäällä§7!");
-                        } else {
-                            player.setAllowFlight(false);
-                            player.setFlying(false);
-                            Chat.sendMessage(player, "Lentotila §cpois päältä§7!");
-                        }
-
+                        toggleFlight(clicker);
                     }
 
                 }
@@ -352,6 +338,26 @@ public class Settings {
 
     }
 
+    public static void toggleFlight(Player player) {
+        if(!player.getAllowFlight()) {
+
+            ProtectedRegion spawnRegion = Util.getRegionManager(player.getWorld()).getRegion("spawn");
+
+            if(Util.isInRegion(player, spawnRegion) && !Ranks.isStaff(player.getUniqueId())) {
+                player.setAllowFlight(true);
+                player.setFlying(true);
+                Chat.sendMessage(player, "Lentotila §apäällä§7!");
+            } else {
+                Chat.sendMessage(player, Chat.Prefix.ERROR, "Tämä toiminto toimii vain spawnilla!");
+            }
+
+        } else {
+            player.setAllowFlight(false);
+            player.setFlying(false);
+            Chat.sendMessage(player, "Lentotila §cpois päältä§7!");
+        }
+    }
+
     public static boolean get(UUID uuid, String setting) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         return (boolean) PlayerData.getValue(uuid, setting);
@@ -383,44 +389,45 @@ public class Settings {
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         obj.setDisplayName("  §2§lSorsaMC §8| §7Survival  ");
 
+
         obj.getScore("§7 §6 §k").setScore(15);
-        obj.getScore("§7» Kristallit").setScore(14);
+        /*obj.getScore("§7» Kristallit").setScore(14);
 
         Team crystals = board.registerNewTeam("crystals");
         crystals.addEntry(ChatColor.RED + "" + ChatColor.WHITE + "" + ChatColor.RED);
         crystals.setPrefix("§b" + Crystals.get(player.getUniqueId()));
-        obj.getScore(ChatColor.RED + "" + ChatColor.WHITE + "" + ChatColor.RED).setScore(13);
+        obj.getScore(ChatColor.RED + "" + ChatColor.WHITE + "" + ChatColor.RED).setScore(13); */
 
-        obj.getScore("§7 §a §o").setScore(12);
-        obj.getScore("§7» Rahatilanne").setScore(11);
+        obj.getScore("§7 §a §o").setScore(14);
+        obj.getScore("§7» Rahatilanne").setScore(13);
 
         Team moneyCounter = board.registerNewTeam("blocks");
         moneyCounter.addEntry(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED);
         moneyCounter.setPrefix("§e" + Balance.get(player.getUniqueId()) + "€");
-        obj.getScore(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED).setScore(10);
+        obj.getScore(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED).setScore(12);
 
-        obj.getScore("§7 §9 §l").setScore(9);
-        obj.getScore("§7» Arvo").setScore(8);
+        obj.getScore("§7 §9 §l").setScore(11);
+        obj.getScore("§7» Arvo").setScore(10);
 
         Team rank = board.registerNewTeam("rank");
         rank.addEntry(ChatColor.GREEN + "" + ChatColor.BLUE + "" + ChatColor.RED);
         rank.setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
-        obj.getScore(ChatColor.GREEN + "" + ChatColor.BLUE + "" + ChatColor.RED).setScore(7);
+        obj.getScore(ChatColor.GREEN + "" + ChatColor.BLUE + "" + ChatColor.RED).setScore(9);
 
-        obj.getScore("§7 §6 §k").setScore(6);
-        obj.getScore("§7» Pelaajat").setScore(5);
+        obj.getScore("§7 §6 §k").setScore(8);
+        obj.getScore("§7» Pelaajat").setScore(7);
 
         Team players = board.registerNewTeam("players");
         players.addEntry(ChatColor.LIGHT_PURPLE + "" + ChatColor.GREEN + "" + ChatColor.RED);
         players.setPrefix("§a" + Bukkit.getOnlinePlayers().size());
-        obj.getScore(ChatColor.LIGHT_PURPLE + "" + ChatColor.GREEN + "" + ChatColor.RED).setScore(4);
+        obj.getScore(ChatColor.LIGHT_PURPLE + "" + ChatColor.GREEN + "" + ChatColor.RED).setScore(6);
 
-        obj.getScore("§7 §1 §k").setScore(3);
-        obj.getScore("       §2sorsamc.fi").setScore(2);
+        obj.getScore("§7 §1 §k").setScore(5);
+        obj.getScore("       §2sorsamc.fi").setScore(4);
 
         Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
 
-            board.getTeam("crystals").setPrefix("§b" + Crystals.get(player.getUniqueId()));
+            //board.getTeam("crystals").setPrefix("§b" + Crystals.get(player.getUniqueId()));
             board.getTeam("blocks").setPrefix("§a" + Balance.get(player.getUniqueId()) + "€");
             board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
             board.getTeam("players").setPrefix("§a" + Autio.getOnlinePlayers().size());

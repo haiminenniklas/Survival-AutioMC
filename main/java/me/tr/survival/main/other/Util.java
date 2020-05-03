@@ -3,7 +3,14 @@ package me.tr.survival.main.other;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sun.management.OperatingSystemMXBean;
+import me.tr.survival.main.Autio;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -671,6 +678,43 @@ public class Util {
             default:
                 return "";
         }
+    }
+
+
+    public static RegionManager getRegionManager(World world) {
+        RegionContainer container = Autio.getWorldGuard().getPlatform().getRegionContainer();
+        return container.get(convertWorldGuardWorld(world));
+    }
+
+    public static com.sk89q.worldedit.world.World convertWorldGuardWorld(World world) {
+        return BukkitAdapter.adapt(world);
+    }
+
+    public static com.sk89q.worldedit.util.Location convertWorldGuardLocation(Location loc) {
+        return BukkitAdapter.adapt(loc);
+    }
+
+    public static Set<ProtectedRegion> getRegions(final Block block) {
+        return getRegions(block.getLocation());
+    }
+
+    public static Set<ProtectedRegion> getRegions(final Location loc) {
+        final RegionManager rgm = getRegionManager(loc.getWorld());
+        final ApplicableRegionSet ars = rgm.getApplicableRegions(BlockVector3.at(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+        return ars.getRegions();
+    }
+
+    public static Set<ProtectedRegion> getRegions(final Player player) {
+        return getRegions(player.getLocation());
+    }
+
+    public static boolean isInRegion(final Player player, ProtectedRegion region) {
+        for(ProtectedRegion rg : getRegions(player)) {
+            if(rg.getId().equals(region.getId())) {
+                return true;
+            }
+        }
+        return true;
     }
 
 }

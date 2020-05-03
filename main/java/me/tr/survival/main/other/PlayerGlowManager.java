@@ -32,7 +32,24 @@ public class PlayerGlowManager implements CommandExecutor {
             Player player = (Player) sender;
             if(command.getLabel().equalsIgnoreCase("hehku")) {
 
-                toggle(player);
+                if(args.length < 1) {
+                    toggle(player);
+                } else {
+
+                    if(!player.isOp()) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei oikeuksia!");
+                        return true;
+                    }
+
+                    Player target = Bukkit.getPlayer(args[0]);
+                    if(target == null) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty...");
+                        return true;
+                    }
+
+                    Chat.sendMessage(player, (toggle(target) ? "Hehku on §apäällä" : "Hehku on §cpois päältä") + " pelaajalla §a" + target.getName());
+
+                }
 
             }
 
@@ -41,16 +58,18 @@ public class PlayerGlowManager implements CommandExecutor {
         return true;
     }
 
-    public static void toggle(Player player) {
+    public static boolean toggle(Player player) {
         if(!Ranks.isStaff(player.getUniqueId()) && !Ranks.hasRank(player, "sorsa")) {
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän toimintoon tarvitset §2§lSORSA§7-arvon! Lisätietoa §a/kauppa§7!");
-            return;
+            return false;
         }
 
         if(!hasGlowEnabled(player)) {
             enableGlow(player);
+            return true;
         } else {
             disableGlow(player);
+            return false;
         }
     }
 

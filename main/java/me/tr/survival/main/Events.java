@@ -13,6 +13,7 @@ import me.tr.survival.main.other.backpacks.Backpack;
 import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.other.events.LevelUpEvent;
 import me.tr.survival.main.util.RTP;
+import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
@@ -28,6 +29,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -368,6 +370,28 @@ public class Events implements Listener {
         }
     }
 
+    @EventHandler
+    public void onEntityKill(EntityDeathEvent e) {
+
+        if(e.getEntity() instanceof Villager) {
+
+            Villager villager = (Villager) e.getEntity();
+            if(villager.getKiller() != null) {
+
+                Player killer = villager.getKiller();
+                int amount = new Random().nextInt(50) + 1;
+                if(amount >= 1) {
+                    Balance.add(killer.getUniqueId(), amount);
+                    Chat.sendMessage(killer, "Tapoit raa'asti kyläläisen, mutta häneltä tippui §e" + amount + "€§7!");
+                    Util.sendPrivateSound(killer, Sound.BLOCK_NOTE_BLOCK_PLING);
+                }
+
+            }
+
+        }
+
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent e) {
 
@@ -525,7 +549,7 @@ public class Events implements Listener {
         Redstone: 2% (0.02)
         Lapis 3% (0.03)
 
-         */
+        Crystals removed for now
 
         if(block.getType() == Material.DIAMOND_ORE) {
             PlayerData.add(uuid, "diamond", 1);
@@ -580,7 +604,7 @@ public class Events implements Listener {
                 Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
-        }
+        } */
 
 
     }

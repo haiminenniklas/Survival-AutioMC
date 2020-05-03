@@ -48,13 +48,9 @@ public class Mail {
                 "§7 Putki: §6" + getStreak(player) + " " + multiplierText,
                 "",
                 "§7 Sinua odottaa:",
-                "§7 - §b+" + (3 * multiplier) + " kristallia",
                 "§7 - §a+" + (50 * multiplier) + "€",
-                "§7 - §f+" + (10 * multiplier) + " rautaa",
-                "§7 - §c+" +  + (16 * multiplier) + " pihviä",
-                "§7 - §b+ " + (2 * multiplier) + " timanttia §7(§aPremium§7)",
-                "§7 - §a+ " + (multiplier) + " emeraldia §7(§aPremium§7)",
-                "§7 - §b+ " + (5 * multiplier) + " kristallia §7(§aPremium§6+§7)",
+                "§7 - §f+" + (3 * multiplier) + " rautaa",
+                "§7 - §c+" +  + (4 * multiplier) + " pihviä",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -84,20 +80,12 @@ public class Mail {
                     clicker.sendMessage("§7Kerroin §b§l" + multiplier + "x§7!");
                 }
 
-                if(Ranks.hasRank(clicker.getUniqueId(), "premiumplus")) {
-                    Crystals.add(clicker.getUniqueId(), 5 * multiplier);
-                    clicker.sendMessage("§b§l+" + (5 * multiplier) + " kristallia");
-                } else {
-                    Crystals.add(clicker.getUniqueId(), 3 * multiplier);
-                    clicker.sendMessage("§b§l+" + (3 * multiplier) + " kristallia");
-                }
-
                 Balance.add(clicker.getUniqueId(), 50*multiplier);
                 clicker.sendMessage("§a§l+ " + (50*multiplier) + "€");
 
                 if(Mail.getStreak(clicker) >= 14 && Mail.getStreak(clicker) <= 21) {
-                    Crystals.add(clicker.getUniqueId(), 3);
-                    clicker.sendMessage("§b§l+ 3 Kristallia §7(Streak)");
+                    Balance.add(clicker.getUniqueId(), 150);
+                    clicker.sendMessage("§e§l+ 150€ §7(Streak)");
                 }
 
                 if(Math.random() < .20) {
@@ -106,16 +94,9 @@ public class Mail {
                 }
 
                 clicker.getInventory().addItem(ItemUtil.makeItem(Material.IRON_INGOT, 10 * multiplier));
-                clicker.sendMessage("§f§l+" + (10 * multiplier) + " rautaa");
+                clicker.sendMessage("§f§l+" + (3 * multiplier) + " rautaa");
                 clicker.getInventory().addItem(ItemUtil.makeItem(Material.COOKED_BEEF, 16 * multiplier));
-                clicker.sendMessage("§c§l+" + (16 * multiplier) + " pihviä");
-
-                if(Ranks.isVIP(clicker.getUniqueId())) {
-                    clicker.getInventory().addItem(ItemUtil.makeItem(Material.DIAMOND, 2 * multiplier));
-                    clicker.sendMessage("§b§l+"  + (2 * multiplier) + " timanttia");
-                    clicker.getInventory().addItem(ItemUtil.makeItem(Material.EMERALD, 1 * multiplier));
-                    clicker.sendMessage("§a§l+" + (multiplier) + " emerald");
-                }
+                clicker.sendMessage("§c§l+" + (4 * multiplier) + " pihviä");
 
                 clicker.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
@@ -157,7 +138,7 @@ public class Mail {
                 "§7ns. §ekerroin §7nousee. Kertoimet:",
                 "",
                 "§7- §a§l+7pv §7-> §b§l2x",
-                "§7- §e§l+14pv §7-> §b§l+3 kristallia",
+                "§7- §e§l+14pv §7-> §b§l+150€",
                 "§7- §c§l+21pv §7-> §b§l3x",
                 "",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"

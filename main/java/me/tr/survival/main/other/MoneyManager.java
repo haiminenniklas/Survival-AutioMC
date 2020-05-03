@@ -24,6 +24,8 @@ import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.inventory.meta.tags.ItemTagType;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MoneyManager implements CommandExecutor, Listener {
 
@@ -35,36 +37,6 @@ public class MoneyManager implements CommandExecutor, Listener {
             Player player = (Player) sender;
             if(command.getLabel().equalsIgnoreCase("valuutta")) {
                 main(player);
-            } else if(command.getLabel().equalsIgnoreCase("vaihda")) {
-
-                if(args.length < 1) {
-                    Chat.sendMessage(player, "Käytä §6/vaihda <halutut kristallit>");
-                    return true;
-                } else {
-
-                    int value;
-                    try {
-                        value = Integer.parseInt(args[0]);
-                    } catch (NumberFormatException ex) {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytä oikeita numeroita!");
-                        return true;
-                    }
-
-                    if(value < 1) {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita, tai nolla!");
-                        return true;
-                    }
-
-                    if(Balance.canRemove(player.getUniqueId(), getPriceForCrystals(value))) {
-
-                        changeMoneyToCrystals(player, value);
-
-                    } else {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Yhden kristallin arvo on §a" + getPriceForCrystals(1) + "€§7!");
-                    }
-
-                }
-
             } else if(command.getLabel().equalsIgnoreCase("shekki")) {
 
                 if(args.length < 1) {
@@ -121,36 +93,8 @@ public class MoneyManager implements CommandExecutor, Listener {
 
         Gui.openGui(player, "Finanssivalvonta", 27, (gui) -> {
 
-            gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.DIAMOND, 1, "§bVaihda rahaa", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Onko sinulla liian paljon",
-                    " §arahaa§7, mitä et voi käyttää?",
-                    " §7Voit vaihtaa rahasi §bkristalleihin§7,",
-                    " §7joilla voit ostaa §derikoisuuksia",
-                    " §7palvelimella.",
-                    "",
-                    " §6Klikkaa päästäksesi",
-                    " §6vaihtamaan rahaa!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            ))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
-                    moneyExchange(clicker);
-                }
-            });
 
-            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§aRahatilanne", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Saldo: §a" + Balance.get(player.getUniqueId()) + "€",
-                    " §7Kristallit: §b" + Crystals.get(player.getUniqueId()),
-                    " ",
-                    " §7Lisätietoa valuutoista",
-                    " §6/apua valuutta",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            )), 13);
-
-            gui.addButton(new Button(1, 16, ItemUtil.makeItem(Material.PAPER,1, "Shekki", Arrays.asList(
+            gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER,1, "Shekki", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Haluatko pitää siirtää tai",
                     " §7säilyttää rahaa hieman",
@@ -384,6 +328,12 @@ public class MoneyManager implements CommandExecutor, Listener {
             return;
         }
 
+        forceWriteCheque(player, amount);
+        Chat.sendMessage(player, "Kirjoitit shekin, joka sisältää §a" + amount + "€§7!");
+
+    }
+
+    public static void forceWriteCheque(Player player, int amount) {
         ItemStack item = ItemUtil.makeItem(Material.PAPER, 1, "§a§lShekki", Arrays.asList(
                 " §7Tämä shekki sisältää ",
                 " §a" + amount + "€§7!",
@@ -398,9 +348,10 @@ public class MoneyManager implements CommandExecutor, Listener {
         itemMeta.getCustomTagContainer().setCustomTag(key, ItemTagType.INTEGER, amount);
         item.setItemMeta(itemMeta);
 
-        player.getInventory().addItem(Util.makeEnchanted(item));
-        Chat.sendMessage(player, "Kirjoitit shekin, joka sisältää §a" + amount + "€§7!");
-
+        HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(Util.makeEnchanted(item));
+        for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), entry.getValue());
+        }
     }
 
     public static void withdrawCheque(Player player, ItemStack cheque) {

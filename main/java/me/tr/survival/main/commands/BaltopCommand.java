@@ -30,55 +30,29 @@ public class BaltopCommand implements CommandExecutor {
                 Chat.sendMessage(player, "Haetaan rahatietoja, odota hetki...");
                 Balance.getBalances((rawBalanceMap) -> {
 
-                    Crystals.getBalances((rawCrystalsMap) -> {
+                    Map<UUID, Integer> balanceMap = Util.sortByValue(rawBalanceMap);
 
-                        // Balance
+                    List<String> balanceLore = new ArrayList<>();
+                    balanceLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-                        Map<UUID, Integer> balanceMap = Util.sortByValue(rawBalanceMap);
+                    int looped = 1;
+                    for(Map.Entry<UUID, Integer> e : balanceMap.entrySet()) {
 
-                        List<String> balanceLore = new ArrayList<>();
-                        balanceLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                        OfflinePlayer op = Bukkit.getOfflinePlayer(e.getKey());
+                        if(looped > 10) break;
+                        balanceLore.add("§e#" + looped + " §7" + op.getName() + " (§a" + e.getValue() + "€§7)");
+                        looped += 1;
 
-                        int looped = 1;
-                        for(Map.Entry<UUID, Integer> e : balanceMap.entrySet()) {
+                    }
 
-                            OfflinePlayer op = Bukkit.getOfflinePlayer(e.getKey());
-                            if(looped > 10) break;
-                            balanceLore.add("§e#" + looped + " §7" + op.getName() + " (§a" + e.getValue() + "€§7)");
-                            looped += 1;
+                    balanceLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-                        }
+                    Autio.task(() -> {
+                        Gui.openGui(player, "TOP 10 - Rikkaimmat", 27, (gui) -> {
 
-                        balanceLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                            gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§e§lTOP 10", balanceLore), 13);
 
-                        // Crystals
-
-                        Map<UUID, Integer> crystalMap = Util.sortByValue(rawCrystalsMap);
-
-                        List<String> crystalLore = new ArrayList<>();
-                        crystalLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-
-                        int cLooped = 1;
-                        for(Map.Entry<UUID, Integer> e : crystalMap.entrySet()) {
-
-                            OfflinePlayer op = Bukkit.getOfflinePlayer(e.getKey());
-                            if(cLooped > 10) break;
-                            crystalLore.add("§e#" + cLooped + " §7" + op.getName() + " (§b" + e.getValue() + "§7)");
-                            cLooped += 1;
-
-                        }
-
-                        crystalLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-
-                        Autio.task(() -> {
-                            Gui.openGui(player, "TOP 10 - Rikkaimmat", 27, (gui) -> {
-
-                                gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§e§lTOP 10 §7- §aRaha", balanceLore), 12);
-                                gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§e§lTOP 10 §7- §bKristallit", crystalLore), 14);
-
-                            });
                         });
-
                     });
 
                 });

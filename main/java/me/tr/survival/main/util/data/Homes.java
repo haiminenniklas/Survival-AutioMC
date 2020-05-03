@@ -74,7 +74,7 @@ public class Homes {
 
     public void createHome(String pos, Location loc) {
         HashMap<String, Object> data = PlayerData.getData(this.owner.getUniqueId());
-        data.put(pos, loc.getX() + ";" + loc.getY() + ";" + loc.getZ() + ";" + loc.getWorld().getName());
+        data.put(pos, loc.getX() + ";" + loc.getY() + ";" + loc.getZ() + ";" + loc.getWorld().getName() + ";" + loc.getYaw() + ";" + loc.getPitch());
     }
 
     public void deleteHome(Player player, String position) {
@@ -130,7 +130,13 @@ public class Homes {
 
         String[] values = text.split(";");
 
-        return new Home(owner, Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]), values[3]);
+        if(values.length == 4) {
+            return new Home(owner, Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]), values[3]);
+        } else if(values.length >= 6) {
+            return new Home(owner, Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]), values[3], Float.parseFloat(values[4]), Float.parseFloat(values[5]));
+        } else {
+            throw new IllegalArgumentException("Given home data is incorrect. Given Data: '" + text + "'");
+        }
 
     }
 
@@ -151,7 +157,7 @@ public class Homes {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
-                        Chat.sendMessage(clicker, "Loit kodin §6#1 §7sijaintiisi!");
+                        Chat.sendMessage(clicker, "Loit kodin §a#1 §7sijaintiisi!");
                         homeList.createHome("first_home", clicker.getLocation());
                     }
                 });
@@ -171,7 +177,7 @@ public class Homes {
                         if(clickType == ClickType.LEFT) {
                             home.teleport(clicker);
                             gui.close(clicker);
-                            Chat.sendMessage(clicker, "Sinua viedään kotiin §6#1§7...");
+                            Chat.sendMessage(clicker, "Sinua viedään kotiin §a#1§7... Odota §a3 sekuntia§7...");
                         } else if(clickType == ClickType.RIGHT) {
                             gui.close(clicker);
                             homeList.deleteHome(opener, "first_home");
@@ -190,7 +196,7 @@ public class Homes {
                     public void onClick(Player clicker, ClickType clickType) {
                         homeList.createHome("second_home", clicker.getLocation());
                         gui.close(clicker);
-                        Chat.sendMessage(clicker, "Loit kodin §6#2 §7sijaintiisi!");
+                        Chat.sendMessage(clicker, "Loit kodin §a#2 §7sijaintiisi!");
                     }
                 });
             } else {
@@ -209,7 +215,7 @@ public class Homes {
                         if(clickType == ClickType.LEFT) {
                             home.teleport(clicker);
                             gui.close(clicker);
-                            Chat.sendMessage(clicker, "Sinua viedään kotiin §6#2§7... ");
+                            Chat.sendMessage(clicker, "Sinua viedään kotiin §a#2§7... Odota §a3 sekuntia§7...");
                         } else if(clickType == ClickType.RIGHT) {
                             gui.close(clicker);
                             homeList.deleteHome(opener, "second_home");
@@ -228,7 +234,7 @@ public class Homes {
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
                         homeList.createHome("third_home", clicker.getLocation());
-                        Chat.sendMessage(clicker, "Loit kodin §6#3 §7sijaintiisi!");
+                        Chat.sendMessage(clicker, "Loit kodin §a#3 §7sijaintiisi!");
                     }
 
                 });
@@ -248,7 +254,7 @@ public class Homes {
                         if(clickType == ClickType.LEFT) {
                             home.teleport(clicker);
                             gui.close(clicker);
-                            Chat.sendMessage(clicker, "Sinua viedään kotiin §6#3§7...");
+                            Chat.sendMessage(clicker, "Sinua viedään kotiin §a#3§7! Odota §a3 sekuntia§7...");
                         } else if(clickType == ClickType.RIGHT) {
                             gui.close(clicker);
                             homeList.deleteHome(opener, "third_home");
@@ -279,7 +285,7 @@ public class Homes {
                     public void onClick(Player clicker, ClickType clickType) {
                         homeList.createHome("first_home", clicker.getLocation());
                         gui.close(clicker);
-                        Chat.sendMessage(clicker, "Loit kodin §6#1 §7sijaintiisi!");
+                        Chat.sendMessage(clicker, "Loit kodin §a#1 §7sijaintiisi!");
                     }
                 });
             } else {
@@ -300,7 +306,7 @@ public class Homes {
                         if(clickType == ClickType.LEFT) {
                             home.teleport(clicker);
                             gui.close(clicker);
-                            Chat.sendMessage(clicker, "Sinua viedään kotiin §6#1§7... ");
+                            Chat.sendMessage(clicker, "Sinua viedään kotiin §a#1§7... Odota §a3 sekuntia§7...");
                         } else if(clickType == ClickType.RIGHT) {
                             gui.close(clicker);
                             homeList.deleteHome(opener, "first_home");

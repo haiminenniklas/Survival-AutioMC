@@ -292,7 +292,10 @@ public class Trade {
             for(int i = 0; i < playerItems.size(); i++) {
                 if(playerItems.get(i) == null) continue;
                 if(playerItems.get(i).getType() == Material.AIR) continue;
-                player.getInventory().addItem(playerItems.get(i));
+                HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(playerItems.get(i));
+                for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) {
+                    player.getWorld().dropItem(player.getLocation(), entry.getValue());
+                }
                 playerItems.set(i, new ItemStack(Material.AIR));
                 timesLooped += 1;
             }
@@ -473,7 +476,10 @@ public class Trade {
                 ItemStack item = traderItems.get(i);
                 if(item == null) continue;
                 if(item.getType() == Material.AIR) continue;
-                target.getInventory().addItem(item);
+                HashMap<Integer, ItemStack> unadded = target.getInventory().addItem(item);
+                for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) {
+                    target.getWorld().dropItemNaturally(target.getLocation(), entry.getValue());
+                }
             }
         }
 
@@ -483,7 +489,10 @@ public class Trade {
                 ItemStack item = targetItems.get(i);
                 if(item == null) continue;
                 if(item.getType() == Material.AIR) continue;
-                trader.getInventory().addItem(item);
+                HashMap<Integer, ItemStack> unadded = trader.getInventory().addItem(item);
+                for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) {
+                    trader.getWorld().dropItemNaturally(trader.getLocation(), entry.getValue());
+                }
             }
         }
 

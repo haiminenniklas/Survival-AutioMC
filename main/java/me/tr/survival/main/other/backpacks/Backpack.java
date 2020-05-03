@@ -6,6 +6,7 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
@@ -311,9 +312,9 @@ public class Backpack implements CommandExecutor, Listener {
         UUID uuid = player.getUniqueId();
         Level current = getLevel(uuid);
 
-        int price = 300;
+        int price = 30000;
         if(current == Level.TWO) {
-            price = 450;
+            price = 45000;
         }
 
         final int finalPrice = price;
@@ -323,7 +324,7 @@ public class Backpack implements CommandExecutor, Listener {
             gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Klikkaa vahvistaaksesi päivityksen!",
-                    " §7Päivitys maksaa: §b" + finalPrice + " kristallia§7!",
+                    " §7Päivitys maksaa: §e" + finalPrice + "€§7!",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
@@ -357,16 +358,16 @@ public class Backpack implements CommandExecutor, Listener {
         UUID uuid = player.getUniqueId();
         Level current = getLevel(uuid);
 
-        int price = 300;
+        int price = 30000;
         if(current == Level.TWO) {
-            price = 450;
+            price = 45000;
         }
 
-        if(Crystals.canRemove(uuid, price)) {
+        if(Balance.canRemove(uuid, price)) {
 
             if(addLevel(uuid)) {
 
-                Crystals.add(uuid, -price);
+                Balance.add(uuid, -price);
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
                 player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -381,7 +382,7 @@ public class Backpack implements CommandExecutor, Listener {
             }
 
         } else {
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Päivitys maksaa §b§l" + price + " kristallia§7!");
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Päivitys maksaa §e" + price + "€§7!");
         }
 
 

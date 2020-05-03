@@ -26,11 +26,9 @@ public class MoneyCommand implements CommandExecutor {
             if(command.getLabel().equalsIgnoreCase("bal")) {
                 if(args.length == 0){
                     Chat.sendMessage(player, "Rahatilanne: §e" + Balance.get(uuid) + "€");
-                    Chat.sendMessage(player, "Kristallit: §b" + Crystals.get(player.getUniqueId()));
                 } else if(args.length > 0) {
                     if(!player.isOp()){
                         Chat.sendMessage(player, "Rahatilanne: §e" + Balance.get(uuid) + "€");
-                        Chat.sendMessage(player, "Kristallit: §b" + Crystals.get(player.getUniqueId()));
                     } else {
 
                         if(args.length == 1 && args[0].equalsIgnoreCase("help")) {

@@ -333,18 +333,29 @@ public class Essentials implements CommandExecutor, Listener {
 
                 if(Ranks.isStaff(uuid)) {
 
-                    player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-                    player.sendMessage(" §7Maailmat (" + Bukkit.getWorlds().size() +  "):");
+                    if(args.length < 1) {
+                        player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                        player.sendMessage(" §7Maailmat (" + Bukkit.getWorlds().size() +  "):");
 
-                    for(World w : Bukkit.getWorlds()) {
-                        if(player.getWorld().getName().equalsIgnoreCase(w.getName())) {
-                            player.sendMessage("§7- §a" + w.getName() + " §8(sinä)");
+                        for(World w : Bukkit.getWorlds()) {
+                            if(player.getWorld().getName().equalsIgnoreCase(w.getName())) {
+                                player.sendMessage("§7- §a" + w.getName() + " §8(sinä)");
+                            } else {
+                                player.sendMessage("§7- §a" + w.getName());
+                            }
+                        }
+
+                        player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                    } else {
+                        String worldName = args[0];
+                        World w = Bukkit.getWorld(worldName);
+                        if(w != null) {
+                            Chat.sendMessage(player, "Viedään maailmaan §a" + w.getName() + "§7...");
+                            player.teleport(w.getSpawnLocation());
                         } else {
-                            player.sendMessage("§7- §a" + w.getName());
+                            Chat.sendMessage(player, "Maailmaa ei löydetty...");
                         }
                     }
-
-                    player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                 }
 

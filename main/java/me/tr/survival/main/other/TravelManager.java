@@ -5,6 +5,7 @@ import me.tr.survival.main.Chat;
 import me.tr.survival.main.Profile;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.RTP;
+import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
@@ -101,7 +102,7 @@ public class TravelManager implements CommandExecutor, Listener {
                     " §7Klikkaa matkustaaksesi",
                     " §5Endiin§7! ",
                     " ",
-                    " §7Hinta: §b§l300 kristallia",
+                    " §7Hinta: §e500 000€",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
@@ -128,19 +129,24 @@ public class TravelManager implements CommandExecutor, Listener {
 
     public static void end(Player player) {
 
-        if(Crystals.canRemove(player.getUniqueId(), 300)) {
+        if(Balance.canRemove(player.getUniqueId(), 500000)) {
             Chat.sendMessage(player, Chat.Prefix.DEFAULT, "Sinua viedään §5Endiin§7...");
 
             if(Autio.getEndWorld() != null) {
                 CompletableFuture<Boolean> canAsync = player.teleportAsync(Autio.getEndWorld().getSpawnLocation());
                 if(!canAsync.join()) {
-                    player.teleport(Autio.getEndWorld().getSpawnLocation());
+                    if(player.teleport(Autio.getEndWorld().getSpawnLocation())){
+                        Balance.remove(player.getUniqueId(), 500000);
+                    }
+
+                } else {
+                    Balance.remove(player.getUniqueId(), 500000);
                 }
             } else {
                 Chat.sendMessage(player, Chat.Prefix.ERROR, "Matkustaminen epäonnistui...");
             }
         } else {
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Endiin matkustaminen maksaa §b§l300 kristallia§7!");
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Endiin matkustaminen maksaa §e500 000€§7!");
         }
 
 

@@ -8,6 +8,10 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.PlayerGlowManager;
@@ -398,6 +402,10 @@ public class Autio {
 
     public static void sendBungeeMessage(String subchannel, String... arguments) {
         sendBungeeMessage(Iterables.getFirst(Bukkit.getOnlinePlayers(), null), subchannel, arguments);
+    }
+
+    public static WorldGuard getWorldGuard() {
+        return WorldGuard.getInstance();
     }
 
 }
