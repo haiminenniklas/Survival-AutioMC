@@ -28,6 +28,8 @@ public class Gui implements Listener {
     private String title;
     private int size;
 
+    private Inventory inv;
+
     private boolean partiallyTouchable;
     private int[] allowedSlots;
 
@@ -42,6 +44,9 @@ public class Gui implements Listener {
         this.size = size;
         this.partiallyTouchable = false;
         this.allowedSlots = new int[0];
+
+        this.inv = null;
+
         init();
     }
 
@@ -141,6 +146,29 @@ public class Gui implements Listener {
         return inv;
     }
 
+    public void hardRefresh(Player player) {
+        this.close(player);
+        this.open(player);
+    }
+
+    public void refresh(Player player) {
+        HashMap<Integer, ItemStack> items = this.items.get(1);
+        if(!this.items.isEmpty()) {
+            for(Map.Entry<Integer, ItemStack> e : items.entrySet()) {
+                inv.setItem(e.getKey(), e.getValue());
+            }
+        }
+
+        if(!this.buttons.isEmpty()) {
+            for(Button b : this.getButtons()) {
+                inv.setItem(b.pos, b.item);
+            }
+        }
+
+        playerPages.put(player, 1);
+        player.updateInventory();
+    }
+
     public void addPageButtons(Inventory inv){
 
         ItemStack nextPageItem = new ItemStack(Material.PAPER);
@@ -168,24 +196,18 @@ public class Gui implements Listener {
     }
 
     public void addPageButtons(int page){
-
         if(getPages() == null || getPages().isEmpty() || getPages().get(page) == null){
             throw new IllegalArgumentException("You must have at least 1 page in your gui!");
         }
-
         Inventory inv = getPages().get(page);
         addPageButtons(inv);
-
     }
 
     public void removePage(int page){
-
         if(getPages() == null || getPages().isEmpty() || getPages().get(page) == null){
             throw new IllegalArgumentException("You don't have any pages in your inventory or the page you're removing doesn't exist!");
         }
-
         getPages().remove(page);
-
     }
 
     public void removeAllPages(){
@@ -198,7 +220,7 @@ public class Gui implements Listener {
             throw new IllegalArgumentException("You must have at least 1 page in your gui!");
         }
 
-        Inventory inv = Bukkit.createInventory(null, this.size, this.title + "§r");
+        this.inv = Bukkit.createInventory(null, this.size, this.title + "§r");
         if(this.items.isEmpty() && this.buttons.isEmpty()){
             player.openInventory(inv);
             return inv;

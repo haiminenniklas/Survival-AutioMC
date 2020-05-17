@@ -27,8 +27,8 @@ public class VipCommand implements CommandExecutor {
 
                 OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                 String rankRaw = args[1];
-                if(!rankRaw.equalsIgnoreCase("premium") && !rankRaw.equalsIgnoreCase("premiumplus") && !rankRaw.equalsIgnoreCase("kuningas")) {
-                    sender.sendMessage("§cVain 'premium', 'premiumplus' tai 'kuningas'!");
+                if(!rankRaw.equalsIgnoreCase("premium") && !rankRaw.equalsIgnoreCase("premiumplus") && !rankRaw.equalsIgnoreCase("sorsa")) {
+                    sender.sendMessage("§cVain 'premium', 'premiumplus' tai 'sorsa'!");
                     return true;
                 }
 
@@ -66,7 +66,7 @@ public class VipCommand implements CommandExecutor {
             Balance.add(uuid, 30000);
             Mail.addTickets(uuid, 10);
 
-        } else if(rank.equalsIgnoreCase("kuningas")) {
+        } else if(rank.equalsIgnoreCase("sorsa")) {
 
             Crystals.add(uuid, 1000);
             Balance.add(uuid, 100000);

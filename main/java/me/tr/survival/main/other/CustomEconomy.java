@@ -18,7 +18,7 @@ public class CustomEconomy implements Economy {
 
     @Override
     public String getName() {
-        return "NuotioEconomy";
+        return "SorsaEconomy";
     }
 
     @Override
@@ -93,12 +93,12 @@ public class CustomEconomy implements Economy {
 
     @Override
     public boolean has(String playerName, double amount) {
-        return Balance.canRemove(Bukkit.getOfflinePlayer(playerName).getUniqueId(), (int) amount);
+        return Balance.canRemove(Bukkit.getOfflinePlayer(playerName).getUniqueId(), amount);
     }
 
     @Override
     public boolean has(OfflinePlayer player, double amount) {
-        return Balance.canRemove(player.getUniqueId(), (int) amount);
+        return Balance.canRemove(player.getUniqueId(),amount);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class CustomEconomy implements Economy {
     public EconomyResponse withdrawPlayer(String playerName, double amount) {
 
         if(has(playerName, amount)) {
-            Balance.remove(Bukkit.getOfflinePlayer(playerName).getUniqueId(), (int) amount);
+            Balance.remove(Bukkit.getOfflinePlayer(playerName).getUniqueId(), amount);
             return new EconomyResponse(amount, getBalance(playerName), EconomyResponse.ResponseType.SUCCESS, "");
         } else {
             return new EconomyResponse(amount, getBalance(playerName), EconomyResponse.ResponseType.FAILURE, "Cannot afford");
@@ -127,7 +127,7 @@ public class CustomEconomy implements Economy {
     public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
 
         if(has(player, amount)) {
-            Balance.remove(player.getUniqueId(), (int) amount);
+            Balance.remove(player.getUniqueId(), amount);
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "");
         } else {
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Cannot afford");
@@ -148,14 +148,14 @@ public class CustomEconomy implements Economy {
     @Override
     public EconomyResponse depositPlayer(String playerName, double amount) {
 
-        Balance.add(Bukkit.getOfflinePlayer(playerName).getUniqueId(), (int) amount);
+        Balance.add(Bukkit.getOfflinePlayer(playerName).getUniqueId(), amount);
         return new EconomyResponse(amount, getBalance(playerName), EconomyResponse.ResponseType.SUCCESS, "");
 
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
-        Balance.add(player.getUniqueId(), (int) amount);
+        Balance.add(player.getUniqueId(), amount);
         return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "");
     }
 

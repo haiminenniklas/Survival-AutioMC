@@ -1,11 +1,9 @@
 package me.tr.survival.main.other.warps;
 
 import me.tr.survival.main.Chat;
-import me.tr.survival.main.util.callback.DatabaseCallback;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class Warp {
 

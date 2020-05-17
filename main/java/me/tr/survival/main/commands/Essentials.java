@@ -1,6 +1,5 @@
 package me.tr.survival.main.commands;
 
-import com.comphenix.protocol.utility.MinecraftReflection;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
@@ -15,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.ExpBottleEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -41,19 +39,7 @@ public class Essentials implements CommandExecutor, Listener {
             Player player = (Player) sender;
             UUID uuid = player.getUniqueId();
 
-            if(cmd.getLabel().equalsIgnoreCase("afk")) {
-
-                Chat.sendMessage(player, Chat.Prefix.ERROR, "Komento ei käytössä!");
-
-              /*  if(afk.contains(uuid)) {
-                    Chat.sendMessage(player, "Et ole enää AFK!");
-                    Bukkit.broadcastMessage("§6§l» §7Pelaaja §6" + player.getName() + "§7 ei ole enää AFK!");
-                } else {
-                    Chat.sendMessage(player, "Olet nyt AFK!");
-                    Bukkit.broadcastMessage("§6§l» §7Pelaaja §6" + player.getName() + "§7 on nyt AFK");
-                } */
-
-            } else if(cmd.getLabel().equalsIgnoreCase("apua")) {
+            if(cmd.getLabel().equalsIgnoreCase("apua")) {
 
                 if(args.length < 1) {
 
@@ -302,12 +288,16 @@ public class Essentials implements CommandExecutor, Listener {
 
                 if(Ranks.isStaff(uuid)) {
 
-                    StringBuilder sb = new StringBuilder();
-                    for(int i = 0; i < args.length; i++) {
-                        sb.append(args[i] + " ");
-                    }
+                    if(args.length >= 1) {
+                        StringBuilder sb = new StringBuilder();
+                        for(int i = 0; i < args.length; i++) {
+                            sb.append(args[i] + " ");
+                        }
 
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "➤ &2&lILMOITUS " + sb.toString()));
+                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "➤ &2&lILMOITUS " + sb.toString()));
+                    } else {
+                        Chat.sendMessage(player, "Täytyyhän sinun hyvä ihminen kirjoittaakin jotain! Käytä §a/broadcast <viesti>§7!");
+                    }
 
                 }
 
@@ -358,42 +348,6 @@ public class Essentials implements CommandExecutor, Listener {
                     }
 
                 }
-
-            } else if(cmd.getLabel().equalsIgnoreCase("pullota")) {
-
-                Chat.sendMessage(player, "Ei käytössä!");
-
-               /* if(args.length < 1) {
-                    Chat.sendMessage(player, "Käytä: §6/pullota <XP Määrä>");
-                    return true;
-                } else {
-
-                    int value;
-                    try {
-                        value = Integer.parseInt(args[0]);
-                    } catch(NumberFormatException ex) {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytä numeroita!");
-                        return true;
-                    }
-
-                    if(value < 1) {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Vain positiivisia numeroita!");
-                        return true;
-                    }
-
-                    int playerTotalXP = player.getTotalExperience();
-                    if(playerTotalXP - value < 0) {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole tarpeeksi kokemusta!");
-                        return true;
-                    }
-
-                    player.setTotalExperience(playerTotalXP - value);
-
-                    ItemStack item = createCustomXPBottle(value);
-                    player.getInventory().addItem(item);
-                    Chat.sendMessage(player, "Pullotit §d" + value + " §7kokemusta!");
-
-                } */
 
             } else if(cmd.getLabel().equalsIgnoreCase("invsee")) {
 
@@ -519,42 +473,6 @@ public class Essentials implements CommandExecutor, Listener {
                 }
 
             }
-
-        }
-
-    }
-
-    @EventHandler
-    public void onMove(PlayerMoveEvent e) {
-
-        Player player = e.getPlayer();
-        Location from = e.getFrom();
-        Location to = e.getTo();
-
-        // Has moved a block
-        if(from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ() || from.getBlockY() != to.getBlockY()) {
-
-            if(afk.contains(player.getUniqueId())) {
-                Bukkit.broadcastMessage("§6§l» §7Pelaaja §6" + player.getName() + "§7 ei ole enää AFK!");
-            }
-
-            moved.put(player.getUniqueId(), System.currentTimeMillis());
-            Autio.afterAsync(120, () -> {
-                long currentTime = System.currentTimeMillis();
-
-                if(moved.containsKey(player.getUniqueId())) {
-
-                    long lastMoved = moved.get(player.getUniqueId());
-
-                    // If not moved in more than 2 minutes
-                    if((currentTime - lastMoved) / 1000 / 60 / 60 >= 120 && Bukkit.getPlayer(player.getUniqueId()) != null) {
-                        afk.add(player.getUniqueId());
-                        Bukkit.broadcastMessage("§6§l» §7Pelaaja §6" + player.getName() + "§7 on nyt AFK");
-                    }
-
-                }
-
-            });
 
         }
 

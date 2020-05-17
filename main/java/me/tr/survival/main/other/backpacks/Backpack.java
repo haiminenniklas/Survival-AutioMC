@@ -72,6 +72,8 @@ public class Backpack implements CommandExecutor, Listener {
                                    openOther(player, target);
                                }
 
+                           } else if(args[0].equalsIgnoreCase("help")) {
+                               Chat.sendMessage(player, "/backpack katso <pelaaja>");
                            }
                        } else {
                            Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei oikeuksia!");

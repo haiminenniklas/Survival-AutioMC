@@ -16,6 +16,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -37,6 +38,7 @@ public class StaffManager implements Listener, CommandExecutor {
     private static Map<UUID, Map<Material, Integer>> blocksPerHour = new HashMap<>();
     public static List<UUID> hidden = new ArrayList<>();
     private static Map<UUID, Boolean> staffMode = new HashMap<>();
+    private static Map<UUID, Location> lastLocation = new HashMap<>();
 
     public static int getBlockMinedPerHour(UUID uuid, Material mat) {
 
@@ -290,6 +292,7 @@ public class StaffManager implements Listener, CommandExecutor {
 
         Chat.sendMessage(player, "Ylläpito-tila §apäällä§7!");
 
+        lastLocation.put(player.getUniqueId(), player.getLocation());
         hide(player);
         staffMode.put(player.getUniqueId(), true);
 
@@ -299,6 +302,9 @@ public class StaffManager implements Listener, CommandExecutor {
 
         Chat.sendMessage(player, "Ylläpito-tila §cpois päältä!");
 
+        if(lastLocation.containsKey(player.getUniqueId())) {
+            player.teleport(lastLocation.get(player.getUniqueId()));
+        }
         show(player);
         staffMode.put(player.getUniqueId(), false);
 

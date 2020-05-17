@@ -11,16 +11,27 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sun.management.OperatingSystemMXBean;
 import me.tr.survival.main.Autio;
+import me.tr.survival.main.Settings;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_15_R1.*;
+import net.minecraft.server.v1_15_R1.SoundCategory;
 import org.bukkit.*;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
@@ -288,25 +299,16 @@ public class Util {
         }
     }
 
-    public static void sendPrivateSound(Player player, Sound sound) {
-
+    public static void sendPrivateSound(Player player, String sound, SoundCategory category) {
         Location loc = player.getLocation();
+        MinecraftKey key = new MinecraftKey(sound);
+        SoundEffect effect = new SoundEffect(key);
+        PacketPlayOutNamedSoundEffect packet = new PacketPlayOutNamedSoundEffect(effect, category, loc.getX(), loc.getY(), loc.getZ(), 1f, 1f);
+        sendPacket(player, packet);
+    }
 
-        PacketContainer packet = new PacketContainer(
-                PacketType.Play.Server.NAMED_SOUND_EFFECT);
-
-        packet.getModifier().writeDefaults();
-        packet.getSoundEffects().write(0, sound);
-        packet.getIntegers().write(0, loc.getBlockX()).write(1, loc.getBlockY()).write(2, loc.getBlockZ());
-        packet.getFloat().write(0, 1f);
-        packet.getFloat().write(1, 1f);
-
-        try {
-            ProtocolLibrary.getProtocolManager()
-                    .sendServerPacket(player, packet);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+    public static void sendPacket(Player player, Packet packet) {
+        ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
     }
 
     public static void bounceBack(Player player, Location from, Location to) {
@@ -335,7 +337,7 @@ public class Util {
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
         if(sound) {
-            sendPrivateSound(player, Sound.BLOCK_NOTE_BLOCK_PLING);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
         }
 
     }
@@ -346,19 +348,35 @@ public class Util {
 
     public static void broadcastSound(Sound sound, long volume, long pitch) {
         for(Player player : Bukkit.getOnlinePlayers()) {
-            player.playSound(player.getLocation(), sound, volume, pitch);
+            if(Settings.get(player.getUniqueId(), "chat_mentions")) {
+                player.playSound(player.getLocation(), sound, volume, pitch);
+            }
         }
     }
 
-    public static int getPing(Player player) {
-        try {
-            Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
-            int ping = (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
-            return ping;
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e) {
-            e.printStackTrace();
+    public static boolean isEntityTypeAlive(World world, EntityType type) {
+        if(world == null) return false;
+        for(Entity e : world.getEntities()) {
+            if(e.getType() == type) return true;
         }
-        return 0;
+        return false;
+    }
+
+    public static List<Entity> getEntities(World world, EntityType type) {
+        List<Entity> list = new ArrayList<>();
+        if(world == null) return list;
+        for(Entity e : world.getEntities()) {
+            if(e.getType() == type) list.add(e);
+        }
+        return list;
+    }
+
+    public static int getPing(Player player) {
+        return ((CraftPlayer)player).getHandle().ping;
+    }
+
+    public static EntityPlayer getPlayerEP(Player player) {
+        return ((CraftPlayer)player).getHandle();
     }
 
     public static String[] splitStringEvery(String s, int interval) {

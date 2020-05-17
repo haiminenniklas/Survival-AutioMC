@@ -23,9 +23,16 @@ public class Mail {
 
         Gui gui = new Gui("Posti", 27);
 
+        long hours = (timeLeftForNextMail(player.getUniqueId()) / 1000 / 60 / 60);
+        String time = hours + "h";
+        if(hours < 1) {
+            hours = hours / 60;
+            time = hours + "min";
+        }
+
         String canOpen = (canOpenDaily(player)) ?
                 "§a§lAVATTAVISSA" :
-                "§7Täytyy odottaa vielä §c" + (timeLeftForNextMail(player.getUniqueId()) / 1000 / 60 / 60) + "h" ;
+                "§7Täytyy odottaa vielä §c" + time;
 
         Material dailyMat = Material.CHEST_MINECART;
         if(!canOpenDaily(player)) {

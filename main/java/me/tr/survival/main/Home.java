@@ -1,6 +1,7 @@
 package me.tr.survival.main;
 
 import me.tr.survival.main.other.Util;
+import me.tr.survival.main.util.callback.TypedCallback;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -68,12 +69,20 @@ public class Home {
         return false;
     }
 
-    public void teleport(Player player) {
+    public void teleport(Player player, TypedCallback<Boolean> result) {
+        if(player.getWorld().getName().equals("world_nether")) {
+            Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
+            result.execute(false);
+            return;
+        }
         Autio.afterAsync(3, () -> {
             Util.sendNotification(player, "§7Teleportataan...", true);
             CompletableFuture<Boolean> teleport = player.teleportAsync(this.getLocation());
             if(!teleport.join()) {
                 Chat.sendMessage(player, Chat.Prefix.ERROR, "Teleporttaus kotiin epäonnistui... Yritä pian uudestaan!");
+                result.execute(false);
+            } else {
+                result.execute(true);
             }
         });
     }

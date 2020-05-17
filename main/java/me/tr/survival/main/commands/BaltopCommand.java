@@ -15,6 +15,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class BaltopCommand implements CommandExecutor {
@@ -30,31 +31,30 @@ public class BaltopCommand implements CommandExecutor {
                 Chat.sendMessage(player, "Haetaan rahatietoja, odota hetki...");
                 Balance.getBalances((rawBalanceMap) -> {
 
-                    Map<UUID, Integer> balanceMap = Util.sortByValue(rawBalanceMap);
+                    Map<UUID, Double> balanceMap = Util.sortByValue(rawBalanceMap);
 
                     List<String> balanceLore = new ArrayList<>();
                     balanceLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                     int looped = 1;
-                    for(Map.Entry<UUID, Integer> e : balanceMap.entrySet()) {
+                    for(Map.Entry<UUID, Double> e : balanceMap.entrySet()) {
 
                         OfflinePlayer op = Bukkit.getOfflinePlayer(e.getKey());
+                        DecimalFormat format = new DecimalFormat("#.##");
                         if(looped > 10) break;
-                        balanceLore.add("§e#" + looped + " §7" + op.getName() + " (§a" + e.getValue() + "€§7)");
+                        balanceLore.add("§e#" + looped + " §7" + op.getName() + " (§a" + format.format(e.getValue()) + "€§7)");
                         looped += 1;
 
                     }
 
                     balanceLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-                    Autio.task(() -> {
-                        Gui.openGui(player, "TOP 10 - Rikkaimmat", 27, (gui) -> {
+                    Autio.task(() ->
+                            Gui.openGui(player, "TOP 10 - Rikkaimmat", 27, (gui) -> {
 
-                            gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§e§lTOP 10", balanceLore), 13);
+                                gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§e§lTOP 10", balanceLore), 13);
 
-                        });
-                    });
-
+                            }));
                 });
 
             }

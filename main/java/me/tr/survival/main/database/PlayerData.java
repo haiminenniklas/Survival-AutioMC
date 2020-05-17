@@ -21,7 +21,7 @@ public class PlayerData {
 
         // Basic User Data
         empty.put("player_name", player.getName());
-        empty.put("money", 1000);
+        empty.put("money", 1000d);
         empty.put("rank", "default");
         empty.put("joined", Util.getToday());
         empty.put("save", save);
@@ -82,7 +82,7 @@ public class PlayerData {
                 // User's Basic Data
 
                 data.put("player_name", result.getString("player_name"));
-                data.put("money", result.getInt("money"));
+                data.put("money", result.getDouble("money"));
                 data.put("rank", result.getString("rank"));
                 data.put("joined", result.getString("joined"));
                 data.put("crystals", result.getInt("crystals"));
@@ -353,6 +353,12 @@ public class PlayerData {
             loadNull(uuid, false);
         }
 
+        // Try to prevent some nasty things
+        if(key.equalsIgnoreCase("money")) {
+            add(uuid, "money", (double) value);
+            return;
+        }
+
         HashMap<String, Object> data = player_data.get(uuid);
         if(!data.containsKey(key)) {
             return;
@@ -360,7 +366,28 @@ public class PlayerData {
 
         try {
             int obj = (int) data.get(key);
-            int newVal = obj += value;
+            int newVal = obj + value;
+            data.put(key, newVal);
+            player_data.put(uuid, data);
+        } catch(NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    public static void add(UUID uuid, String key, double value) {
+        if(!isLoaded(uuid)) {
+            loadNull(uuid, false);
+        }
+
+        HashMap<String, Object> data = player_data.get(uuid);
+        if(!data.containsKey(key)) {
+            return;
+        }
+
+        try {
+            double obj = (double) data.get(key);
+            double newVal = obj + value;
             data.put(key, newVal);
             player_data.put(uuid, data);
         } catch(NumberFormatException ex) {

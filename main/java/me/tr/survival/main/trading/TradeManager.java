@@ -64,6 +64,11 @@ public class TradeManager implements CommandExecutor, Listener {
 
             Player player = (Player) sender;
 
+            if(!player.getWorld().getName().equals("world")) {
+                Chat.sendMessage(player, "Vaihtokaupat toimivat vain tavallisessa maailmassa!");
+                return true;
+            }
+
             if(args.length < 1) {
 
                 Chat.sendMessage(player, "Käytä: §a/trade <pelaaja>");
@@ -180,47 +185,111 @@ public class TradeManager implements CommandExecutor, Listener {
                 return;
             }
 
-            if(e.getAction() != InventoryAction.PLACE_ONE && e.getAction() != InventoryAction.PICKUP_ONE && e.getAction() != InventoryAction.PICKUP_SOME &&
-                e.getAction() != InventoryAction.PICKUP_ALL && e.getAction() != InventoryAction.PICKUP_HALF && e.getAction() != InventoryAction.PLACE_ALL
-                && e.getAction() != InventoryAction.PLACE_SOME) {
+
+            int slot = e.getRawSlot();
+            boolean isTrader = trade.getTraderUUID().equals(player.getUniqueId());
+
+            if(e.getClick() == ClickType.SHIFT_RIGHT) {
+                if(slot >= 54) {
+                    e.setCancelled(true);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if(e.getCurrentItem() != null) {
+                                ItemStack item = e.getCurrentItem().clone();
+                                trade.addItem(player, item);
+                                cancel();
+                            }
+                        }
+                    }.runTaskLater(Main.getInstance(), 2);
+                    return;
+                } else {
+
+                    if(isTrader && (slot == 19 || slot == 20 || slot == 28 || slot == 29)) {
+                        e.setCancelled(true);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if(e.getCurrentItem() != null) {
+                                    ItemStack item = e.getCurrentItem().clone();
+                                    trade.removeItem(player, item);
+                                    cancel();
+                                }
+                            }
+                        }.runTaskLater(Main.getInstance(), 2);
+                        return;
+                    }
+
+                    if(!isTrader && (slot == 24 || slot == 25 || slot == 33 || slot == 34)){
+                        e.setCancelled(true);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if(e.getCurrentItem() != null) {
+                                    ItemStack item = e.getCurrentItem().clone();
+                                    trade.removeItem(player, item);
+                                    cancel();
+                                }
+                            }
+                        }.runTaskLater(Main.getInstance(), 2);
+                        return;
+                    }
+
+                }
+
+            }
+
+            if(e.getClickedInventory() == null) return;
+            Inventory inv = e.getClickedInventory();
+
+            if(!trade.isClickable()) {
                 e.setCancelled(true);
                 e.setResult(Event.Result.DENY);
                 return;
             }
 
-            boolean isTrader = trade.getTraderUUID().equals(player.getUniqueId());
-            boolean isTarget = trade.getTargetUUID().equals(player.getUniqueId());
-
-            if(e.getClickedInventory() == null) return;
-            Inventory inv = e.getClickedInventory();
-
-            int slot = e.getRawSlot();
             if(slot == 19 || slot == 20 || slot == 24 || slot == 25 || slot == 28 || slot == 29 || slot == 33 || slot == 34 ||
                 slot == 47 || slot == 49 || slot == 51) {
 
                 if(slot == 19 || slot == 20 || slot == 24 || slot == 25 || slot == 28 || slot == 29 || slot == 33 || slot == 34) {
 
-                    if(isTrader) {
-                        if(slot == 24 || slot == 25 || slot == 33 || slot == 34) {
-                            e.setCancelled(true);
-                            e.setResult(Event.Result.DENY);
-                            return;
-                        }
-                    } else if(isTarget) {
-                        if(slot == 19 || slot == 20 || slot == 28 || slot == 29 ) {
-                            e.setCancelled(true);
-                            e.setResult(Event.Result.DENY);
-                            return;
-                        }
-                    }
-
-                    if(e.getCursor() == null) return;
-                    // Do not allow the user to take his own stuff out of the inv
-                    if(inv.getItem(slot) != null && inv.getItem(slot).getType() != Material.AIR) {
+                    if(isTrader && (slot != 19 && slot != 20 && slot != 28 && slot != 29)) {
                         e.setCancelled(true);
                         e.setResult(Event.Result.DENY);
                         return;
                     }
+
+                    if(!isTrader && (slot != 24 && slot != 25 && slot != 33 && slot != 34)){
+                        e.setCancelled(true);
+                        e.setResult(Event.Result.DENY);
+                        return;
+                    }
+
+                    InventoryAction action = e.getAction();
+                    // If player takes something from their slots
+                    if(action == InventoryAction.PICKUP_ALL || action == InventoryAction.PICKUP_SOME || action == InventoryAction.PICKUP_ONE) {
+                        trade.denyPlayer(player);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if(e.getCurrentItem() != null) {
+                                    ItemStack item = e.getCurrentItem().clone();
+                                    trade.removeItem(player, item);
+                                    cancel();
+                                }
+                            }
+                        }.runTaskLater(Main.getInstance(), 2);
+                        return;
+
+                    }
+
+                    // Do not allow the user to take his own stuff out of the inv
+                   /* if(inv.getItem(slot) != null && inv.getItem(slot).getType() != Material.AIR) {
+                        e.setCancelled(true);
+                        e.setResult(Event.Result.DENY);
+                        return;
+                    } */
+
                     new BukkitRunnable() {
                         @Override
                         public void run() {

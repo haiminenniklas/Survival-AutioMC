@@ -3,6 +3,7 @@ package me.tr.survival.main.commands;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
+import me.tr.survival.main.other.Houkutin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,6 +28,8 @@ public class StopCommand implements CommandExecutor {
                     Autio.sendBungeeMessage(player, "Connect", "lobby");
                     Autio.sendBungeeMessage(player, "Message", player.getName(), Chat.getPrefix() + " Palvelin, jossa aikaisemmin olit suljettiin ja sinut vietiin aulaamme. Odotathan noin §aminuutin§7, jotta palvelin saadaan uudelleen toimintaan!");
                 }
+
+                Houkutin.deactivate();
 
                 new BukkitRunnable() {
                     @Override

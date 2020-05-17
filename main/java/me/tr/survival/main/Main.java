@@ -2,7 +2,6 @@ package me.tr.survival.main;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import com.nametagedit.plugin.NametagEdit;
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.commands.*;
 import me.tr.survival.main.database.PlayerAliases;
@@ -12,6 +11,8 @@ import me.tr.survival.main.other.*;
 import me.tr.survival.main.other.backpacks.Backpack;
 import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.other.recipes.Recipe;
+import me.tr.survival.main.other.travel.EndManager;
+import me.tr.survival.main.other.travel.TravelManager;
 import me.tr.survival.main.other.warps.Warp;
 import me.tr.survival.main.other.warps.Warps;
 import me.tr.survival.main.trading.TradeManager;
@@ -30,6 +31,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -45,6 +47,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public final class Main extends JavaPlugin implements Listener, PluginMessageListener {
@@ -64,7 +67,11 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         return particlesAPI;
     }
 
-    public static final HashMap<Player, Player> messages = new HashMap<>();
+    private static Map<UUID, Long> spawnCommandDelay = new HashMap<>();
+    //public static final HashMap<Player, Player> messages = new HashMap<>();
+
+    private static long started = 0L;
+
     @Override
     public void onEnable() {
         // Some setupping
@@ -86,6 +93,8 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         Autio.logColored(" §aSetupping configs and database...");
 
         saveDefaultConfig();
+        EndManager.createEndConfig();
+        EndManager.loadPreviousData();
         SQL.setup();
 
 
@@ -162,7 +171,6 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
         getCommand("staff").setExecutor(new StaffManager());
 
-        getCommand("afk").setExecutor(new Essentials());
         getCommand("apua").setExecutor(new Essentials());
         getCommand("broadcast").setExecutor(new Essentials());
         getCommand("discord").setExecutor(new Essentials());
@@ -175,7 +183,6 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         getCommand("world").setExecutor(new Essentials());
         getCommand("clear").setExecutor(new Essentials());
         getCommand("koordinaatit").setExecutor(new Essentials());
-        getCommand("pullota").setExecutor(new Essentials());
 
         getCommand("baltop").setExecutor(new BaltopCommand());
         getCommand("matkusta").setExecutor(new TravelManager());
@@ -187,13 +194,15 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         getCommand("forcestop").setExecutor(new StopCommand());
 
         getCommand("reppu").setExecutor(new Backpack());
-        getCommand("huutokauppa").setExecutor(new AuctionCommands());
+      //  getCommand("huutokauppa").setExecutor(new AuctionCommands());
         getCommand("invsee").setExecutor(new Essentials());
 
         getCommand("kosmetiikka").setExecutor(new Particles());
         getCommand("givevip").setExecutor(new VipCommand());
         getCommand("hehku").setExecutor(new PlayerGlowManager());
         getCommand("houkutin").setExecutor(new Houkutin());
+
+        getCommand("ääri").setExecutor(new EndManager());
 
         // Autosave code...
 
@@ -238,9 +247,10 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
             System.out.println(output);
         });
 
-        Autio.logColored(" §aStarting booster & houkutin manager...");
+        Autio.logColored(" §aStarting Managers...");
         Boosters.activateManager();
         Houkutin.activateManager();
+        EndManager.startManager();
 
         Autio.logColored(" §aInitializing ChatManager");
         Chat.init();
@@ -260,6 +270,8 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                 "ms / " + ((System.currentTimeMillis() - start) / 1000.0f) + "s)");
         Autio.logColored("§a---------------------------");
 
+        started = System.currentTimeMillis();
+
     }
 
     @Override
@@ -274,22 +286,21 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
         long start = System.currentTimeMillis();
 
-        Autio.logColored(" §aSaving config...");
+        Autio.logColored(" §aSaving configs...");
 
         saveConfig();
+        EndManager.saveEndConfig();
 
         Autio.logColored(" §aClosing Database Connection...");
 
-        try {
-            SQL.getConnection().close();
-        } catch(SQLException ex) {
-            ex.printStackTrace();
-        }
+        SQL.source.close();
 
         Autio.logColored("§a Disabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
                 "ms / " + ((System.currentTimeMillis() - start) / 1000.0f) + "s)");
 
         Autio.logColored("§a---------------------------");
+
+        started = 0L;
 
     }
 
@@ -346,7 +357,13 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
                 }
 
-            } else if(command.getLabel().equalsIgnoreCase("profile")) {
+           } else if(command.getLabel().equals("uptime")) {
+
+               long now = System.currentTimeMillis();
+               long uptime = now - started;
+               Chat.sendMessage(player, String.format("Palvelin on ollut päällä §c%s", DurationFormatUtils.formatDurationWords(uptime, false, true)));
+
+           } else if(command.getLabel().equalsIgnoreCase("profile")) {
 
                 if(args.length == 0) {
 
@@ -366,6 +383,26 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
            } else if(command.getLabel().equalsIgnoreCase("spawn")) {
 
                 if(args.length < 1) {
+
+                    if(player.getWorld().getName().equals("world_nether")) {
+                        Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
+                        return true;
+                    }
+
+                    if(spawnCommandDelay.containsKey(uuid)) {
+
+                        long shouldSpawn = spawnCommandDelay.get(uuid);
+                        if(System.currentTimeMillis() < shouldSpawn) {
+                            long secondsLeft = (shouldSpawn - System.currentTimeMillis()) / 1000;
+                            Chat.sendMessage(player, Chat.Prefix.ERROR, "Pystyt lähtemään spawnille uudestaan §c" + secondsLeft + "s §7jälkeen.");
+                            return true;
+                        }
+
+                    } else {
+                        if(!StaffManager.hasStaffMode(player)) {
+                            spawnCommandDelay.put(uuid, System.currentTimeMillis() + 1000 * 60);
+                        }
+                    }
                     Chat.sendMessage(player, "Sinua viedään spawnille...");
                     Autio.teleportToSpawn(player);
                 } else {
@@ -571,74 +608,6 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
                 }
 
-            } else if(command.getLabel().equalsIgnoreCase("msg")) {
-
-              /*  if(args.length < 2) {
-
-                    Chat.sendMessage(player, "Käytä §6/msg <pelaaja> <viesti>");
-
-                } else if(args.length >= 2) {
-
-                    Player target = Bukkit.getPlayer(args[0]);
-                    if(target == null) {
-                        Chat.sendMessage(player, "Pelaajaa ei löydetty");
-                        return true;
-                    }
-
-                    if(Settings.get(target.getUniqueId(), "privacy")) {
-                        Chat.sendMessage(player, "Pelaajalla §6" + target.getName() + " §7on yksityinen tila päällä!");
-                        return true;
-                    }
-
-                    StringBuilder sb = new StringBuilder();
-                    for(int i = 1; i < args.length; i++) {
-                        sb.append(args[i] + " ");
-                    }
-
-                    messages.put(player, target);
-                    messages.put(target, player);
-                    target.sendMessage("§6" + player.getName() + " §7-> §6 Sinä §7» §f" + sb.toString().trim());
-                    player.sendMessage("§6 Sinä §7-> §6" + target.getName() + " §7» §f" + sb.toString().trim());
-
-
-                }
-
-                */
-
-            } else if(command.getLabel().equalsIgnoreCase("r")) {
-/*
-                if(args.length < 1) {
-
-                    Chat.sendMessage(player, "Käytä §6/r <viesti>");
-
-                } else if(args.length >= 1) {
-
-                    if(!messages.containsKey(player)){
-                        Chat.sendMessage(player, "Ei ketään kenelle lähettää");
-                        return true;
-                    }
-
-                    StringBuilder sb = new StringBuilder();
-                    for(int i = 0; i < args.length; i++) {
-                        sb.append(args[i] + " ");
-                    }
-
-                    Player target = messages.get(player);
-
-                    if(target == null) {
-                        Chat.sendMessage(player, "Pelaajaa ei löydetty");
-                        return true;
-                    }
-
-                    messages.put(player, target);
-                    messages.put(target, player);
-
-                    target.sendMessage("§6" + player.getName() + " §7-> §6 Sinä §7» §f" + sb.toString().trim());
-                    player.sendMessage("§6 Sinä §7-> §6" + target.getName() + " §7» §f" + sb.toString().trim());
-
-
-                }
-*/
             } else if(command.getLabel().equalsIgnoreCase("sethome")) {
 
                 if(!player.isOp()) {
@@ -661,34 +630,8 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                     }
                 }
 
-               /* if(!PlayerData.isLoaded(uuid)) {
-                    PlayerData.loadNull(uuid, false);
-                }
-
-                Homes homes = new Homes(player);
-                for(int i = 0; i < homes.get().size(); i++) {
-                    Home home = homes.get().get(i);
-                    int pos = i+1;
-
-                    if(home == null) {
-                        switch(pos) {
-                            case 1:
-                                homes.createHome("first_home", player.getLocation());
-                            case 2:
-                                homes.createHome("second_home", player.getLocation());
-                            case 3:
-                                homes.createHome("third_home", player.getLocation());
-                            default:
-                        }
-                        Chat.sendMessage(player, "Koti §6#" + pos + " §7asetettu!");
-                        Chat.sendMessage(player, "Pääset hallitsemaan koteja komennolla §6/koti§7!");
-                        break;
-                    }
-
-                } */
-
             } else if(command.getLabel().equalsIgnoreCase("heal")) {
-                if(player.isOp()) {
+                if(StaffManager.hasStaffMode(player)) {
                     if(args.length < 1) {
                         Util.heal(player);
                         Chat.sendMessage(player, "Paransit itsesi!");
@@ -746,6 +689,12 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
             } else if(command.getLabel().equalsIgnoreCase("fly")) {
 
                 if(Ranks.isStaff(uuid)) {
+
+                    if(!StaffManager.hasStaffMode(player) && !player.isOp()) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Pystyt lentämään vain §eStaff§7-tila päällä. (Tee §a/staff§7)");
+                        return true;
+                    }
+
                     if(args.length < 1) {
                         if(!player.getAllowFlight()) {
                             player.setAllowFlight(true);
@@ -916,51 +865,6 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                         }
                     }
                 }
-
-            } else if(command.getLabel().equalsIgnoreCase("seen")) {
-
-                if(player.isOp()) {
-
-                    if(args.length < 1) {
-                        Chat.sendMessage(player, "/seen <player>");
-                    } else {
-
-                        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-                        getServer().getScheduler().runTaskAsynchronously(this, () -> {
-                            String[] addresses = PlayerAliases.load(target);
-
-                            if(addresses != null) {
-                                StringBuilder sb = new StringBuilder();
-                                for(int i = 0; i < addresses.length; i++) {
-                                    if(i + 1 < addresses.length) {
-                                        sb.append("§6" + addresses[i] + ", ");
-                                    } else if(i + 1 >= addresses.length) {
-                                        sb.append("§6" + addresses[i]);
-                                    }
-                                }
-
-                                player.sendMessage("§7--------------------------");
-                                player.sendMessage("§7Pelaajan §a" + target.getName() + "§7 IP-osoitteet:");
-                                player.sendMessage(sb.toString());
-                                player.sendMessage("§7--------------------------");
-                            } else {
-                                Chat.sendMessage(player, "Pelaajalla ei ole koskaan liittynyt palvelimelle..");
-                            }
-
-                        });
-
-                    }
-
-                }
-
-            } else if(command.getLabel().equalsIgnoreCase("piiloudu")) {
-
-                Chat.sendMessage(player, "Ei toimi vielä...");
-                /*if (Disguise.changeSkin(player)) {
-                    Chat.sendMessage(player, "Skini vaihdettu!");
-                } else {
-                    Chat.sendMessage(player, "Skiniä ei voitu vaihtaa. Olethan yhteydessä ylläpitoon!");
-                } */
 
             } else if(command.getLabel().equalsIgnoreCase("skull")) {
                 if(player.isOp()) {
@@ -1270,6 +1174,17 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                 }
 
             } else if(command.getLabel().equalsIgnoreCase("back")) {
+
+               if(!Ranks.isStaff(player.getUniqueId())) {
+                   Chat.sendMessage(player, "Ei oikeuksia!");
+                   return true;
+               }
+
+               if(!StaffManager.hasStaffMode(player)) {
+                   Chat.sendMessage(player, "Sallittu vain ylläpitotilassa!");
+                   return true;
+               }
+
                 if(!Events.lastLocation.containsKey(uuid)) {
                     Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei ole mitään mihin viedä.");
                 } else {
@@ -1283,13 +1198,30 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                 }
             } else if(command.getLabel().equalsIgnoreCase("enderchest")) {
 
-                if(!Ranks.isVIP(uuid)) {
-                    Chat.sendMessage(player, "Tähän toimintoon tarvitset vähinään §6§lPremium§7-arvon!");
+                if(!Ranks.isStaff(uuid)) {
+                    Chat.sendMessage(player, "Ei oikeuksia!");
                     return true;
                 }
 
-                Inventory ec = player.getEnderChest();
-                player.openInventory(ec);
+               if(!StaffManager.hasStaffMode(player)) {
+                   Chat.sendMessage(player, "Sallittu vain ylläpitotilassa!");
+                   return true;
+               }
+
+                if(args.length < 1) {
+                    Inventory ec = player.getEnderChest();
+                    player.openInventory(ec);
+                } else {
+                    Player target = Bukkit.getPlayer(args[1]);
+                    if(target == null) {
+                        Chat.sendMessage(player, "En löytänyt tuota pelaajaa");
+                        return true;
+                    }
+
+                    player.openInventory(player.getEnderChest());
+
+                }
+
 
             } else if(command.getLabel().equalsIgnoreCase("weather")) {
                 if(Ranks.isStaff(uuid)) {
@@ -1297,19 +1229,29 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                     StaffManager.weatherGui(player);
 
                 }
-            } else if(command.getLabel().equalsIgnoreCase("join")) {
-
-                if(Ranks.isStaff(uuid)) {
-                    StaffManager.show(player);
-                }
-
-            } else if(command.getLabel().equalsIgnoreCase("leave")) {
-                if(Ranks.isStaff(uuid)) {
-                    StaffManager.hide(player);
-                }
             } else if(command.getLabel().equalsIgnoreCase("vanish")) {
                 if(Ranks.isStaff(uuid)) {
                     StaffManager.toggleVanish(player);
+                }
+            }
+
+        } else {
+
+            //CONSOLE ONLY COMMANDS
+
+            if(command.getLabel().equalsIgnoreCase("spawn")) {
+                if(args.length < 1) {
+                    sender.sendMessage("§c/spawn <pelaaja>");
+                } else {
+                    if(sender.isOp()) {
+                        Player target = Bukkit.getPlayer(args[0]);
+                        if(target == null) {
+                            sender.sendMessage("§cPelaajaa ei löydetty...");
+                            return true;
+                        }
+                        Autio.teleportToSpawn(target);
+                        sender.sendMessage("§7Pelaaja §a" + target.getName() + " §7vietiin spawnille!");
+                    }
                 }
             }
 

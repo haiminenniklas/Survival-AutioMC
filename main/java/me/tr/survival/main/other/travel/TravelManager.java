@@ -1,14 +1,16 @@
-package me.tr.survival.main.other;
+package me.tr.survival.main.other.travel;
 
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Profile;
+import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import me.tr.survival.main.util.staff.StaffManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,7 +24,9 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class TravelManager implements CommandExecutor, Listener {
@@ -59,6 +63,11 @@ public class TravelManager implements CommandExecutor, Listener {
     }
 
     public static void gui(Player player) {
+
+        if(player.getWorld().getName().equals("world_nether")) {
+            Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
+            return;
+        }
 
         Gui.openGui(player, "Matkusta", 27, (gui) -> {
 
@@ -101,16 +110,13 @@ public class TravelManager implements CommandExecutor, Listener {
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Klikkaa matkustaaksesi",
                     " §5Endiin§7! ",
-                    " ",
-                    " §7Hinta: §e500 000€",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
 
                     gui.close(clicker);
-                    end(clicker);
-
+                    EndManager.panel(clicker);
                 }
             });
 
@@ -127,38 +133,23 @@ public class TravelManager implements CommandExecutor, Listener {
 
     }
 
-    public static void end(Player player) {
-
-        if(Balance.canRemove(player.getUniqueId(), 500000)) {
-            Chat.sendMessage(player, Chat.Prefix.DEFAULT, "Sinua viedään §5Endiin§7...");
-
-            if(Autio.getEndWorld() != null) {
-                CompletableFuture<Boolean> canAsync = player.teleportAsync(Autio.getEndWorld().getSpawnLocation());
-                if(!canAsync.join()) {
-                    if(player.teleport(Autio.getEndWorld().getSpawnLocation())){
-                        Balance.remove(player.getUniqueId(), 500000);
-                    }
-
-                } else {
-                    Balance.remove(player.getUniqueId(), 500000);
-                }
-            } else {
-                Chat.sendMessage(player, Chat.Prefix.ERROR, "Matkustaminen epäonnistui...");
-            }
-        } else {
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Endiin matkustaminen maksaa §e500 000€§7!");
-        }
-
-
-    }
-
     public static void nether(Player player) {
 
         if(Autio.getNetherWorld() != null) {
-            player.teleportAsync(Autio.getNetherWorld().getSpawnLocation());
+            Autio.teleportToNether(player);
         } else {
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Matkustaminen epäonnistui...");
         }
+
+    }
+
+    public static List<Player> getNetherPlayers() {
+
+        if(Autio.getNetherWorld() != null) {
+            return Autio.getNetherWorld().getPlayers();
+        }
+
+        return new ArrayList<>();
 
     }
 

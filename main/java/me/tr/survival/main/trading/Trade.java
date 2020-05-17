@@ -2,6 +2,7 @@ package me.tr.survival.main.trading;
 
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
+import me.tr.survival.main.Main;
 import me.tr.survival.main.Settings;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.gui.Gui;
@@ -12,9 +13,11 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -31,6 +34,9 @@ public class Trade {
     private HashMap<UUID, List<ItemStack>> items;
     private HashMap<UUID, Boolean> accepted;
 
+    private boolean clickable;
+    private boolean confirming;
+
     public Trade(UUID trader, UUID target) {
         this.trader = trader;
         this.target = target;
@@ -43,6 +49,14 @@ public class Trade {
         this.accepted = new HashMap<>();
         this.accepted.put(trader, false);
         this.accepted.put(target, false);
+
+        this.clickable = false;
+        this.confirming = false;
+
+        List<ItemStack> defaultItems = new ArrayList<>(Arrays.asList(new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
+
+        items.put(target, defaultItems);
+        items.put(trader, defaultItems);
 
         TradeManager.getOngoingTrades().add(this);
 
@@ -235,37 +249,18 @@ public class Trade {
     }
 
     public void updateGui() {
+
+        this.clickable = false;
+
         Player trader = getTrader();
         Player target = getTarget();
+
         if(this.items.containsKey(this.trader)) {
-
-            List<ItemStack> playerItems = this.items.get(this.trader);
-            int[] slots = new int[] { 19, 20, 28, 29 };
-            int itemIndex = 0;
-
-            for(int i = 0; i < slots.length; i++) {
-                int slot = slots[i];
-                ItemStack item = (itemIndex < playerItems.size()) ? playerItems.get(itemIndex) : new ItemStack(Material.AIR);
-                if(item == null) item = new ItemStack(Material.AIR);
-                this.inv.setItem(slot, item);
-                itemIndex += 1;
-            }
-
-
+            this.sortItems(this.trader, new int[] { 19, 20, 28, 29 });
         }
 
         if(this.items.containsKey(this.target)) {
-            List<ItemStack> playerItems = this.items.get(this.target);
-            int[] slots = new int[] { 24, 25, 33, 34 };
-            int itemIndex = 0;
-
-            for(int i = 0; i < slots.length; i++) {
-                int slot = slots[i];
-                ItemStack item = (itemIndex < playerItems.size()) ? playerItems.get(itemIndex) : new ItemStack(Material.AIR);
-                if(item == null) item = new ItemStack(Material.AIR);
-                this.inv.setItem(slot, item);
-                itemIndex += 1;
-            }
+            this.sortItems(this.target, new int[] {24, 25, 33, 34});
         }
 
         this.inv.setItem(1, ItemUtil.makeSkullItem(trader.getName(), 1, "§a" + trader.getName(), Arrays.asList(
@@ -283,6 +278,21 @@ public class Trade {
         trader.updateInventory();
         target.updateInventory();
 
+        this.clickable = true;
+
+    }
+
+    private void sortItems(UUID player, int[] slots) {
+        List<ItemStack> playerItems = this.items.get(player);
+        int itemIndex = 0;
+
+        for(int i = 0; i < slots.length; i++) {
+            int slot = slots[i];
+            ItemStack item = (itemIndex < playerItems.size()) ? playerItems.get(itemIndex) : new ItemStack(Material.AIR);
+            if(item == null) item = new ItemStack(Material.AIR);
+            this.inv.setItem(slot, item);
+            itemIndex += 1;
+        }
     }
 
     public void returnItems(Player player, boolean updateGui) {
@@ -354,6 +364,29 @@ public class Trade {
             this.items.replace(uuid, playerItems);
         else
             this.items.put(uuid, playerItems);
+
+        this.updateGui();
+
+    }
+
+    public void removeItem(Player player, ItemStack item) {
+
+        UUID uuid = player.getUniqueId();
+        if(!uuid.equals(this.target) && !uuid.equals(this.trader)) {
+            throw new IllegalArgumentException("Player not included in the trade");
+        }
+
+        List<ItemStack> playerItems = this.items.getOrDefault(uuid, new ArrayList<>());
+        if(playerItems.size() >= 1) {
+
+            playerItems.remove(item);
+            playerItems.add(new ItemStack(Material.AIR));
+            if(this.items.containsKey(uuid))
+                this.items.replace(uuid, playerItems);
+            else
+                this.items.put(uuid, playerItems);
+
+        }
 
         this.updateGui();
 
@@ -439,6 +472,8 @@ public class Trade {
         trader.openInventory(this.inv);
         target.openInventory(this.inv);
 
+        this.clickable = true;
+
     }
 
     public void acceptPlayer(Player player) {
@@ -454,8 +489,8 @@ public class Trade {
         }
 
         this.accepted.put(player.getUniqueId(), true);
-        Chat.sendMessage(this.getTarget(),"Pelaaja §a" + player.getName() + " §7hyväksyi tarjousken!");
-        Chat.sendMessage(this.getTrader(),"Pelaaja §a" + player.getName() + " §7hyväksyi tarjousken!");
+        Chat.sendMessage(this.getTarget(),"Pelaaja §a" + player.getName() + " §7hyväksyi tarjouksen!");
+        Chat.sendMessage(this.getTrader(),"Pelaaja §a" + player.getName() + " §7hyväksyi tarjouksen!");
 
         if(this.accepted.get(this.target) && this.accepted.get(this.trader)) {
             this.acceptItems();
@@ -465,45 +500,85 @@ public class Trade {
 
     }
 
+    public void denyPlayer(Player player) {
+
+        this.setConfirming(false);
+
+        this.accepted.put(player.getUniqueId(), false);
+
+        Chat.sendMessage(this.getTarget(),"Pelaaja §a" + player.getName() + " §7poisti hyväksymisensä!");
+        Chat.sendMessage(this.getTrader(),"Pelaaja §a" + player.getName() + " §7poisti hyväksymisensä!");
+        this.updateGui();
+    }
+
     public void acceptItems() {
 
         Player trader = getTrader();
         Player target = getTarget();
 
-        if(this.items.containsKey(trader.getUniqueId())) {
-            List<ItemStack> traderItems = this.items.get(this.trader);
-            for(int i = 0; i < traderItems.size(); i++) {
-                ItemStack item = traderItems.get(i);
-                if(item == null) continue;
-                if(item.getType() == Material.AIR) continue;
-                HashMap<Integer, ItemStack> unadded = target.getInventory().addItem(item);
-                for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) {
-                    target.getWorld().dropItemNaturally(target.getLocation(), entry.getValue());
+        this.setConfirming(true);
+
+        trader.playSound(trader.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+        target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+
+        Chat.sendMessage(trader,"Vaihtokauppa on hyväksytty, tavarat vaihdetaan §a5s §7kuluttua. Voitte vielä kumota kaupan.");
+        Chat.sendMessage(target,"Vaihtokauppa on hyväksytty, tavarat vaihdetaan §a5s §7kuluttua. Voitte vielä kumota kaupan.");
+
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(isConfirming()) {
+
+                    setConfirming(false);
+
+                    if(items.containsKey(trader.getUniqueId())) {
+                        List<ItemStack> traderItems = items.get(getTraderUUID());
+                        dropItems(target, traderItems);
+                    }
+
+                    if(items.containsKey(target.getUniqueId())) {
+                        List<ItemStack> targetItems = items.get(getTargetUUID());
+                        dropItems(trader, targetItems);
+                    }
+
+                    Chat.sendMessage(trader,"Vaihtokauppa valmis! Tavarat vaihdettu!");
+                    Chat.sendMessage(target,"Vaihtokauppa valmis! Tavarat vaihdettu!");
+
+                    trader.playSound(trader.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+                    target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+
+                    finish();
                 }
             }
-        }
-
-        if(this.items.containsKey(target.getUniqueId())) {
-            List<ItemStack> targetItems = this.items.get(this.target);
-            for(int i = 0; i < targetItems.size(); i++) {
-                ItemStack item = targetItems.get(i);
-                if(item == null) continue;
-                if(item.getType() == Material.AIR) continue;
-                HashMap<Integer, ItemStack> unadded = trader.getInventory().addItem(item);
-                for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) {
-                    trader.getWorld().dropItemNaturally(trader.getLocation(), entry.getValue());
-                }
-            }
-        }
-
-        Chat.sendMessage(this.getTarget(),"Vaihtokauppa valmis! Tavarat vaihdettu!");
-        Chat.sendMessage(this.getTrader(),"Vaihtokauppa valmis! Tavarat vaihdettu!");
-
-        this.finish();
+        }.runTaskLater(Main.getInstance(), 20 * 5);
 
     }
 
+    private void dropItems(Player player, List<ItemStack> items) {
+        for(int i = 0; i < items.size(); i++) {
+            ItemStack item = items.get(i);
+            if(item == null) continue;
+            if(item.getType() == Material.AIR) continue;
+            HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(item);
+            for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) {
+                player.getWorld().dropItemNaturally(player.getLocation(), entry.getValue());
+            }
+        }
+    }
+
+    public boolean isConfirming() {
+        return this.confirming;
+    }
+
+    public void setConfirming(boolean confirming) {
+        this.confirming = confirming;
+    }
+
     public void denyItems() {
+        if(this.isConfirming()) {
+            this.setConfirming(false);
+        }
         Chat.sendMessage(this.getTarget(),"Vaihtokauppa peruttu! Tavarat palautettu.");
         Chat.sendMessage(this.getTrader(),"Vaihtokauppa peruttu! Tavarat palautettu.");
         this.returnItems();
@@ -511,6 +586,8 @@ public class Trade {
     }
 
     public void close() {
+
+        setConfirming(false);
 
         Chat.sendMessage(this.getTarget(), Chat.Prefix.ERROR, "Vaihtokauppa suljettiin! Jos uskotte tämän olevan virhe tai bugi, niin ilmoittakaa siitä §9Discord§7-palvelimellamme tai yrittäkää pian uudestaan!");
         Chat.sendMessage(this.getTrader(), Chat.Prefix.ERROR, "Vaihtokauppa suljettiin! Jos uskotte tämän olevan virhe tai bugi, niin ilmoittakaa siitä §9Discord§7-palvelimellamme tai yrittäkää pian uudestaan!");
@@ -526,6 +603,12 @@ public class Trade {
         getTrader().closeInventory();
         getTarget().closeInventory();
 
+    }
+
+    public boolean isClickable() { return this.clickable; }
+
+    public void setClickable(boolean val) {
+        this.clickable = val;
     }
 
     public UUID getTargetUUID() {

@@ -328,12 +328,15 @@ public class MoneyManager implements CommandExecutor, Listener {
             return;
         }
 
+        Balance.remove(player.getUniqueId(), amount);
+
         forceWriteCheque(player, amount);
         Chat.sendMessage(player, "Kirjoitit shekin, joka sisältää §a" + amount + "€§7!");
 
     }
 
     public static void forceWriteCheque(Player player, int amount) {
+
         ItemStack item = ItemUtil.makeItem(Material.PAPER, 1, "§a§lShekki", Arrays.asList(
                 " §7Tämä shekki sisältää ",
                 " §a" + amount + "€§7!",

@@ -1,7 +1,10 @@
 package me.tr.survival.main.database;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Main;
+import me.tr.survival.main.util.callback.QueryPromise;
 import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -12,6 +15,7 @@ import java.sql.*;
 public class SQL {
 
     public static Connection conn = null;
+    public static HikariDataSource source = null;
 
     public static void setup() {
 
@@ -47,11 +51,17 @@ public class SQL {
 
             // pswd: uu4L3Ks3EhBMfP8u
 
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                SQL.conn = DriverManager.getConnection("jdbc:mysql://" + address + ":3306/autiomc", user, password);
-                System.out.println("Opened database successfully");
+            HikariConfig hc = new HikariConfig();
+            hc.setJdbcUrl("jdbc:mysql://" + address + ":3306/autiomc");
+            hc.setUsername(user);
+            hc.setPassword(password);
 
+            HikariDataSource ds = new HikariDataSource(hc);
+
+            source = ds;
+
+            try {
+                SQL.conn = ds.getConnection();
                 queries();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -91,23 +101,18 @@ public class SQL {
 
     }
 
-    public static Connection getConnection() {
+    public static Connection getConnection() throws SQLException {
         return SQL.conn;
     }
 
     public static boolean hasConnection() throws SQLException {
 
+        if(source == null) return false;
+
         return SQL.conn != null && !SQL.conn.isClosed();
     }
 
     public static ResultSet query(String sql) throws SQLException {
-
-        if(!SQL.hasConnection()) {
-
-            SQL.setup();
-
-        }
-
         Statement s = getConnection().createStatement();
         return s.executeQuery(sql);
     }
@@ -121,12 +126,16 @@ public class SQL {
         return result > 0 ? true : false ;
     }
 
-    public static void query(String sql, TypedCallback<ResultSet> cb) {
+    public static void query(final String sql, QueryPromise<ResultSet, Connection> cb) {
         Autio.async(() -> {
 
             try {
-                ResultSet result = SQL.query(sql);
-                cb.execute(result);
+
+                Connection c = getConnection();
+                ResultSet result = c.createStatement().executeQuery(sql);
+
+                cb.join(result,c);
+
             } catch(SQLException ex) {
                 ex.printStackTrace();
             }

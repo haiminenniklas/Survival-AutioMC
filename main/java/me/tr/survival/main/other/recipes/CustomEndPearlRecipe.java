@@ -1,11 +1,10 @@
 package me.tr.survival.main.other.recipes;
 
-import me.tr.survival.main.other.TravelManager;
+import me.tr.survival.main.other.travel.TravelManager;
 import me.tr.survival.main.util.ItemUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 

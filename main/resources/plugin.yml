@@ -8,7 +8,7 @@ depend: [UltimateTimber, LuckPerms, ProtocolLib, PlayerParticles, Vault, Nametag
 commands:
   bal:
     description: Balance
-    aliases: [balance, raha, rahatilanne, money]
+    aliases: [balance, raha, money]
   pay:
     description: Maksa
     aliases: [maksa]
@@ -17,7 +17,7 @@ commands:
     aliases: [tallenna]
   profile:
     description: Statistiikat
-    aliases: [stats, tilastot, tiedot, profiili]
+    aliases: [stats, tiedot, profiili]
   home:
     description: Koti
     aliases: [koti, homes, delhome]
@@ -69,18 +69,10 @@ commands:
   autio:
     description: Autio
     aliases: [sorsa, sorsamc]
-  seen:
-    description: Pelaajan vanhat osoitteet
-    aliases: [history]
-  disguise:
-    description: Vaihda skiniä
-    aliases: [piiloudu]
   skull:
     description: Pelaajan kallo
   debug:
     description: Virheenkorjaus
- # admin:
-  #  description: Admin-toimintoja
   posti:
     description: Posti
     aliases: [mail, kirje]
@@ -123,14 +115,6 @@ commands:
   staff:
     description: Ylläpito-paneeli
     aliases: [yp, ylläpito, admin, mod]
-  join:
-    description: Liittyminen
-    aliases: [fakejoin, liity]
-  leave:
-    description: Poistuminen
-    aliases: [quit, fakeleave, fakequit, poistu]
-  afk:
-    description: Ole AFK
   apua:
     description: Apua
     aliases: [help, commands, komennot, faq]
@@ -163,10 +147,8 @@ commands:
     aliases: [travel, matkustaminen]
   valuutta:
     description: Valuutta-asiat
-    aliases: [finanssi, finances, currency]
   shekki:
     description: Kirjoita shekkejä
-    aliases: [cheques, shekit]
   stop:
     description: Stop the server
     aliases: [shutdown, restart]
@@ -176,10 +158,6 @@ commands:
   reppu:
     description: Talleta tavaroita turvallisesti
     aliases: [backpack, vault]
-  pullota:
-    description: Pullota kokemusta
-  huutokauppa:
-    description: Huutokauppa
   invsee:
     description: Tarkastele inventorya
   kosmetiikka:
@@ -195,3 +173,8 @@ commands:
     aliases: [vipsettings]
   houkutin:
     description: Spawnin houkutin
+  uptime:
+    description: Uptime
+  ääri:
+    description: End-maailma
+    aliases: [loppu]

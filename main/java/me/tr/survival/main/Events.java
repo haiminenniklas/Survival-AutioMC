@@ -21,6 +21,7 @@ import me.tr.survival.main.util.staff.StaffManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_15_R1.PortalTravelAgent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -34,13 +35,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
+import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
@@ -107,9 +108,6 @@ public class Events implements Listener {
     public void onJoin(PlayerJoinEvent e) {
 
         Player player = e.getPlayer();
-        UUID uuid = player.getUniqueId();
-        FileConfiguration config = Main.getInstance().getConfig();
-
         player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         player.sendMessage(" §7Tervetuloa §a" + player.getName() + " §7meidän Survival-");
         player.sendMessage(" §7palvelimellemme! Alla löydät muutama nappia, joista löydät");
@@ -119,47 +117,32 @@ public class Events implements Listener {
         player.sendMessage(" §7Mukavia pelihetkiä!");
         player.sendMessage(" ");
         TextComponent mail = new TextComponent(" §d§lPOSTI  ");
-
         mail.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/posti"));
         mail.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa tarkastellaksesi §dpäivittäisiä toimituksia§7!")));
-
         TextComponent stats = new TextComponent("§b§lPROFIILI  ");
-
         stats.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/stats"));
         stats.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa tarkastellaksesi §bprofiiliasi§7!")));
-
-
         TextComponent boosters = new TextComponent("§a§lTEHOSTUKSET");
-
         boosters.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/boosters"));
         boosters.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa tarkastellaksesi §atehostuksia§7!")));
-
         stats.addExtra(boosters);
         mail.addExtra(stats);
-
         player.spigot().sendMessage(mail);
-
         player.sendMessage(" ");
-
         player.sendMessage(" §ahttp://www.sorsamc.fi");
         player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
         }
-
         // Fix vanish
         for(UUID vanished : StaffManager.hidden) {
-
             Player v = Bukkit.getPlayer(vanished);
             if(v == null) continue;
-
             player.hidePlayer(Main.getInstance(), v);
 
         }
 
         // Setup backpacks
-
         Backpack.Level bLvl = Backpack.getLevel(player.getUniqueId());
          if(Ranks.hasRank(player, "premiumplus")) {
              if(bLvl == Backpack.Level.ONE) {
@@ -170,43 +153,31 @@ public class Events implements Listener {
                  Backpack.setLevel(player.getUniqueId(), Backpack.Level.THREE);
              }
         }
-
         e.setJoinMessage(null);
-
          if(StaffManager.hidden.contains(player.getUniqueId())) {
              Chat.sendMessage(player, "Olet piilossa pelaajilta!");
          }
-
-        /*if(Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) {
-            e.setJoinMessage(
-                    ChatColor.translateAlternateColorCodes('&',
-                            Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
-        } else {
-            e.setJoinMessage(null);
-        }*/
-
         if(!player.hasPlayedBefore()) {
+            ItemStack[] firstKit = new ItemStack[] {
+                    new ItemStack(Material.WOODEN_SWORD, 1),
+                    new ItemStack(Material.WOODEN_AXE, 1),
+                    new ItemStack(Material.WOODEN_HOE, 1),
+                    new ItemStack(Material.WOODEN_PICKAXE, 1),
+                    new ItemStack(Material.WOODEN_SHOVEL, 1),
+                    new ItemStack(Material.GOLDEN_SHOVEL, 1),
+                    new ItemStack(Material.COOKED_BEEF, 16)
+            };
+            player.getInventory().addItem(firstKit);
             Autio.teleportToSpawn(e.getPlayer());
         }
 
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
 
-        // DISABLED FOR NOW
-        /*player.setPlayerListHeaderFooter(
-                ChatColor.translateAlternateColorCodes('&', config.getString("tablist.header")),
-                ChatColor.translateAlternateColorCodes('&', config.getString("tablist.footer"))
-        ); */
-
         Main.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
-
-            //PlayerAliases.load(player);
-           // PlayerAliases.add(player, player.getAddress().getHostName());
             PlayerData.loadPlayer(player.getUniqueId());
-
         }, 20 * 2);
 
         Autio.updatePlayer(player);
-
         Autio.everyAsync(3, () -> Autio.sendTablist(player));
 
    }
@@ -214,35 +185,17 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
 
+        e.setQuitMessage(null);
+
         Player player = e.getPlayer();
+
+        // Disable staff mode
+        if(StaffManager.hasStaffMode(player)) {
+            StaffManager.disableStaffMode(player);
+        }
 
         // Save player's data
         Main.getInstance().getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> PlayerData.savePlayer(player.getUniqueId()));
-
-        if(Ranks.isVIP(player.getUniqueId()) || Ranks.isStaff(player.getUniqueId())) {
-            //e.setQuitMessage(ChatColor.translateAlternateColorCodes('&', Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
-            e.setQuitMessage(null);
-        } else {
-            e.setQuitMessage(null);
-        }
-
-    }
-
-    @EventHandler
-    public void onMove(PlayerMoveEvent e) {
-
-        Player player = e.getPlayer();
-        Location loc = e.getTo();
-
-        // RTP Portal
-      /*  if(loc.getBlockZ() == -39 && (loc.getBlockX() <= 42 && loc.getBlockX() >= 38) &&
-                e.getTo().getWorld().getName().equalsIgnoreCase(Autio.getSpawn().getWorld().getName())
-                && loc.getY() <= 136 && loc.getY() >= 133) {
-            if(!RTP.teleport(player)) {
-                // Bounce player back
-                Util.bounceBack(player, e.getFrom(), e.getTo());
-            }
-        } */
 
     }
 
@@ -292,45 +245,18 @@ public class Events implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent e) {
-
         Player player = e.getEntity();
-/*R
-        Block firstBlock = player.getLocation().getBlock();
-        if(firstBlock.getType() == Material.AIR) {
-
-            Block secondBlock = player.getLocation().add(1, 0, 0).getBlock();
-            if(secondBlock.getType() == Material.AIR) {
-
-                BlockData first = Material.CHEST.createBlockData();
-                BlockData second = Material.CHEST.createBlockData();
-
-                firstBlock.setBlockData(first, false);
-                secondBlock.setBlockData(second, false);
-
-                ((Chest)firstBlock).getInventory().addItem(player.getInventory().getContents());
-                ((Chest)firstBlock).getInventory().addItem(player.getInventory().getArmorContents());
-
-                Chat.sendMessage(player, "Sinun kuolinsijainnilla on chesti, jossa on kaikki tavarasi. Ole nopea, ennen kuin joku muu ehtii löytää sen!");
-
-            }
-
-        }
- */
         lastLocation.put(player.getUniqueId(), player.getLocation());
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDeath(EntityDeathEvent e) {
-
         if(Boosters.isActive(Boosters.Booster.DOUBLE_XP) && e.getEntity().getKiller() != null) {
             e.setDroppedExp(e.getDroppedExp() * 2);
             if(e.getDroppedExp() >= 1) {
                 Util.sendNotification(e.getEntity().getKiller(), "§a§lTEHOSTUS §7Tupla XP!", false);
             }
-
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -338,25 +264,19 @@ public class Events implements Listener {
 
         Player player = e.getPlayer();
         FileConfiguration config = Main.getInstance().getConfig();
-
         if(deathIsland.contains(player.getUniqueId())) {
             e.setCancelled(true);
             return;
         }
-
         if(config.getBoolean("effects.teleport.enabled")) {
-
             if(e.getCause() == PlayerTeleportEvent.TeleportCause.UNKNOWN) return;
             if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) return;
-
             player.getWorld().playSound(e.getFrom(),
                     Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
         }
-
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
         }
-
         lastLocation.put(player.getUniqueId(), e.getFrom());
 
     }
@@ -374,16 +294,14 @@ public class Events implements Listener {
     public void onEntityKill(EntityDeathEvent e) {
 
         if(e.getEntity() instanceof Villager) {
-
             Villager villager = (Villager) e.getEntity();
             if(villager.getKiller() != null) {
-
                 Player killer = villager.getKiller();
-                int amount = new Random().nextInt(50) + 1;
-                if(amount >= 1) {
-                    Balance.add(killer.getUniqueId(), amount);
+                int amount = new Random().nextInt(25) + 1;
+                if(amount >= 1 && (Math.random() <= 0.5)) {
+                    Balance.add(killer.getUniqueId(), (double) amount);
                     Chat.sendMessage(killer, "Tapoit raa'asti kyläläisen, mutta häneltä tippui §e" + amount + "€§7!");
-                    Util.sendPrivateSound(killer, Sound.BLOCK_NOTE_BLOCK_PLING);
+                    killer.playSound(killer.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
                 }
 
             }
@@ -408,9 +326,9 @@ public class Events implements Listener {
                 player.teleport(deathSpawn);
                 Util.heal(player);
 
-                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 999, true, false));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1, true, false));
-                Util.sendPrivateSound(player, Sound.MUSIC_DISC_13);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 30, 999, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 30, 1, true, false));
+                player.playSound(player.getLocation(), Sound.MUSIC_DISC_13, 1, 1);
                 deathIsland.add(player.getUniqueId());
             });
 
@@ -627,7 +545,28 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void onCommandPreProcess(PlayerCommandPreprocessEvent e) {
-
+    public void onPortalEnter(PlayerPortalEvent e) {
+        if(e.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL || e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
+            e.setCancelled(true);
+            e.getPlayer().teleport(e.getFrom());
+            Chat.sendMessage(e.getPlayer(), Chat.Prefix.ERROR, "Portaalit eivät valitettavasti toimi. Pääset kuitenkin toisiin maailmoihin komennolla §a/matkusta§7!");
+        }
     }
+
+    @EventHandler
+    public void onPortalCreate(PortalCreateEvent e) {
+        if(e.getEntity() instanceof Player) {
+            Player player = (Player) e.getEntity();
+            e.setCancelled(true);
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Portaalit eivät valitettavasti toimi. Pääset kuitenkin toisiin maailmoihin komennolla §a/matkusta§7!");
+        }
+    }
+
+    @EventHandler
+    public void onTrade(InventoryOpenEvent e) {
+        if(e.getInventory().getType() == InventoryType.MERCHANT) {
+            e.setCancelled(true);
+        }
+    }
+
 }

@@ -28,6 +28,7 @@ public class RTP {
             String timeLeft = Util.formatTime((int) minutes, (int) seconds, true);
 
             Chat.sendMessage(player, "Odota vielä §c" + timeLeft + " §7jotta voit käyttää tätä uudestaan!");
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             return false;
         }
 
@@ -71,18 +72,18 @@ public class RTP {
         int range = Main.getInstance().getConfig().getInt("random-tp.range");
         int newX = r.nextInt(range), newZ = r.nextInt(range);
 
-        if(newX >= 9000) {
+        if(newX >= 14000) {
 
-            newX = 9000;
+            newX = 14000;
 
-        } else if(newX <= -9000) {
-            newX = -9000;
+        } else if(newX <= -14000) {
+            newX = -14000;
         }
 
-        if(newZ >= 9000) {
-            newZ = 9000;
-        } else if(newZ <= -9000) {
-            newZ = -9000;
+        if(newZ >= 14000) {
+            newZ = 14000;
+        } else if(newZ <= -14000) {
+            newZ = -14000;
         }
 
         int newY = world.getHighestBlockYAt(newX, newZ);

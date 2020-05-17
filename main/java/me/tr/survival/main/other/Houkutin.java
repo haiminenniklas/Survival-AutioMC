@@ -6,10 +6,7 @@ import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
@@ -56,7 +53,7 @@ public class Houkutin implements CommandExecutor {
 
     // Options
 
-    private static final long durationMillis = 1000 * 60 * 15;
+    private static final long durationMillis = 1000 * 60 * 60;
     private static final long durationMinutes = durationMillis / 1000 / 60;
 
     // Variables
@@ -109,8 +106,12 @@ public class Houkutin implements CommandExecutor {
                             gui.close(clicker);
                             selectGui(clicker);
 
+                        } else {
+                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                         }
 
+                    } else {
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     }
 
                 }
@@ -125,6 +126,14 @@ public class Houkutin implements CommandExecutor {
         Gui.openGui(player, "Houkutin - Valitse Eläin", 27, (gui) -> {
 
             int slot = 11;
+
+            gui.addButton(new Button(1,18,ItemUtil.makeItem(Material.ARROW, 1, "§7Peruuta")) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                }
+            });
+
             for(final EntityType type : allowedEntityTypes()) {
 
                 ItemStack item = new ItemStack(getSpawnEggMaterial(type));
@@ -166,7 +175,9 @@ public class Houkutin implements CommandExecutor {
                                 Bukkit.broadcastMessage(" ");
                                 Bukkit.broadcastMessage(" §7Aktivoija: §e" + clicker.getName());
                                 Bukkit.broadcastMessage(" §7Eläin: §e" + translateEntityType(type));
+                                Bukkit.broadcastMessage(" §7Kesto: §e" + durationMinutes + "min");
                                 Bukkit.broadcastMessage(" ");
+                                Bukkit.broadcastMessage(" §aHoukutin löytyy Spawnilta! /spawn");
                                 Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                                 activate();
@@ -191,7 +202,7 @@ public class Houkutin implements CommandExecutor {
 
     private static void activate() {
 
-        Block block = Bukkit.getWorld("world").getBlockAt(-16, 60, -33);
+        Block block = Bukkit.getWorld("world").getBlockAt(-16, 59, -33);
         block.setType(Material.SPAWNER);
         BlockState state = block.getState();
         CreatureSpawner spawner = (CreatureSpawner) state;
@@ -203,8 +214,8 @@ public class Houkutin implements CommandExecutor {
     public static void deactivate() {
         activator = null;
         entityType = null;
-        Block block = Bukkit.getWorld("world").getBlockAt(-16, 60, -33);
-        block.setType(Material.DIAMOND_BLOCK);
+        Block block = Bukkit.getWorld("world").getBlockAt(-16, 59, -33);
+        block.setType(Material.EMERALD_BLOCK);
     }
 
     public static void activateManager() {
@@ -217,14 +228,16 @@ public class Houkutin implements CommandExecutor {
                 if(getTimeLeftMillis() < 1) {
                     if(activator != null && entityType != null) {
 
-                        OfflinePlayer ac = getActivator();
+                        OfflinePlayer ac = Bukkit.getOfflinePlayer(activator);
 
                         Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                         Bukkit.broadcastMessage(" §a§lHoukutin päättynyt!");
                         Bukkit.broadcastMessage(" ");
                         Bukkit.broadcastMessage(" §7Aktivoija: §e" + ac.getName());
                         Bukkit.broadcastMessage(" §7Eläin: §e" + translateEntityType(entityType));
+                        Bukkit.broadcastMessage(" §7Hinta: §e10 000€");
                         Bukkit.broadcastMessage(" ");
+                        Bukkit.broadcastMessage(" §aHoukutin löytyy Spawnilta! /spawn");
                         Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                         deactivate();

@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.scoreboard.*;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -44,10 +45,9 @@ public class Settings {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
                 Settings.toggle(uuid, "scoreboard");
-                Settings.panel(clicker);
                 Settings.scoreboard(clicker);
+                gui.refresh(clicker);
             }
         });
 
@@ -66,9 +66,8 @@ public class Settings {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
                 Settings.toggle(uuid, "privacy");
-                Settings.panel(clicker);
+                gui.refresh(clicker);
             }
         });
 
@@ -86,9 +85,8 @@ public class Settings {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
                 Settings.toggle(uuid, "chat");
-                Settings.panel(clicker);
+                gui.refresh(clicker);
             }
         });
 
@@ -107,20 +105,18 @@ public class Settings {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
                 UltimateTimber.getInstance().getChoppingManager().togglePlayer(clicker);
-                Settings.panel(clicker);
+                gui.refresh(clicker);
             }
         });
 
-        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§2Chat-maininnat", Arrays.asList(
+        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§2Älä häiritse", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "§7Tila: " + settingText(Settings.get(uuid, "chat_mentions")),
                 " ",
                 "§7§oKun tämä asetus on päällä,",
-                "§7§oet saa ilmoitusta, kun",
-                "§7§opelaaja mainitsee sinut ",
-                "§7§ochatissa!",
+                "§7§oet saa ylimääräisiä ilmoituksia",
+                "§7§oja ääniä palvelimelta.",
                 "",
                 "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
@@ -128,9 +124,8 @@ public class Settings {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
                 Settings.toggle(uuid, "chat_mentions");
-                Settings.panel(clicker);
+                gui.refresh(clicker);
             }
         });
 
@@ -222,9 +217,9 @@ public class Settings {
 
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
                     PlayerGlowManager.toggle(player);
                     Settings.vipPanel(clicker);
+                    gui.refresh(clicker);
                 }
             });
 
@@ -343,6 +338,13 @@ public class Settings {
 
             ProtectedRegion spawnRegion = Util.getRegionManager(player.getWorld()).getRegion("spawn");
 
+            if(player.isOp()) {
+                player.setAllowFlight(true);
+                player.setFlying(true);
+                Chat.sendMessage(player, "Lentotila §apäällä§7!");
+                return;
+            }
+
             if(Util.isInRegion(player, spawnRegion) && !Ranks.isStaff(player.getUniqueId())) {
                 player.setAllowFlight(true);
                 player.setFlying(true);
@@ -428,7 +430,7 @@ public class Settings {
         Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
 
             //board.getTeam("crystals").setPrefix("§b" + Crystals.get(player.getUniqueId()));
-            board.getTeam("blocks").setPrefix("§a" + Balance.get(player.getUniqueId()) + "€");
+            board.getTeam("blocks").setPrefix("§a" + new DecimalFormat("#.##").format(Balance.get(player.getUniqueId())) + "€");
             board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
             board.getTeam("players").setPrefix("§a" + Autio.getOnlinePlayers().size());
 

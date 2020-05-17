@@ -14,6 +14,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.database.PlayerData;
+import me.tr.survival.main.other.Houkutin;
 import me.tr.survival.main.other.PlayerGlowManager;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
@@ -77,7 +78,7 @@ public class Autio {
     }
 
     public static void teleportToNether(Player player) {
-        player.teleportAsync(new Location(Bukkit.getWorld("world_nether"), 0.5, 52, 0.5));
+        player.teleportAsync(new Location(Bukkit.getWorld("world_nether"), 0.5, 61, 0.5));
     }
 
     public static void every(int seconds, Runnable task, boolean async) {
@@ -334,6 +335,8 @@ public class Autio {
            public void run() {
 
                 if(timer < 0) {
+
+                    Houkutin.deactivate();
 
                     for(Player player : Bukkit.getOnlinePlayers()) {
                         //player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");

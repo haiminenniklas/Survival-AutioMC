@@ -45,20 +45,25 @@ public class MoneyCommand implements CommandExecutor {
 
                             if(args.length >= 3) {
 
-                                int value;
+                                double value;
                                 try {
-                                    value = Integer.parseInt(args[2]);
+                                    value = Double.parseDouble(args[2]);
                                 } catch(NumberFormatException ex) {
                                     Chat.sendMessage(player, "Käytä numeroita!");
                                     return true;
                                 }
 
+                                if(value < 0) {
+                                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita!");
+                                    return true;
+                                }
+
                                 if(args[0].equalsIgnoreCase("add")) {
-                                    PlayerData.add(target.getUniqueId(), "money", value);
-                                    Chat.sendMessage(player, "Pelaajalle annettu §6" + value + "€§7! Hänen rahatilanteensa: §6" + PlayerData.getValue(target.getUniqueId(), "money") + "€");
+                                    Balance.add(target.getUniqueId(), value);
+                                    Chat.sendMessage(player, "Pelaajalle §a" + target.getName() + " §7annettu §a" + value + "€§7! Hänen rahatilanteensa: §a" + PlayerData.getValue(target.getUniqueId(), "money") + "€");
                                 } else if(args[0].equalsIgnoreCase("remove")) {
-                                    PlayerData.add(target.getUniqueId(), "money", -value);
-                                    Chat.sendMessage(player, "Pelaajalta poistettu §6" + value + "€! §7Hänen rahatilanteensa: §6" + PlayerData.getValue(target.getUniqueId(), "money") + "€");
+                                    Balance.remove(target.getUniqueId(), value);
+                                    Chat.sendMessage(player, "Pelaajalta §a" + target.getName() + " §7 poistettu §a" + value + "€! §7Hänen rahatilanteensa: §a" + PlayerData.getValue(target.getUniqueId(), "money") + "€");
                                 }
 
                                 Chat.sendMessage(player, "Tallenna pelaajan tiedot komennolla §6/save " + target.getName());
@@ -82,6 +87,11 @@ public class MoneyCommand implements CommandExecutor {
                     Player target = Bukkit.getPlayer(args[0]);
                     if(target == null) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löytynyt!");
+                        return true;
+                    }
+
+                    if(target.getName().equals(player.getName())) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Et voi lähettää itsellesi rahaa!");
                         return true;
                     }
 

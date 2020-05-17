@@ -1,11 +1,9 @@
 package me.tr.survival.main.other.warps;
 
-import com.google.common.base.Splitter;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
-import me.tr.survival.main.util.callback.DatabaseCallback;
 import me.tr.survival.main.util.callback.TypedCallback;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
@@ -17,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 
-import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -103,20 +100,19 @@ public class Warps {
 
         Autio.async(() -> {
 
-            try {
-
-                ResultSet result = SQL.query("SELECT * FROM `warps` WHERE `name` = '" +  name + "';");
-                if(result.next()) {
-
-                    dbc.execute(true);
-                } else {
+            SQL.query("SELECT * FROM `warps` WHERE `name` = '" +  name + "';", (result, conn) -> {
+                try {
+                    if(result.next()) {
+                        dbc.execute(true);
+                    } else {
+                        dbc.execute(false);
+                    }
+                } catch(SQLException ex) {
+                    ex.printStackTrace();
                     dbc.execute(false);
                 }
+            });
 
-            } catch(SQLException ex) {
-                ex.printStackTrace();
-                dbc.execute(false);
-            }
 
         });
 
@@ -173,41 +169,38 @@ public class Warps {
 
         Autio.async(() -> {
 
-            try {
+            SQL.query("SELECT * FROM `warps`", (result, conn) -> {
+                try {
+                    int loaded = 0;
+                    while(result.next()) {
 
-                ResultSet result = SQL.query("SELECT * FROM `warps`");
-                int loaded = 0;
-                while(result.next()) {
+                        Warp warp = new Warp(
+                                result.getString("name"),
+                                new Location(Bukkit.getWorld(result.getString("world")),
+                                        result.getInt("loc_x"), result.getInt("loc_y"),
+                                        result.getInt("loc_z"), result.getFloat("loc_yaw"),
+                                        result.getFloat("loc_pitch")),
+                                result.getString("description"),
+                                result.getString("display_name")
+                        );
 
-                    Warp warp = new Warp(
-                            result.getString("name"),
-                            new Location(Bukkit.getWorld(result.getString("world")),
-                                    result.getInt("loc_x"), result.getInt("loc_y"),
-                                    result.getInt("loc_z"), result.getFloat("loc_yaw"),
-                                    result.getFloat("loc_pitch")),
-                            result.getString("description"),
-                            result.getString("display_name")
-                    );
+                        Autio.log("Loaded warp '" + warp.getName() + "' from the Database!");
+                        if(!warps.contains(warps.add(warp))) {
+                            warps.add(warp);
+                        }
+                        loaded++;
 
-                    Autio.log("Loaded warp '" + warp.getName() + "' from the Database!");
-                    if(!warps.contains(warps.add(warp))) {
-                        warps.add(warp);
                     }
-                    loaded++;
 
-                }
-
-                if(loaded < 1) {
+                    if(loaded < 1) {
+                        callback.execute(false);
+                    } else {
+                        callback.execute(true);
+                    }
+                } catch(SQLException ex) {
                     callback.execute(false);
-                } else {
-                    callback.execute(true);
                 }
-
-            } catch(SQLException ex) {
-                ex.printStackTrace();
-                callback.execute(false);
-            }
-
+            });
         });
     }
 

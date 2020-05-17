@@ -2,8 +2,7 @@ package me.tr.survival.main;
 
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
-import me.tr.survival.main.other.TravelManager;
-import me.tr.survival.main.other.Util;
+import me.tr.survival.main.other.travel.TravelManager;
 import me.tr.survival.main.other.backpacks.Backpack;
 import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.util.ItemUtil;
@@ -11,7 +10,6 @@ import me.tr.survival.main.util.data.*;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

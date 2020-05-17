@@ -81,6 +81,7 @@ public class PlayerGlowManager implements CommandExecutor {
 
         PlayerData.set(player.getUniqueId(), "glow_effect", true);
         player.setGlowing(true);
+        Chat.sendMessage(player, "Sinulla on nyt hehku §apäällä§7!");
 
     }
 
@@ -92,6 +93,7 @@ public class PlayerGlowManager implements CommandExecutor {
 
         PlayerData.set(player.getUniqueId(), "glow_effect", false);
         player.setGlowing(false);
+        Chat.sendMessage(player, "Sinulla on nyt hehku §cpois päältä§7!");
 
     }
 
