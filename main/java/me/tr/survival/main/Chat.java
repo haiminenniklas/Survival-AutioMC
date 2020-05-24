@@ -50,6 +50,17 @@ public class Chat implements Listener {
 
     }
 
+    public static void sendMessage(String message, Player... players) {
+        sendMessage(message, Prefix.DEFAULT, players);
+    }
+
+    public static void sendMessage(String message, Chat.Prefix prefix,  Player... players) {
+        for(Player player : players) {
+            sendMessage(player, prefix, message);
+        }
+    }
+
+
     @Deprecated
     public static String getFormat(Player player, String message) {
 

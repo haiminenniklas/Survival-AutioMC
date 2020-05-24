@@ -42,6 +42,8 @@ public class Houkutin implements CommandExecutor {
             if(sender.isOp()) {
                 if(args[0].equals("deactivate")) {
                     deactivate();
+                } else if(args[0].equalsIgnoreCase("help")) {
+                    sender.sendMessage("§c/houkutin deactivate");
                 }
             }
 
@@ -78,7 +80,6 @@ public class Houkutin implements CommandExecutor {
             lore.add(" §7joka synnyttää valitsemaasi");
             lore.add(" §7eläintä.");
             lore.add(" ");
-            lore.add(" §7Hinta: §e10 000€");
             lore.add(" §7Kesto: §e" + durationMinutes + "min");
             lore.add(" ");
 
@@ -147,7 +148,7 @@ public class Houkutin implements CommandExecutor {
                 lore.add(" §7synnyttämään eläintä");
                 lore.add(" §a" + translateEntityType(type) + "§7!");
                 lore.add(" ");
-                lore.add(" §7Hinta: §e10 000€");
+                lore.add(" §7Hinta: §e" + Util.formatDecimals(getPrice(type)) + "€");
                 lore.add(" §7Kesto: §e" + durationMinutes + "min");
                 lore.add(" ");
                 lore.add(" §aKlikkaa aktivoidaksesi!");
@@ -170,7 +171,7 @@ public class Houkutin implements CommandExecutor {
                                 started = System.currentTimeMillis();
                                 entityType = type;
 
-                                Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                                Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                                 Bukkit.broadcastMessage(" §a§lHoukutin aktivoitu!");
                                 Bukkit.broadcastMessage(" ");
                                 Bukkit.broadcastMessage(" §7Aktivoija: §e" + clicker.getName());
@@ -178,7 +179,7 @@ public class Houkutin implements CommandExecutor {
                                 Bukkit.broadcastMessage(" §7Kesto: §e" + durationMinutes + "min");
                                 Bukkit.broadcastMessage(" ");
                                 Bukkit.broadcastMessage(" §aHoukutin löytyy Spawnilta! /spawn");
-                                Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                                Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                                 activate();
 
@@ -206,6 +207,7 @@ public class Houkutin implements CommandExecutor {
         block.setType(Material.SPAWNER);
         BlockState state = block.getState();
         CreatureSpawner spawner = (CreatureSpawner) state;
+        spawner.setSpawnCount(4);
         spawner.setSpawnedType(entityType);
         state.update();
 
@@ -230,15 +232,15 @@ public class Houkutin implements CommandExecutor {
 
                         OfflinePlayer ac = Bukkit.getOfflinePlayer(activator);
 
-                        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                         Bukkit.broadcastMessage(" §a§lHoukutin päättynyt!");
                         Bukkit.broadcastMessage(" ");
                         Bukkit.broadcastMessage(" §7Aktivoija: §e" + ac.getName());
                         Bukkit.broadcastMessage(" §7Eläin: §e" + translateEntityType(entityType));
-                        Bukkit.broadcastMessage(" §7Hinta: §e10 000€");
+                        Bukkit.broadcastMessage(" §7Hinta: §e" + Util.formatDecimals(getPrice(entityType)) + "€");
                         Bukkit.broadcastMessage(" ");
                         Bukkit.broadcastMessage(" §aHoukutin löytyy Spawnilta! /spawn");
-                        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                         deactivate();
 
@@ -260,11 +262,27 @@ public class Houkutin implements CommandExecutor {
                 return "Lammas";
             case CHICKEN:
                 return "Kana";
-            case LLAMA:
-                return "Laama";
+            case MUSHROOM_COW:
+                return "Sienilehmä";
         }
 
         return "";
+    }
+
+    private static double getPrice(EntityType type) {
+        switch (type) {
+            case COW:
+                return 10000;
+            case PIG:
+                return 10000;
+            case SHEEP:
+                return 10000;
+            case CHICKEN:
+                return 10000;
+            case MUSHROOM_COW:
+                return 10000;
+        }
+        return 10000;
     }
 
     private static EntityType[] allowedEntityTypes() {
@@ -273,7 +291,7 @@ public class Houkutin implements CommandExecutor {
                 EntityType.PIG,
                 EntityType.SHEEP,
                 EntityType.CHICKEN,
-                EntityType.LLAMA
+                EntityType.MUSHROOM_COW
         };
         return entities;
     }
@@ -288,8 +306,8 @@ public class Houkutin implements CommandExecutor {
                 return Material.SHEEP_SPAWN_EGG;
             case CHICKEN:
                 return Material.CHICKEN_SPAWN_EGG;
-            case LLAMA:
-                return Material.LLAMA_SPAWN_EGG;
+            case MUSHROOM_COW:
+                return Material.MOOSHROOM_SPAWN_EGG;
         }
         return Material.COW_SPAWN_EGG;
     }

@@ -35,31 +35,4 @@ public class Crystals {
         PlayerData.add(uuid, "crystals", value);
     }
 
-    public static void getBalances(TypedCallback<Map<UUID, Integer>> cb) {
-
-        final Map<UUID, Integer> balances = new HashMap<>();
-
-        Autio.async(() -> {
-
-            try {
-                ResultSet result = SQL.query("SELECT * FROM `players`;");
-
-                while(result.next()) {
-
-                    balances.put(UUID.fromString(result.getString("uuid")), result.getInt("crystals"));
-
-                }
-
-                cb.execute(balances);
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-
-
-        });
-
-    }
-
-
 }

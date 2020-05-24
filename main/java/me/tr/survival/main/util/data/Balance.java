@@ -33,6 +33,7 @@ public class Balance {
     }
 
 
+
     public static boolean canRemove(UUID player, double value) {
         double current_balance = Balance.get(player);
         return canRemove(current_balance, value);
@@ -48,20 +49,25 @@ public class Balance {
 
         Autio.async(() -> {
 
-            try {
-                ResultSet result = SQL.query("SELECT * FROM `players`;");
-
-                while(result.next()) {
-
-                    balances.put(UUID.fromString(result.getString("uuid")), result.getDouble("money"));
-
+            SQL.query("SELECT * FROM `players`;", (result, conn) -> {
+                try {
+                    while(result.next()) {
+                        balances.put(UUID.fromString(result.getString("uuid")), result.getDouble("money"));
+                    }
+                } catch(SQLException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    if(conn != null) {
+                        try {
+                            conn.close();
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                 }
+            });
 
-                cb.execute(balances);
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            cb.execute(balances);
 
 
         });

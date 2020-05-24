@@ -152,7 +152,7 @@ public class Gui implements Listener {
     }
 
     public void refresh(Player player) {
-        HashMap<Integer, ItemStack> items = this.items.get(1);
+        /*HashMap<Integer, ItemStack> items = this.items.get(1);
         if(!this.items.isEmpty()) {
             for(Map.Entry<Integer, ItemStack> e : items.entrySet()) {
                 inv.setItem(e.getKey(), e.getValue());
@@ -166,7 +166,8 @@ public class Gui implements Listener {
         }
 
         playerPages.put(player, 1);
-        player.updateInventory();
+        player.updateInventory(); */
+        this.hardRefresh(player);
     }
 
     public void addPageButtons(Inventory inv){

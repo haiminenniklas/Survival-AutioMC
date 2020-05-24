@@ -35,7 +35,7 @@ public class VipCommand implements CommandExecutor {
                 if(!PlayerData.isLoaded(target.getUniqueId())) {
 
                     Autio.async(() -> {
-                        PlayerData.loadPlayer(target.getUniqueId());
+                        PlayerData.loadPlayer(target.getUniqueId(), (res) -> {});
                         givePerks(target, rankRaw);
                     });
 

@@ -11,8 +11,10 @@ import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,9 +50,32 @@ public class Homes {
             this.homes.add(null);
         }
 
-
         if(String.valueOf(data.get("third_home")) != "null" && data.get("third_home") != null) {
             Home home = Homes.parse(player.getUniqueId(), (String) data.get("third_home"));
+            this.homes.add(home);
+        } else {
+            this.homes.add(null);
+        }
+
+
+        if(String.valueOf(data.get("fourth_home")) != "null" && data.get("fourth_home") != null) {
+            Home home = Homes.parse(player.getUniqueId(), (String) data.get("fourth_home"));
+            this.homes.add(home);
+        } else {
+            this.homes.add(null);
+        }
+
+
+        if(String.valueOf(data.get("fifth_home")) != "null" && data.get("fifth_home") != null) {
+            Home home = Homes.parse(player.getUniqueId(), (String) data.get("fifth_home"));
+            this.homes.add(home);
+        } else {
+            this.homes.add(null);
+        }
+
+
+        if(String.valueOf(data.get("sixth_home")) != "null" && data.get("sixth_home") != null) {
+            Home home = Homes.parse(player.getUniqueId(), (String) data.get("sixth_home"));
             this.homes.add(home);
         } else {
             this.homes.add(null);
@@ -147,218 +172,186 @@ public class Homes {
 
     }
 
+    private static String getHomeString(int pos) {
+        switch (pos) {
+            case 1: return "first_home";
+            case 2: return "second_home";
+            case 3: return "third_home";
+            case 4: return "fourth_home";
+            case 5: return "fifth_home";
+            case 6: return "sixth_home";
+            default: return "first_home";
+        }
+    }
+
+    private static Material getBedColor(int pos) {
+        switch (pos) {
+            case 1: return Material.RED_BED;
+            case 2: return Material.GREEN_BED;
+            case 3: return Material.BLUE_BED;
+            case 4: return Material.YELLOW_BED;
+            case 5: return Material.ORANGE_BED;
+            case 6: return Material.BROWN_BED;
+            default: return Material.RED_BED;
+        }
+    }
+
     public static void panel(Player opener, OfflinePlayer target) {
 
         UUID uuid = target.getUniqueId();
         Homes homeList = new Homes(target);
         ArrayList<Home> homes = homeList.get();
 
-        if(Ranks.isVIP(uuid) || Ranks.isPartner(uuid) || target.isOp()) {
-            Gui gui = new Gui("Kodit", 27);
-            if(homes.get(0) == null) {
-                gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #1", Arrays.asList(
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        "§aKlikkaa luodaksesi uuden kodin sijaintiisi!",
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                ))) {
-                    @Override
-                    public void onClick(Player clicker, ClickType clickType) {
-                        gui.close(clicker);
-                        Chat.sendMessage(clicker, "Loit kodin §a#1 §7sijaintiisi!");
-                        homeList.createHome(clicker, "first_home", clicker.getLocation());
-                    }
-                });
-            } else {
-                Home home = homes.get(0);
-                gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.RED_BED, 1, "§2Koti #1", Arrays.asList(
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        "§7Sijainti §o(x, y, z)§7:",
-                        " §2" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
-                        " ",
-                        "§aVasen-klikkaa: §7Teleporttaa kotiisi",
-                        "§6Oikea-klikkaa: §7Poista koti",
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                ))) {
-                    @Override
-                    public void onClick(Player clicker, ClickType clickType) {
-                        if(clickType == ClickType.LEFT) {
-                            home.teleport(clicker, (res) -> {
-                                if(res) {
-                                    Chat.sendMessage(clicker, "Sinua viedään kotiin §a#1§7... Odota §a3 sekuntia§7...");
-                                }
-                            });
+        Gui gui = new Gui("Kodit", 36);
+
+        int maxHomes = 3;
+        if(Ranks.isVIP(uuid) || Ranks.isStaff(uuid)) maxHomes = homes.size();
+
+        int[] positions = new int[] {
+            12,13,14,
+            21,22,23
+        };
+
+        int[] glassPositions = new int[] {
+                0, 1, 2, 3, 4, 5, 6, 7, 8,
+                9, 10,              16,17,
+                18,19,              25,26,
+                  28,29,30,31,32,33,34,35
+        };
+
+        int[] colorGlassPositions = new int [] {
+          11,15,
+          20,24
+        };
+
+        for(int i = 0; i < homes.size(); i++) {
+
+            Home home = homes.get(i);
+            int homePos = i + 1;
+            int itemPos = positions[i];
+
+            if(i < maxHomes || homes.get(i) != null) {
+                if(home == null) {
+                    gui.addButton(new Button(1, itemPos, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #" + homePos, Arrays.asList(
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                            "§aKlikkaa luodaksesi uuden kodin sijaintiisi!",
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                    ))) {
+                        @Override
+                        public void onClick(Player clicker, ClickType clickType) {
                             gui.close(clicker);
-                        } else if(clickType == ClickType.RIGHT) {
-                            gui.close(clicker);
-                            homeList.deleteHome(opener, "first_home");
+                            Chat.sendMessage(clicker, "Loit kodin §a#" + homePos + " §7sijaintiisi!");
+                            homeList.createHome(clicker, getHomeString(homePos), clicker.getLocation());
                         }
-                    }
-                });
-            }
-
-            if(homes.get(1) == null) {
-                gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #2", Arrays.asList(
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        "§aKlikkaa luodaksesi uuden kodin sijaintiisi!",
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                ))) {
-                    @Override
-                    public void onClick(Player clicker, ClickType clickType) {
-                        homeList.createHome(clicker, "second_home", clicker.getLocation());
-                        gui.close(clicker);
-                        Chat.sendMessage(clicker, "Loit kodin §a#2 §7sijaintiisi!");
-                    }
-                });
-            } else {
-                Home home = homes.get(1);
-                gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.ORANGE_BED, 1, "§2Koti #2", Arrays.asList(
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        "§7Sijainti §o(x, y, z)§7:",
-                        " §2" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
-                        " ",
-                        "§aVasen-klikkaa: §7Teleporttaa kotiisi",
-                        "§aOikea-klikkaa: §7Poista koti",
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                ))) {
-                    @Override
-                    public void onClick(Player clicker, ClickType clickType) {
-                        if(clickType == ClickType.LEFT) {
-                            home.teleport(clicker, (res) -> {
-                                if(res) {
-                                    Chat.sendMessage(clicker, "Sinua viedään kotiin §a#2§7... Odota §a3 sekuntia§7...");
-                                }
-                            });
-                            gui.close(clicker);
-                        } else if(clickType == ClickType.RIGHT) {
-                            gui.close(clicker);
-                            homeList.deleteHome(opener, "second_home");
+                    });
+                } else {
+                    gui.addButton(new Button(1, itemPos, ItemUtil.makeItem(getBedColor(homePos), 1, "§2Koti #" + homePos, Arrays.asList(
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                            "§7Sijainti §o(x, y, z)§7:",
+                            " §2" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
+                            " ",
+                            "§aVasen-klikkaa: §7Teleporttaa kotiisi",
+                            "§cOikea-klikkaa: §7Poista koti",
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                    ))) {
+                        @Override
+                        public void onClick(Player clicker, ClickType clickType) {
+                            if(clickType == ClickType.LEFT) {
+                                Chat.sendMessage(clicker, "Sinua viedään kotiin §a#" + homePos + "§7... Odota §a3 sekuntia§7...");
+                                home.teleport(clicker, (res) -> { });
+                                gui.close(clicker);
+                            } else if(clickType == ClickType.RIGHT) {
+                                gui.close(clicker);
+                                homeList.deleteHome(opener, getHomeString(homePos));
+                            }
                         }
-                    }
-                });
-            }
-
-            if(homes.get(2) == null) {
-                gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #3", Arrays.asList(
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        "§aKlikkaa luodaksesi uuden kodin sijaintiisi!",
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                ))) {
-                    @Override
-                    public void onClick(Player clicker, ClickType clickType) {
-                        gui.close(clicker);
-                        homeList.createHome(clicker, "third_home", clicker.getLocation());
-                        Chat.sendMessage(clicker, "Loit kodin §a#3 §7sijaintiisi!");
-                    }
-
-                });
-            } else {
-                Home home = homes.get(2);
-                gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.GREEN_BED, 1, "§2Koti #3", Arrays.asList(
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        "§7Sijainti §o(x, y, z)§7:",
-                        " §2" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
-                        " ",
-                        "§aVasen-klikkaa: §7Teleporttaa kotiisi",
-                        "§aOikea-klikkaa: §7Poista koti",
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                ))) {
-                    @Override
-                    public void onClick(Player clicker, ClickType clickType) {
-                        if(clickType == ClickType.LEFT) {
-                            home.teleport(clicker, (res) -> {
-                                if(res) {
-                                    Chat.sendMessage(clicker, "Sinua viedään kotiin §a#3§7! Odota §a3 sekuntia§7...");
-                                }
-                            });
-                            gui.close(clicker);
-                        } else if(clickType == ClickType.RIGHT) {
-                            gui.close(clicker);
-                            homeList.deleteHome(opener, "third_home");
-                        }
-                    }
-                });
-            }
-
-            gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
-                    Profile.openProfile(opener, opener.getUniqueId());
+                    });
                 }
-            });
-
-            gui.open(opener);
-
-        } else {
-            Gui gui = new Gui("Kodit", 27);
-            if(homes.size() < 1 || homes.get(0) == null) {
-                gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #1", Arrays.asList(
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        "§aKlikkaa luodaksesi uuden kodin sijaintiisi!",
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                ))) {
-                    @Override
-                    public void onClick(Player clicker, ClickType clickType) {
-                        homeList.createHome(clicker, "first_home", clicker.getLocation());
-                        gui.close(clicker);
-                        Chat.sendMessage(clicker, "Loit kodin §a#1 §7sijaintiisi!");
-                    }
-                });
             } else {
 
-                Home home = homes.get(0);
-
-                gui.addButton(new Button(1,11, ItemUtil.makeItem(Material.RED_BED, 1, "§2Koti #1", Arrays.asList(
+                gui.addButton(new Button(1, itemPos, ItemUtil.makeItem(Material.BARRIER, 1, "§cLukittu", Arrays.asList(
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        "§7Sijainti §o(x, y, z)§7:",
-                        " §2" + (int) home.getX() + ", " + (int) home.getY() + ", " + (int) + home.getZ(),
+                        " §cTämä koti on lukittu sinulle!",
                         " ",
-                        "§aVasen-klikkaa: §7Teleporttaa kotiisi",
-                        "§aOikea-klikkaa: §7Poista koti",
+                        " §7§oPystyt avaamaan kaikki kodit",
+                        " §6VIP§7§o-arvolla tai ostamalla sen!",
+                        " §7§oLisätietoa VIP-arvoista §a/kauppa",
+                        " ",
+                        " §7Hinta: §e80 000€",
+                        " ",
+                        " §aKlikkaa avataksesi!",
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
-                        if(clickType == ClickType.LEFT) {
-                            home.teleport(clicker, (res) -> {
-                                if(res) {
-                                    Chat.sendMessage(clicker, "Sinua viedään kotiin §a#1§7... Odota §a3 sekuntia§7...");
-                                }
-                            });
-                            gui.close(clicker);
-                        } else if(clickType == ClickType.RIGHT) {
-                            gui.close(clicker);
-                            homeList.deleteHome(opener, "first_home");
-                        }
+                        gui.close(clicker);
+                        confirmHomePurchase(clicker, homePos, homeList);
                     }
                 });
 
             }
 
-            gui.addItem(1, ItemUtil.makeItem(Material.BARRIER, 1, "§c§lLUKITTU", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Saat lisää koteja §6VIP§7-",
-                    " §7arvolla. Lisätietoa §a/kauppa§7!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            )), 13);
-            gui.addItem(1, ItemUtil.makeItem(Material.BARRIER, 1, "§c§lLUKITTU", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Saat lisää koteja §6VIP§7-",
-                    " §7arvolla. Lisätietoa §a/kauppa§7!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            )), 15);
-
-            gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
-                    Profile.openProfile(opener, opener.getUniqueId());
-                }
-            });
-
-            gui.open(opener);
         }
 
+        for(int glassPos : glassPositions) {
+            gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1), glassPos);
+        }
+
+        for(int colorGlassPos : colorGlassPositions) {
+            gui.addItem(1, new ItemStack(Material.LIME_STAINED_GLASS_PANE, 1), colorGlassPos);
+        }
+
+        gui.addButton(new Button(1, 27, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                Profile.openProfile(opener, opener.getUniqueId());
+            }
+        });
+
+        gui.open(opener);
+
+    }
+
+    private static void confirmHomePurchase(Player player, int homePos, Homes homeList) {
+
+        int price = 80000;
+
+        Gui.openGui(player, "Vahvista kodin osto", 27, (gui) -> {
+
+            gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Klikkaa vahvistaaksesi oston!",
+                    " §7Kodin avaus maksaa: §e" + price + "€§7!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(player);
+                    if(Balance.canRemove(player.getUniqueId(), price)) {
+                        Balance.remove(player.getUniqueId(), price);
+                        homeList.createHome(clicker, getHomeString(homePos), clicker.getLocation());
+                        Chat.sendMessage(clicker, "Ostit, sekä loit kodin §a#" + homePos + " §7sijaintiisi!");
+                    } else {
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                        Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Kodin osto maksaa §e80 000€§7!");
+                    }
+
+                }
+            });
+
+            gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    "§7 Klikkaa peruuttaaksesi oston!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                }
+            });
+
+        });
     }
 
 }

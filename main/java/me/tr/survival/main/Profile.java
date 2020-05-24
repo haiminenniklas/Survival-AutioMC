@@ -32,63 +32,65 @@ public class Profile {
 
             Autio.async(() -> {
 
-                if(!PlayerData.loadPlayer(targetUUID)) {
+                PlayerData.loadPlayer(targetUUID, (result) -> {
 
-                    Gui gui = new Gui("Ei löydetty", 27);
-                    gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§c§lEI LÖYDETTY", Arrays.asList(
-                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                            " §7Pelaajan §a" + target.getName() + " §7tietoja",
-                            " §7ei löydetty. Ehkei hän ole ikinä",
-                            " §7liittynyt, tai hänen tietojaan ei",
-                            " §7olla vielä ladattu. Yritä myöhemmin",
-                            " §7uudestaan!",
-                            "",
-                            "§7 Omat tiedot saat §a/profiili§7!",
-                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                    )), 13);
-                    Autio.task(() -> {
-                        gui.open(opener);
-                    });
-                } else {
-                    Autio.task(() -> {
+                    if(result) {
+                        Autio.task(() -> {
 
-                        if(Settings.get(targetUUID, "privacy") && !Ranks.isStaff(opener.getUniqueId())) {
+                            if(Settings.get(targetUUID, "privacy") && !Ranks.isStaff(opener.getUniqueId())) {
 
-                            Gui.openGui(opener, "Ei voitu avata", 27, (gui) -> {
+                                Gui.openGui(opener, "Ei voitu avata", 27, (gui) -> {
 
-                                gui.addItem(1, ItemUtil.makeItem(Material.BARRIER, 1, "§cEi voitu avata", Arrays.asList(
-                                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                                        " §7Emme voineet avata tämän",
-                                        " §7pelaajan §aprofiilia§7,",
-                                        " §7sillä tällä pelaajalla",
-                                        " §7on §cyksityinen tila",
-                                        " §7päällä!",
-                                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                                )),13);
+                                    gui.addItem(1, ItemUtil.makeItem(Material.BARRIER, 1, "§cEi voitu avata", Arrays.asList(
+                                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                            " §7Emme voineet avata tämän",
+                                            " §7pelaajan §aprofiilia§7,",
+                                            " §7sillä tällä pelaajalla",
+                                            " §7on §cyksityinen tila",
+                                            " §7päällä!",
+                                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                                    )),13);
 
-                                gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.BOOK, 1, "§aOma profiili", Arrays.asList(
-                                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                                        " §7Voit kuitenkin päästä",
-                                        " §7katsomaan omaa §aprofiiliasi",
-                                        " §7klikkaamalla §etästä§7!",
-                                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                                ))) {
-                                    @Override
-                                    public void onClick(Player clicker, ClickType clickType) {
-                                        gui.close(clicker);
-                                        openProfile(clicker, clicker.getUniqueId());
-                                    }
+                                    gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.BOOK, 1, "§aOma profiili", Arrays.asList(
+                                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                            " §7Voit kuitenkin päästä",
+                                            " §7katsomaan omaa §aprofiiliasi",
+                                            " §7klikkaamalla §etästä§7!",
+                                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                                    ))) {
+                                        @Override
+                                        public void onClick(Player clicker, ClickType clickType) {
+                                            gui.close(clicker);
+                                            openProfile(clicker, clicker.getUniqueId());
+                                        }
+                                    });
+
                                 });
 
-                            });
+                                return;
+                            } else {
+                                openProfile(opener, targetUUID);
+                            }
+                        });
+                    } else {
+                        Gui gui = new Gui("Ei löydetty", 27);
+                        gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§c§lEI LÖYDETTY", Arrays.asList(
+                                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                " §7Pelaajan §a" + target.getName() + " §7tietoja",
+                                " §7ei löydetty. Ehkei hän ole ikinä",
+                                " §7liittynyt, tai hänen tietojaan ei",
+                                " §7olla vielä ladattu. Yritä myöhemmin",
+                                " §7uudestaan!",
+                                "",
+                                "§7 Omat tiedot saat §a/profiili§7!",
+                                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                        )), 13);
+                        Autio.task(() -> {
+                            gui.open(opener);
+                        });
+                    }
 
-                            return;
-                        } else {
-                            openProfile(opener, targetUUID);
-                        }
-                    });
-                }
-
+                });
 
             });
 

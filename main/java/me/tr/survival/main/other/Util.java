@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -392,6 +393,11 @@ public class Util {
         result[lastIndex] = s.substring(j);
 
         return result;
+    }
+
+    public static String formatDecimals(double amount) {
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(new Locale("fi", "FI"));
+        return formatter.format(amount);
     }
 
     public static double getFreeMemory() {

@@ -2,11 +2,13 @@ package me.tr.survival.main.database;
 
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.other.Util;
+import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -32,6 +34,9 @@ public class PlayerData {
         empty.put("first_home", "null");
         empty.put("second_home", "null");
         empty.put("third_home", "null");
+        empty.put("fourth_home", "null");
+        empty.put("fifth_home", "null");
+        empty.put("sixth_home", "null");
 
         // User's Mining Data
 
@@ -70,147 +75,149 @@ public class PlayerData {
 
     }
 
-    public static boolean loadPlayer(UUID uuid){
+    public static void loadPlayer(UUID uuid, TypedCallback<Boolean> cb){
 
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         HashMap<String, Object> data = new HashMap<>();
 
-        try {
-            ResultSet result = SQL.query("SELECT * FROM `players` WHERE `uuid` = '" + uuid.toString() + "';");
-            if(result.next()) {
 
-                // User's Basic Data
+        SQL.query("SELECT * FROM `players` WHERE `uuid` = '" + uuid.toString() + "';", ((result, connection) -> {
+            try {
 
-                data.put("player_name", result.getString("player_name"));
-                data.put("money", result.getDouble("money"));
-                data.put("rank", result.getString("rank"));
-                data.put("joined", result.getString("joined"));
-                data.put("crystals", result.getInt("crystals"));
-                data.put("save", true);
+                if(result.next()) {
 
-                // User's Home Data
-                ResultSet homeResult = SQL.query("SELECT * FROM `homes` WHERE `uuid` = '" + uuid.toString() + "';");
-                if(homeResult.next()) {
-                    data.put("first_home", homeResult.getString("first_home"));
-                    data.put("second_home", homeResult.getString("second_home"));
-                    data.put("third_home", homeResult.getString("third_home"));
+                    // User's Basic Data
+
+                    Statement s = connection.createStatement();
+
+                    data.put("player_name", result.getString("player_name"));
+                    data.put("money", result.getDouble("money"));
+                    data.put("rank", result.getString("rank"));
+                    data.put("joined", result.getString("joined"));
+                    data.put("crystals", result.getInt("crystals"));
+                    data.put("save", true);
+
+                    // User's Home Data
+                    ResultSet homeResult = s.executeQuery("SELECT * FROM `homes` WHERE `uuid` = '" + uuid.toString() + "';");
+                    if(homeResult.next()) {
+                        data.put("first_home", homeResult.getString("first_home"));
+                        data.put("second_home", homeResult.getString("second_home"));
+                        data.put("third_home", homeResult.getString("third_home"));
+                        data.put("fourth_home", homeResult.getString("fourth_home"));
+                        data.put("fifth_home", homeResult.getString("fifth_home"));
+                        data.put("sixth_home", homeResult.getString("sixth_home"));
+                    } else {
+                        data.put("first_home", "null");
+                        data.put("second_home", "null");
+                        data.put("third_home", "null");
+                        data.put("fourth_home", "null");
+                        data.put("fifth_home", "null");
+                        data.put("sixth_home", "null");
+                    }
+
+                    // User's Mining Data
+                    ResultSet mineResult = s.executeQuery("SELECT * FROM `mined_ores` WHERE `uuid` = '" + uuid.toString() + "';");
+                    if(mineResult.next()) {
+
+                        data.put("diamond", mineResult.getInt("diamond"));
+                        data.put("gold", mineResult.getInt("gold"));
+                        data.put("iron", mineResult.getInt("iron"));
+                        data.put("coal", mineResult.getInt("coal"));
+                        data.put("total", mineResult.getInt("total"));
+
+                    } else {
+                        data.put("diamond", 0);
+                        data.put("gold", 0);
+                        data.put("iron", 0);
+                        data.put("coal", 0);
+                        data.put("total", 0);
+                    }
+
+                    ResultSet settingsResult = s.executeQuery("SELECT * FROM `settings` WHERE `uuid` = '" + uuid.toString() + "';");
+                    if(settingsResult.next()) {
+
+                        data.put("scoreboard", settingsResult.getBoolean("scoreboard"));
+                        data.put("privacy", settingsResult.getBoolean("privacy"));
+                        data.put("chat", settingsResult.getBoolean("chat"));
+                        data.put("treefall", settingsResult.getBoolean("treefall"));
+                        data.put("chat_mentions", settingsResult.getBoolean("chat_mentions"));
+
+                    } else {
+                        data.put("scoreboard", true);
+                        data.put("privacy", false);
+                        data.put("chat", true);
+                        data.put("treefall", true);
+                        data.put("chat_mentions", true);
+                    }
+
+                    ResultSet mailResult = s.executeQuery("SELECT * FROM `mail` WHERE `uuid` = '" + uuid + "';");
+                    if(mailResult.next()) {
+
+                        data.put("last_mail", mailResult.getLong("last_mail"));
+                        data.put("streak", mailResult.getInt("streak"));
+                        data.put("tickets", mailResult.getInt("tickets"));
+
+                    } else {
+                        data.put("last_mail", System.currentTimeMillis() - 1000 * 60 * 60 * 24);
+                        data.put("streak", 0);
+                        data.put("tickets", 0);
+                    }
+
+                    ResultSet backpackResult = s.executeQuery("SELECT * from `backpacks` WHERE `uuid` = '" + uuid + "';");
+                    if(backpackResult.next()) {
+
+                        data.put("backpack_level", backpackResult.getString("level"));
+                        data.put("backpack_inventory", backpackResult.getString("saved_inventory"));
+
+                    } else {
+
+                        data.put("backpack_level", "ONE");
+                        data.put("backpack_inventory", "null");
+
+                    }
+
+                    ResultSet particleResult = s.executeQuery("SELECT * FROM `particles` WHERE `uuid` = '" + uuid +  "';");
+                    if(particleResult.next()) {
+                        data.put("arrowtrail", particleResult.getString("arrowtrail"));
+                        data.put("particle", particleResult.getString("particle"));
+                    } else {
+                        data.put("arrowtrail", "default");
+                        data.put("particle", "default");
+                    }
+
+                    ResultSet glowResult = s.executeQuery("SELECT * FROM `vip_settings` WHERE `uuid` = '" + uuid + "';");
+                    if(glowResult.next()) {
+                        data.put("glow_effect", glowResult.getBoolean("glow_effect"));
+                        data.put("kill_message", glowResult.getString("kill_message"));
+                        data.put("death_message", glowResult.getString("death_message"));
+                    } else {
+                        data.put("glow_effect", false);
+                        data.put("kill_message", "default");
+                        data.put("death_message", "default");
+                    }
+
+                    player_data.put(uuid, data);
+
+                    Autio.log("Loaded player " + uuid + " (" + player.getName() + ") from Database");
+                    cb.execute(true);
                 } else {
-                    data.put("first_home", "null");
-                    data.put("second_home", "null");
-                    data.put("third_home", "null");
+                    loadNull(uuid, true);
+                    cb.execute(false);
                 }
-
-                // User's Mining Data
-                ResultSet mineResult = SQL.query("SELECT * FROM `mined_ores` WHERE `uuid` = '" + uuid.toString() + "';");
-                if(mineResult.next()) {
-
-                    data.put("diamond", mineResult.getInt("diamond"));
-                    data.put("gold", mineResult.getInt("gold"));
-                    data.put("iron", mineResult.getInt("iron"));
-                    data.put("coal", mineResult.getInt("coal"));
-                    data.put("total", mineResult.getInt("total"));
-
-                } else {
-                    data.put("diamond", 0);
-                    data.put("gold", 0);
-                    data.put("iron", 0);
-                    data.put("coal", 0);
-                    data.put("total", 0);
+            } catch(SQLException ex) {
+                ex.printStackTrace();
+                loadNull(uuid, false);
+                cb.execute(false);
+            } finally {
+                if(connection != null) {
+                    try {
+                        connection.close();
+                    } catch(SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-
-                /*
-                // User's Level Data
-                ResultSet levelResult = SQL.query("SELECT * FROM `levels` WHERE `uuid` = '" + uuid.toString() + "';");
-                if(levelResult.next()) {
-                    data.put("level", levelResult.getInt("level"));
-                    data.put("xp", levelResult.getInt("xp"));
-                    data.put("total_xp", levelResult.getInt("total_xp"));
-                } else {
-                    data.put("level", 0);
-                    data.put("xp", 0);
-                    data.put("total_xp", 0);
-                } */
-
-                ResultSet settingsResult = SQL.query("SELECT * FROM `settings` WHERE `uuid` = '" + uuid.toString() + "';");
-                if(settingsResult.next()) {
-
-                    data.put("scoreboard", settingsResult.getBoolean("scoreboard"));
-                    data.put("privacy", settingsResult.getBoolean("privacy"));
-                    data.put("chat", settingsResult.getBoolean("chat"));
-                    data.put("treefall", settingsResult.getBoolean("treefall"));
-                    data.put("chat_mentions", settingsResult.getBoolean("chat_mentions"));
-
-                } else {
-                    data.put("scoreboard", true);
-                    data.put("privacy", false);
-                    data.put("chat", true);
-                    data.put("treefall", true);
-                    data.put("chat_mentions", true);
-                }
-
-                ResultSet mailResult = SQL.query("SELECT * FROM `mail` WHERE `uuid` = '" + uuid + "';");
-                if(mailResult.next()) {
-
-                    data.put("last_mail", mailResult.getLong("last_mail"));
-                    data.put("streak", mailResult.getInt("streak"));
-                    data.put("tickets", mailResult.getInt("tickets"));
-
-                } else {
-                    data.put("last_mail", System.currentTimeMillis() - 1000 * 60 * 60 * 24);
-                    data.put("streak", 0);
-                    data.put("tickets", 0);
-                }
-
-                ResultSet backpackResult = SQL.query("SELECT * from `backpacks` WHERE `uuid` = '" + uuid + "';");
-                if(backpackResult.next()) {
-
-                    data.put("backpack_level", backpackResult.getString("level"));
-                    data.put("backpack_inventory", backpackResult.getString("saved_inventory"));
-
-                } else {
-
-                    data.put("backpack_level", "ONE");
-                    data.put("backpack_inventory", "null");
-
-                }
-
-                ResultSet particleResult = SQL.query("SELECT * FROM `particles` WHERE `uuid` = '" + uuid +  "';");
-                if(particleResult.next()) {
-                    data.put("arrowtrail", particleResult.getString("arrowtrail"));
-                    data.put("particle", particleResult.getString("particle"));
-                } else {
-                    data.put("arrowtrail", "default");
-                    data.put("particle", "default");
-                }
-
-                ResultSet glowResult = SQL.query("SELECT * FROM `vip_settings` WHERE `uuid` = '" + uuid + "';");
-                if(glowResult.next()) {
-                    data.put("glow_effect", glowResult.getBoolean("glow_effect"));
-                    data.put("kill_message", glowResult.getString("kill_message"));
-                    data.put("death_message", glowResult.getString("death_message"));
-                } else {
-                    data.put("glow_effect", false);
-                    data.put("kill_message", "default");
-                    data.put("death_message", "default");
-                }
-
-
-                player_data.put(uuid, data);
-
-                Autio.log("Loaded player " + uuid + " (" + player.getName() + ") from Database");
-                return true;
-
-            } else {
-                loadNull(uuid, true);
-                return false;
             }
-
-
-        } catch(SQLException ex) {
-            ex.printStackTrace();
-            loadNull(uuid, false);
-            return false;
-        }
+        }));
 
     }
 
@@ -239,7 +246,8 @@ public class PlayerData {
                         " WHERE `uuid` = '" + uuid + "';",
 
                 "UPDATE `homes` SET `first_home` = '" + data.get("first_home") + "', `second_home` = '" + data.get("second_home") +
-                        "', `third_home` = '" + data.get("third_home") + "' WHERE `uuid` = '" + uuid + "';",
+                        "', `third_home` = '" + data.get("third_home") + "', `fourth_home` = '" + data.get("fourth_home") + "', `fifth_home` = '"
+                        + data.get("fifth_home") + "', `sixth_home` = '" + data.get("sixth_home") + "' WHERE `uuid` = '" + uuid + "';",
 
                 "UPDATE `mined_ores` SET `diamond` = " + data.get("diamond") + ", `gold` = " + data.get("gold") + ", `iron` = " + data.get("iron") +
                         ", `coal` = " + data.get("coal") + ", `total` = " + data.get("total") + " WHERE `uuid` = '" + uuid + "';",
@@ -264,12 +272,13 @@ public class PlayerData {
                 "INSERT INTO `players` VALUES('" + uuid + "', '" + player.getName() + "', " + data.get("money") + ", '" + data.get("rank") +  "', '" + data.get("joined")
                         + "', " + data.get("crystals") + ");",
 
-                "INSERT INTO `homes` VALUES('" + uuid +"', '" + data.get("first_home") + "', '" + data.get("second_home") + "', '" + data.get("third_home") + "');",
+                "INSERT INTO `homes` VALUES('" + uuid +"', '" + data.get("first_home") + "', '" + data.get("second_home") + "', '" + data.get("third_home") + "'" +
+                        ", '" + data.get("fourth_home") + "', '" + data.get("fifth_home") + "', '" + data.get("sixth_home") + "');",
 
                 "INSERT INTO `mined_ores` VALUES('" + uuid + "', " + data.get("diamond") + ", " + data.get("gold") + ", " + data.get("iron") + ", " +
                         "" + data.get("coal") + ", " + data.get("total") + ");",
 
-               // "INSERT INTO `levels` VALUES('" + uuid + "', " + data.get("level") + ", " + data.get("xp") + ", " + data.get("total_xp") + ");",
+                // "INSERT INTO `levels` VALUES('" + uuid + "', " + data.get("level") + ", " + data.get("xp") + ", " + data.get("total_xp") + ");",
 
                 "INSERT INTO `settings` VALUES('" + uuid + "', '" + data.get("scoreboard") + "', '" + data.get("privacy") + "', '" + data.get("chat") + "', 'false', '" + data.get("chat_mentions") + "');",
 

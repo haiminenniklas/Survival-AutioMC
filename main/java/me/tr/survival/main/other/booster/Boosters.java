@@ -61,7 +61,7 @@ public class Boosters implements Listener {
                 if(inv.getItem(i) != null) continue;
 
                 List<String> lore = new ArrayList<>();
-                lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                 lore.add("§7 ");
 
                 if(isActive(booster)) {
@@ -95,7 +95,7 @@ public class Boosters implements Listener {
                 lore.add("§7 ");
                 lore.add(" §7§oTehostus vaikuttaa kaikkiin");
                 lore.add(" §7§opelaajiin palvelimella!");
-                lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                 if(!isActive(booster)) {
                     lore.add("§a§lKLIKKAA AKTIVOIDAKSESI!");
                 }
@@ -250,18 +250,18 @@ public class Boosters implements Listener {
     }
 
     public static void deactivate(Booster booster) {
-        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §c§lTEHOSTUS LOPPUI §7(" + booster.getDisplayName() + "§7)");
         Bukkit.broadcastMessage(" ");
-        Bukkit.broadcastMessage(" §7Aktivoinut: §6" + getActivatorPlayer(booster).getName());
+        Bukkit.broadcastMessage(" §7Aktivoinut: §a" + getActivatorPlayer(booster).getName());
 
         if(booster.getDuration() >= 1) {
             Bukkit.broadcastMessage(" §7Kesto: §c" + booster.getDuration() + "min");
         }
 
         Bukkit.broadcastMessage(" ");
-        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
         Boosters.getActive().remove(booster.getDisplayName());
         getInCooldown().put(booster.getDisplayName(), System.currentTimeMillis());

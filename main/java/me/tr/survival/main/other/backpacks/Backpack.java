@@ -59,14 +59,14 @@ public class Backpack implements CommandExecutor, Listener {
 
                                    Chat.sendMessage(player, "Pelaajaa ei löydetty... Yritetään ladata tiedot tietokannasta");
 
-                                   Autio.async(() -> {
-                                       boolean result = PlayerData.loadPlayer(target.getUniqueId());
-                                       if(result) {
-                                           openOther(player, target);
-                                       } else {
-                                           Chat.sendMessage(player, "Pelaajaa ei löydetty... Ei voida avata reppua!");
-                                       }
-                                   });
+                                   Autio.async(() ->
+                                       PlayerData.loadPlayer(target.getUniqueId(), (result) -> {
+                                           if(result) {
+                                               openOther(player, target);
+                                           } else {
+                                               Chat.sendMessage(player, "Pelaajaa ei löydetty... Ei voida avata reppua!");
+                                           }
+                                       }));
 
                                } else {
                                    openOther(player, target);
@@ -380,11 +380,13 @@ public class Backpack implements CommandExecutor, Listener {
                 player.sendMessage(" §7Avaa reppu komennolla §a/reppu");
                 player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
             } else {
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 Chat.sendMessage(player, Chat.Prefix.ERROR, "Reppusi on jo ylimmällä tasolla!");
             }
 
         } else {
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Päivitys maksaa §e" + price + "€§7!");
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
         }
 
 

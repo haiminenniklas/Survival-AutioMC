@@ -110,6 +110,14 @@ public class Warps {
                 } catch(SQLException ex) {
                     ex.printStackTrace();
                     dbc.execute(false);
+                } finally {
+                    if(conn != null) {
+                        try {
+                            conn.close();
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                 }
             });
 
@@ -199,6 +207,14 @@ public class Warps {
                     }
                 } catch(SQLException ex) {
                     callback.execute(false);
+                } finally {
+                    if(conn != null) {
+                        try {
+                            conn.close();
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                 }
             });
         });

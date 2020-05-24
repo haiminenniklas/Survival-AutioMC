@@ -94,10 +94,25 @@ public class EndManager implements CommandExecutor {
                         teleport(target, true);
                     }
 
+                } else if(args[0].equalsIgnoreCase("disable")) {
+
+                   if(player.isOp()) {
+                       enabled = false;
+                       Chat.sendMessage(player, "End on nyt §cpois päältä§7!");
+                   }
+
+                } else if(args[0].equalsIgnoreCase("enable")) {
+
+                    if(player.isOp()) {
+                        enabled = true;
+                        Chat.sendMessage(player, "End on nyt §apäällä§7!");
+                    }
+
                 } else if(args[0].equalsIgnoreCase("help")) {
                     if(player.isOp()) {
                         Chat.sendMessage(player, "§c/ääri forcestop");
                         Chat.sendMessage(player, "§c/ääri forcetp [pelaaja]");
+                        Chat.sendMessage(player, "§c/ääri (disable / enable)");
                     } else {
                         Bukkit.dispatchCommand(player, "apua matkustaminen");
                     }
@@ -130,6 +145,7 @@ public class EndManager implements CommandExecutor {
             getEndConfig().set("running", true);
             getEndConfig().set("holder", holder.toString());
             getEndConfig().set("started", started);
+            getEndConfig().set("enabled", enabled);
             List<String> uuids = new ArrayList<>();
             for(UUID uuid : allowedPlayers) {
                 uuids.add(uuid.toString());
@@ -167,6 +183,7 @@ public class EndManager implements CommandExecutor {
     private static UUID holder = null;
 
     private static long started = 0L;
+    private static boolean enabled = true;
 
     public static void panel(Player player) {
         Gui.openGui(player, "Matkusta Endiin", 27, (gui) -> {
@@ -189,7 +206,11 @@ public class EndManager implements CommandExecutor {
                 lore.add(" §7Tila: §a§lVAPAA");
                 lore.add(" §7Hinta: §a§l500 000€");
                 lore.add(" ");
-                lore.add(" §aKlikkaa aktivoidaksesi!");
+                if(Balance.canRemove(player.getUniqueId(), price)) {
+                    lore.add(" §aKlikkaa aktivoidaksesi!");
+                } else {
+                    lore.add(" §cSinulla ei ole varaa");
+                }
             }
 
             lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -202,10 +223,15 @@ public class EndManager implements CommandExecutor {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     if(!isOccupied()) {
-                        gui.close(clicker);
-                        start(clicker);
+                        if(Balance.canRemove(player.getUniqueId(), price)) {
+                            gui.close(clicker);
+                            start(clicker);
+                        } else {
+                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                        }
                     } else {
                         if(allowedPlayers.contains(clicker.getUniqueId())) {
+                            gui.close(clicker);
                             teleport(clicker, false);
                         } else {
                             clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
@@ -226,9 +252,21 @@ public class EndManager implements CommandExecutor {
                 allowedPlayers.add(UUID.fromString(sUuid));
             }
         }
+
+        if(getEndConfig().get("enabled") != null) {
+            enabled = getEndConfig().getBoolean("enabled");
+        } else {
+            enabled = true;
+        }
+
     }
 
     public static void start(Player player) {
+
+        if(!enabled) {
+            Chat.sendMessage(player, "End ei ole käytettävissä tällä hetkellä... Odotathan, kunnes ylläpito pistää sen takaisin päälle!");
+            return;
+        }
 
         if(Balance.canRemove(player.getUniqueId(), price)) {
 
@@ -239,7 +277,7 @@ public class EndManager implements CommandExecutor {
 
             // Create World
 
-            Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+            Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
             Bukkit.broadcastMessage(" §5§lEND AKTIVOITU!");
             Bukkit.broadcastMessage(" ");
             Bukkit.broadcastMessage(" §7Aktivoija: §a" + player.getName());
@@ -248,7 +286,7 @@ public class EndManager implements CommandExecutor {
             Bukkit.broadcastMessage(" §cGeneroimme End-maailmaa, joka");
             Bukkit.broadcastMessage(" §csaattaa synnyttää lagia.");
             Bukkit.broadcastMessage(" §cPahoittelemme häiriötä...");
-            Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+            Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
             Util.broadcastSound(Sound.ENTITY_ENDER_DRAGON_DEATH);
 
@@ -262,12 +300,12 @@ public class EndManager implements CommandExecutor {
             allowedPlayers.add(player.getUniqueId());
 
             //Teleport
-            new BukkitRunnable() {
+            /*new BukkitRunnable() {
                 @Override
                 public void run() {
                     teleport(player, false);
                 }
-            }.runTaskLater(Main.getInstance(), 20);
+            }.runTaskLater(Main.getInstance(), 20); */
 
         }
 
@@ -321,7 +359,17 @@ public class EndManager implements CommandExecutor {
 
     }
 
+    public static boolean isInEnd(Player player) {
+        return player.getWorld().getName().equalsIgnoreCase("world_the_end");
+    }
+
     public static void teleport(Player player, boolean force) {
+
+        if(!force && !enabled) {
+            Chat.sendMessage(player, "End ei ole käytettävissä tällä hetkellä... Odotathan, kunnes ylläpito pistää sen takaisin päälle!");
+            return;
+        }
+
         if(!force && !allowedPlayers.contains(player.getUniqueId())) {
             Chat.sendMessage(player, "Et ole sallittujen pelaajien listalla §5Endiin§7!");
             return;

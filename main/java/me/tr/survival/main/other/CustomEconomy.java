@@ -6,6 +6,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,12 +34,13 @@ public class CustomEconomy implements Economy {
 
     @Override
     public String format(double amount) {
-        float epsilon = 0.004f; // 4 tenths of a cent
+      /*  float epsilon = 0.004f; // 4 tenths of a cent
         if (Math.abs(Math.round(amount) - amount) < epsilon) {
             return String.format("%10.0f", amount); // sdb
         } else {
             return String.format("%10.2f", amount); // dj_segfault
-        }
+        } */
+        return new DecimalFormat("#.##").format(amount);
     }
 
     @Override

@@ -75,6 +75,14 @@ public class Home {
             result.execute(false);
             return;
         }
+
+        if(this.getLocation().getWorld().getName().equalsIgnoreCase("world_the_end") ||
+                this.getLocation().getWorld().getName().equalsIgnoreCase("world_nether")) {
+            Chat.sendMessage(player, "Kodin sijainti ei ole tavallisessa maailmassa, joten sinne ei pysty teleporttaamaan. Ole hyvä ja poista tämä koti.");
+            result.execute(false);
+            return;
+        }
+
         Autio.afterAsync(3, () -> {
             Util.sendNotification(player, "§7Teleportataan...", true);
             CompletableFuture<Boolean> teleport = player.teleportAsync(this.getLocation());

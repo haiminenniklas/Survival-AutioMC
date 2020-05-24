@@ -197,7 +197,7 @@ public class Autio {
 
     public static void loadPlayer(Player player) {
         Autio.async(() -> {
-           PlayerData.loadPlayer(player.getUniqueId());
+           PlayerData.loadPlayer(player.getUniqueId(), (res) -> {});
         });
     }
 

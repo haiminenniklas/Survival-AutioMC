@@ -15,6 +15,7 @@ import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.scoreboard.*;
@@ -169,6 +170,7 @@ public class Settings {
     public static void vipPanel(Player player) {
 
         if(!Ranks.isVIP(player.getUniqueId())) {
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Tämä toiminto vaatii vähintään §aPremium§7-arvon! Lisätietoa §a/kauppa§7!");
             return;
         }
@@ -430,7 +432,7 @@ public class Settings {
         Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
 
             //board.getTeam("crystals").setPrefix("§b" + Crystals.get(player.getUniqueId()));
-            board.getTeam("blocks").setPrefix("§a" + new DecimalFormat("#.##").format(Balance.get(player.getUniqueId())) + "€");
+            board.getTeam("blocks").setPrefix("§a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
             board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
             board.getTeam("players").setPrefix("§a" + Autio.getOnlinePlayers().size());
 

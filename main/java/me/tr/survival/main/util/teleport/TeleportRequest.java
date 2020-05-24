@@ -4,6 +4,7 @@ import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Settings;
 import me.tr.survival.main.other.Util;
+import me.tr.survival.main.other.travel.EndManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -59,6 +60,13 @@ public class TeleportRequest {
         if(this.getType() == TeleportManager.Teleport.FORCE) {
             accept();
         } else {
+
+            if(EndManager.isInEnd(this.one) || EndManager.isInEnd(this.two)) {
+                Chat.sendMessage(this.one, Chat.Prefix.ERROR, "Teleporttaus evättiin, sillä §5Endiin §7teleporttaaminen on kiellettyä.");
+                this.remove();
+                return;
+            }
+
             TextComponent accept =  new TextComponent(TextComponent.fromLegacyText("  §a§lHYVÄKSY"));
             accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7Klikkaa hyväksyäksesi §o(§a/tpaccept§7§o)").create()));
             accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + one.getName()));

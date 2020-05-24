@@ -2,6 +2,7 @@ package me.tr.survival.main.commands;
 
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.database.PlayerData;
+import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import org.bukkit.Bukkit;
@@ -11,6 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.text.DecimalFormat;
 import java.util.UUID;
 
 public class MoneyCommand implements CommandExecutor {
@@ -25,10 +27,10 @@ public class MoneyCommand implements CommandExecutor {
 
             if(command.getLabel().equalsIgnoreCase("bal")) {
                 if(args.length == 0){
-                    Chat.sendMessage(player, "Rahatilanne: §e" + Balance.get(uuid) + "€");
+                    Chat.sendMessage(player, "Rahatilanne: §e" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
                 } else if(args.length > 0) {
                     if(!player.isOp()){
-                        Chat.sendMessage(player, "Rahatilanne: §e" + Balance.get(uuid) + "€");
+                        Chat.sendMessage(player, "Rahatilanne: §e" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
                     } else {
 
                         if(args.length == 1 && args[0].equalsIgnoreCase("help")) {
@@ -60,10 +62,10 @@ public class MoneyCommand implements CommandExecutor {
 
                                 if(args[0].equalsIgnoreCase("add")) {
                                     Balance.add(target.getUniqueId(), value);
-                                    Chat.sendMessage(player, "Pelaajalle §a" + target.getName() + " §7annettu §a" + value + "€§7! Hänen rahatilanteensa: §a" + PlayerData.getValue(target.getUniqueId(), "money") + "€");
+                                    Chat.sendMessage(player, "Pelaajalle §a" + target.getName() + " §7annettu §a" + value + "€§7! Hänen rahatilanteensa: §a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
                                 } else if(args[0].equalsIgnoreCase("remove")) {
                                     Balance.remove(target.getUniqueId(), value);
-                                    Chat.sendMessage(player, "Pelaajalta §a" + target.getName() + " §7 poistettu §a" + value + "€! §7Hänen rahatilanteensa: §a" + PlayerData.getValue(target.getUniqueId(), "money") + "€");
+                                    Chat.sendMessage(player, "Pelaajalta §a" + target.getName() + " §7 poistettu §a" + value + "€! §7Hänen rahatilanteensa: §a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
                                 }
 
                                 Chat.sendMessage(player, "Tallenna pelaajan tiedot komennolla §6/save " + target.getName());
@@ -95,9 +97,9 @@ public class MoneyCommand implements CommandExecutor {
                         return true;
                     }
 
-                    int amount;
+                    double amount;
                     try {
-                        amount = Integer.parseInt(args[1]);
+                        amount = Double.parseDouble(args[1]);
                     } catch(NumberFormatException ex) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytäthän numeroita!");
                         return true;
@@ -107,6 +109,8 @@ public class MoneyCommand implements CommandExecutor {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita, tai nolla!");
                         return true;
                     }
+
+                    amount = Util.round(amount);
 
                     if(!Balance.canRemove(uuid, amount)) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole tarpeeksi rahaa!");

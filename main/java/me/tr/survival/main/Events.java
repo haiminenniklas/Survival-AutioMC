@@ -1,32 +1,23 @@
 package me.tr.survival.main;
 
 import com.destroystokyo.paper.Title;
-import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
 import com.destroystokyo.paper.event.server.ServerExceptionEvent;
-import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
-import me.tr.survival.main.other.CountdownTimer;
-import me.tr.survival.main.other.PlayerGlowManager;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.backpacks.Backpack;
 import me.tr.survival.main.other.booster.Boosters;
 import me.tr.survival.main.other.events.LevelUpEvent;
-import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.data.Balance;
-import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import me.tr.survival.main.util.staff.StaffManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_15_R1.PortalTravelAgent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -42,10 +33,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.event.world.PortalCreateEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.loot.LootContext;
-import org.bukkit.loot.LootTable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -101,7 +89,7 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
         UUID uuid = e.getUniqueId();
-        PlayerData.loadPlayer(uuid);
+        PlayerData.loadPlayer(uuid, (res) -> {});
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -174,7 +162,7 @@ public class Events implements Listener {
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
 
         Main.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
-            PlayerData.loadPlayer(player.getUniqueId());
+            PlayerData.loadPlayer(player.getUniqueId(), (result) -> {});
         }, 20 * 2);
 
         Autio.updatePlayer(player);

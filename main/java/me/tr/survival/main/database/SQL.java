@@ -7,6 +7,7 @@ import me.tr.survival.main.Main;
 import me.tr.survival.main.util.callback.QueryPromise;
 import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.v1_15_R1.util.ServerShutdownThread;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,23 +46,9 @@ public class SQL {
             }
         } else {
 
-            String user = config.getString("mysql.user");
-            String password = config.getString("mysql.password");
-            String address = config.getString("mysql.address");
-
-            // pswd: uu4L3Ks3EhBMfP8u
-
-            HikariConfig hc = new HikariConfig();
-            hc.setJdbcUrl("jdbc:mysql://" + address + ":3306/autiomc");
-            hc.setUsername(user);
-            hc.setPassword(password);
-
-            HikariDataSource ds = new HikariDataSource(hc);
-
-            source = ds;
+            setupDataSource();
 
             try {
-                SQL.conn = ds.getConnection();
                 queries();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -70,12 +57,20 @@ public class SQL {
 
     }
 
+    private static void setupDataSource() {
+        source = new HikariDataSource();
+        source.setJdbcUrl("jdbc:mysql://localhost:3306/autiomc");
+        source.setMaximumPoolSize(10);
+        source.addDataSourceProperty("user", "sorsa");
+        source.addDataSourceProperty("password", "uu4L3Ks3EhBMfP8u");
+    }
+
     private static void queries(){
 
         String[] queries = new String[] {
 
                 "CREATE TABLE IF NOT EXISTS `players` (`uuid` VARCHAR(120), `player_name` TEXT, `money` int(11), `rank` TEXT, `joined` TEXT, `crystals` int(11) , PRIMARY KEY(`uuid`));",
-                "CREATE TABLE IF NOT EXISTS `homes` (`uuid` VARCHAR(120), first_home TEXT, second_home TEXT, third_home TEXT, PRIMARY KEY(`uuid`));",
+                "CREATE TABLE IF NOT EXISTS `homes` (`uuid` VARCHAR(120), first_home TEXT, second_home TEXT, third_home TEXT, `fourth_home` TEXT, `fifth_home` TEXT, `sixth_home` TEXT, PRIMARY KEY(`uuid`));",
                 "CREATE TABLE IF NOT EXISTS `mined_ores` (`uuid` VARCHAR(120), diamond int(11), gold int(11), iron int(11), coal int(11), total int(11), PRIMARY KEY (`uuid`));",
                // "CREATE TABLE IF NOT EXISTS `levels` (`uuid` VARCHAR(120), level int(11), xp int(11), total_xp int(11), PRIMARY KEY (`uuid`));",
                // "CREATE TABLE IF NOT EXISTS `player_aliases` (`player_name` VARCHAR(32), `addresses` LONGTEXT, PRIMARY KEY(`uuid`));",
@@ -102,50 +97,65 @@ public class SQL {
     }
 
     public static Connection getConnection() throws SQLException {
-        return SQL.conn;
+        if(source.isClosed()) {
+            setupDataSource();
+        }
+        return source.getConnection();
     }
 
-    public static boolean hasConnection() throws SQLException {
-
-        if(source == null) return false;
-
-        return SQL.conn != null && !SQL.conn.isClosed();
-    }
-
-    public static ResultSet query(String sql) throws SQLException {
-        Statement s = getConnection().createStatement();
-        return s.executeQuery(sql);
+    @Deprecated
+    // Not working properly with connection pools. Use the async function instead
+    // with callbacks
+    public static Result query(String sql) throws SQLException {
+        Connection conn = null;
+        Result result = null;
+        try {
+            conn = getConnection();
+            ResultSet r = conn.createStatement().executeQuery(sql);
+            result = Result.fromResultSet(r);
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            if(conn != null) {
+                conn.close();
+            }
+        }
+        return result;
     }
 
     public static boolean update(String sql) throws SQLException {
 
-        if(!SQL.hasConnection()) {
-            SQL.setup();
+        Connection conn = null;
+        boolean result = false;
+
+        try {
+            conn = getConnection();
+            int r = conn.createStatement().executeUpdate(sql);
+            result = r > 0;
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            if(conn != null) {
+                conn.close();
+            }
         }
-        int result = getConnection().createStatement().executeUpdate(sql);
-        return result > 0 ? true : false ;
+        return result;
     }
 
     public static void query(final String sql, QueryPromise<ResultSet, Connection> cb) {
         Autio.async(() -> {
-
             try {
-
                 Connection c = getConnection();
                 ResultSet result = c.createStatement().executeQuery(sql);
-
                 cb.join(result,c);
-
             } catch(SQLException ex) {
                 ex.printStackTrace();
             }
         });
-
     }
 
     public static void update(String sql, TypedCallback<Boolean> cb) {
         Autio.async(() -> {
-
             try {
                 Boolean result = SQL.update(sql);
                 cb.execute(result);

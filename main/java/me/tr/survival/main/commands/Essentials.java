@@ -48,14 +48,12 @@ public class Essentials implements CommandExecutor, Listener {
                     player.sendMessage( "§7§oKirjoita §a§o/apua <...>");
                     player.sendMessage(" ");
                     player.sendMessage(" §a...komennot §7Hyödylliset komennot");
-                    //player.sendMessage(" §6...vaihto §7Tietoa vaihtokaupasta");
-                    player.sendMessage(" §a...huutokauppa §7Tietoa huutokaupasta");
+                    player.sendMessage(" §6...vaihto §7Tietoa vaihtokaupasta");
                     player.sendMessage(" §a...arvot §7Palvelimen VIP-arvot");
                     player.sendMessage(" §a...aloitus §7Vinkit survivalin aloitukseen");
                     player.sendMessage(" §a...tehostukset §7Mitä tehostukset ovat?");
                     player.sendMessage(" §a...asetukset §7Mitkä asetukset?");
                     player.sendMessage(" §a...valuutta §7Miten raha toimii täällä?");
-                    player.sendMessage(" §a...tehtävät §7Miten suoritat tehtäviä");
                     player.sendMessage(" §a...matkustaminen §7Miten toimii??");
                     player.sendMessage(" §a...reppu §7Kätevä tapa tallettaa tavarat");
                     player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -170,38 +168,20 @@ public class Essentials implements CommandExecutor, Listener {
                         });
                     } else if(args[0].equalsIgnoreCase("valuutta") || args[0].equalsIgnoreCase("raha")) {
                         Gui.openGui(player, "Apua (Raha/Valuutta)", 27, (gui) -> {
+
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten toimii?", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Palvelimellamme on valuutta §eEuro",
-                                    " §7(§e€§7), jolla voit ostaa huuto-",
+                                    " §7(§e€§7), jolla voit ostaa palvelimen",
                                     " §7kaupasta esineitä. Saat myös näitä",
-                                    " §eeuroja§7, kun saat huutokaupattua",
-                                    " §7tavaroitasi. Palvelimellamme ei ole",
-                                    " §7ylläpidön ylläpitämää kauppaa, vain",
-                                    " §7pelaajien ylläpitämä huutokauppa.",
-                                    " §7(§a/huutokauppa§7)",
+                                    " §eeuroja§7, kun saat myytyä",
+                                    " §7tavaroitasi.",
                                     " §7Voit myös maksaa ja vastaanottaa",
                                     " §7rahaa muilta pelaajilta §7(§a/raha§7)!",
                                     " §7Aluksi kaikki pelaajat saavat",
-                                    " §a1000€§7!",
+                                    " §a1 000€§7!",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 12);
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitkä kristallit?", Arrays.asList(
-                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                                    " §7Palvelimellamme on kuitenkin",
-                                    " §7toisenlainenkin §6valuutta§7. Nämä",
-                                    " §7ovat ns. §bkristallit§7. Näillä",
-                                    " §7voit ostaa erilaisia §atehostuksia§7,",
-                                    " §7sekä erikoistavaroita ja -kykyjä.",
-                                    " §7Ne ovat harvinaisia ja niitä voi mm.",
-                                    " §7tippua arvokkaiden mineraalien mukana!",
-                                    " §7Niitä myös tuodaan sinulle §dpäivittäisen",
-                                    " §dtoimituksen §7mukana, joka on",
-                                    " §7haettavissa postimieheltä! Niitä voi",
-                                    " §7myös ostaa §averkkokaupastamme!",
-                                    " §7§o(/osta)",
-                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                            )), 14);
 
                             gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§aHyödylliset komennot", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -213,7 +193,7 @@ public class Essentials implements CommandExecutor, Listener {
                             )), 26);
 
                         });
-                    } else if(args[0].equalsIgnoreCase("tehtävät")) {
+                    }/* else if(args[0].equalsIgnoreCase("tehtävät")) {
                         Gui.openGui(player, "Apua (Tehtävät)", 27, (gui) -> {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitä tehtävät ovat?", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -226,7 +206,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
                         });
-                    } else if(args[0].equalsIgnoreCase("matkustaminen")) {
+                    }*/ else if(args[0].equalsIgnoreCase("matkustaminen")) {
                         Gui.openGui(player, "Apua (Matkustaminen)", 27, (gui) -> {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitä tarkoittaa?", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -263,7 +243,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
                         });
-                    } else if(args[0].equalsIgnoreCase("huutokauppa")) {
+                    }/* else if(args[0].equalsIgnoreCase("huutokauppa")) {
                         Gui.openGui(player, "Apua (Huutokauppa)", 27, (gui) -> {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten tienaan rahaa?", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -280,7 +260,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
                         });
-                    }
+                    } */
 
                 }
 

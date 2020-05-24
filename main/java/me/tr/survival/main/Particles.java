@@ -1,27 +1,22 @@
 package me.tr.survival.main;
 
-import com.destroystokyo.paper.ParticleBuilder;
 import dev.esophose.playerparticles.PlayerParticles;
 import dev.esophose.playerparticles.particles.ParticleEffect;
-import dev.esophose.playerparticles.particles.ParticleGroup;
 import dev.esophose.playerparticles.particles.ParticlePair;
 import dev.esophose.playerparticles.styles.*;
 import me.tr.survival.main.database.PlayerData;
-import me.tr.survival.main.other.PlayerGlowManager;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -96,10 +91,10 @@ public class Particles implements Listener, CommandExecutor {
                // System.out.println(((isUsingDefaultArrowTrail(player) ? "default" : String.valueOf(getCurrentArrowTrail(player).getId()))));
 
                 gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.HEART_OF_THE_SEA, 1, "§aPartikkelit", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         " §7Klikkaa hallinnoidaksesi",
                         " §apartikkeliefektejäsi§7!",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -111,10 +106,10 @@ public class Particles implements Listener, CommandExecutor {
                 });
 
                 gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.BOW, 1, "§bNuolijanat", Arrays.asList(
-                        "§7§m--------------------",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         " §7Klikkaa hallinnoidaksesi",
                         " §bnuolijanojasi§7!",
-                        "§7§m--------------------"
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
@@ -135,6 +130,7 @@ public class Particles implements Listener, CommandExecutor {
 
             });
         } else {
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän ominaisuuteen vaaditaan vähintään §a§lPremium§7-arvo!");
         }
 
@@ -159,19 +155,19 @@ public class Particles implements Listener, CommandExecutor {
 
                         List<String> lore = new ArrayList<>();
 
-                        lore.add("§7§m--------------------");
+                        lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                         lore.add(" §aKlikkaa aktivoidaksesi!");
-                        lore.add("§7§m--------------------");
+                        lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                         ItemStack item = ItemUtil.makeItem(particle.getItemMaterial(), 1, getDisplayNameForArrowTrail(particle.getId()), lore);
 
                         if(!isUsingDefaultArrowTrail(player) && getCurrentArrowTrail(player).getId() == particle.getId()) {
                             item = Util.makeEnchanted(item);
                             lore = Arrays.asList(
-                                    "§7§m--------------------",
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §cKlikkaa poistaaksesi",
                                     " §ckäytöstä!",
-                                    "§7§m--------------------"
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             );
                             ItemMeta meta = item.getItemMeta();
                             meta.setLore(lore);
@@ -216,6 +212,7 @@ public class Particles implements Listener, CommandExecutor {
 
             });
         } else {
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän ominaisuuteen vaaditaan vähintään §a§lPremium§7-arvo!");
         }
     }
@@ -240,9 +237,9 @@ public class Particles implements Listener, CommandExecutor {
 
                         List<String> lore = new ArrayList<>();
 
-                        lore.add("§7§m--------------------");
+                        lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                         lore.add(" §7Klikkaa aktivoidaksesi!");
-                        lore.add("§7§m--------------------");
+                        lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                        // System.out.println("GUI ID" + particle.getId());
 
@@ -253,10 +250,10 @@ public class Particles implements Listener, CommandExecutor {
                         if(!isUsingDefaultParticle(player) && getCurrentParticle(player).getId() == particle.getId()) {
                             item = Util.makeEnchanted(item);
                             lore = Arrays.asList(
-                                    "§7§m--------------------",
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §cKlikkaa poistaaksesi",
                                     " §ckäytöstä!",
-                                    "§7§m--------------------"
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             );
                             ItemMeta meta = item.getItemMeta();
                             meta.setLore(lore);
@@ -302,6 +299,7 @@ public class Particles implements Listener, CommandExecutor {
 
             });
         } else {
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän ominaisuuteen vaaditaan vähintään §a§lPremium§7-arvo!");
         }
     }
@@ -451,7 +449,7 @@ public class Particles implements Listener, CommandExecutor {
 
             return getPremiumPlusParticles();
 
-        } else if(Ranks.hasRank(player, "kuningas")) {
+        } else if(Ranks.hasRank(player, "sorsa")) {
 
             return getKuningasParticles();
 

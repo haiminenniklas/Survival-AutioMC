@@ -4,7 +4,6 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.commands.*;
-import me.tr.survival.main.database.PlayerAliases;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.other.*;
@@ -896,8 +895,16 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             } else if(args[0].equalsIgnoreCase("load")) {
 
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Tietojasi haetaan tietokannasta...");
-                                PlayerData.loadPlayer(player.getUniqueId());
-                                Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
+                                Autio.async(() -> {
+                                    PlayerData.loadPlayer(player.getUniqueId(), (result) -> {
+                                        if(result) {
+                                            Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
+                                        } else {
+                                            Chat.sendMessage(player, Chat.Prefix.DEBUG, "Tietoja ei ollut olemassa, ladattiin nollatiedot.");
+                                        }
+                                    });
+
+                                });
 
                             } else if(args[0].equalsIgnoreCase("autobroadcast")){
                               AutoBroadcaster.test();
@@ -932,7 +939,11 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             if(args[0].equalsIgnoreCase("load")) {
 
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Pelaajan §a" + target.getName() + " §7tietoja haetaan tietokannasta...");
-                                PlayerData.loadPlayer(target.getUniqueId());
+                                Autio.async(() ->
+                                    PlayerData.loadPlayer(target.getUniqueId(), (result) -> {
+                                        if (result) Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
+                                        else Chat.sendMessage(player, Chat.Prefix.DEBUG, "Tietoja ei ollut olemassa, ladattiin nollatiedot.");
+                                    }));
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
 
                             } else if(args[0].equalsIgnoreCase("update")) {
