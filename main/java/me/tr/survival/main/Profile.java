@@ -2,6 +2,7 @@ package me.tr.survival.main;
 
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
+import me.tr.survival.main.other.Util;
 import me.tr.survival.main.other.travel.TravelManager;
 import me.tr.survival.main.other.backpacks.Backpack;
 import me.tr.survival.main.other.booster.Boosters;
@@ -139,7 +140,7 @@ public class Profile {
                 " §7Nimi: §a" + target.getName(),
                 " ",
                 " §7Arvo: §r" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
-                " §7Rahatilanne: §e" + Balance.get(targetUUID) + "€",
+                " §7Rahatilanne: §e" + Util.formatDecimals(Balance.get(targetUUID)) + "€",
                 " ",
                 " §7Liittynyt: §a" + data.get("joined"),
                 " §7Viimeksi nähty: §a" + lastSeen.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
@@ -242,12 +243,12 @@ public class Profile {
                 " §7Hyödylliset komennot:",
                 "  §6/profiili §7tämä valikko",
                 "  §6/rtp §7vie sinut erämaahan",
+                "  §6/matkusta §7matkusatminen",
                 "  §6/msg §7yksityisviestit",
                 "  §6/tpa §7teleporttauspyyntö",
-                "  §6/warp §7palvelimen warpit",
+                "  §a/vaihda §7vaihtokauppa",
                 "  §9/discord §7Discord-yhteisö",
-                "  §6/huutokauppa §7huutokauppa",
-                "  §a/osta §7verkkokauppa",
+                "  §e/osta §7verkkokauppa",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )), 39);
 

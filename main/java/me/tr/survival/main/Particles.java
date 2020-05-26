@@ -3,6 +3,7 @@ package me.tr.survival.main;
 import dev.esophose.playerparticles.PlayerParticles;
 import dev.esophose.playerparticles.particles.ParticleEffect;
 import dev.esophose.playerparticles.particles.ParticlePair;
+import dev.esophose.playerparticles.particles.data.OrdinaryColor;
 import dev.esophose.playerparticles.styles.*;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
@@ -535,7 +536,7 @@ public class Particles implements Listener, CommandExecutor {
 
 
         particles.add(new ParticlePair(null, 14, ParticleEffect.DUST, new ParticleStyleWings(),
-                Material.ELYTRA, null, new ParticleEffect.OrdinaryColor(255, 255, 255), null));
+                Material.ELYTRA, null, new OrdinaryColor(255, 255, 255), null));
 
         particles.add(new ParticlePair(null, 15, ParticleEffect.ENTITY_EFFECT, new ParticleStyleWhirl(),
                 Material.GLOWSTONE_DUST, null, null, null));
@@ -550,7 +551,7 @@ public class Particles implements Listener, CommandExecutor {
 
 
         particles.add(new ParticlePair(null, 18, ParticleEffect.DUST, new ParticleStyleSpiral(),
-                Material.REDSTONE, null, ParticleEffect.OrdinaryColor.RAINBOW, null));
+                Material.REDSTONE, null, OrdinaryColor.RAINBOW, null));
 
 
 
@@ -759,7 +760,7 @@ public class Particles implements Listener, CommandExecutor {
         }
 
         particles.add(new ParticlePair(null, 107, ParticleEffect.DUST, new ParticleStyleArrows(),
-                Material.SLIME_BALL, null, ParticleEffect.OrdinaryColor.RAINBOW, null));
+                Material.SLIME_BALL, null, OrdinaryColor.RAINBOW, null));
 
 
         particles.add(new ParticlePair(null, 108, ParticleEffect.WITCH, new ParticleStyleArrows(),

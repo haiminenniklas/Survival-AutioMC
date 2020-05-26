@@ -732,9 +732,9 @@ public class Util {
         return getRegions(player.getLocation());
     }
 
-    public static boolean isInRegion(final Player player, ProtectedRegion region) {
+    public static boolean isInRegion(final Player player, String id) {
         for(ProtectedRegion rg : getRegions(player)) {
-            if(rg.getId().equals(region.getId())) {
+            if(rg.getId().equalsIgnoreCase(id)) {
                 return true;
             }
         }

@@ -54,6 +54,7 @@ public class Balance {
                     while(result.next()) {
                         balances.put(UUID.fromString(result.getString("uuid")), result.getDouble("money"));
                     }
+                    cb.execute(balances);
                 } catch(SQLException ex) {
                     ex.printStackTrace();
                 } finally {
@@ -66,8 +67,6 @@ public class Balance {
                     }
                 }
             });
-
-            cb.execute(balances);
 
 
         });

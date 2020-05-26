@@ -96,18 +96,21 @@ public class Events implements Listener {
     public void onJoin(PlayerJoinEvent e) {
 
         Player player = e.getPlayer();
-        player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-        player.sendMessage(" §7Tervetuloa §a" + player.getName() + " §7meidän Survival-");
-        player.sendMessage(" §7palvelimellemme! Alla löydät muutama nappia, joista löydät");
-        player.sendMessage( "§7hyödyllistä tietoa, asetuksia ja ominaisuuksia. Alkuun");
-        player.sendMessage(" §7pääset myös komennolla §a/apua§7!");
+        player.sendMessage("   ");
+        player.sendMessage("   ");
+        player.sendMessage("   ");
+        player.sendMessage("   ");
+        Chat.sendCenteredMessage(player, "§a§lSurvival");
+        player.sendMessage("   ");
+        Chat.sendCenteredMessage(player, " §7Tervetuloa §a" + player.getName() + " §7meidän Survival-palvelimelle!");
+        Chat.sendCenteredMessage(player, " §7Alkuun pääset helposti komennolla §a/apua§7!");
+        player.sendMessage("§3 §6 §3 §6 §3 §6 §e"); // Disable mini map
+        Chat.sendCenteredMessage(player, " §7Mukavia pelihetkiä!");
         player.sendMessage(" ");
-        player.sendMessage(" §7Mukavia pelihetkiä!");
-        player.sendMessage(" ");
-        TextComponent mail = new TextComponent(" §d§lPOSTI  ");
+        TextComponent mail = new TextComponent("                  §d§lPOSTI §8| ");
         mail.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/posti"));
         mail.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa tarkastellaksesi §dpäivittäisiä toimituksia§7!")));
-        TextComponent stats = new TextComponent("§b§lPROFIILI  ");
+        TextComponent stats = new TextComponent("§b§lPROFIILI §8| ");
         stats.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/stats"));
         stats.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa tarkastellaksesi §bprofiiliasi§7!")));
         TextComponent boosters = new TextComponent("§a§lTEHOSTUKSET");
@@ -117,8 +120,6 @@ public class Events implements Listener {
         mail.addExtra(stats);
         player.spigot().sendMessage(mail);
         player.sendMessage(" ");
-        player.sendMessage(" §ahttp://www.sorsamc.fi");
-        player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
         }
@@ -415,7 +416,6 @@ public class Events implements Listener {
                 Util.sendNotification(player, "§a§lTEHOSTUS §72x oret!");
             }
 
-
         }
 
         if(Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
@@ -441,79 +441,10 @@ public class Events implements Listener {
 
         }
 
-        double random = new Random().nextDouble();
-
-        /*
-
-        Chances:
-
-        Emerald: 35% (0.35)
-        Diamond: 15% (0.15)
-        Gold: 3% (0.03)
-        Iron: 2% (0.02)
-        Coal 0.5% (0.005)
-        Redstone: 2% (0.02)
-        Lapis 3% (0.03)
-
-        Crystals removed for now
-
-        if(block.getType() == Material.DIAMOND_ORE) {
-            PlayerData.add(uuid, "diamond", 1);
-            if(random <= 0.15) {
-                int add = new Random().nextInt(3) + 1;
-                Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-            }
-        } else if(block.getType() == Material.GOLD_ORE && Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
-            PlayerData.add(uuid, "gold", 1);
-            if(random <= 0.03) {
-                int add = new Random().nextInt(3) + 1;
-                Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-            }
-        } else if(block.getType() == Material.IRON_ORE && Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
-            PlayerData.add(uuid, "iron", 1);
-            if(random <= 0.02) {
-                int add = new Random().nextInt(3) + 1;
-                Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-            }
-        } else if(block.getType() == Material.COAL_ORE) {
-            PlayerData.add(uuid, "coal", 1);
-            if(random <= 0.005) {
-                int add = new Random().nextInt(3) + 1;
-                Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-            }
-        } else if(block.getType() == Material.EMERALD_ORE) {
-            if(random <= 0.35) {
-                int add = new Random().nextInt(3) + 1;
-                Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-            }
-        } else if(block.getType() == Material.LAPIS_ORE) {
-            if(random <= 0.03) {
-                int add = new Random().nextInt(3) + 1;
-                Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-            }
-        } else if(block.getType() == Material.REDSTONE_ORE) {
-            if(random <= 0.02) {
-                int add = new Random().nextInt(3) + 1;
-                Crystals.add(uuid, add);
-                Chat.sendMessage(player, "§7Löysit §b" + add  + " §7kristallia!");
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-            }
-        } */
-
-
     }
+
+
+    // Here downwards are just events for disabling unwanted actions from players
 
     @EventHandler
     public void onKick(PlayerKickEvent e) {

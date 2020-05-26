@@ -37,24 +37,22 @@ public class BaltopCommand implements CommandExecutor {
                     balanceLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                     int looped = 1;
-                    for(Map.Entry<UUID, Double> e : balanceMap.entrySet()) {
+                    if(rawBalanceMap != null && rawBalanceMap.size() >= 1) {
+                        for(Map.Entry<UUID, Double> e : balanceMap.entrySet()) {
 
-                        OfflinePlayer op = Bukkit.getOfflinePlayer(e.getKey());
-                        DecimalFormat format = new DecimalFormat("#.##");
-                        if(looped > 10) break;
-                        balanceLore.add("§e#" + looped + " §7" + op.getName() + " (§a" + format.format(e.getValue()) + "€§7)");
-                        looped += 1;
+                            OfflinePlayer op = Bukkit.getOfflinePlayer(e.getKey());
+                            if(looped > 10) break;
+                            balanceLore.add("§e#" + looped + " §7" + op.getName() + " (§a" + Util.formatDecimals(e.getValue()) + "€§7)");
+                            looped += 1;
 
+                        }
+                    } else {
+                        balanceLore.add("§7Tapahtui virhe! Yritä pian uudestaan!");
                     }
 
                     balanceLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-                    Autio.task(() ->
-                            Gui.openGui(player, "TOP 10 - Rikkaimmat", 27, (gui) -> {
-
-                                gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§e§lTOP 10", balanceLore), 13);
-
-                            }));
+                    Autio.task(() -> Gui.openGui(player, "TOP 10 - Rikkaimmat", 27, (gui) -> gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§e§lTOP 10", balanceLore), 13)));
                 });
 
             }

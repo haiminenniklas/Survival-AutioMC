@@ -338,8 +338,6 @@ public class Settings {
     public static void toggleFlight(Player player) {
         if(!player.getAllowFlight()) {
 
-            ProtectedRegion spawnRegion = Util.getRegionManager(player.getWorld()).getRegion("spawn");
-
             if(player.isOp()) {
                 player.setAllowFlight(true);
                 player.setFlying(true);
@@ -347,7 +345,7 @@ public class Settings {
                 return;
             }
 
-            if(Util.isInRegion(player, spawnRegion) && !Ranks.isStaff(player.getUniqueId())) {
+            if(Util.isInRegion(player, "spawn") && !Ranks.isStaff(player.getUniqueId())) {
                 player.setAllowFlight(true);
                 player.setFlying(true);
                 Chat.sendMessage(player, "Lentotila §apäällä§7!");

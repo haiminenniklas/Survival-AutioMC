@@ -66,13 +66,13 @@ public class Essentials implements CommandExecutor, Listener {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Hyödylliset komennot", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Hyödylliset komennot:",
-                                    "  §a/profiili §7tämä valikko",
-                                    "  §a/rtp §7vie sinut arämaahan",
+                                    "  §a/profiili §7sinun tietosi",
+                                    "  §a/rtp §7vie sinut erämaahan",
                                     "  §a/msg §7yksityisviestit",
                                     "  §a/tpa §7teleporttauspyyntö",
-                                    "  §a/warp §7palvelimen warpit",
+                                    "  §a/matkusta §7matkusatminen",
+                                    "  §6/vaihto §7vaihtokauppa",
                                     "  §9/discord §7Discord-yhteisö",
-                                    "  §a/huutokauppa §7huutokauppa",
                                     "  §e/osta §7verkkokauppa",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
@@ -111,8 +111,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Palvelimellamme on §63",
                                     " §7VIP-arvoa: §aPremium§7,",
-                                    " §aPremium§f+§7 sekä",
-                                    " §a§lSORSA§7.",
+                                    " §aPremium§f+§7 sekä §a§lSORSA§7.",
                                     " §7VIP-arvot ovat yksi tapa",
                                     " §7tukea palvelimen toimintaa",
                                     " §7ja pitämällä sen mahdollisimman",
