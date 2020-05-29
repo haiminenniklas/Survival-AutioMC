@@ -423,40 +423,36 @@ public class TradeManager implements CommandExecutor, Listener {
         Player sender = e.getSender();
         Player target = e.getTarget();
 
-        if(Settings.get(target.getUniqueId(), "chat_mentions")) {
+        if(!Settings.get(target.getUniqueId(), "chat_mentions")) {
             Util.sendNotification(target, "§a§lILMOITUS! Sait uuden vaihtokauppapyynnön!", true);
-            target.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-            target.sendMessage(" ");
-            target.sendMessage(" §a§lUUSI VAIHTOKAUPPAPYYNTÖ!");
-            target.sendMessage(" ");
-            target.sendMessage(" §7Lähettäjä: §e" + sender.getName());
-            target.sendMessage(" ");
-
-            TextComponent accept = new TextComponent("  §a§lHYVÄKSY");
-            accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa hyväksyäksesi!")));
-            accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trade hyväksy " + sender.getName()));
-
-            accept.addExtra(new TextComponent("  §8|  "));
-
-            TextComponent deny = new TextComponent("§c§lKIELLÄ");
-            deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa kieltääksesi!")));
-            deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trade deny " + sender.getName()));
-            accept.addExtra(deny);
-
-            target.spigot().sendMessage(accept);
-
-            target.sendMessage(" ");
-
-            target.sendMessage(" §eUmpeutuu 60s päästä!");
-            target.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-        } else {
-            Chat.sendMessage(target, "Sait vaihtokauppapyynnön pelaajalta §a" + sender.getName() + "§7! Sinulla on §e60s §7aikaa vastata pyyntöön. Pystyt hyväksymään pyynnön komennolla §a/trade hyväksy " + sender.getName() + "§7!");
         }
 
-        //TODO: Update these messages!!
+        target.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+        target.sendMessage(" ");
+        target.sendMessage(" §a§lUUSI VAIHTOKAUPPAPYYNTÖ!");
+        target.sendMessage(" ");
+        target.sendMessage(" §7Lähettäjä: §e" + sender.getName());
+        target.sendMessage(" ");
+
+        TextComponent accept = new TextComponent("  §a§lHYVÄKSY");
+        accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa hyväksyäksesi!")));
+        accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trade hyväksy " + sender.getName()));
+
+        accept.addExtra(new TextComponent("  §8|  "));
+
+        TextComponent deny = new TextComponent("§c§lKIELLÄ");
+        deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa kieltääksesi!")));
+        deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trade deny " + sender.getName()));
+        accept.addExtra(deny);
+
+        target.spigot().sendMessage(accept);
+
+        target.sendMessage(" ");
+
+        target.sendMessage(" §eUmpeutuu 60s päästä!");
+        target.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+
         Chat.sendMessage(sender,"Lähetit vaihtokauppapyynnön pelaajalle §a" + target.getName() + "§7! Hänellä on §e60s §7aikaa vastata tähän pyyntöön.");
-
-
 
         Autio.after(60, () -> {
             // If nothing has happened to the trade request, remove it

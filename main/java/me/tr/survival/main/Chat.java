@@ -226,9 +226,12 @@ public class Chat implements Listener {
     public static void clear() {
 
         for(Player online : Bukkit.getOnlinePlayers()) {
-            for(int i = 0; i < 200; i++) {
-                online.sendMessage(" ");
+            if(!Ranks.isStaff(online.getUniqueId())) {
+                for(int i = 0; i < 200; i++) {
+                    online.sendMessage(" ");
+                }
             }
+
         }
 
         Bukkit.broadcastMessage("§c§lChat tyhjennetty!");
@@ -310,8 +313,15 @@ public class Chat implements Listener {
 
             if(msg.toLowerCase().contains(online.getName().toLowerCase())) {
 
-                msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a@" + online.getName() + "§r");
-                Util.sendNotification(online, "§a" + player.getName() + " §7mainitsi sinut Chatissa!", Settings.get(online.getUniqueId(), "chat_mentions"));
+                int startIndex = msg.toLowerCase().indexOf(online.getName().toLowerCase());
+
+                if(startIndex > 0 && msg.toLowerCase().charAt(startIndex - 1) == '@') {
+                    msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a" + online.getName() + "§r");
+                } else {
+                    msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a@" + online.getName() + "§r");
+                }
+
+                Util.sendNotification(online, "§a" + player.getName() + " §7mainitsi sinut Chatissa!", !Settings.get(online.getUniqueId(), "chat_mentions"));
 
             }
         }

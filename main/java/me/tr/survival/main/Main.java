@@ -399,11 +399,9 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
                     } else {
                         if(!StaffManager.hasStaffMode(player)) {
-                            spawnCommandDelay.put(uuid, System.currentTimeMillis() + 1000 * 60);
+                            spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));
                         }
                     }
-                    Chat.sendMessage(player, "Sinua viedään spawnille...");
-                    Autio.teleportToSpawn(player);
                 } else {
                     if(player.isOp()) {
                         Player target = Bukkit.getPlayer(args[0]);

@@ -123,8 +123,8 @@ public class Homes {
 
                 gui.close(player);
                 deleteHomeReal(position);
-
                 Chat.sendMessage(player, "Koti poistettiin!");
+                panel(clicker, clicker);
 
             }
         });
@@ -196,6 +196,7 @@ public class Homes {
         }
     }
 
+
     public static void panel(Player opener, OfflinePlayer target) {
 
         UUID uuid = target.getUniqueId();
@@ -242,6 +243,7 @@ public class Homes {
                             gui.close(clicker);
                             Chat.sendMessage(clicker, "Loit kodin §a#" + homePos + " §7sijaintiisi!");
                             homeList.createHome(clicker, getHomeString(homePos), clicker.getLocation());
+                            panel(clicker, clicker);
                         }
                     });
                 } else {

@@ -2,6 +2,7 @@ package me.tr.survival.main.other.booster;
 
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
+import me.tr.survival.main.Profile;
 import me.tr.survival.main.other.Enchant;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
@@ -40,24 +41,9 @@ public class Boosters implements Listener {
         }
 
         debug();
-
-       // int size = 18 + (9 * ((int) Math.ceil((double) Booster.values().length / 7)));
-
-        int size = 45;
-
-        Gui gui = new Gui("Tehostukset", size);
-
-        int[] itemSlots = new int[] {
-
-                10,12, 14, 16, 28, 30, 32, 34
-
-        };
-
-        int[] glassSlots = new int[] {
-
-                11, 13, 15, 29, 31, 33
-
-        };
+        Gui gui = new Gui("Tehostukset", 45);
+        int[] itemSlots = new int[] { 10,12, 14, 16, 28, 30, 32, 34 };
+        int[] glassSlots = new int[] { 11, 13, 15, 29, 31, 33 };
 
         for(Booster booster : Booster.values()) {
 
@@ -78,7 +64,7 @@ public class Boosters implements Listener {
                     lore.add("§7 Aktivoinut: §a" + Bukkit.getOfflinePlayer(getActivator(booster)).getName());
                     lore.add("§7 ");
                 } else {
-                    lore.add("§7 Hinta: §e" + booster.getCost() + "€");
+                    lore.add("§7 Hinta: §e" + Util.formatDecimals(booster.getCost()) + "€");
                     lore.add("§7 ");
 
                     if(isInCooldown(booster)) {
@@ -169,6 +155,17 @@ public class Boosters implements Listener {
 
             if(gui.getButton(i) != null) continue;
             if(gui.getItem(i) != null) continue;
+
+            if(i == 36) {
+                gui.addButton(new Button(1, i, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(clicker);
+                        Profile.openProfile(clicker, clicker.getUniqueId());
+                    }
+                });
+                continue;
+            }
 
             gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
 
@@ -285,16 +282,10 @@ public class Boosters implements Listener {
     public static long getTimeLeft(Booster booster) {
         if(getActive().containsKey(booster.getDisplayName())) {
             HashMap<UUID, Long> map = getActive().get(booster.getDisplayName());
-
             long value = (long) map.values().toArray()[0];
             long stopTime = value + (booster.getDuration() * 60 * 1000);
-
             long timeLeft = (stopTime - System.currentTimeMillis()) / 60 / 1000;
-
-            //System.out.println("Aikaa jäjljellä (" + booster.getDisplayName() + ") -> " + value + " / " + timeLeft);
-
             return timeLeft;
-
         }
         return 0L;
     }
@@ -318,18 +309,13 @@ public class Boosters implements Listener {
         }
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-
         Util.broadcastSound(Sound.ENTITY_ENDER_DRAGON_GROWL);
-
         // Execute if booster has some immediate functionality
         booster.getCallback().execute();
-
         if(booster.getDuration() < 1) {
             Boosters.getActive().remove(booster.getDisplayName());
             getInCooldown().put(booster.getDisplayName(), System.currentTimeMillis());
         }
-
-
     }
 
     public static OfflinePlayer getActivatorPlayer(Booster booster) {
@@ -360,10 +346,10 @@ public class Boosters implements Listener {
                         " §7Tehostus kestää §6§l45MIN§7!", 5000, () -> {
         }, Material.IRON_NUGGET),
         MORE_ORES(30, "§bMineeralimyllerrys!",
-                "§7Kun tämä tehostus on päällä, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 12500, () -> {
+                "§7Kun tämä tehostus on päällä, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 30000, () -> {
         }, Material.DIAMOND_ORE),
         EXTRA_HEARTS(60, "§cSote-uudistus",
-                "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 3000, () -> {
+                "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 3500, () -> {
 
             for(Player player : Bukkit.getOnlinePlayers()) {
                 Util.heal(player);
@@ -391,11 +377,11 @@ public class Boosters implements Listener {
 
         }, Material.CHAINMAIL_CHESTPLATE),
         NO_HUNGER(25, "§6Leipäjono",
-                "§7Tällä tehostuksella et koe nälkää! Tehostus kestää §6§l25MIN§7!", 4500, () -> {
+                "§7Tällä tehostuksella et koe nälkää! Tehostus kestää §6§l25MIN§7!", 7000, () -> {
         }, Material.COOKED_BEEF),
 
         DOUBLE_XP(45, "§eKokemuspisteiden kapina",
-                "§7Tällä tehostuksella saat jokaisesta tappamastasi mobista §a2x §7enemmän §eXP:§7tä! Tehostus kestää §6§l45MIN§7!", 8000, () -> {
+                "§7Tällä tehostuksella saat jokaisesta tappamastasi mobista §a2x §7enemmän §eXP:§7tä! Tehostus kestää §6§l45MIN§7!", 4000, () -> {
 
         }, Material.EXPERIENCE_BOTTLE),
 

@@ -294,6 +294,7 @@ public class StaffManager implements Listener, CommandExecutor {
         lastLocation.put(player.getUniqueId(), player.getLocation());
         hide(player);
         staffMode.put(player.getUniqueId(), true);
+        player.setGameMode(GameMode.SPECTATOR);
 
     }
 
@@ -307,6 +308,8 @@ public class StaffManager implements Listener, CommandExecutor {
         }
         show(player);
         staffMode.put(player.getUniqueId(), false);
+
+        player.setGameMode(GameMode.SURVIVAL);
 
     }
 
