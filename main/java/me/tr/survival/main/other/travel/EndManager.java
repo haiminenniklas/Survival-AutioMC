@@ -8,6 +8,7 @@ import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -185,6 +186,8 @@ public class EndManager implements CommandExecutor {
     private static long started = 0L;
     private static boolean enabled = true;
 
+    private static final int MAX_PLAYERS = 3;
+
     public static void panel(Player player) {
         Gui.openGui(player, "Matkusta Endiin", 27, (gui) -> {
 
@@ -202,6 +205,16 @@ public class EndManager implements CommandExecutor {
                 lore.add(" §7Varaaja: §c" + getHolderPlayer().getName());
                 lore.add(" §7Loppuu: §c" + getTimeLeft());
                 lore.add(" ");
+
+                // Text to show participants
+
+                List<UUID> temp = allowedPlayers;
+                temp.remove(getHolderPlayer().getUniqueId());
+                if(temp.size() >= 1) {
+                    lore.add("Osallistujat: ");
+                    lore.add("  §c" + StringUtils.join(temp, "§7,§c "));
+                }
+
             } else {
                 lore.add(" §7Tila: §a§lVAPAA");
                 lore.add(" §7Hinta: §a§l500 000€");
@@ -322,6 +335,11 @@ public class EndManager implements CommandExecutor {
 
             if(allowedPlayers.contains(target.getUniqueId())) {
                 Chat.sendMessage(invitor, Chat.Prefix.ERROR, "Tämä pelaaja on jo lisätty sallittujen listalle!");
+                return;
+            }
+
+            if(allowedPlayers.size() >= MAX_PLAYERS) {
+                Chat.sendMessage(invitor, Chat.Prefix.ERROR, "Olet jo kutsunut liian monta pelaajaa Endiin!");
                 return;
             }
 

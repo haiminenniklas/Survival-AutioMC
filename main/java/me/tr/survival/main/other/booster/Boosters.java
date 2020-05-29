@@ -30,7 +30,14 @@ public class Boosters implements Listener {
     private static HashMap<String, HashMap<UUID, Long>> active = new HashMap<>();
     private static Map<String, Long> cooldown = new HashMap<>();
 
+    public static boolean ENABLED = true;
+
     public static void panel(Player player) {
+
+        if(!ENABLED && !player.isOp()) {
+            Chat.sendMessage(player, "Tämä toiminto on toistaiseksi poissa käytöstä. Yritähän myöhemmin uudelleen.");
+            return;
+        }
 
         debug();
 

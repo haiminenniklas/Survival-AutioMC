@@ -56,13 +56,11 @@ public class VipCommand implements CommandExecutor {
 
         if(rank.equalsIgnoreCase("premium")) {
 
-            Crystals.add(uuid, 100);
             Balance.add(uuid, 20000);
             Mail.addTickets(uuid, 10);
 
         } else if(rank.equalsIgnoreCase("premiumplus")) {
 
-            Crystals.add(uuid, 250);
             Balance.add(uuid, 30000);
             Mail.addTickets(uuid, 10);
 

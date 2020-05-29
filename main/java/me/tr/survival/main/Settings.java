@@ -46,9 +46,10 @@ public class Settings {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
                 Settings.toggle(uuid, "scoreboard");
                 Settings.scoreboard(clicker);
-                gui.refresh(clicker);
+                panel(clicker);
             }
         });
 
@@ -67,8 +68,9 @@ public class Settings {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
                 Settings.toggle(uuid, "privacy");
-                gui.refresh(clicker);
+                panel(clicker);
             }
         });
 
@@ -86,8 +88,9 @@ public class Settings {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
                 Settings.toggle(uuid, "chat");
-                gui.refresh(clicker);
+                panel(clicker);
             }
         });
 
@@ -106,8 +109,9 @@ public class Settings {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
                 UltimateTimber.getInstance().getChoppingManager().togglePlayer(clicker);
-                gui.refresh(clicker);
+                panel(clicker);
             }
         });
 
@@ -125,8 +129,9 @@ public class Settings {
 
             @Override
             public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
                 Settings.toggle(uuid, "chat_mentions");
-                gui.refresh(clicker);
+                panel(clicker);
             }
         });
 
@@ -219,9 +224,9 @@ public class Settings {
 
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
                     PlayerGlowManager.toggle(player);
-                    Settings.vipPanel(clicker);
-                    gui.refresh(clicker);
+                    vipPanel(clicker);
                 }
             });
 
@@ -290,6 +295,7 @@ public class Settings {
                     } else {
                         toggleFlight(clicker);
                     }
+                    vipPanel(clicker);
 
                 }
             });
@@ -345,7 +351,7 @@ public class Settings {
                 return;
             }
 
-            if(Util.isInRegion(player, "spawn") && !Ranks.isStaff(player.getUniqueId())) {
+            if(Util.getRegions(player).size() >= 1 && !Ranks.isStaff(player.getUniqueId())) {
                 player.setAllowFlight(true);
                 player.setFlying(true);
                 Chat.sendMessage(player, "Lentotila §apäällä§7!");

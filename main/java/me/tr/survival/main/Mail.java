@@ -57,7 +57,7 @@ public class Mail {
                 "§7 Sinua odottaa:",
                 "§7 - §a+" + (50 * multiplier) + "€",
                 "§7 - §f+" + (3 * multiplier) + " rautaa",
-                "§7 - §c+" +  + (4 * multiplier) + " pihviä",
+                "§7 - §c+" +  + (10 * multiplier) + " pihviä",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -100,10 +100,10 @@ public class Mail {
                     clicker.sendMessage("§6§l+1 Arpa!!!");
                 }
 
-                clicker.getInventory().addItem(ItemUtil.makeItem(Material.IRON_INGOT, 10 * multiplier));
+                clicker.getInventory().addItem(ItemUtil.makeItem(Material.IRON_INGOT, 3 * multiplier));
                 clicker.sendMessage("§f§l+" + (3 * multiplier) + " rautaa");
-                clicker.getInventory().addItem(ItemUtil.makeItem(Material.COOKED_BEEF, 16 * multiplier));
-                clicker.sendMessage("§c§l+" + (4 * multiplier) + " pihviä");
+                clicker.getInventory().addItem(ItemUtil.makeItem(Material.COOKED_BEEF, 10 * multiplier));
+                clicker.sendMessage("§c§l+" + (10 * multiplier) + " pihviä");
 
                 clicker.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 

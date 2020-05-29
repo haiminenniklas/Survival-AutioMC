@@ -527,6 +527,12 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
             } else if(command.getLabel().equalsIgnoreCase("gamemode")) {
 
                 if(player.isOp()) {
+
+                    if(!StaffManager.hasStaffMode(player)) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Pystyt vaihtamaan pelimuotoasi vain §eStaff§7-tila päällä. (Tee §a/staff§7)");
+                        return true;
+                    }
+
                     if(args.length < 1) {
 
                         if(player.getGameMode() != GameMode.SURVIVAL) {
@@ -689,7 +695,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
                 if(Ranks.isStaff(uuid)) {
 
-                    if(!StaffManager.hasStaffMode(player) && !player.isOp()) {
+                    if(!StaffManager.hasStaffMode(player)) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Pystyt lentämään vain §eStaff§7-tila päällä. (Tee §a/staff§7)");
                         return true;
                     }
@@ -732,7 +738,17 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                     }
                 }
 
-            } else if(command.getLabel().equalsIgnoreCase("enchant")) {
+            } else if(command.getLabel().equalsIgnoreCase("roskis")) {
+
+               if(!Ranks.isStaff(player.getUniqueId()) && !Ranks.hasRank(player, "premium")) {
+                   Chat.sendMessage(player, "Tähän toimintoon tarvitaan §aPremium§7-arvon! Lisätietoa §a/kauppa§7!");
+                   return true;
+               }
+
+               Inventory inv = Bukkit.createInventory(null, 54, "Heivaa turhakkeet tänne!");
+               player.openInventory(inv);
+
+           } else if(command.getLabel().equalsIgnoreCase("enchant")) {
 
                 if(player.isOp()) {
 
@@ -886,6 +902,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                         Chat.sendMessage(player, "/debug resetBooster");
                         Chat.sendMessage(player, "/debug run");
                         Chat.sendMessage(player, "/debug autobroadcast");
+                        Chat.sendMessage(player, "/debug resetData [player] §cOle varovainen tän kaa!");
                     } else {
 
                         if(args.length == 1) {
@@ -930,6 +947,12 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Resetoitiin boosterit!");
                             } else if(args[0].equalsIgnoreCase("run")) {
                                 Autio.runDebug(player);
+                            } else if(args[0].equalsIgnoreCase("resetData")) {
+                                Autio.async(() -> {
+                                    PlayerData.loadNull(player.getUniqueId(), true);
+                                    PlayerData.savePlayer(player.getUniqueId());
+                                    Chat.sendMessage(player, "Data tyhjennetty pelaajalta!");
+                                });
                             }
 
                         } else if(args.length == 2) {
@@ -956,6 +979,12 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
                                 Autio.updatePlayer(newTarget);
                                 Chat.sendMessage(player, "Päivitit asetukset ja tagin pelaajalta §a" + target.getName() + "§7!");
+                            } else if(args[0].equalsIgnoreCase("resetData")) {
+                                Autio.async(() -> {
+                                    PlayerData.loadNull(target.getUniqueId(), true);
+                                    PlayerData.savePlayer(target.getUniqueId());
+                                    Chat.sendMessage(player, "Data tyhjennetty pelaajalta §a" + target.getName() + "§7!");
+                                });
                             }
                         }
 
@@ -1155,10 +1184,18 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
                                 Chat.sendMessage(player, "Kaikkien tehostuksien jäähy tyhjennetty!");
 
-                            } else {
+                            } else if(args[0].equalsIgnoreCase("disable")) {
+                                Boosters.ENABLED = false;
+                                Chat.sendMessage(player, "Tehostukset ovat nyt §cpois päältä§7!");
+                            } else if(args[0].equalsIgnoreCase("enable")) {
+                                Boosters.ENABLED = true;
+                                Chat.sendMessage(player, "Tehostukset ovat nyt §apäällä§7!");
+                            }
+                            else {
                                 Chat.sendMessage(player, "/tehostus clearAll");
                                 Chat.sendMessage(player, "/tehostus clear [tehostus]");
                                 Chat.sendMessage(player, "/tehostus clearCooldown");
+                                Chat.sendMessage(player, "/tehostus (enable | disable)");
                             }
 
                         } else {

@@ -14,10 +14,7 @@ import me.tr.survival.main.util.teleport.TeleportRequest;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -290,7 +287,9 @@ public class StaffManager implements Listener, CommandExecutor {
 
     public static void enableStaffMode(Player player) {
 
-        Chat.sendMessage(player, "Ylläpito-tila §apäällä§7!");
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+
+        Chat.sendMessage(player, "Ylläpito-tila §a§lPÄÄLLÄ§7!");
 
         lastLocation.put(player.getUniqueId(), player.getLocation());
         hide(player);
@@ -300,7 +299,8 @@ public class StaffManager implements Listener, CommandExecutor {
 
     public static void disableStaffMode(Player player) {
 
-        Chat.sendMessage(player, "Ylläpito-tila §cpois päältä!");
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+        Chat.sendMessage(player, "Ylläpito-tila §c§lPOIS PÄÄLTÄ§7!");
 
         if(lastLocation.containsKey(player.getUniqueId())) {
             player.teleport(lastLocation.get(player.getUniqueId()));

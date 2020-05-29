@@ -178,3 +178,6 @@ commands:
   ääri:
     description: End-maailma
     aliases: [loppu]
+  roskis:
+    description: Roskakori
+    aliases: [roskakori, trash]

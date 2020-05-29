@@ -48,7 +48,7 @@ public class Essentials implements CommandExecutor, Listener {
                     player.sendMessage( "§7§oKirjoita §a§o/apua <...>");
                     player.sendMessage(" ");
                     player.sendMessage(" §a...komennot §7Hyödylliset komennot");
-                    player.sendMessage(" §6...vaihto §7Tietoa vaihtokaupasta");
+                    player.sendMessage(" §a...vaihto §7Tietoa vaihtokaupasta");
                     player.sendMessage(" §a...arvot §7Palvelimen VIP-arvot");
                     player.sendMessage(" §a...aloitus §7Vinkit survivalin aloitukseen");
                     player.sendMessage(" §a...tehostukset §7Mitä tehostukset ovat?");
@@ -128,9 +128,20 @@ public class Essentials implements CommandExecutor, Listener {
                         Gui.openGui(player, "Apua (Aloittaminen)", 27, (gui) -> {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten aloitan Survivalin?", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                                    " §7Tätä sivua ei olla tehty",
-                                    " §7valmiiksi. Muistathan hoputtaa",
-                                    " §cylläpitoa §7tekemäään töitään!",
+                                    " §7Survivalin aloittaminen meillä on",
+                                    " §7lähes samanlaista, kuin tavallisestikin!",
+                                    " §7Saat aluksi hieman tavaraa, millä",
+                                    " §7päästä alkuun ja tehtävänäsi on",
+                                    " §aselviytyä mahdollisimman pitkään!",
+                                    " §7Saat §e1 000€ §7aloitusrahaksi, jonka",
+                                    " §7voit käyttää palvelimen kauppaan. ",
+                                    " §aRahaa §7tienaat myymällä esineitäsi!",
+                                    " ",
+                                    " §7Discord palvelimella saat apua",
+                                    " §cylläpidolta §7ja muilta pelaajilta",
+                                    " §7sekä pelin sisäisesti §a/apua§7-",
+                                    " §7komennolla! Onnea matkaan ja mukavia",
+                                    " §7pelihetkiä!",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
                         });
@@ -180,7 +191,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7Aluksi kaikki pelaajat saavat",
                                     " §a1 000€§7!",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                            )), 12);
+                            )), 13);
 
                             gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§aHyödylliset komennot", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -213,10 +224,9 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7sekä §5Endiin§7, että §cNetheriin§7!",
                                     " §7Netheriin matkustaminen on ilmaista,",
                                     " §7mutta Endiin se on §amaksullista§7.",
-                                    " §7Endiin matkustamiseen vaaditaan erityis-",
-                                    " §7esine. Tämän pysty craftaamaan normaalisti,",
-                                    " §7ja sen resepti löytyy §9Discord§7-",
-                                    " §7palvelimeltamme!",
+                                    " §7Endiin matkustamiseen vaaditaan ",
+                                    " §e500 000€ §7rahaa ja voit kutsua",
+                                    " §7kaverisi mukaan samalla hinnalla!",
                                     " ",
                                     " §7Lisätietoa matkustamisesta: §a/matkustaminen",
                                     " §7Discord: §9/discord",

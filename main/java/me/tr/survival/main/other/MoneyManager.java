@@ -29,6 +29,8 @@ import java.util.Map;
 
 public class MoneyManager implements CommandExecutor, Listener {
 
+    public static boolean ENABLED = true;
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -41,8 +43,28 @@ public class MoneyManager implements CommandExecutor, Listener {
 
                 if(args.length < 1) {
                     Chat.sendMessage(player, "Käytä §6/shekki <haluttu määrä>");
+                    cheques(player);
                     return true;
                 } else {
+
+                    if(player.isOp()) {
+                        if(args[0].equalsIgnoreCase("help")) {
+                            sender.sendMessage("§7/shekki (enable | disable)");
+                        } else if(args[0].equalsIgnoreCase("disable")) {
+                            ENABLED = false;
+                            sender.sendMessage("§7Shekit on nyt §cpois päältä§7!");
+                            return true;
+                        } else if(args[0].equalsIgnoreCase("enable")) {
+                            ENABLED = true;
+                            sender.sendMessage("§77Shekit on nyt §apäällä§7!");
+                            return true;
+                        }
+                    }
+
+                    if(!player.isOp() && !ENABLED) {
+                        Chat.sendMessage(player, "Tämä toiminto on toistaiseksi poissa käytöstä. Yritähän myöhemmin uudelleen.");
+                        return true;
+                    }
 
                     int value;
                     try {
@@ -323,6 +345,11 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     public static void writeCheque(Player player, int amount) {
 
+        if(!player.isOp() && !ENABLED) {
+            Chat.sendMessage(player, "Tämä toiminto on toistaiseksi poissa käytöstä. Yritähän myöhemmin uudelleen.");
+            return;
+        }
+
         if(!Balance.canRemove(player.getUniqueId(), amount)) {
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän...");
             return;
@@ -393,7 +420,7 @@ public class MoneyManager implements CommandExecutor, Listener {
 
             Gui.openGui(player, "Varmista Shekin nosto (" + foundValue + "€)", 27, (gui) -> {
 
-                gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahivsta", Arrays.asList(
+                gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         " §7Klikkaa vahvistaaksesi noston!",
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"

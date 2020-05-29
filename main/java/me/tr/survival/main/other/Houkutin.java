@@ -30,6 +30,8 @@ public class Houkutin implements CommandExecutor {
 
     // Command
 
+    private static boolean ENABLED;
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
@@ -44,6 +46,14 @@ public class Houkutin implements CommandExecutor {
                     deactivate();
                 } else if(args[0].equalsIgnoreCase("help")) {
                     sender.sendMessage("§c/houkutin deactivate");
+                    sender.sendMessage("§c/houkutin (enable | disable)");
+                } else if(args[0].equalsIgnoreCase("disable")) {
+                    ENABLED = false;
+                    sender.sendMessage("§7Houkutin on nyt §cpois päältä§7!");
+                    deactivate();
+                } else if(args[0].equalsIgnoreCase("enable")) {
+                    ENABLED = true;
+                    sender.sendMessage("Houkutin on nyt §apäällä§7!");
                 }
             }
 
@@ -64,8 +74,6 @@ public class Houkutin implements CommandExecutor {
     private static long started;
     private static EntityType entityType;
 
-    private static BukkitTask task;
-
     public static void panel(Player player) {
 
         Gui.openGui(player, "Houkutin", 27, (gui) -> {
@@ -81,6 +89,7 @@ public class Houkutin implements CommandExecutor {
             lore.add(" §7eläintä.");
             lore.add(" ");
             lore.add(" §7Kesto: §e" + durationMinutes + "min");
+            lore.add(" §7Hinta: §ealk. 10 000€");
             lore.add(" ");
 
             if(isActivated()) {
@@ -99,6 +108,11 @@ public class Houkutin implements CommandExecutor {
             gui.addButton(new Button(1, 13, isActivated() ? Util.makeEnchanted(item) : item) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
+
+                    if(!ENABLED) {
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                        return;
+                    }
 
                     if(!isActivated()) {
 
@@ -161,6 +175,11 @@ public class Houkutin implements CommandExecutor {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
 
+                        if(!ENABLED) {
+                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                            return;
+                        }
+
                         gui.close(clicker);
                         if(!isActivated()) {
 
@@ -203,6 +222,8 @@ public class Houkutin implements CommandExecutor {
 
     private static void activate() {
 
+        if(!ENABLED) return;
+
         Block block = Bukkit.getWorld("world").getBlockAt(-16, 59, -33);
         block.setType(Material.SPAWNER);
         BlockState state = block.getState();
@@ -222,7 +243,7 @@ public class Houkutin implements CommandExecutor {
 
     public static void activateManager() {
 
-        task = new BukkitRunnable() {
+         new BukkitRunnable() {
 
             @Override
             public void run() {

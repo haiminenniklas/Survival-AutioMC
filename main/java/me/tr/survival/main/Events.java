@@ -123,6 +123,11 @@ public class Events implements Listener {
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
         }
+
+        if(Ranks.isStaff(player.getUniqueId()) && StaffManager.hasStaffMode(player)) {
+            StaffManager.enableStaffMode(player);
+        }
+
         // Fix vanish
         for(UUID vanished : StaffManager.hidden) {
             Player v = Bukkit.getPlayer(vanished);
@@ -390,6 +395,30 @@ public class Events implements Listener {
             if(player.isOp()) return;
             e.setCancelled(true);
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Kun olet odottamassa pääsyä takaisin elävien joukkoon et voi suorittaa mitään komentoja!");
+        }
+
+    }
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent e) {
+
+        Player player = e.getPlayer();
+
+        if(player.getAllowFlight()) {
+            if(Util.getRegions(player).size() < 1) {
+                if(!StaffManager.hasStaffMode(player)) {
+                    player.setAllowFlight(false);
+
+                    if(player.isFlying()) {
+                        player.teleport(e.getFrom());
+                        player.setFlying(false);
+                        int y = player.getWorld().getHighestBlockYAt(player.getLocation().getBlockX(),player.getLocation().getBlockZ());
+                        player.teleport(new Location(player.getWorld(), player.getLocation().getX(), (double)y + 1, player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch()));
+                        Chat.sendMessage(player, "Lentäminen on sallittua vain §eSpawn§7-alueella!");
+                    }
+
+                }
+            }
         }
 
     }
