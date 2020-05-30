@@ -24,6 +24,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 public class Chat implements Listener {
@@ -251,7 +252,9 @@ public class Chat implements Listener {
             return;
         }
 
-        for(Player r : e.getRecipients()) {
+        Set<Player> recipients = e.getRecipients();
+
+        for(Player r : recipients) {
             if(!Settings.get(r.getUniqueId(), "chat") && !r.getName().equalsIgnoreCase(player.getName())) {
                 e.getRecipients().remove(r);
             }

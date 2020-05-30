@@ -19,6 +19,7 @@ import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.RTP;
 import me.tr.survival.main.util.Times;
 import me.tr.survival.main.util.callback.SpigotCallback;
+import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.data.Homes;
 import me.tr.survival.main.util.data.Level;
@@ -222,22 +223,12 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                 Autio.warn("Server TPS too low, not updating players this time...");
             }
 
+            // Fetch Balances...
+            Balance.fetchTopBalance();
+
         }, 20, (20*60) * 5);
 
-        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
 
-            try {
-
-                Autio.logColored(" §eTrying to refresh SQL connection...");
-
-                SQL.getConnection().close();
-                SQL.setup();
-
-            } catch(SQLException ex) {
-                ex.printStackTrace();
-            }
-
-        }, (20*60) * 60 * 4, (20*60) * 60 * 4);
 
         Autio.logColored(" §aStarting AutoBroadcaster...");
         AutoBroadcaster.start();
@@ -885,7 +876,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                         Chat.sendMessage(player, "§7Käytä: §a/skull <player>");
                     } else {
                         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-                        player.getInventory().addItem(ItemUtil.makeSkullItem(target.getName(), 1, "§6" + target.getName()));
+                        player.getInventory().addItem(ItemUtil.makeSkullItem(target, 1, "§6" + target.getName()));
                     }
                 }
             } else if(command.getLabel().equalsIgnoreCase("debug")) {

@@ -4,6 +4,8 @@ import me.tr.survival.main.Autio;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
 import me.tr.survival.main.util.callback.TypedCallback;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -13,6 +15,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Balance {
+
+    private static Map<UUID, Double> topBalance = new HashMap<>();
 
     public static double get(UUID player) {
         return (double) PlayerData.getValue(player, "money");
@@ -44,17 +48,22 @@ public class Balance {
     }
 
     public static void getBalances(TypedCallback<Map<UUID, Double>> cb) {
+        cb.execute(topBalance);
+    }
 
-        final Map<UUID, Double> balances = new HashMap<>();
+    public static void fetchTopBalance() {
 
         Autio.async(() -> {
 
             SQL.query("SELECT * FROM `players`;", (result, conn) -> {
                 try {
+                    Map<UUID, Double> temp = new HashMap<>();
                     while(result.next()) {
-                        balances.put(UUID.fromString(result.getString("uuid")), result.getDouble("money"));
+                        // Load the OfflinePlayer when server starts, so it doens't take that long later
+                        OfflinePlayer op = Bukkit.getOfflinePlayer(UUID.fromString(result.getString("uuid")));
+                        temp.put(op.getUniqueId(), result.getDouble("money"));
                     }
-                    cb.execute(balances);
+                    topBalance = temp;
                 } catch(SQLException ex) {
                     ex.printStackTrace();
                 } finally {
@@ -70,7 +79,6 @@ public class Balance {
 
 
         });
-
     }
 
 }

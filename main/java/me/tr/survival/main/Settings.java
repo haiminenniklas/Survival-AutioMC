@@ -31,6 +31,10 @@ public class Settings {
         Gui gui = new Gui("Asetukset", 27);
         UUID uuid = player.getUniqueId();
 
+        int[] glassSlots = new int[] {10, 16};
+
+        for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.GREEN_STAINED_GLASS_PANE), slot); }
+
         gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAINTING, 1, "§2Scoreboard", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "§7Tila: " + settingText(Settings.get(uuid, "scoreboard")),
@@ -168,6 +172,12 @@ public class Settings {
                 "§7tänne uudestaan!"
         )), 26);
 
+        for(int i = 0; i < 27; i++) {
+            if(gui.getItem(i) != null) continue;
+            if(gui.getButton(i) != null) continue;
+            gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+        }
+
         gui.open(player);
 
     }
@@ -183,6 +193,10 @@ public class Settings {
         UUID uuid = player.getUniqueId();
 
         Gui.openGui(player, "VIP-asetukset", 27, (gui) -> {
+
+            int[] glassSlots = new int[] {10, 16};
+
+            for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot); }
 
             String isWeatherApplicable = (!Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §aPremium§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
 
@@ -336,6 +350,13 @@ public class Settings {
                     "§7poistu palvelimelta ja liity",
                     "§7tänne uudestaan!"
             )), 26);
+
+            for(int i = 0; i < 27; i++) {
+                if(gui.getItem(i) != null) continue;
+                if(gui.getButton(i) != null) continue;
+                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+            }
+
 
         });
 

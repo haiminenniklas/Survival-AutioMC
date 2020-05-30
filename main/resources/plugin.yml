@@ -138,7 +138,7 @@ commands:
     aliases: [vaihto, vaihda]
   baltop:
     description: Top raha
-    aliases: [rahatop, btop]
+    aliases: [rahatop, btop, top]
   clear:
     description: Clear inventory
     aliases: [invclear, clearinventory]
@@ -181,3 +181,6 @@ commands:
   roskis:
     description: Roskakori
     aliases: [roskakori, trash]
+  staffmode:
+    description: Staffmode
+    aliases: [adminmode, modmode]

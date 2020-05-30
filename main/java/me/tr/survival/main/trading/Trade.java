@@ -88,13 +88,13 @@ public class Trade {
         }
 
         // Place default player heads
-        inv.setItem(45, ItemUtil.makeSkullItem(this.sender.getName(), 1, "§a" + this.sender.getName(), Arrays.asList(
+        inv.setItem(45, ItemUtil.makeSkullItem(this.sender, 1, "§a" + this.sender.getName(), Arrays.asList(
                 "§cEi hyväksynyt",
                 " ",
                 " §7Rahatilanne: §e" + Util.formatDecimals(Balance.get(sender.getUniqueId())) + "€"
         )));
 
-        inv.setItem(53, ItemUtil.makeSkullItem(this.target.getName(), 1, "§e" + this.target.getName(), Arrays.asList(
+        inv.setItem(53, ItemUtil.makeSkullItem(this.target, 1, "§e" + this.target.getName(), Arrays.asList(
                 "§cEi hyväksynyt",
                 " ",
                 " §7Rahatilanne: §e" + Util.formatDecimals(Balance.get(target.getUniqueId())) + "€"
@@ -109,13 +109,13 @@ public class Trade {
     public void updateGui() {
 
         // Place player heads
-        inv.setItem(45, ItemUtil.makeSkullItem(this.sender.getName(), 1, "§a" + this.sender.getName(), Arrays.asList(
+        inv.setItem(45, ItemUtil.makeSkullItem(this.sender, 1, "§a" + this.sender.getName(), Arrays.asList(
                 (this.hasAccepted(this.sender) ? "§aHyväksynyt"  : "§cEi hyväksynyt"),
                 " ",
                 " §7Rahatilanne: §e" + Util.formatDecimals(Balance.get(sender.getUniqueId())) + "€"
         )));
 
-        inv.setItem(53, ItemUtil.makeSkullItem(this.target.getName(), 1, "§e" + this.target.getName(), Arrays.asList(
+        inv.setItem(53, ItemUtil.makeSkullItem(this.target, 1, "§e" + this.target.getName(), Arrays.asList(
                 (this.hasAccepted(this.target) ? "§aHyväksynyt"  : "§cEi hyväksynyt"),
                 " ",
                 " §7Rahatilanne: §e" + Util.formatDecimals(Balance.get(target.getUniqueId())) + "€"

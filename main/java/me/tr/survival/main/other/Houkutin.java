@@ -99,7 +99,11 @@ public class Houkutin implements CommandExecutor {
                 lore.add(" ");
 
             } else {
-                lore.add(" §a§lKlikkaa aktivoidaksesi");
+                if(ENABLED) {
+                    lore.add(" §a§lKlikkaa aktivoidaksesi");
+                } else {
+                    lore.add(" §cEi käytettävissä...");
+                }
             }
             lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 

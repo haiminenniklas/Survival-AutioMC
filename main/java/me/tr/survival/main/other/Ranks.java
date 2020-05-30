@@ -34,7 +34,7 @@ public class Ranks {
             case "default":
                 return "";
             case "premium":
-                return "§a§lPremium";
+                return "§ePremium";
             case "premiumplus":
                 return "§a§lPremium§2§l+";
             case "youtube":
@@ -58,9 +58,9 @@ public class Ranks {
             case "default":
                 return "§7Pelaaja";
             case "premium":
-                return "§aPremium";
+                return "§ePremium";
             case "premiumplus":
-                return "§aPremium§2+";
+                return "§6Premium§e+";
             case "sorsa":
                 return "§2§lSORSA";
             case "youtube":

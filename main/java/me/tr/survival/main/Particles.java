@@ -129,6 +129,15 @@ public class Particles implements Listener, CommandExecutor {
                     }
                 });
 
+                int[] glassSlots = new int[] { 11,13,15 };
+                for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.CYAN_STAINED_GLASS_PANE), slot); }
+
+                for(int i = 0; i < 27; i++) {
+                    if(gui.getItem(i) != null) continue;
+                    if(gui.getButton(i) != null) continue;
+                    gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                }
+
             });
         } else {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
@@ -139,15 +148,15 @@ public class Particles implements Listener, CommandExecutor {
 
     public static void openArrowTrailGui(Player player) {
         if(Ranks.isVIP(player.getUniqueId())) {
-            Gui.openGui(player, "Nuolijanat", 45, (gui) -> {
+            Gui.openGui(player, "Nuolijanat", 36, (gui) -> {
 
                 int i = 0;
-                for(int pos = 10; pos < 35; pos++) {
+                for(int pos = 10; pos < 26; pos++) {
 
                     // 17 18 26 27 35 36
                     //int pos = i + 10;
 
-                    if(pos == 17 || pos == 18 || pos == 26 || pos == 27) continue;
+                    if(pos == 17 || pos == 18) continue;
 
                     ParticlePair loopParticle = getAllArrowTrails().get(i);
                     ParticlePair particle = findArrowTrail(loopParticle.getId());
@@ -203,13 +212,21 @@ public class Particles implements Listener, CommandExecutor {
 
                 }
 
-                gui.addButton(new Button(1, 36, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+                gui.addButton(new Button(1, 27, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(player);
                         openMainGui(player);
                     }
                 });
+
+                for(int j = 0; j < 36; j++) {
+                    if(gui.getButton(j) != null) continue;
+                    if(gui.getItem(j) != null) continue;
+                    if(j == 23 || j == 24 || j == 25) continue;
+                    gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), j);
+
+                }
 
             });
         } else {
@@ -220,15 +237,15 @@ public class Particles implements Listener, CommandExecutor {
 
     public static void openParticlesGui(Player player) {
         if(Ranks.isVIP(player.getUniqueId())) {
-            Gui.openGui(player, "Partikkelit", 54, (gui) -> {
+            Gui.openGui(player, "Partikkelit", 45, (gui) -> {
 
                 int i = 0;
-                for(int pos = 10; pos < 44; pos++) {
+                for(int pos = 10; pos < 35; pos++) {
 
                     // 17 18 26 27 35 36
                     //int pos = i + 10;
 
-                    if(pos == 17 || pos == 18 || pos == 26 || pos == 27 || pos == 35 || pos == 36) continue;
+                    if(pos == 17 || pos == 18 || pos == 26 || pos == 27) continue;
 
                     ParticlePair loopParticle = getAllParticles().get(i);
                     //System.out.println("Loop ID" + loopParticle.getId());
@@ -290,13 +307,20 @@ public class Particles implements Listener, CommandExecutor {
 
                 }
 
-                gui.addButton(new Button(1, 45, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+                gui.addButton(new Button(1, 36, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(player);
                         openMainGui(player);
                     }
                 });
+
+                for(int j = 0; j < 45; j++) {
+                    if(gui.getButton(j) != null) continue;
+                    if(gui.getItem(j) != null) continue;
+                    if(j == 32 || j == 33 || j == 34) continue;
+                    gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), j);
+                }
 
             });
         } else {

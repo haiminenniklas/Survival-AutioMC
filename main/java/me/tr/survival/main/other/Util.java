@@ -12,6 +12,7 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sun.management.OperatingSystemMXBean;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Settings;
+import me.tr.survival.main.util.callback.TypedCallback;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -196,18 +197,18 @@ public class Util {
 
     }
 
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
-        list.sort(Map.Entry.comparingByValue());
-        Collections.reverse(list);
+    public static <K, V extends Comparable<? super V>> void sortByValue(Map<K, V> map, TypedCallback<Map<K, V>> cb) {
+        Autio.async(() -> {
+            List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+            list.sort(Map.Entry.comparingByValue());
+            Collections.reverse(list);
 
-
-        Map<K, V> result = new LinkedHashMap<>();
-        for (Map.Entry<K, V> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-
-        return result;
+            Map<K, V> result = new LinkedHashMap<>();
+            for (Map.Entry<K, V> entry : list) {
+                result.put(entry.getKey(), entry.getValue());
+            }
+            cb.execute(result);
+        });
     }
 
     public static String[] splitPreservingWords(String text, int length) {

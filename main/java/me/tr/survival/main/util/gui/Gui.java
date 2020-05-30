@@ -1,9 +1,6 @@
 package me.tr.survival.main.util.gui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.Bukkit;
@@ -24,7 +21,7 @@ public class Gui implements Listener {
     private HashMap<Integer, HashMap<Integer, ItemStack>> items;
     public static List<Gui> guis = new ArrayList<>();
     private HashMap<Player, Integer> playerPages = new HashMap<>();
-    private List<Button> buttons = new ArrayList<>();
+    private final Set<Button> buttons;
     private String title;
     private int size;
 
@@ -40,6 +37,7 @@ public class Gui implements Listener {
         }
         this.pages = new HashMap<>();
         this.items = new HashMap<>();
+        this.buttons = new HashSet<>();
         this.title = title;
         this.size = size;
         this.partiallyTouchable = false;
@@ -101,8 +99,10 @@ public class Gui implements Listener {
 
         HashMap<Integer, ItemStack> items = this.items.get(1);
 
-        if(!items.isEmpty() && items.containsKey(pos)) {
-            return items.get(pos);
+        if(items != null) {
+            if(!items.isEmpty() && items.containsKey(pos)) {
+                return items.get(pos);
+            }
         }
 
         return null;
@@ -122,7 +122,11 @@ public class Gui implements Listener {
     }
 
     public void addButton(Button button){
-        buttons.add(button);
+        if(button != null) {
+            if(button.item != null) {
+                buttons.add(button);
+            }
+        }
         //button.inv.setItem(button.pos, button.item);
     }
 
@@ -217,31 +221,48 @@ public class Gui implements Listener {
 
     public Inventory open(Player player){
 
+        final long start = System.currentTimeMillis();
+        System.out.println("[/Gui] Started opening a GUI...");
+
+        System.out.println("[/Gui] Checking for pages...");
         if(getPages() == null || getPages().isEmpty()){
             throw new IllegalArgumentException("You must have at least 1 page in your gui!");
         }
 
+        System.out.println("[/Gui] Creating an empty inventory...");
         this.inv = Bukkit.createInventory(null, this.size, this.title + "§r");
         if(this.items.isEmpty() && this.buttons.isEmpty()){
             player.openInventory(inv);
             return inv;
         }
 
+        System.out.println("[/Gui] Looping given items and adding them...");
+        final long itemLoopStart = System.currentTimeMillis();
         HashMap<Integer, ItemStack> items = this.items.get(1);
         if(!this.items.isEmpty()) {
             for(Map.Entry<Integer, ItemStack> e : items.entrySet()) {
                 inv.setItem(e.getKey(), e.getValue());
             }
         }
+        System.out.println("[/Gui] Item adding took in total " + (System.currentTimeMillis() - itemLoopStart) + "ms!");
 
+
+        System.out.println("[/Gui] Looping given Buttons and adding them...");
+        final long buttonLoopStart = System.currentTimeMillis();
         if(!this.buttons.isEmpty()) {
             for(Button b : this.getButtons()) {
                 inv.setItem(b.pos, b.item);
             }
         }
+        System.out.println("[/Gui] Button adding took in total " + (System.currentTimeMillis() - buttonLoopStart) + "ms!");
 
         playerPages.put(player, 1);
+
+        System.out.println("[/Gui] Opening the Inventory...");
         player.openInventory(inv);
+
+        System.out.println("[/Gui] Gui opening took in total " + (System.currentTimeMillis() - start) + "ms!");
+
         return inv;
     }
 
@@ -340,7 +361,7 @@ public class Gui implements Listener {
         player.closeInventory();
     }
 
-    public List<Button> getButtons(){
+    public Set<Button> getButtons(){
         return buttons;
     }
 

@@ -215,7 +215,6 @@ public class Events implements Listener {
             }
 
             if(e.getCurrentItem() != null) {
-
                 for(Button b : gui.getButtons()) {
                     if(b.item.clone().equals(e.getCurrentItem())) {
                         b.onClick(player, e.getClick());
@@ -407,8 +406,6 @@ public class Events implements Listener {
         if(player.getAllowFlight()) {
             if(Util.getRegions(player).size() < 1) {
                 if(!StaffManager.hasStaffMode(player)) {
-                    player.setAllowFlight(false);
-
                     if(player.isFlying()) {
                         player.teleport(e.getFrom());
                         player.setFlying(false);
@@ -416,7 +413,7 @@ public class Events implements Listener {
                         player.teleport(new Location(player.getWorld(), player.getLocation().getX(), (double)y + 1, player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch()));
                         Chat.sendMessage(player, "Lentäminen on sallittua vain §eSpawn§7-alueella!");
                     }
-
+                    player.setAllowFlight(false);
                 }
             }
         }

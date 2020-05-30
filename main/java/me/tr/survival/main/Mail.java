@@ -159,6 +159,17 @@ public class Mail {
             }
         });
 
+        int[] glassSlots = new int[] { 11,13,15 };
+        for(int slot : glassSlots) {
+            gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot);
+        }
+
+        for(int i = 0; i < 27; i++) {
+            if(gui.getItem(i) != null) continue;
+            if(gui.getButton(i) != null) continue;
+            gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+        }
+
         gui.open(player);
 
     }

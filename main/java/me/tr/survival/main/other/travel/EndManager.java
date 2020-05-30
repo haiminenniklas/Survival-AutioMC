@@ -191,6 +191,8 @@ public class EndManager implements CommandExecutor {
     public static void panel(Player player) {
         Gui.openGui(player, "Matkusta Endiin", 27, (gui) -> {
 
+            int[] purpleGlass = new int[] { 4, 12, 14, 22 };
+
             List<String> lore = new ArrayList<>();
             lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
@@ -213,6 +215,11 @@ public class EndManager implements CommandExecutor {
                 if(temp.size() >= 1) {
                     lore.add("Osallistujat: ");
                     lore.add("  §c" + StringUtils.join(temp, "§7,§c "));
+                }
+
+                if(allowedPlayers.contains(player.getUniqueId())) {
+                    lore.add(" ");
+                    lore.add(" §aKlikkaa teleportataksesi!");
                 }
 
             } else {
@@ -260,6 +267,16 @@ public class EndManager implements CommandExecutor {
                     TravelManager.gui(clicker);
                 }
             });
+
+            for(int slot : purpleGlass) {
+                gui.addItem(1, ItemUtil.makeItem(Material.PURPLE_STAINED_GLASS_PANE), slot);
+            }
+
+            for(int i = 0; i < 27; i++) {
+                if(gui.getItem(i) != null) continue;
+                if(gui.getButton(i) != null) continue;
+                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+            }
 
         });
     }
@@ -499,15 +516,16 @@ public class EndManager implements CommandExecutor {
     public static String getTimeLeft() {
         if(getTimeLeftMillis() >= 1) {
             long millis = getTimeLeftMillis();
+            long second = (millis / (1000)) % 60;
             long minute = (millis / (1000 * 60)) % 60;
             long hour = (millis / (1000 * 60 * 60)) % 24;
-            return Util.formatTime((int) hour, (int) minute, true);
+            return Util.formatTime((int) hour, (int) minute, (int) second, true);
         }
         return "§cEi käynnissä";
     }
 
     public static boolean isOccupied() {
-        return holder != null && started >= 1L;
+        return !allowedPlayers.isEmpty();
     }
 
 

@@ -4,43 +4,44 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class ItemUtil {
 
-    public static ItemStack makeSkullItem(String targetName, int amount, String displayName, List<String> lore) {
-        ItemStack item = new ItemStack(Material.LEGACY_SKULL_ITEM, amount, (short)3);
+    public static ItemStack makeSkullItem(OfflinePlayer target, int amount, String displayName, List<String> lore) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD, amount);
         SkullMeta meta = (SkullMeta)item.getItemMeta();
-        meta.setOwner(targetName);
+        meta.setOwningPlayer(target);
         meta.setDisplayName(displayName);
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
     }
 
-    public static ItemStack makeSkullItem(String targetName, int amount, String displayName) {
-        ItemStack item = new ItemStack(Material.LEGACY_SKULL_ITEM, amount, (short)3);
+    public static ItemStack makeSkullItem(OfflinePlayer target, int amount, String displayName) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD, amount);
         SkullMeta meta = (SkullMeta)item.getItemMeta();
-        meta.setOwner(targetName);
+        meta.setOwningPlayer(target);
         meta.setDisplayName(displayName);
         item.setItemMeta(meta);
         return item;
     }
 
-    public static ItemStack makeSkullItem(String targetName, int amount) {
-        ItemStack item = new ItemStack(Material.LEGACY_SKULL_ITEM, amount, (short)3);
+    public static ItemStack makeSkullItem(OfflinePlayer target, int amount) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD, amount);
         SkullMeta meta = (SkullMeta)item.getItemMeta();
-        meta.setOwner(targetName);
+        meta.setOwningPlayer(target);
         item.setItemMeta(meta);
         return item;
     }
 
-    public static ItemStack makeSkullItem(String targetName) {
-        ItemStack item = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short)3);
+    public static ItemStack makeSkullItem(OfflinePlayer target) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta meta = (SkullMeta)item.getItemMeta();
-        meta.setOwner(targetName);
+        meta.setOwningPlayer(target);
         item.setItemMeta(meta);
         return item;
     }

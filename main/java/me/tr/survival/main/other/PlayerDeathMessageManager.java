@@ -96,6 +96,16 @@ public class PlayerDeathMessageManager implements Listener {
                     Settings.vipPanel(clicker);
                 }
             });
+
+            int[] glassSlots = new int[] {10,16};
+            for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.RED_STAINED_GLASS_PANE), slot); }
+
+            for(int i = 0; i < 27; i++) {
+                if(gui.getItem(i) != null) continue;
+                if(gui.getButton(i) != null) continue;
+                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+            }
+
         });
 
     }
@@ -169,6 +179,16 @@ public class PlayerDeathMessageManager implements Listener {
                     Settings.vipPanel(clicker);
                 }
             });
+
+            int[] glassSlots = new int[] {10,16};
+            for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
+
+            for(int i = 0; i < 27; i++) {
+                if(gui.getItem(i) != null) continue;
+                if(gui.getButton(i) != null) continue;
+                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+            }
+
 
         });
     }

@@ -261,7 +261,7 @@ public class StaffManager implements Listener, CommandExecutor {
             StaffManager.hide(teleporter);
             Chat.sendMessage(teleporter, "Olet nyt piilossa! Tee §a/vanish §7tullaksesi takaisin näkyviin!");
         }
-        TeleportRequest request = new TeleportRequest(target, target, TeleportManager.Teleport.FORCE);
+        TeleportRequest request = new TeleportRequest(teleporter, target, TeleportManager.Teleport.FORCE);
         request.ask();
     }
 
@@ -308,8 +308,9 @@ public class StaffManager implements Listener, CommandExecutor {
         }
         show(player);
         staffMode.put(player.getUniqueId(), false);
-
         player.setGameMode(GameMode.SURVIVAL);
+        Util.heal(player);
+        Util.removePotionEffects(player);
 
     }
 
@@ -377,17 +378,23 @@ public class StaffManager implements Listener, CommandExecutor {
             Player player = (Player) sender;
             UUID uuid = player.getUniqueId();
 
-            if(Ranks.isStaff(uuid)) {
-                if(args.length < 1) {
-                    StaffManager.panel(player);
-                } else {
-                    Player target = Bukkit.getPlayer(args[0]);
-                    if(target == null) {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty!");
-                        return true;
-                    }
-                    StaffManager.panel(player, target);
+            if(command.getLabel().equalsIgnoreCase("staff")) {
+                if(Ranks.isStaff(uuid)) {
+                    if(args.length < 1) {
+                        StaffManager.panel(player);
+                    } else {
+                        Player target = Bukkit.getPlayer(args[0]);
+                        if(target == null) {
+                            Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty!");
+                            return true;
+                        }
+                        StaffManager.panel(player, target);
 
+                    }
+                }
+            } else if(command.getLabel().equalsIgnoreCase("staffmode")) {
+                if(Ranks.isStaff(uuid)) {
+                    StaffManager.toggleStaffMode(player);
                 }
             }
 

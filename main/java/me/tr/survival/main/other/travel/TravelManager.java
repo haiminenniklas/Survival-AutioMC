@@ -69,6 +69,8 @@ public class TravelManager implements CommandExecutor, Listener {
             return;
         }
 
+        int[] glassSlots = new int[] { 12, 14 };
+
         Gui.openGui(player, "Matkusta", 27, (gui) -> {
 
             gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.NETHERRACK, 1, "§cNether", Arrays.asList(
@@ -128,6 +130,16 @@ public class TravelManager implements CommandExecutor, Listener {
                 }
             });
 
+
+            for(int slot : glassSlots) {
+                gui.addItem(1, ItemUtil.makeItem(Material.BLUE_STAINED_GLASS_PANE), slot);
+            }
+
+            for(int i = 0; i < 27; i++) {
+                if(gui.getItem(i) != null) continue;
+                if(gui.getButton(i) != null) continue;
+                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+            }
 
         });
 
