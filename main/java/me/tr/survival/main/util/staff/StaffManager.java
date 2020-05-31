@@ -1,9 +1,6 @@
 package me.tr.survival.main.util.staff;
 
-import me.tr.survival.main.Chat;
-import me.tr.survival.main.Main;
-import me.tr.survival.main.Particles;
-import me.tr.survival.main.Profile;
+import me.tr.survival.main.*;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
@@ -42,32 +39,20 @@ public class StaffManager implements Listener, CommandExecutor {
     public static int getBlockMinedPerHour(UUID uuid, Material mat) {
 
         if(blocksPerHour.containsKey(uuid)) {
-
             Map<Material, Integer> blockData = blocksPerHour.get(uuid);
             if(blockData.containsKey(mat)) {
-
                 int minedTotal = blockData.get(mat);
                 long hoursPlayed = ((System.currentTimeMillis() - Util.getWhenLogged(uuid)) / 1000 / 60 / 60) + 1;
                 //System.out.println("BPH -> " + (System.currentTimeMillis() - Util.getWhenLogged(uuid)) + " / " + hoursPlayed + " / " + minedTotal);
-
                 return minedTotal / (int) hoursPlayed;
-
             }
-
         }
-
         return 0;
-
     }
 
     public static void panel(Player player) {
 
-        UUID uuid = player.getUniqueId();
-
-        if(!Ranks.isStaff(player.getUniqueId())) {
-            return;
-        }
-
+        if(!Ranks.isStaff(player.getUniqueId())) return;
         Gui gui = new Gui("Ylläpitopaneeli", 45);
 
         int[] glassPanes = new int[] {
@@ -79,9 +64,7 @@ public class StaffManager implements Listener, CommandExecutor {
         };
 
         for(int i = 0; i < glassPanes.length; i++) {
-
             gui.addItem(1, ItemUtil.makeItem(Material.RED_STAINED_GLASS_PANE, 1, ""), glassPanes[i]);
-
         }
 
         gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.PAPER, 1, "§bChat-asetukset", Arrays.asList(
@@ -174,10 +157,7 @@ public class StaffManager implements Listener, CommandExecutor {
         });
 
         int[] emptySlots = new int[] { 32,34 };
-
-        for(int i = 0; i < emptySlots.length; i++) {
-            gui.addItem(1, ItemUtil.makeItem(Material.EMERALD, 1, "§7Tyhjä..."), emptySlots[i]);
-        }
+        for(int i = 0; i < emptySlots.length; i++) { gui.addItem(1, ItemUtil.makeItem(Material.EMERALD, 1, "§7Tyhjä..."), emptySlots[i]); }
 
         gui.open(player);
 
@@ -342,11 +322,9 @@ public class StaffManager implements Listener, CommandExecutor {
         player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 999999));
 
         for(Player online : Bukkit.getOnlinePlayers()) {
-
             if(online.getUniqueId().equals(player.getUniqueId())) continue;
             if(Ranks.isStaff(online.getUniqueId())) continue;
             online.hidePlayer(Main.getInstance(), player);
-
         }
 
         Chat.sendMessage(player, "Piilouduit pelaajilta!");
@@ -354,20 +332,16 @@ public class StaffManager implements Listener, CommandExecutor {
 
     public static void show(Player player) {
         hidden.remove(player.getUniqueId());
-
         player.setPlayerListName(player.getName());
-
         //Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
 
         for(Player online : Bukkit.getOnlinePlayers()) {
-
             if(online.getUniqueId().equals(player.getUniqueId())) continue;
-
             online.showPlayer(Main.getInstance(), player);
         }
 
         Util.heal(player);
-
+        Util.removePotionEffects(player);
         Chat.sendMessage(player, "Olet nyt esillä kaikille!");
     }
 
@@ -377,7 +351,6 @@ public class StaffManager implements Listener, CommandExecutor {
         if(sender instanceof Player) {
             Player player = (Player) sender;
             UUID uuid = player.getUniqueId();
-
             if(command.getLabel().equalsIgnoreCase("staff")) {
                 if(Ranks.isStaff(uuid)) {
                     if(args.length < 1) {
@@ -389,7 +362,6 @@ public class StaffManager implements Listener, CommandExecutor {
                             return true;
                         }
                         StaffManager.panel(player, target);
-
                     }
                 }
             } else if(command.getLabel().equalsIgnoreCase("staffmode")) {
@@ -397,9 +369,7 @@ public class StaffManager implements Listener, CommandExecutor {
                     StaffManager.toggleStaffMode(player);
                 }
             }
-
         }
-
         return true;
     }
 
@@ -417,59 +387,42 @@ public class StaffManager implements Listener, CommandExecutor {
                 map.put(block.getType(), 1);
                 blocksPerHour.put(uuid, map);
             } else {
-
                 if(block.getType() == Material.DIAMOND_ORE || block.getType() == Material.EMERALD_ORE) {
-
                     for(Player staff : Bukkit.getOnlinePlayers()) {
                         if(hasStaffMode(staff)) {
-                            String blockName = (block.getType() == Material.DIAMOND_ORE) ? "§btimanttia" : "§aemeraldia";
-                            TextComponent msg = new TextComponent(TextComponent.fromLegacyText("§7[§c§l!§7] » Pelaaja §c" + player.getName() + " §7löysi " + blockName + "§7! "));
-                            TextComponent tpMsg = new TextComponent();
-                            tpMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa teleportataksi pelaajan §c" + player.getName() + " §7luo!")));
-                            SpigotCallback.createCommand(tpMsg, (clicker) -> {
-                                staffTeleport(staff, player);
-                            });
-                            msg.addExtra(tpMsg);
-                            staff.spigot().sendMessage(msg);
+                            String blockName = (block.getType() == Material.DIAMOND_ORE) ? "timanttia" : "emeraldia";
+                            if(Settings.get(staff.getUniqueId(), "chat")) {
+                                TextComponent msg = new TextComponent(TextComponent.fromLegacyText("§8[§e§l⚡§8] §fPelaaja §e" + player.getName() + " §flöysi §e" + blockName + "§f! "));
+                                TextComponent tpMsg = new TextComponent();
+                                tpMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa teleportataksi pelaajan §c" + player.getName() + " §7luo!")));
+                                SpigotCallback.createCommand(tpMsg, (clicker) -> {
+                                    staffTeleport(staff, player);
+                                });
+                                msg.addExtra(tpMsg);
+                                staff.spigot().sendMessage(msg);
+                            }
                         }
                     }
-
                 }
-
                 Map<Material, Integer> map = blocksPerHour.get(uuid);
                 if(map.containsKey(block.getType())) {
-
                     int current = map.get(block.getType());
                     map.put(block.getType(), current + 1);
-
                     int minedPerHour = getBlockMinedPerHour(uuid, block.getType());
-
                     if(block.getType() == Material.DIAMOND_ORE) {
-
                         if(minedPerHour >= 15 && minedPerHour % 5 == 0) {
-
-                            Util.broadcastStaff("§7[§c§l!§7] » Pelaajan §c" + player.getName() + " §7BPH §o(blockit per tunti) §btimanteille §7on §c" + minedPerHour + "§7!");
-
+                            Util.broadcastStaff("§8[§e§l⚡!§8] §fPelaajan §e" + player.getName() + " §fBPH §o(blockit per tunti) §etimanteille §fon §e" + minedPerHour + "§f!");
                         }
-
                     } else if(block.getType() == Material.EMERALD_ORE) {
                         if(minedPerHour >= 5 && minedPerHour % 5 == 0) {
-
-                            Util.broadcastStaff("§7[§c§l!§7] » Pelaajan §c" + player.getName() + " §7BPH §o(blockit per tunti) §aemeraldeille §7on §c" + minedPerHour + "§7!");
-
+                            Util.broadcastStaff("§8[§e§l⚡§8] §fPelaajan §e" + player.getName() + " §fBPH §o(blockit per tunti) §eemeraldeille §fon §e" + minedPerHour + "§e!");
                         }
                     }
-
-
                 } else {
                     map.put(block.getType(), 1);
                 }
-
             }
-
-
         }
-
     }
 
     public static void weatherGui(Player player) {

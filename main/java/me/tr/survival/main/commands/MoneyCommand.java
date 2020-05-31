@@ -1,6 +1,7 @@
 package me.tr.survival.main.commands;
 
 import me.tr.survival.main.Chat;
+import me.tr.survival.main.Profile;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.data.Balance;
@@ -26,11 +27,14 @@ public class MoneyCommand implements CommandExecutor {
             UUID uuid = player.getUniqueId();
 
             if(command.getLabel().equalsIgnoreCase("bal")) {
-                if(args.length == 0){
-                    Chat.sendMessage(player, "Rahatilanne: §e" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
-                } else if(args.length > 0) {
+                if(args.length < 1){
+                    Chat.sendMessage(player, "Rahatilanteesi: §e" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
+                } else {
                     if(!player.isOp()){
-                        Chat.sendMessage(player, "Rahatilanne: §e" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
+
+                        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+                        Profile.openProfile(player, target.getUniqueId());
+
                     } else {
 
                         if(args.length == 1 && args[0].equalsIgnoreCase("help")) {
@@ -98,8 +102,7 @@ public class MoneyCommand implements CommandExecutor {
                     }
 
                     double amount;
-                    try {
-                        amount = Double.parseDouble(args[1]);
+                    try { amount = Double.parseDouble(args[1]);
                     } catch(NumberFormatException ex) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytäthän numeroita!");
                         return true;
@@ -109,24 +112,17 @@ public class MoneyCommand implements CommandExecutor {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita, tai nolla!");
                         return true;
                     }
-
                     amount = Util.round(amount);
-
                     if(!Balance.canRemove(uuid, amount)) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole tarpeeksi rahaa!");
                         return true;
                     } else {
-
                         Balance.remove(uuid, amount);
                         Balance.add(target.getUniqueId(), amount);
-
                         Chat.sendMessage(player, "Annoit §e" + amount + "€ §7pelaajalle §a" + target.getName() + "§7!");
                         Chat.sendMessage(target, "Sait §e" + amount + "€ §7pelaajalta §a" + player.getName() + "§7!");
-
                     }
-
                 }
-
             }
         }
 

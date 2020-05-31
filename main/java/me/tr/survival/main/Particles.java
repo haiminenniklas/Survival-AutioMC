@@ -490,22 +490,22 @@ public class Particles implements Listener, CommandExecutor {
 
         List<ParticlePair> particles = new ArrayList<>();
 
-        particles.add(new ParticlePair(null, 1, ParticleEffect.ENCHANT, new ParticleStyleNormal(),
+        particles.add(new ParticlePair(null, 1, ParticleEffect.ENCHANT, DefaultStyles.NORMAL,
                 Material.ENCHANTED_BOOK,null, null, null));
 
-        particles.add(new ParticlePair(null, 2, ParticleEffect.EXPLOSION, new ParticleStyleNormal(),
+        particles.add(new ParticlePair(null, 2, ParticleEffect.EXPLOSION, DefaultStyles.NORMAL,
                 Material.FIRE_CHARGE, null, null, null));
 
-        particles.add(new ParticlePair(null, 3, ParticleEffect.DUST, new ParticleStyleNormal(),
+        particles.add(new ParticlePair(null, 3, ParticleEffect.DUST, DefaultStyles.NORMAL,
                 Material.GUNPOWDER, null, null, null));
 
-        particles.add(new ParticlePair(null, 4, ParticleEffect.BUBBLE_POP, new ParticleStyleNormal(),
+        particles.add(new ParticlePair(null, 4, ParticleEffect.BUBBLE_POP, DefaultStyles.NORMAL,
                 Material.LIGHT_BLUE_DYE, null, null, null));
 
-        particles.add(new ParticlePair(null, 5, ParticleEffect.DRAGON_BREATH, new ParticleStyleNormal(),
+        particles.add(new ParticlePair(null, 5, ParticleEffect.DRAGON_BREATH, DefaultStyles.NORMAL,
                 Material.DRAGON_BREATH, null, null, null));
 
-        particles.add(new ParticlePair(null, 6, ParticleEffect.FALLING_WATER, new ParticleStyleOverhead(),
+        particles.add(new ParticlePair(null, 6, ParticleEffect.FALLING_WATER, DefaultStyles.OVERHEAD,
                 Material.BLUE_DYE, null, null, null));
 
 
@@ -522,22 +522,22 @@ public class Particles implements Listener, CommandExecutor {
             particles.add(p);
         }
 
-        particles.add(new ParticlePair(null, 7, ParticleEffect.BARRIER, new ParticleStyleFeet(),
+        particles.add(new ParticlePair(null, 7, ParticleEffect.BARRIER, DefaultStyles.FEET,
                 Material.RED_DYE, null, null, null));
 
-        particles.add(new ParticlePair(null, 8, ParticleEffect.PORTAL, new ParticleStyleNormal(),
+        particles.add(new ParticlePair(null, 8, ParticleEffect.PORTAL, DefaultStyles.NORMAL,
                 Material.ENDER_PEARL, null, null, null));
 
-        particles.add(new ParticlePair(null, 9, ParticleEffect.TOTEM_OF_UNDYING, new ParticleStyleQuadhelix(),
+        particles.add(new ParticlePair(null, 9, ParticleEffect.TOTEM_OF_UNDYING, DefaultStyles.QUADHELIX,
                 Material.TOTEM_OF_UNDYING, null, null, null));
 
-        particles.add(new ParticlePair(null, 10, ParticleEffect.CAMPFIRE_COSY_SMOKE, new ParticleStyleFeet(),
+        particles.add(new ParticlePair(null, 10, ParticleEffect.CAMPFIRE_COSY_SMOKE, DefaultStyles.FEET,
                 Material.FERMENTED_SPIDER_EYE, null, null, null));
 
-        particles.add(new ParticlePair(null, 11, ParticleEffect.FALLING_LAVA, new ParticleStyleVortex(),
+        particles.add(new ParticlePair(null, 11, ParticleEffect.FALLING_LAVA, DefaultStyles.VORTEX,
                 Material.LAVA_BUCKET, null, null, null));
 
-        particles.add(new ParticlePair(null, 12, ParticleEffect.HEART, new ParticleStyleOverhead(),
+        particles.add(new ParticlePair(null, 12, ParticleEffect.HEART, DefaultStyles.OVERHEAD,
                 Material.APPLE, null, null, null));
 
 
@@ -554,27 +554,26 @@ public class Particles implements Listener, CommandExecutor {
             particles.add(p);
         }
 
-
-        particles.add(new ParticlePair(null, 13, ParticleEffect.ANGRY_VILLAGER, new ParticleStyleSpin(),
+        particles.add(new ParticlePair(null, 13, ParticleEffect.ANGRY_VILLAGER, DefaultStyles.SPIN,
                 Material.BLAZE_ROD, null, null, null));
 
 
-        particles.add(new ParticlePair(null, 14, ParticleEffect.DUST, new ParticleStyleWings(),
+        particles.add(new ParticlePair(null, 14, ParticleEffect.DUST, DefaultStyles.WINGS,
                 Material.ELYTRA, null, new OrdinaryColor(255, 255, 255), null));
 
-        particles.add(new ParticlePair(null, 15, ParticleEffect.ENTITY_EFFECT, new ParticleStyleWhirl(),
+        particles.add(new ParticlePair(null, 15, ParticleEffect.ENTITY_EFFECT, DefaultStyles.WHIRL,
                 Material.GLOWSTONE_DUST, null, null, null));
 
 
-        particles.add(new ParticlePair(null, 16, ParticleEffect.ENCHANTED_HIT, new ParticleStyleSpiral(),
+        particles.add(new ParticlePair(null, 16, ParticleEffect.ENCHANTED_HIT, DefaultStyles.SPIRAL,
                 Material.DIAMOND_SWORD, null, null, null));
 
 
-        particles.add(new ParticlePair(null, 17, ParticleEffect.CRIT, new ParticleStyleCompanion(),
+        particles.add(new ParticlePair(null, 17, ParticleEffect.CRIT, DefaultStyles.COMPANION,
                 Material.NAME_TAG, null, null, null));
 
 
-        particles.add(new ParticlePair(null, 18, ParticleEffect.DUST, new ParticleStyleSpiral(),
+        particles.add(new ParticlePair(null, 18, ParticleEffect.DUST, DefaultStyles.SPIRAL,
                 Material.REDSTONE, null, OrdinaryColor.RAINBOW, null));
 
 
@@ -735,16 +734,16 @@ public class Particles implements Listener, CommandExecutor {
 
         List<ParticlePair> particles = new ArrayList<>();
 
-        particles.add(new ParticlePair(null, 100, ParticleEffect.HEART, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 100, ParticleEffect.HEART, DefaultStyles.ARROWS,
                 Material.APPLE, null, null, null));
 
-        particles.add(new ParticlePair(null, 101, ParticleEffect.ANGRY_VILLAGER, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 101, ParticleEffect.ANGRY_VILLAGER, DefaultStyles.ARROWS,
                 Material.BLAZE_ROD, null, null, null));
 
-        particles.add(new ParticlePair(null, 102, ParticleEffect.HAPPY_VILLAGER, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 102, ParticleEffect.HAPPY_VILLAGER, DefaultStyles.ARROWS,
                 Material.EMERALD, null, null, null));
 
-        particles.add(new ParticlePair(null, 103, ParticleEffect.FLAME, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 103, ParticleEffect.FLAME, DefaultStyles.ARROWS,
                 Material.BLAZE_POWDER, null, null, null));
 
 
@@ -761,13 +760,13 @@ public class Particles implements Listener, CommandExecutor {
             particles.add(p);
         }
 
-        particles.add(new ParticlePair(null, 104, ParticleEffect.SPELL, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 104, ParticleEffect.SPELL, DefaultStyles.ARROWS,
                 Material.GLASS_BOTTLE, null, null, null));
 
-        particles.add(new ParticlePair(null, 105, ParticleEffect.NOTE, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 105, ParticleEffect.NOTE, DefaultStyles.ARROWS,
                 Material.GLISTERING_MELON_SLICE, null, null, null));
 
-        particles.add(new ParticlePair(null, 106, ParticleEffect.TOTEM_OF_UNDYING, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 106, ParticleEffect.TOTEM_OF_UNDYING, DefaultStyles.ARROWS,
                 Material.TOTEM_OF_UNDYING, null, null, null));
 
         return particles;
@@ -783,19 +782,19 @@ public class Particles implements Listener, CommandExecutor {
             particles.add(p);
         }
 
-        particles.add(new ParticlePair(null, 107, ParticleEffect.DUST, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 107, ParticleEffect.DUST, DefaultStyles.ARROWS,
                 Material.SLIME_BALL, null, OrdinaryColor.RAINBOW, null));
 
 
-        particles.add(new ParticlePair(null, 108, ParticleEffect.WITCH, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 108, ParticleEffect.WITCH, DefaultStyles.ARROWS,
                 Material.GHAST_TEAR, null, null, null));
 
 
-        particles.add(new ParticlePair(null, 109, ParticleEffect.CRIT, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 109, ParticleEffect.CRIT, DefaultStyles.ARROWS,
                 Material.IRON_SWORD, null, null, null));
 
 
-        particles.add(new ParticlePair(null, 110, ParticleEffect.DAMAGE_INDICATOR, new ParticleStyleArrows(),
+        particles.add(new ParticlePair(null, 110, ParticleEffect.DAMAGE_INDICATOR, DefaultStyles.ARROWS,
                 Material.REDSTONE, null, null, null));
 
         return particles;

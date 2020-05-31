@@ -73,7 +73,7 @@ public class Util {
     public static void broadcastStaff(String message) {
 
         for(Player online : Bukkit.getOnlinePlayers()) {
-            if(Ranks.isStaff(online.getUniqueId())) {
+            if(Ranks.isStaff(online.getUniqueId()) && Settings.get(online.getUniqueId(), "chat")) {
                 online.sendMessage(message);
             }
         }
@@ -203,6 +203,7 @@ public class Util {
 
             Map<K, V> result = new LinkedHashMap<>();
             for (Map.Entry<K, V> entry : list) {
+                if(entry == null) continue;
                 result.put(entry.getKey(), entry.getValue());
             }
             cb.execute(result);
@@ -316,18 +317,12 @@ public class Util {
     }
 
     public static void sendNotification(Player player, String message){
-
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
-
+        sendNotification(player, message, !Settings.get(player.getUniqueId(), "chat_mentions"));
     }
 
     public static void sendNotification(Player player, String message, boolean sound){
-
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
-        if(sound) {
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-        }
-
+        if(sound) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
     }
 
     public static void broadcastSound(Sound sound) {
@@ -336,9 +331,7 @@ public class Util {
 
     public static void broadcastSound(Sound sound, long volume, long pitch) {
         for(Player player : Bukkit.getOnlinePlayers()) {
-            if(Settings.get(player.getUniqueId(), "chat_mentions")) {
-                player.playSound(player.getLocation(), sound, volume, pitch);
-            }
+            if(!Settings.get(player.getUniqueId(), "chat_mentions")) player.playSound(player.getLocation(), sound, volume, pitch);
         }
     }
 
@@ -373,7 +366,6 @@ public class Util {
     public static String[] splitStringEvery(String s, int interval) {
         int arrayLength = (int) Math.ceil(((s.length() / (double)interval)));
         String[] result = new String[arrayLength];
-
         int j = 0;
         int lastIndex = result.length - 1;
         for (int i = 0; i < lastIndex; i++) {
@@ -381,7 +373,6 @@ public class Util {
             j += interval;
         } //Add the last bit
         result[lastIndex] = s.substring(j);
-
         return result;
     }
 
@@ -450,12 +441,10 @@ public class Util {
 
             // Write the size of the inventory
             dataOutput.writeInt(items.length);
-
             // Save every element in the list
             for (int i = 0; i < items.length; i++) {
                 dataOutput.writeObject(items[i]);
             }
-
             // Serialize that array
             dataOutput.close();
             return Base64Coder.encodeLines(outputStream.toByteArray());
@@ -482,15 +471,12 @@ public class Util {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
-
             // Write the size of the inventory
             dataOutput.writeInt(inventory.getSize());
-
             // Save every element in the list
             for (int i = 0; i < inventory.getSize(); i++) {
                 dataOutput.writeObject(inventory.getItem(i));
             }
-
             // Serialize that array
             dataOutput.close();
             return Base64Coder.encodeLines(outputStream.toByteArray());
@@ -519,12 +505,10 @@ public class Util {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             Inventory inventory = Bukkit.getServer().createInventory(null, dataInput.readInt());
-
             // Read the serialized inventory
             for (int i = 0; i < inventory.getSize(); i++) {
                 inventory.setItem(i, (ItemStack) dataInput.readObject());
             }
-
             dataInput.close();
             return inventory;
         } catch (ClassNotFoundException e) {
@@ -548,12 +532,10 @@ public class Util {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             ItemStack[] items = new ItemStack[dataInput.readInt()];
-
             // Read the serialized inventory
             for (int i = 0; i < items.length; i++) {
                 items[i] = (ItemStack) dataInput.readObject();
             }
-
             dataInput.close();
             return items;
         } catch (ClassNotFoundException e) {
@@ -561,8 +543,8 @@ public class Util {
         }
     }
 
-    public static void sendClickableText(Player player, String title, String command, String hoverText) {
-        TextComponent comp = new TextComponent(title);
+    public static void sendClickableText(Player player, String text, String command, String hoverText) {
+        TextComponent comp = new TextComponent(text);
         comp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
         comp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(hoverText)));
         player.spigot().sendMessage(comp);
@@ -571,9 +553,7 @@ public class Util {
     public static void deleteDir(File file) {
         File[] contents = file.listFiles();
         if (contents != null) {
-            for (File f : contents) {
-                deleteDir(f);
-            }
+            for (File f : contents) { deleteDir(f); }
         }
         file.delete();
     }
@@ -592,7 +572,6 @@ public class Util {
     LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
     return (longerLength - levenshteinDistance.apply(longer, shorter)) / (double) longerLength; */
         return (longerLength - editDistance(longer, shorter)) / (double) longerLength;
-
     }
 
     // Example implementation of the Levenshtein Edit Distance
@@ -632,33 +611,25 @@ public class Util {
     }
 
     public static List<Advancement> getDoneAdvancements(Player player) {
-
         List<Advancement> advancements = new ArrayList<>();
         for(Advancement advancement : getAllAdvancements()) {
             if(player.getAdvancementProgress(advancement).isDone()) {
                 advancements.add(advancement);
             }
         }
-
         return advancements;
-
     }
 
     public static List<Advancement> getAllAdvancements() {
         List<Advancement> advancements = new ArrayList<>();
-
         Iterator<Advancement> iterator = Bukkit.advancementIterator();
         while(iterator.hasNext()) {
-
             advancements.add(iterator.next());
-
         }
-
         return advancements;
     }
 
     public static Material ChatColorToDye(ChatColor color) {
-
         switch(color) {
             case GREEN:
                 return Material.GREEN_DYE;
@@ -679,7 +650,6 @@ public class Util {
             default:
                 return Material.GRAY_DYE;
         }
-
     }
 
     public static String translateChatColor(ChatColor color) {
@@ -711,17 +681,11 @@ public class Util {
         return container.get(convertWorldGuardWorld(world));
     }
 
-    public static com.sk89q.worldedit.world.World convertWorldGuardWorld(World world) {
-        return BukkitAdapter.adapt(world);
-    }
+    public static com.sk89q.worldedit.world.World convertWorldGuardWorld(World world) { return BukkitAdapter.adapt(world); }
 
-    public static com.sk89q.worldedit.util.Location convertWorldGuardLocation(Location loc) {
-        return BukkitAdapter.adapt(loc);
-    }
+    public static com.sk89q.worldedit.util.Location convertWorldGuardLocation(Location loc) { return BukkitAdapter.adapt(loc); }
 
-    public static Set<ProtectedRegion> getRegions(final Block block) {
-        return getRegions(block.getLocation());
-    }
+    public static Set<ProtectedRegion> getRegions(final Block block) { return getRegions(block.getLocation()); }
 
     public static Set<ProtectedRegion> getRegions(final Location loc) {
         final RegionManager rgm = getRegionManager(loc.getWorld());
@@ -729,15 +693,11 @@ public class Util {
         return ars.getRegions();
     }
 
-    public static Set<ProtectedRegion> getRegions(final Player player) {
-        return getRegions(player.getLocation());
-    }
+    public static Set<ProtectedRegion> getRegions(final Player player) { return getRegions(player.getLocation()); }
 
     public static boolean isInRegion(final Player player, String id) {
         for(ProtectedRegion rg : getRegions(player)) {
-            if(rg.getId().equalsIgnoreCase(id)) {
-                return true;
-            }
+            if(rg.getId().equalsIgnoreCase(id)) return true;
         }
         return true;
     }

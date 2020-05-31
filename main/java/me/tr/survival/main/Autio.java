@@ -32,6 +32,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
@@ -171,32 +172,18 @@ public class Autio {
         config.set("deathspawn.yaw", String.valueOf(loc.getYaw()));
         config.set("deathspawn.pitch", String.valueOf(loc.getPitch()));
         config.set("deathspawn.world", loc.getWorld().getName());
-
         Main.getInstance().saveConfig();
     }
 
     public static Location getDeathSpawn() {
-
         FileConfiguration config = Main.getInstance().getConfig();
-
         double x = config.getDouble("deathspawn.x");
         double y = config.getDouble("deathspawn.y");
         double z = config.getDouble("deathspawn.z");
-
         float yaw = Float.parseFloat(config.getString("deathspawn.yaw"));
         float pitch = Float.parseFloat(config.getString("deathspawn.pitch"));
-
         World world = Bukkit.getWorld(config.getString("deathspawn.world"));
-
         return new Location(world, x, y, z, yaw, pitch);
-
-    }
-
-    public static void updateTag(Player player) {
-
-        String color = "&" + Ranks.getRankColor(Ranks.getRank(player.getUniqueId())).getChar();
-       // Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "nte player " + player.getName() + " prefix " + color);
-
     }
 
     public static FileConfiguration getConfig() {
@@ -215,18 +202,9 @@ public class Autio {
         });
     }
 
-    public static void updatePlayer(Player player) {
-
-        Autio.updateTag(player);
-        loadPlayer(player);
-        Settings.scoreboard(player);
-
-    }
-
     public static Server getServer() {
         return Bukkit.getServer();
     }
-
     public static Main getPlugin() {
         return Main.getInstance();
     }
@@ -234,29 +212,19 @@ public class Autio {
     public static void runDebug(Player player) {
 
         UUID uuid = player.getUniqueId();
-
         if(!player.isOp()) {
-
-            if(!debugs.containsKey(uuid)) {
-                debugs.put(uuid, System.currentTimeMillis());
-            } else {
-
+            if(!debugs.containsKey(uuid)) debugs.put(uuid, System.currentTimeMillis());
+            else {
                 long lastRun = debugs.get(uuid);
                 long now = System.currentTimeMillis();
-
                 if(now - lastRun < 1000 * 60 * 5) {
                     Chat.sendMessage(player, Chat.Prefix.ERROR, "Palvelimen suorituskyvyn suojaamiseksi, pystyt käynnistämään virheenkorjauksen §c5 minuutin §7välein!");
                     return;
-                } else {
-                    debugs.remove(uuid);
-                }
-
+                } else debugs.remove(uuid);
             }
-
         }
 
         Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjataan yleiset virheet ja bugit...");
-        Autio.updatePlayer(player);
         Boosters.debug();
         Particles.reloadParticles(player);
         PlayerGlowManager.disableGlow(player);
@@ -278,23 +246,14 @@ public class Autio {
 
     public static void sendTablist(Player player) {
         PacketContainer pc = getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
-
-        pc.getChatComponents().write(0, WrappedChatComponent.fromText("\n  §2§lSorsaMC§7 - §aSurvival  \n"))
-                .write(1, WrappedChatComponent.fromText("\n  §7Paikalla:  \n  §8⇻§a" + getOnlinePlayers().size() + "§8⇺  \n"));
-        try
-        {
-            getProtocolManager().sendServerPacket(player, pc);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        pc.getChatComponents().write(0, WrappedChatComponent.fromText("\n  §2§lSorsaMC§7 - §aSurvival  \n")).write(1, WrappedChatComponent.fromText("\n  §7Paikalla:  \n  §8⇻§a" + getOnlinePlayers().size() + "§8⇺  \n"));
+        try { getProtocolManager().sendServerPacket(player, pc); }
+        catch (Exception ex) { ex.printStackTrace(); }
     }
 
     public static LuckPerms getLuckPerms() {
         return Main.getLuckPerms();
     }
-
     public static PlayerParticlesAPI getParticlesAPI() {
         return Main.getParticlesAPI();
     }
@@ -302,16 +261,12 @@ public class Autio {
     public static String getPrefix(Player player) {
         User user = getLuckPerms().getUserManager().getUser(player.getUniqueId());
         QueryOptions queryOptions = getLuckPerms().getContextManager().getQueryOptions(user).orElse(getLuckPerms().getContextManager().getStaticQueryOptions());
-        if (user == null) {
-            // user not loaded, even after requesting data from storage
-            return "";
-        }
+        if (user == null) return "§7Pelaaja";
         CachedMetaData data = user.getCachedData().getMetaData(queryOptions);
         String prefix = data.getPrefix();
         getLuckPerms().getUserManager().cleanupUser(user);
         if(prefix == null) return "";
         return prefix;
-
     }
 
     public static void toggleDebugMode(Player player) {
@@ -327,10 +282,9 @@ public class Autio {
                         cancel();
                        return;
                    }
-
-                   Util.sendNotification(player, "§7TPS: §e" + Util.round(Autio.getCurrentTPS()) +
-                           " §7| RAM: §a" + Util.getUsedMemory() + "Mb/" + Util.getMaxMemory() + "Mb" +
-                           " §7| CPU: §b" + Util.getProcessCPULoad() + "%/" + Util.getSystemCPULoad() + "%");
+                   Util.sendNotification(player, "§7TPS: §e" + new DecimalFormat("#.##").format(Autio.getCurrentTPS()) +
+                           " §7| RAM: §a" + new DecimalFormat("#.##").format(Util.getUsedMemory()) + "Mb/" + Util.getMaxMemory() + "Mb" +
+                           " §7| CPU: §b" + Util.getProcessCPULoad() + "%", false);
                }
            }.runTaskTimerAsynchronously(Main.getInstance(), 20, 20);
         } else {
@@ -339,15 +293,12 @@ public class Autio {
         }
     }
 
-    public static List<Player> getOnlinePlayers() {
-
-        List<Player> online = new ArrayList<>();
-
+    public static Set<Player> getOnlinePlayers() {
+        Set<Player> online = new HashSet<>();
         for(Player player : Bukkit.getOnlinePlayers()) {
-            if(StaffManager.hidden.contains(player.getUniqueId())) continue;
+            if(StaffManager.hasStaffMode(player)) continue;
             online.add(player);
         }
-
         return online;
     }
 

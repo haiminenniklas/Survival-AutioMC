@@ -6,6 +6,7 @@ import me.tr.survival.main.Main;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -14,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -76,6 +78,13 @@ public class Essentials implements CommandExecutor, Listener {
                                     "  §e/osta §7verkkokauppa",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            for(int i = 0; i < 27; i++) {
+                                if(gui.getItem(i) != null) continue;
+                                if(gui.getButton(i) != null) continue;
+                                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                            }
+
                         });
                     } else if(args[0].equalsIgnoreCase("vaihto")) {
                         Gui.openGui(player, "Apua (Vaihtokauppa)", 27, (gui) -> {
@@ -103,6 +112,12 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 14);
 
+                            for(int i = 0; i < 27; i++) {
+                                if(gui.getItem(i) != null) continue;
+                                if(gui.getButton(i) != null) continue;
+                                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                            }
+
                         });
                     } else if(args[0].equalsIgnoreCase("arvot")) {
 
@@ -110,18 +125,24 @@ public class Essentials implements CommandExecutor, Listener {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6VIP-arvot", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Palvelimellamme on §63",
-                                    " §7VIP-arvoa: §aPremium§7,",
-                                    " §aPremium§f+§7 sekä §a§lSORSA§7.",
+                                    " §7VIP-arvoa: §e§öPremium§7,",
+                                    " §6§lPremium§f+§7, sekä §2§lSORSA§7!",
                                     " §7VIP-arvot ovat yksi tapa",
                                     " §7tukea palvelimen toimintaa",
-                                    " §7ja pitämällä sen mahdollisimman",
-                                    " §7pitkään toiminnassa",
+                                    " §7pitämällä sen mahdollisimman",
+                                    " §7pitkään toiminnassa!",
                                     " ",
                                     " §7Lisää VIP-arvoista",
-                                    " §7verkkokaupassamme:",
-                                    " §awww.sorsamc.fi/kauppa",
+                                    " §7verkkokaupassamme: §a/osta",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            for(int i = 0; i < 27; i++) {
+                                if(gui.getItem(i) != null) continue;
+                                if(gui.getButton(i) != null) continue;
+                                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                            }
+
                         });
 
                     } else if(args[0].equalsIgnoreCase("aloitus")) {
@@ -144,6 +165,13 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7pelihetkiä!",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            for(int i = 0; i < 27; i++) {
+                                if(gui.getItem(i) != null) continue;
+                                if(gui.getButton(i) != null) continue;
+                                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                            }
+
                         });
                     } else if(args[0].equalsIgnoreCase("tehostukset")) {
                         Gui.openGui(player, "Apua (Tehostukset)", 27, (gui) -> {
@@ -160,6 +188,13 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7komennolla §a/tehostus",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            for(int i = 0; i < 27; i++) {
+                                if(gui.getItem(i) != null) continue;
+                                if(gui.getButton(i) != null) continue;
+                                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                            }
+
                         });
                     } else if(args[0].equalsIgnoreCase("asetukset")) {
                         Gui.openGui(player, "Apua (Asetukset)", 27, (gui) -> {
@@ -175,6 +210,13 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §6/asetukset",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            for(int i = 0; i < 27; i++) {
+                                if(gui.getItem(i) != null) continue;
+                                if(gui.getButton(i) != null) continue;
+                                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                            }
+
                         });
                     } else if(args[0].equalsIgnoreCase("valuutta") || args[0].equalsIgnoreCase("raha")) {
                         Gui.openGui(player, "Apua (Raha/Valuutta)", 27, (gui) -> {
@@ -193,6 +235,22 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
 
+                            gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eRikkaimmat", Arrays.asList(
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                    " §7Katso ketkä ovat palvelimen",
+                                    " §7rikkaimmat pelaajat, sekä",
+                                    " §7miten itse sijoitut!",
+                                    " ",
+                                    " §aKlikkaa tästä!",
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                            ))) {
+                                @Override
+                                public void onClick(Player clicker, ClickType clickType) {
+                                    gui.close(clicker);
+                                    BaltopCommand.openGui(clicker);
+                                }
+                            });
+
                             gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§aHyödylliset komennot", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §a/rahatilanne §7Rahatilanteesi",
@@ -201,6 +259,13 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §a/baltop §7Rikkaimmat pelaajat",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 26);
+
+                            for(int i = 0; i < 27; i++) {
+                                if(gui.getItem(i) != null) continue;
+                                if(gui.getButton(i) != null) continue;
+                                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                            }
+
 
                         });
                     }/* else if(args[0].equalsIgnoreCase("tehtävät")) {
@@ -232,6 +297,13 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7Discord: §9/discord",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            for(int i = 0; i < 27; i++) {
+                                if(gui.getItem(i) != null) continue;
+                                if(gui.getButton(i) != null) continue;
+                                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                            }
+
                         });
                     } else if(args[0].equalsIgnoreCase("reppu")) {
                         Gui.openGui(player, "Apua (Reppu)", 27, (gui) -> {
@@ -251,6 +323,13 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §a/reppu päivitä§7!",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            for(int i = 0; i < 27; i++) {
+                                if(gui.getItem(i) != null) continue;
+                                if(gui.getButton(i) != null) continue;
+                                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                            }
+
                         });
                     }/* else if(args[0].equalsIgnoreCase("huutokauppa")) {
                         Gui.openGui(player, "Apua (Huutokauppa)", 27, (gui) -> {

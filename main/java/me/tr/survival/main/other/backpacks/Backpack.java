@@ -2,6 +2,7 @@ package me.tr.survival.main.other.backpacks;
 
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
+import me.tr.survival.main.Profile;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
@@ -26,6 +27,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
 import java.util.*;
@@ -122,13 +124,23 @@ public class Backpack implements CommandExecutor, Listener {
             inv.setItem(firstGlassPanes[i], ItemUtil.makeItem(Material.PINK_STAINED_GLASS_PANE));
         }
 
-        String upgradeText = (getLevel(uuid) == Level.THREE) ? "§c§lREPPUSI ON YLIMMÄLLÄ TASOLLA" : "§a§lKLIKKAA PÄIVITTÄÄKSESI";
+        String upgradeText = (getLevel(uuid) == Level.THREE) ? "§cReppu on ylimmällä tasolla" : "§aKlikkaa päivittääksesi!";
 
         inv.setItem(4, ItemUtil.makeItem(Material.EXPERIENCE_BOTTLE, 1, "§eReppusi", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Reppusi taso: §a" + getLevelNumber(uuid),
                 " ",
                 " " + upgradeText,
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        )));
+
+        inv.setItem(inv.getSize() - 5, ItemUtil.makeSkullItem(player, 1, "§aProfiili", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Avaa sinun profiili-",
+                " §7näkymäsi, josta voit",
+                " §7hallinnoida pelaamistasi!",
+                " ",
+                " §aKlikkaa avataksesi!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )));
 
@@ -149,6 +161,7 @@ public class Backpack implements CommandExecutor, Listener {
         }
 
         for(int i = level.size + 9; i < level.size + 18; i++) {
+            if(i == 49) continue;
             inv.setItem(i, ItemUtil.makeItem(Material.PINK_STAINED_GLASS_PANE));
         }
 
@@ -181,11 +194,20 @@ public class Backpack implements CommandExecutor, Listener {
                     if(item.hasItemMeta()) {
                         if(item.getItemMeta().getDisplayName().equalsIgnoreCase("§eReppusi")) {
                             e.setCancelled(true);
-                            if(getLevel(uuid) != Level.THREE) {
-                                upgradeConfirm(player);
-                            }
+                            if(getLevel(uuid) != Level.THREE) upgradeConfirm(player);
+                            else player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                         }
                     }
+                } else if(item.getType() == Material.PLAYER_HEAD && item.hasItemMeta()) {
+
+                    ItemMeta meta = item.getItemMeta();
+                    if(meta != null && meta.hasDisplayName() && meta.hasLore()) {
+                        if(meta.getDisplayName().equalsIgnoreCase("§aProfiili")) {
+                            e.setCancelled(true);
+                            Profile.openProfile(player, player.getUniqueId());
+                        }
+                    }
+
                 }
 
             }

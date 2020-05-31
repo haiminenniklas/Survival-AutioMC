@@ -31,21 +31,15 @@ public class Profile {
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
 
         if(!PlayerData.isLoaded(targetUUID)) {
-
             Chat.sendMessage(opener, "Etsitään pelaajan §a" + target.getName() + " §7tietoja...");
-
             Autio.async(() ->
-
                     PlayerData.loadPlayer(targetUUID, (result) -> {
-
                         if(result) {
                             Autio.task(() -> {
                                 if(Settings.get(targetUUID, "privacy") && !Ranks.isStaff(opener.getUniqueId())) {
                                     openPrivateDenyGui(opener);
                                     return;
-                                } else {
-                                    openProfile(opener, targetUUID);
-                                }
+                                } else openProfile(opener, targetUUID);
                             });
                         } else {
                             Gui gui = new Gui("Ei löydetty", 27);
@@ -60,12 +54,9 @@ public class Profile {
                                     "§7 Omat tiedot saat §a/profiili§7!",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
-                            Autio.task(() -> {
-                                gui.open(opener);
-                            });
+                            Autio.task(() -> gui.open(opener));
                         }
                     }));
-
             return;
         }
 
@@ -75,88 +66,7 @@ public class Profile {
         }
 
         if(!opener.getUniqueId().equals(targetUUID)) {
-            Gui.openGui(opener, "Pelaajan " + target.getName() + " tiedot", 27, (gui) -> {
-
-                Timestamp lastTimestamp = new Timestamp(target.getLastPlayed());
-                LocalDateTime lastSeen = lastTimestamp.toLocalDateTime();
-
-                HashMap<String, Object> data = PlayerData.getData(targetUUID);
-
-                gui.addItem(1, ItemUtil.makeSkullItem(target, 1, "§2Profiili", Arrays.asList(
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        " §7Nimi: §a" + target.getName(),
-                        " ",
-                        " §7Arvo: §r" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
-                        " §7Rahatilanne: §e" + Util.formatDecimals(Balance.get(targetUUID)) + "€",
-                        " ",
-                        " §7Liittynyt: §a" + data.get("joined"),
-                        " §7Viimeksi nähty: §a" + lastSeen.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-                        " ",
-                        " §7Blockeja rikottu: §e" + Ores.getTotal(targetUUID),
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                )), 13);
-
-                gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.BOOK, 1, "§aOma profiili", Arrays.asList(
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        " §7Voit päästä katsomaan",
-                        " §7omaa §aprofiiliasi",
-                        " §7klikkaamalla §etästä§7!",
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                ))) {
-                    @Override
-                    public void onClick(Player clicker, ClickType clickType) {
-                        gui.close(clicker);
-                        openProfile(clicker, clicker.getUniqueId());
-                    }
-                });
-
-                gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eRikkaimmat", Arrays.asList(
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        " §7Voit myös katsoa miten",
-                        " §7tämä kyseinen pelaaja",
-                        " §7saattaa sijoittua",
-                        " §erikkaimpien §7pelaajien",
-                        " §7joukossa!",
-                        " ",
-                        " §aKlikkaa tästä!",
-                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                ))) {
-                    @Override
-                    public void onClick(Player clicker, ClickType clickType) {
-                        gui.close(clicker);
-                        BaltopCommand.openGui(clicker);
-                    }
-                });
-
-                if(Ranks.isStaff(opener.getUniqueId())) {
-                    gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§6Pelaajan tiedot", Arrays.asList(
-                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                            " §7Vahdi ja katso pelaajan",
-                            " §7tietoja!",
-                            " ",
-                            " §aKlikkaa tästä!",
-                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                    ))) {
-                        @Override
-                        public void onClick(Player clicker, ClickType clickType) {
-                            gui.close(clicker);
-                            Bukkit.dispatchCommand(opener, "staff " + target.getName());
-                        }
-                    });
-                }
-
-                int[] glassSlots = new int[]{11, 12, 14, 15};
-                for (int slot : glassSlots) {
-                    gui.addItem(1, ItemUtil.makeItem(Material.LIGHT_BLUE_STAINED_GLASS_PANE), slot);
-                }
-
-                for (int i = 0; i < 27; i++) {
-                    if (gui.getItem(i) != null) continue;
-                    if (gui.getButton(i) != null) continue;
-                    gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
-                }
-
-            });
+            openOther(opener, target);
             return;
         }
 
@@ -414,7 +324,93 @@ public class Profile {
 
     }
 
+    public static void openOther(Player opener, OfflinePlayer target) {
 
+        final UUID targetUUID = target.getUniqueId();
+
+        Gui.openGui(opener, "Pelaajan " + target.getName() + " tiedot", 27, (gui) -> {
+
+            Timestamp lastTimestamp = new Timestamp(target.getLastPlayed());
+            LocalDateTime lastSeen = lastTimestamp.toLocalDateTime();
+
+            HashMap<String, Object> data = PlayerData.getData(targetUUID);
+
+            gui.addItem(1, ItemUtil.makeSkullItem(target, 1, "§2Profiili", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Nimi: §a" + target.getName(),
+                    " ",
+                    " §7Arvo: §r" + Ranks.getDisplayName(Ranks.getRank(targetUUID)),
+                    " §7Rahatilanne: §e" + Util.formatDecimals(Balance.get(targetUUID)) + "€",
+                    " ",
+                    " §7Liittynyt: §a" + data.get("joined"),
+                    " §7Viimeksi nähty: §a" + lastSeen.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                    " ",
+                    " §7Blockeja rikottu: §e" + Ores.getTotal(targetUUID),
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            )), 13);
+
+            gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.BOOK, 1, "§aOma profiili", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Voit päästä katsomaan",
+                    " §7omaa §aprofiiliasi",
+                    " §7klikkaamalla §etästä§7!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    openProfile(clicker, clicker.getUniqueId());
+                }
+            });
+
+            gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eRikkaimmat", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Voit myös katsoa miten",
+                    " §7tämä kyseinen pelaaja",
+                    " §7saattaa sijoittua",
+                    " §erikkaimpien §7pelaajien",
+                    " §7joukossa!",
+                    " ",
+                    " §aKlikkaa tästä!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    BaltopCommand.openGui(clicker);
+                }
+            });
+
+            if(Ranks.isStaff(opener.getUniqueId())) {
+                gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§6Pelaajan tiedot", Arrays.asList(
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                        " §7Vahdi ja katso pelaajan",
+                        " §7tietoja!",
+                        " ",
+                        " §aKlikkaa tästä!",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                ))) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(clicker);
+                        Bukkit.dispatchCommand(opener, "staff " + target.getName());
+                    }
+                });
+            }
+
+            int[] glassSlots = new int[]{11, 12, 14, 15};
+            for (int slot : glassSlots) {
+                gui.addItem(1, ItemUtil.makeItem(Material.LIGHT_BLUE_STAINED_GLASS_PANE), slot);
+            }
+
+            for (int i = 0; i < 27; i++) {
+                if (gui.getItem(i) != null) continue;
+                if (gui.getButton(i) != null) continue;
+                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+            }
+
+        });
+    }
 
     private static void openPrivateDenyGui(Player player) {
         Gui.openGui(player, "Ei voitu avata", 27, (gui) -> {

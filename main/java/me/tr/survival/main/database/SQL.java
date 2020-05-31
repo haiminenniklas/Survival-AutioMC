@@ -84,11 +84,11 @@ public class SQL {
         for(String query : queries) {
             try {
                 if(!update(query)) {
-                    System.out.println("Could not execute query (" + query + ")");
+                    Autio.logColored("§cCould not execute query (" + query + ")");
                 }
             } catch(SQLException ex){
                 ex.printStackTrace();
-                System.out.println("Could not setup the database");
+                System.err.println("Could not setup the database");
             }
         }
 

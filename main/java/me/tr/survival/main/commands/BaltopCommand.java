@@ -63,6 +63,8 @@ public class BaltopCommand implements CommandExecutor {
                     final List<ItemStack> heads = new ArrayList<>();
 
                     for (final Map.Entry<UUID, Double> e : balanceMap.entrySet()) {
+                        if(e == null) continue;
+                        if(e.getKey() == null) continue;
                         final OfflinePlayer target = Bukkit.getOfflinePlayer(e.getKey());
                         double balance = e.getValue();
                         int placement = i + 1;
@@ -87,7 +89,6 @@ public class BaltopCommand implements CommandExecutor {
                             });
 
                         } else {
-
                             ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §7" + target.getName(), Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Rahatilanne: §a" + Util.formatDecimals(balance) + "€",
@@ -101,23 +102,41 @@ public class BaltopCommand implements CommandExecutor {
                                     public void onClick(Player clicker, ClickType clickType) {
                                         System.out.println(1);
                                         gui.close(clicker);
-                                        Profile.openProfile(clicker, e.getKey());
+                                        Profile.openProfile(clicker, target.getUniqueId());
                                     }
                                 });
                             });
                         }
-
-                        i++;
+                        i += 1;
                         if (i > 12) break;
                     }
                     //System.out.println("[/Baltop] Map Entry Loop took " + (System.currentTimeMillis() - loopStart) + "ms");
+
+                    gui.addButton(new Button(1, 0, ItemUtil.makeItem(Material.BOOK, 1, "§2Mikä tämä on?", Arrays.asList(
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                            " §7Tässä valikossa näkyy",
+                            " §7Survival-palvelimen",
+                            " §erikkaimmat pelaajat!",
+                            " ",
+                            " §7Lista päivittyy muutaman",
+                            " §7minuutin välein, joten",
+                            " §7listalla olevat rahamäärät",
+                            " §7voivat olla hieman väärässä!",
+                            " ",
+                            " §7Lisätietoa: §a/apua raha",
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                    ))) {
+                        @Override
+                        public void onClick(Player clicker, ClickType clickType) {
+                            gui.close(clicker);
+                            Bukkit.dispatchCommand(clicker, "apua raha");
+                        }
+                    });
 
                     gui.addButton(new Button(1, 4, ItemUtil.makeSkullItem(player, 1, "§a" + player.getName(), Arrays.asList(
                             "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                             " §7Rahatilanteesi: §e" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€",
                             " §7Sijoituksesi: §e#" + (new ArrayList<>(balanceMap.keySet()).indexOf(player.getUniqueId()) + 1),
-                            " ",
-                            " §aKlikkaa nähdäksesi lisätietoja",
                             "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                     ))) {
                         @Override
@@ -140,12 +159,8 @@ public class BaltopCommand implements CommandExecutor {
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), (runnable) -> {
                         // System.out.println("[/Baltop] Opening Gui... ");
                         //final long invStart = System.currentTimeMillis();
-                        if(heads.size() < 12) {
-                            openGui(player);
-                        } else {
-                            gui.open(player);
-                            player.updateInventory();
-                        }
+                        gui.open(player);
+                        player.updateInventory();
                         runnable.cancel();
                         //System.out.println("[/Baltop] Gui opening took " + (System.currentTimeMillis() - invStart) + "ms. ");
                         //System.out.println("[/Baltop] It took in total " + (System.currentTimeMillis() - start) + "ms. ");

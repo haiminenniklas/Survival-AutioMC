@@ -47,34 +47,24 @@ public class Events implements Listener {
     @EventHandler
     public void onLevelUp(LevelUpEvent e){
         Player player = e.getPlayer();
-
         Util.sendNotification(player, "§a§lTASO! §7Nousit tasolle §a" + e.getLevel() + "§7!");
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onLogin(PlayerLoginEvent e) {
-
         Player player = e.getPlayer();
         if(e.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
-            if(player.hasPermission("server.join.full")) {
-                e.allow();
-            } else {
-                e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän, sinun täytyy omistaa vähintään §e§lPremium§7-arvo!");
-            }
+            if(player.hasPermission("server.join.full")) e.allow();
+            else e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän, sinun täytyy omistaa vähintään §e§lPremium§7-arvo!");
         }
-
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
         UUID uuid = e.getUniqueId();
-        // Let's only load if the player is allowed on the server
         if(e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
-            PlayerData.loadPlayer(uuid, (res) -> {
-                Autio.logColored(res ? "§aLoaded " + e.getName() + " from the Database!" : "§cCould not load " + e.getName() + " from the database!");
-            });
+            PlayerData.loadPlayer(uuid, (r) -> {});
         }
     }
 
@@ -106,38 +96,28 @@ public class Events implements Listener {
         mail.addExtra(stats);
         player.spigot().sendMessage(mail);
         player.sendMessage(" ");
-        if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
-        }
 
-        if(Ranks.isStaff(player.getUniqueId()) && StaffManager.hasStaffMode(player)) {
-            StaffManager.enableStaffMode(player);
-        }
+        if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
+        if(Ranks.isStaff(player.getUniqueId()) && !StaffManager.hasStaffMode(player)) StaffManager.enableStaffMode(player);
 
         // Fix vanish
         for(UUID vanished : StaffManager.hidden) {
             Player v = Bukkit.getPlayer(vanished);
             if(v == null) continue;
             player.hidePlayer(Main.getInstance(), v);
-
         }
 
         // Setup backpacks
         Backpack.Level bLvl = Backpack.getLevel(player.getUniqueId());
          if(Ranks.hasRank(player, "premiumplus")) {
-             if(bLvl == Backpack.Level.ONE) {
-                 Backpack.setLevel(player.getUniqueId(), Backpack.Level.TWO);
-             }
-        } else if(Ranks.hasRank(player, "sorsa")) {
-             if(bLvl != Backpack.Level.THREE) {
-                 Backpack.setLevel(player.getUniqueId(), Backpack.Level.THREE);
-             }
-        }
-        e.setJoinMessage(null);
-         if(StaffManager.hidden.contains(player.getUniqueId())) {
-             Chat.sendMessage(player, "Olet piilossa pelaajilta!");
+             if(bLvl == Backpack.Level.ONE) Backpack.setLevel(player.getUniqueId(), Backpack.Level.TWO);
+         } else if(Ranks.hasRank(player, "sorsa")) {
+             if(bLvl != Backpack.Level.THREE) Backpack.setLevel(player.getUniqueId(), Backpack.Level.THREE);
          }
-        if(!player.hasPlayedBefore()) {
+         e.setJoinMessage(null);
+         if(StaffManager.hidden.contains(player.getUniqueId())) Chat.sendMessage(player, "Olet piilossa pelaajilta!");
+
+         if(!player.hasPlayedBefore()) {
             ItemStack[] firstKit = new ItemStack[] {
                     new ItemStack(Material.WOODEN_SWORD, 1),
                     new ItemStack(Material.WOODEN_AXE, 1),
@@ -149,77 +129,48 @@ public class Events implements Listener {
             };
             player.getInventory().addItem(firstKit);
             Autio.teleportToSpawn(e.getPlayer());
-        }
-
+         }
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
-
-        Main.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
-            PlayerData.loadPlayer(player.getUniqueId(), (result) -> {});
-        }, 20 * 2);
-
-        Autio.updatePlayer(player);
+        Settings.scoreboard(player);
         Autio.everyAsync(3, () -> Autio.sendTablist(player));
-
    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
-
         e.setQuitMessage(null);
-
         Player player = e.getPlayer();
-
         // Disable staff mode
-        if(StaffManager.hasStaffMode(player)) {
-            StaffManager.disableStaffMode(player);
-        }
-
+        if(StaffManager.hasStaffMode(player)) StaffManager.disableStaffMode(player);
         // Save player's data
         Main.getInstance().getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> PlayerData.savePlayer(player.getUniqueId()));
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInvClick(InventoryClickEvent e) {
         if(e.getClickedInventory() == null) return;
         if(e.getCurrentItem() == null) return;
-
         Player player = (Player) e.getWhoClicked();
-
         if(Gui.getGui(player) != null) {
             Gui gui = Gui.getGui(player);
-
             if(e.getView().getTitle().contains("§r")) {
                 if(gui.isPartiallyTouchable()) {
                     // If user didn't do the allowed procedures with a partially touchable inventory
-                    if(!e.getView().getBottomInventory().contains(e.getCurrentItem()) && !gui.clickedAllowedSlot(e.getSlot())) {
-                        e.setCancelled(true);
-                    }
-                } else {
-                    e.setCancelled(true);
-                }
+                    if(!e.getView().getBottomInventory().contains(e.getCurrentItem()) && !gui.clickedAllowedSlot(e.getSlot())) e.setCancelled(true);
+                } else e.setCancelled(true);
             }
-
             if(e.getCurrentItem() != null) {
                 for(Button b : gui.getButtons()) {
-                    if(b.item.clone().equals(e.getCurrentItem())) {
+                    if(b.item.isSimilar(e.getCurrentItem()))
                         b.onClick(player, e.getClick());
-                    }
                 }
             }
-
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInvClose(InventoryCloseEvent e) {
-
         Player player = (Player) e.getPlayer();
-        if(e.getView().getTitle().contains("§r") && Gui.getGui(player) != null) {
-            Gui.getGui(player).close(player);
-        }
-
+        if(e.getView().getTitle().contains("§r") && Gui.getGui(player) != null) Gui.getGui(player).close(player);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -232,15 +183,12 @@ public class Events implements Listener {
     public void onEntityDeath(EntityDeathEvent e) {
         if(Boosters.isActive(Boosters.Booster.DOUBLE_XP) && e.getEntity().getKiller() != null) {
             e.setDroppedExp(e.getDroppedExp() * 2);
-            if(e.getDroppedExp() >= 1) {
-                Util.sendNotification(e.getEntity().getKiller(), "§a§lTEHOSTUS §7Tupla XP!", false);
-            }
+            if(e.getDroppedExp() >= 1) Util.sendNotification(e.getEntity().getKiller(), "§a§lTEHOSTUS §7Tupla XP!", false);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onTeleport(PlayerTeleportEvent e) {
-
         Player player = e.getPlayer();
         FileConfiguration config = Main.getInstance().getConfig();
         if(deathIsland.contains(player.getUniqueId())) {
@@ -257,21 +205,16 @@ public class Events implements Listener {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
         }
         lastLocation.put(player.getUniqueId(), e.getFrom());
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onFoodLevelChange(FoodLevelChangeEvent e) {
-        if(Boosters.isActive(Boosters.Booster.NO_HUNGER)) {
-            e.setCancelled(true);
-        } else {
-            e.setCancelled(false);
-        }
+        if(Boosters.isActive(Boosters.Booster.NO_HUNGER)) e.setCancelled(true);
+        else e.setCancelled(false);
     }
 
     @EventHandler
     public void onEntityKill(EntityDeathEvent e) {
-
         if(e.getEntity() instanceof Villager) {
             Villager villager = (Villager) e.getEntity();
             if(villager.getKiller() != null) {
@@ -279,14 +222,11 @@ public class Events implements Listener {
                 int amount = new Random().nextInt(25) + 1;
                 if(amount >= 1 && (Math.random() <= 0.5)) {
                     Balance.add(killer.getUniqueId(), (double) amount);
-                    Chat.sendMessage(killer, "Tapoit raa'asti kyläläisen, mutta häneltä tippui §e" + amount + "€§7!");
+                    Chat.sendMessage(killer, "Tapoit raa'asti kyläläisen, mutta hän sinun onneksesi kantoi mukanaan §e" + amount + "€§7!");
                     killer.playSound(killer.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
                 }
-
             }
-
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -294,9 +234,8 @@ public class Events implements Listener {
 
         Player player = e.getPlayer();
 
-        if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
+        if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS))
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
-        }
 
         if(!player.hasPermission("deathisland.bypass") && !deathIsland.contains(player.getUniqueId())) {
 
@@ -335,16 +274,13 @@ public class Events implements Listener {
                             Autio.teleportToSpawn(player);
                         });
                         cancel();
-
                     }
-
                 }
             }.runTaskTimerAsynchronously(Main.getInstance(), 25, 20);
 
         } else {
             Autio.teleportToSpawn(player);
         }
-
 
     }
 
@@ -362,14 +298,11 @@ public class Events implements Listener {
         }
 
         if(!lastCommand.containsKey(uuid)) {
-
             lastCommand.put(uuid, System.currentTimeMillis());
-
         } else {
 
             long last = lastCommand.get(uuid);
             long now = System.currentTimeMillis();
-
             if(now - last < 1000 * 2) {
                 if(!Ranks.isStaff(uuid)) {
                     e.setCancelled(true);
@@ -378,7 +311,6 @@ public class Events implements Listener {
             } else {
                 lastCommand.remove(uuid);
             }
-
         }
 
         if(deathIsland.contains(player.getUniqueId())) {
@@ -408,7 +340,6 @@ public class Events implements Listener {
                 }
             }
         }
-
     }
 
     @EventHandler
@@ -422,9 +353,7 @@ public class Events implements Listener {
         PlayerData.add(player.getUniqueId(), "total", 1);
 
         if(Boosters.isActive(Boosters.Booster.MORE_ORES)) {
-
             Collection<ItemStack> drops = block.getDrops();
-
             if(mat == Material.EMERALD_ORE || mat == Material.DIAMOND_ORE || mat == Material.LAPIS_ORE) {
                 // Add one of every drop (2x)
                 for(ItemStack item : drops) {
@@ -432,17 +361,12 @@ public class Events implements Listener {
                 }
                 Util.sendNotification(player, "§a§lTEHOSTUS §72x oret!");
             }
-
         }
-
         if(Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
 
             if(mat == Material.IRON_ORE || mat == Material.GOLD_ORE) {
-
                 block.setType(Material.AIR);
-
                 ItemStack item;
-
                 if(mat == Material.IRON_ORE) {
                     item = new ItemStack(Material.IRON_INGOT);
                     PlayerData.add(uuid, "iron", 1);
@@ -450,7 +374,6 @@ public class Events implements Listener {
                     item = new ItemStack(Material.GOLD_INGOT);
                     PlayerData.add(uuid, "gold", 1);
                 }
-
                 Util.sendNotification(player, "§a§lTEHOSTUS §7Välittömät oret!");
                 e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation(), item.clone());
 

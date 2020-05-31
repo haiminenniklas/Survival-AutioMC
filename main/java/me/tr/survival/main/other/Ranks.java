@@ -73,6 +73,8 @@ public class Ranks {
                 return "§2Rakentaja";
             case "admin":
                 return "§cYlläpitäjä";
+            case "omistaja":
+                return "§dOmistaja";
             default:
                 return "§7Pelaaja";
 
@@ -99,6 +101,8 @@ public class Ranks {
                 return ChatColor.DARK_GREEN;
             case "admin":
                 return ChatColor.RED;
+            case "omistaja":
+                return ChatColor.LIGHT_PURPLE;
             default:
                 return ChatColor.GRAY;
 

@@ -42,23 +42,16 @@ public class Warps {
 
         int size = 18 + (9 * ((int) Math.ceil((double) getWarps().size() / 7)));
         Gui gui = new Gui("Warpit", size);
-
         List<Warp> added = new ArrayList<>();
-
         for(Warp warp : getWarps()) {
-
             if(added.contains(warp)) continue;
-
             System.out.println(warp.getName());
             for(int i = 10; i < size - 10; i++) {
                 Inventory inv = gui.getPages().get(1);
-
                 if(gui.getButton(i) != null) continue;
                 if(inv.getItem(i) != null) continue;
-
                 if(i == 18 || i == 27 || i == 36 || i == 45 || i == 17 || i == 26 || i == 35 || i == 44)
                     continue;
-
                 List<String> lore = new ArrayList<>();
                 lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                 String[] text = Util.splitStringEvery(warp.getDescription(), 23);
@@ -76,30 +69,22 @@ public class Warps {
                 });
                 added.add(warp);
                 break;
-
             }
-
         }
-
         gui.open(player);
-
     }
 
     public static Warp get(String name) {
-
         for(Warp warp : getWarps()) {
             if(warp.getName().equalsIgnoreCase(name))
                 return warp;
         }
-
         return null;
     }
 
     @Deprecated
     public static void loadWarp(String name, TypedCallback<Boolean> dbc) {
-
         Autio.async(() -> {
-
             SQL.query("SELECT * FROM `warps` WHERE `name` = '" +  name + "';", (result, conn) -> {
                 try {
                     if(result.next()) {
@@ -120,19 +105,13 @@ public class Warps {
                     }
                 }
             });
-
-
         });
-
     }
 
     public static void deleteWarp(String name, TypedCallback<Boolean> cb) {
-
         Autio.log("Deleting warp " + name + "...");
         Autio.async(() -> {
-
             try {
-
                 boolean update = SQL.update("DELETE FROM `warps` WHERE `name` = '" + name.toLowerCase() + "';");
                 cb.execute(update);
 
@@ -140,9 +119,7 @@ public class Warps {
                 ex.printStackTrace();
                 cb.execute(false);
             }
-
         });
-
     }
 
     public static List<Warp> getWarps() {
@@ -150,25 +127,19 @@ public class Warps {
     }
 
     public static void saveWarp(Warp warp, TypedCallback<Boolean> cb) {
-
         Autio.log("Saving the warp " + warp.getName() + "...");
         Autio.async(() -> {
-
             try {
-
                 cb.execute(SQL.update("UPDATE `warps` SET `display_name` = '" + warp.getDisplayName() +
                         "', `loc_x` = " + warp.getX() + ", `loc_y` = " + warp.getY() +
                         ", `loc_z` = " + warp.getZ() + ", `loc_pitch` = " + warp.getPitch() +
                         ", `loc_yaw` = " + warp.getYaw() + ", `world` = '" +  warp.getWorld().getName() +
                         "', `description` = '" + warp.getDescription() + "' WHERE `name` = '" + warp.getName() + "';"));
-
             } catch(SQLException ex) {
                 ex.printStackTrace();
                 cb.execute(false);
             }
-
         });
-
     }
 
     public static void loadWarps(TypedCallback<Boolean> callback) {
@@ -225,29 +196,20 @@ public class Warps {
     }
 
     public static Warp createWarp(Location loc, String name, String description, String displayName, TypedCallback<Boolean> c) {
-
         Warp warp = new Warp(name.toLowerCase(), loc, description, displayName);
-
         Autio.async(() -> {
-
             try {
 
                 boolean result = SQL.update("INSERT INTO `warps` VALUES('" + name + "', '" + displayName + "', " + loc.getBlockX() + ", " +
                         loc.getBlockY() + ", " + loc.getBlockZ() + ", " + loc.getPitch() + ", " + loc.getY() + ", '" + loc.getWorld().getName() + "', '" +
                         description + "');");
-
                 c.execute(result);
-
             } catch(SQLException ex) {
                 ex.printStackTrace();
                 c.execute(false);
             }
-
         });
-
-        if(!warps.contains(warp)) {
-            Warps.getWarps().add(warp);
-        }
+        if(!warps.contains(warp)) Warps.getWarps().add(warp);
         return warp;
     }
 

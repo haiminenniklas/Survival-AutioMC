@@ -12,6 +12,7 @@ import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.data.Ores;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import me.tr.survival.main.util.staff.StaffManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -325,16 +326,10 @@ public class Settings {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-
-                    if(!Ranks.isVIP(clicker.getUniqueId())) {
-                        Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §e§lPremium§7-arvo tähän toimintoon!");
-                    } else {
-                        Particles.openMainGui(clicker);
-                    }
-
+                    if(!Ranks.isVIP(clicker.getUniqueId())) Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §e§lPremium§7-arvo tähän toimintoon!");
+                    else Particles.openMainGui(clicker);
                 }
             });
-
             gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -342,7 +337,6 @@ public class Settings {
                     Settings.panel(clicker);
                 }
             });
-
             gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§2Virheenkorjaus", Arrays.asList(
                     "§7Jos asetuksissa ilmenee virheitä,",
                     "§7tai jokin ei toimi, niin kokeile",
@@ -350,36 +344,30 @@ public class Settings {
                     "§7poistu palvelimelta ja liity",
                     "§7tänne uudestaan!"
             )), 26);
-
             for(int i = 0; i < 27; i++) {
                 if(gui.getItem(i) != null) continue;
                 if(gui.getButton(i) != null) continue;
                 gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
             }
-
-
         });
-
     }
 
     public static void toggleFlight(Player player) {
         if(!player.getAllowFlight()) {
-
-            if(player.isOp()) {
-                player.setAllowFlight(true);
-                player.setFlying(true);
-                Chat.sendMessage(player, "Lentotila §apäällä§7!");
-                return;
-            }
-
-            if(Util.getRegions(player).size() >= 1 && !Ranks.isStaff(player.getUniqueId())) {
+            if(Util.getRegions(player).size() >= 1) {
                 player.setAllowFlight(true);
                 player.setFlying(true);
                 Chat.sendMessage(player, "Lentotila §apäällä§7!");
             } else {
-                Chat.sendMessage(player, Chat.Prefix.ERROR, "Tämä toiminto toimii vain spawnilla!");
+                if(Ranks.isStaff(player.getUniqueId())) {
+                    if(StaffManager.hasStaffMode(player)) {
+                        player.setAllowFlight(true);
+                        player.setFlying(true);
+                        Chat.sendMessage(player, "Lentotila §apäällä§7!");
+                    } else Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
+                    return;
+                } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Tämä toiminto toimii vain spawnilla!");
             }
-
         } else {
             player.setAllowFlight(false);
             player.setFlying(false);
@@ -407,34 +395,21 @@ public class Settings {
     }
 
     public static void scoreboard(Player player) {
-
         if(!Settings.get(player.getUniqueId(), "scoreboard")){
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             return;
         }
-
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective obj = board.registerNewObjective("AutioMC", "dummy", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         obj.setDisplayName("  §2§lSorsaMC §8| §7Survival  ");
-
-
-        obj.getScore("§7 §6 §k").setScore(15);
-        /*obj.getScore("§7» Kristallit").setScore(14);
-
-        Team crystals = board.registerNewTeam("crystals");
-        crystals.addEntry(ChatColor.RED + "" + ChatColor.WHITE + "" + ChatColor.RED);
-        crystals.setPrefix("§b" + Crystals.get(player.getUniqueId()));
-        obj.getScore(ChatColor.RED + "" + ChatColor.WHITE + "" + ChatColor.RED).setScore(13); */
-
         obj.getScore("§7 §a §o").setScore(14);
         obj.getScore("§7» Rahatilanne").setScore(13);
 
-        Team moneyCounter = board.registerNewTeam("blocks");
+        Team moneyCounter = board.registerNewTeam("bal");
         moneyCounter.addEntry(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED);
         moneyCounter.setPrefix("§e" + Balance.get(player.getUniqueId()) + "€");
         obj.getScore(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED).setScore(12);
-
         obj.getScore("§7 §9 §l").setScore(11);
         obj.getScore("§7» Arvo").setScore(10);
 
@@ -442,7 +417,6 @@ public class Settings {
         rank.addEntry(ChatColor.GREEN + "" + ChatColor.BLUE + "" + ChatColor.RED);
         rank.setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
         obj.getScore(ChatColor.GREEN + "" + ChatColor.BLUE + "" + ChatColor.RED).setScore(9);
-
         obj.getScore("§7 §6 §k").setScore(8);
         obj.getScore("§7» Pelaajat").setScore(7);
 
@@ -454,17 +428,12 @@ public class Settings {
         obj.getScore("§7 §1 §k").setScore(5);
         obj.getScore("       §2sorsamc.fi").setScore(4);
 
-        Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
-
-            //board.getTeam("crystals").setPrefix("§b" + Crystals.get(player.getUniqueId()));
-            board.getTeam("blocks").setPrefix("§a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
+        Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), (runnable) -> {
+            board.getTeam("bal").setPrefix("§a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
             board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
             board.getTeam("players").setPrefix("§a" + Autio.getOnlinePlayers().size());
-
         }, 0, 20 * 2);
-
         player.setScoreboard(board);
-
     }
 
 }

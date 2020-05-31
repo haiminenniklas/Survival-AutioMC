@@ -221,45 +221,44 @@ public class Gui implements Listener {
         getPages().clear();
     }
 
-    public Inventory open(Player player){
+    public void open(Player player){
 
-        //final long start = System.currentTimeMillis();
-        //System.out.println("[/Gui] Started opening a GUI...");
-        //System.out.println("[/Gui] Checking for pages...");
-        if(getPages() == null || getPages().isEmpty()){
-            throw new IllegalArgumentException("You must have at least 1 page in your gui!");
-        }
+        Autio.async(() -> {
+            //final long start = System.currentTimeMillis();
+            //System.out.println("[/Gui] Started opening a GUI...");
+            //System.out.println("[/Gui] Checking for pages...");
+            if(getPages() == null || getPages().isEmpty()) throw new IllegalArgumentException("You must have at least 1 page in your gui!");
 
-        //System.out.println("[/Gui] Creating an empty inventory...");
-        this.inv = Bukkit.createInventory(null, this.size, this.title + "§r");
-        if(this.items.isEmpty() && this.buttons.isEmpty()){
-            player.openInventory(inv);
-            return inv;
-        }
-
-        //System.out.println("[/Gui] Looping given items and adding them...");
-        //final long itemLoopStart = System.currentTimeMillis();
-        HashMap<Integer, ItemStack> items = this.items.get(1);
-        if(!this.items.isEmpty()) {
-            for(Map.Entry<Integer, ItemStack> e : items.entrySet()) {
-                inv.setItem(e.getKey(), e.getValue());
+            //System.out.println("[/Gui] Creating an empty inventory...");
+            this.inv = Bukkit.createInventory(null, this.size, this.title + "§r");
+            if(this.items.isEmpty() && this.buttons.isEmpty()){
+                player.openInventory(inv);
+                return;
             }
-        }
-        //System.out.println("[/Gui] Item adding took in total " + (System.currentTimeMillis() - itemLoopStart) + "ms!");
-        //System.out.println("[/Gui] Looping given Buttons and adding them...");
-        //final long buttonLoopStart = System.currentTimeMillis();
-        if(!this.buttons.isEmpty()) {
-            for(Button b : this.getButtons()) {
-                inv.setItem(b.pos, b.item);
-            }
-        }
-        //System.out.println("[/Gui] Button adding took in total " + (System.currentTimeMillis() - buttonLoopStart) + "ms!");
-        playerPages.put(player, 1);
-        //System.out.println("[/Gui] Opening the Inventory...");
-        player.openInventory(inv);
-        //System.out.println("[/Gui] Gui opening took in total " + (System.currentTimeMillis() - start) + "ms!");
 
-        return inv;
+            //System.out.println("[/Gui] Looping given items and adding them...");
+            //final long itemLoopStart = System.currentTimeMillis();
+            HashMap<Integer, ItemStack> items = this.items.get(1);
+            if(!this.items.isEmpty()) {
+                for(Map.Entry<Integer, ItemStack> e : items.entrySet()) {
+                    inv.setItem(e.getKey(), e.getValue());
+                }
+            }
+            //System.out.println("[/Gui] Item adding took in total " + (System.currentTimeMillis() - itemLoopStart) + "ms!");
+            //System.out.println("[/Gui] Looping given Buttons and adding them...");
+            //final long buttonLoopStart = System.currentTimeMillis();
+            if(!this.buttons.isEmpty()) {
+                for(Button b : this.getButtons()) {
+                    inv.setItem(b.pos, b.item);
+                }
+            }
+            //System.out.println("[/Gui] Button adding took in total " + (System.currentTimeMillis() - buttonLoopStart) + "ms!");
+            playerPages.put(player, 1);
+            //System.out.println("[/Gui] Opening the Inventory...");
+            Autio.task(() -> player.openInventory(inv));
+            //System.out.println("[/Gui] Gui opening took in total " + (System.currentTimeMillis() - start) + "ms!");
+        });
+
     }
 
     public void addItem(int page, ItemStack item, int pos) {
