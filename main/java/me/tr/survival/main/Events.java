@@ -1,7 +1,5 @@
 package me.tr.survival.main;
 
-import com.destroystokyo.paper.Title;
-import com.destroystokyo.paper.event.server.ServerExceptionEvent;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
@@ -47,23 +45,6 @@ public class Events implements Listener {
     public static final ArrayList<UUID> deathIsland = new ArrayList<>();
 
     @EventHandler
-    public void onException(ServerExceptionEvent e) {
-
-        for(Player player : Bukkit.getOnlinePlayers()) {
-
-            if(player.isOp() && adminMode.containsKey(player.getUniqueId())) {
-                if(adminMode.get(player.getUniqueId())) {
-
-                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Tapahtui virhe: §c" + e.getException().getMessage());
-
-                }
-            }
-
-        }
-
-    }
-
-    @EventHandler
     public void onLevelUp(LevelUpEvent e){
         Player player = e.getPlayer();
 
@@ -80,7 +61,7 @@ public class Events implements Listener {
             if(player.hasPermission("server.join.full")) {
                 e.allow();
             } else {
-                e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän, sinun täytyy omistaa vähintään §a§lPremium§7-arvo!");
+                e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän, sinun täytyy omistaa vähintään §e§lPremium§7-arvo!");
             }
         }
 
@@ -89,7 +70,12 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
         UUID uuid = e.getUniqueId();
-        PlayerData.loadPlayer(uuid, (res) -> {});
+        // Let's only load if the player is allowed on the server
+        if(e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+            PlayerData.loadPlayer(uuid, (res) -> {
+                Autio.logColored(res ? "§aLoaded " + e.getName() + " from the Database!" : "§cCould not load " + e.getName() + " from the database!");
+            });
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -337,13 +323,13 @@ public class Events implements Listener {
                     }
 
                     if(timer > 0) {
-                        player.sendTitle(new Title("§c§lKUOLIT", "§7Pääset §c" + timer + "s §7päästä takaisin!", 15, 20, 15));
+                        player.sendTitle("§c§lKUOLIT", "§7Pääset §c" + timer + "s §7päästä takaisin!", 15, 20, 15);
                         timer--;
                     } else if(timer <= 0){
 
                         Autio.task(() -> {
                             Util.heal(player);
-                            player.sendTitle(new Title("§a§lTAKAISIN", "§7Olet taas elossa!", 15, 20, 15));
+                            player.sendTitle("§a§lTAKAISIN", "§7Olet taas elossa!", 15, 20, 15);
                             deathIsland.remove(player.getUniqueId());
                             player.stopSound(Sound.MUSIC_DISC_13);
                             Autio.teleportToSpawn(player);
@@ -369,6 +355,11 @@ public class Events implements Listener {
 
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
+
+        if(System.currentTimeMillis() - Util.joined.getOrDefault(player.getUniqueId(), System.currentTimeMillis()) < 5000L) {
+            e.setCancelled(true);
+            return;
+        }
 
         if(!lastCommand.containsKey(uuid)) {
 
@@ -509,9 +500,32 @@ public class Events implements Listener {
 
     @EventHandler
     public void onTrade(InventoryOpenEvent e) {
+
+        Player player = (Player) e.getPlayer();
+
+        if(System.currentTimeMillis() - Util.joined.getOrDefault(player.getUniqueId(), System.currentTimeMillis()) < 5000L) {
+            e.setCancelled(true);
+            return;
+        }
+
         if(e.getInventory().getType() == InventoryType.MERCHANT) {
             e.setCancelled(true);
         }
+
+        Autio.async(() -> {
+
+            for(int i = 0; i < player.getInventory().getSize(); i++) {
+                ItemStack item = player.getInventory().getItem(i);
+                if(item == null) continue;
+                if(item.getType() == Material.AIR) continue;
+                if(item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()) {
+                    final int slot = i;
+                    Autio.task(() -> player.getInventory().setItem(slot, new ItemStack(Material.AIR)));
+                }
+            }
+
+        });
+
     }
 
 }

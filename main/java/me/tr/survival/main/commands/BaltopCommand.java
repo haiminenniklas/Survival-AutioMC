@@ -44,7 +44,7 @@ public class BaltopCommand implements CommandExecutor {
 
     public static void openGui(final Player player) {
         final long start = System.currentTimeMillis();
-        System.out.println("[/Baltop] Opening BalanceTop GUI... ");
+        //System.out.println("[/Baltop] Opening BalanceTop GUI... ");
        // System.out.println("[/Baltop] Getting balance Map... ");
         Balance.getBalances((rawBalanceMap) -> {
            // System.out.println("[/Baltop] Sorting balance Map... ");
@@ -58,41 +58,52 @@ public class BaltopCommand implements CommandExecutor {
 
                     int i = 0;
                     //System.out.println("[/Baltop] Starting looping Map Entries... ");
-                    final long loopStart = System.currentTimeMillis();
+                    //final long loopStart = System.currentTimeMillis();
+
+                    final List<ItemStack> heads = new ArrayList<>();
+
                     for (final Map.Entry<UUID, Double> e : balanceMap.entrySet()) {
                         final OfflinePlayer target = Bukkit.getOfflinePlayer(e.getKey());
                         double balance = e.getValue();
                         int placement = i + 1;
                         int slot = playerSlots[i];
                         if (player.getUniqueId().equals(e.getKey())) {
-                            gui.addButton(new Button(1, slot, Util.makeEnchanted(ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §6§lSinä", Arrays.asList(
+
+                            ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §6§lSinä", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Rahatilanne: §a" + Util.formatDecimals(balance) + "€",
                                     " ",
                                     " §aKlikkaa nähdäksesi lisätietoja",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                            )))) {
-                                @Override
-                                public void onClick(Player clicker, ClickType clickType) {
-                                    gui.close(clicker);
-                                    Profile.openProfile(clicker, clicker.getUniqueId());
-                                }
+                            ), (item) -> {
+                                heads.add(item);
+                                gui.addButton(new Button(1, slot, item) {
+                                    @Override
+                                    public void onClick(Player clicker, ClickType clickType) {
+                                        gui.close(clicker);
+                                        Profile.openProfile(clicker, clicker.getUniqueId());
+                                    }
+                                });
                             });
 
                         } else {
-                            gui.addButton(new Button(1, slot, ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §7" + target.getName(), Arrays.asList(
+
+                            ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §7" + target.getName(), Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Rahatilanne: §a" + Util.formatDecimals(balance) + "€",
                                     " ",
                                     " §aKlikkaa nähdäksesi lisätietoja",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                            ))) {
-                                @Override
-                                public void onClick(Player clicker, ClickType clickType) {
-                                    System.out.println(1);
-                                    gui.close(clicker);
-                                    Profile.openProfile(clicker, e.getKey());
-                                }
+                            ), (item) -> {
+                                heads.add(item);
+                                gui.addButton(new Button(1, slot, item) {
+                                    @Override
+                                    public void onClick(Player clicker, ClickType clickType) {
+                                        System.out.println(1);
+                                        gui.close(clicker);
+                                        Profile.openProfile(clicker, e.getKey());
+                                    }
+                                });
                             });
                         }
 
@@ -126,13 +137,19 @@ public class BaltopCommand implements CommandExecutor {
                         gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE), j);
                     }
 
-                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                       // System.out.println("[/Baltop] Opening Gui... ");
-                        final long invStart = System.currentTimeMillis();
-                        gui.open(player);
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), (runnable) -> {
+                        // System.out.println("[/Baltop] Opening Gui... ");
+                        //final long invStart = System.currentTimeMillis();
+                        if(heads.size() < 12) {
+                            openGui(player);
+                        } else {
+                            gui.open(player);
+                            player.updateInventory();
+                        }
+                        runnable.cancel();
                         //System.out.println("[/Baltop] Gui opening took " + (System.currentTimeMillis() - invStart) + "ms. ");
-                        System.out.println("[/Baltop] It took in total " + (System.currentTimeMillis() - start) + "ms. ");
-                    }, 5);
+                        //System.out.println("[/Baltop] It took in total " + (System.currentTimeMillis() - start) + "ms. ");
+                    }, 10);
 
                 } else {
                     Autio.task(() ->

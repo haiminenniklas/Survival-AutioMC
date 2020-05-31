@@ -1,13 +1,11 @@
 package me.tr.survival.main.database;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.util.callback.QueryPromise;
 import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_15_R1.util.ServerShutdownThread;
 
 import java.io.File;
 import java.io.IOException;

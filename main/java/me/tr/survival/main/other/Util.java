@@ -17,14 +17,11 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_15_R1.*;
-import net.minecraft.server.v1_15_R1.SoundCategory;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -45,6 +42,7 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
@@ -301,18 +299,6 @@ public class Util {
         }
     }
 
-    public static void sendPrivateSound(Player player, String sound, SoundCategory category) {
-        Location loc = player.getLocation();
-        MinecraftKey key = new MinecraftKey(sound);
-        SoundEffect effect = new SoundEffect(key);
-        PacketPlayOutNamedSoundEffect packet = new PacketPlayOutNamedSoundEffect(effect, category, loc.getX(), loc.getY(), loc.getZ(), 1f, 1f);
-        sendPacket(player, packet);
-    }
-
-    public static void sendPacket(Player player, Packet packet) {
-        ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
-    }
-
     public static void bounceBack(Player player, Location from, Location to) {
         Vector direction = from.toVector().subtract(to.toVector());
         direction.setY(0);
@@ -374,11 +360,14 @@ public class Util {
     }
 
     public static int getPing(Player player) {
-        return ((CraftPlayer)player).getHandle().ping;
-    }
-
-    public static EntityPlayer getPlayerEP(Player player) {
-        return ((CraftPlayer)player).getHandle();
+        try {
+            Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+            int ping = (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
+            return ping;
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public static String[] splitStringEvery(String s, int interval) {
@@ -402,14 +391,17 @@ public class Util {
     }
 
     public static double getFreeMemory() {
-        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-        return round(osBean.getFreePhysicalMemorySize() * 0.00000095367432);
+        DecimalFormat df = new DecimalFormat("#.##");
+        return Float.parseFloat(df.format(Runtime.getRuntime().freeMemory() * 0.00000095367432));
     }
 
     public static double getMaxMemory() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return Float.parseFloat(df.format(Runtime.getRuntime().maxMemory() * 0.00000095367432));
+    }
 
-        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-        return round(osBean.getTotalPhysicalMemorySize() * 0.00000095367432);
+    public static double getUsedMemory() {
+        return getMaxMemory() - getFreeMemory();
     }
 
     public static double getProcessCPULoad() {
@@ -571,11 +563,19 @@ public class Util {
 
     public static void sendClickableText(Player player, String title, String command, String hoverText) {
         TextComponent comp = new TextComponent(title);
-
         comp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
         comp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(hoverText)));
-
         player.spigot().sendMessage(comp);
+    }
+
+    public static void deleteDir(File file) {
+        File[] contents = file.listFiles();
+        if (contents != null) {
+            for (File f : contents) {
+                deleteDir(f);
+            }
+        }
+        file.delete();
     }
 
     /**

@@ -210,7 +210,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
 
 
-            if(Bukkit.getTPS()[0] >= 18.5) {
+            if(Autio.getCurrentTPS() >= 18.5) {
                 Autio.log("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
                 int times_saved = 0;
                 for(Player player : Bukkit.getOnlinePlayers()) {
@@ -327,7 +327,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             Chat.sendMessage(player, "Pelaajan " + target.getName() + " tietoja ei ole ladattu, joten ne tallennetaan tyhjänä");
                             TextComponent message = new TextComponent( "§a§lHaluatko jatkaa?" );
                             message.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/save " + target.getName() + " yes" ) );
-                            message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder( "Haluatko varmasti jatkaa?" ).create() ) );
+                            message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder( "Haluatko varmasti jatkaa?" ).create()));
                             player.spigot().sendMessage(message);
                         } else {
                             PlayerData.savePlayer(target.getUniqueId());
@@ -393,6 +393,9 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));
                         }
                     }
+
+                    Autio.teleportToSpawn(player);
+
                 } else {
                     if(player.isOp()) {
                         Player target = Bukkit.getPlayer(args[0]);
@@ -625,18 +628,25 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                 }
 
             } else if(command.getLabel().equalsIgnoreCase("heal")) {
-                if(StaffManager.hasStaffMode(player)) {
-                    if(args.length < 1) {
-                        Util.heal(player);
-                        Chat.sendMessage(player, "Paransit itsesi!");
-                    } else {
-                        Player target = Bukkit.getPlayer(args[0]);
-                        if(target == null) {
-                            Chat.sendMessage(player, "Pelaajaa ei löydetty!");
-                            return true;
+                if(Ranks.isStaff(player.getUniqueId())) {
+                    if(StaffManager.hasStaffMode(player)) {
+                        if(args.length < 1) {
+                            Util.heal(player);
+                            Chat.sendMessage(player, "Paransit itsesi!");
+                        } else {
+                            if(player.isOp()) {
+                                Player target = Bukkit.getPlayer(args[0]);
+                                if(target == null) {
+                                    Chat.sendMessage(player, "Pelaajaa ei löydetty!");
+                                    return true;
+                                }
+                                Util.heal(target);
+                                Chat.sendMessage(player, "Paransit pelaajan §a" + target.getName() + "§7!");
+                            }
                         }
-                        Util.heal(target);
-                        Chat.sendMessage(player, "Paransit pelaajan §a" + target.getName() + "§7!");
+                    } else {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Pystyt parantaman itsesi ja muut vain §eStaff§7-tila päällä. (Tee §a/staff§7)");
+                        return true;
                     }
                 }
             } else if(command.getLabel().equalsIgnoreCase("time")) {
@@ -646,6 +656,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                     if(args.length < 1) {
 
                         Chat.sendMessage(player, "§7Käytä: §a/aika <day|night|noon>");
+                        StaffManager.timeGui(player);
 
                     } else {
 
@@ -730,7 +741,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
             } else if(command.getLabel().equalsIgnoreCase("roskis")) {
 
                if(!Ranks.isStaff(player.getUniqueId()) && !Ranks.hasRank(player, "premium")) {
-                   Chat.sendMessage(player, "Tähän toimintoon tarvitaan §aPremium§7-arvon! Lisätietoa §a/kauppa§7!");
+                   Chat.sendMessage(player, "Tähän toimintoon tarvitaan §e§lPremium§7-arvon! Lisätietoa §a/kauppa§7!");
                    return true;
                }
 
@@ -921,7 +932,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                                 player.sendMessage("§7§m--------------------");
                                 player.sendMessage("§7Versio: §6" + Bukkit.getVersion());
                                 player.sendMessage("§7Bukkit versio: §6" + Bukkit.getBukkitVersion());
-                                player.sendMessage("§7Tämänhetkinen TPS: §6" + Bukkit.getTPS()[0] + "§7, §6" + Bukkit.getTPS()[1] + "§7, §6" + Bukkit.getTPS()[2]);
+                                player.sendMessage("§7Tämänhetkinen TPS: §6" + Autio.getCurrentTPS());
                                 player.sendMessage("§7IP: §6" + getServer().getIp() + ":" + getServer().getPort());
                                 player.sendMessage("§7Pelaajia: §6" + Bukkit.getOnlinePlayers().size());
                                 player.sendMessage("§7Plugineita: §6" + getServer().getPluginManager().getPlugins().length);

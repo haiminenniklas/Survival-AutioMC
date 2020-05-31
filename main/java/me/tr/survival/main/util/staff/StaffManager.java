@@ -2,6 +2,7 @@ package me.tr.survival.main.util.staff;
 
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
+import me.tr.survival.main.Particles;
 import me.tr.survival.main.Profile;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.other.Util;
@@ -25,6 +26,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -184,7 +186,7 @@ public class StaffManager implements Listener, CommandExecutor {
     public static void panel(Player player, Player target) {
         Gui gui = new Gui("Valvonta " + target.getName(), 27);
 
-        gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§6X-RAY-tilastot", Arrays.asList(
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§6X-RAY-tilastot", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Oreja per tunti:",
                 " ",
@@ -198,7 +200,7 @@ public class StaffManager implements Listener, CommandExecutor {
             }
         });
 
-        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.OAK_SIGN, 1, "§6Teleporttaa", Arrays.asList(
+        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.OAK_SIGN, 1, "§6Teleporttaa", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Klikkaa teleporttaaksesi",
                 " §7pelaajan §6" + target.getName(),
@@ -212,21 +214,8 @@ public class StaffManager implements Listener, CommandExecutor {
             }
         });
 
-        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.BOOK, 1, "§6Pelaajan profiili", Arrays.asList(
-                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                " §7Klikkaa avataksesi",
-                " §7pelaajan §6" + target.getName(),
-                " §7profiilin!",
-                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-        ))) {
-            @Override
-            public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
-                Profile.openProfile(player, target.getUniqueId());
-            }
-        });
 
-        gui.addButton(new Button(1, 16, ItemUtil.makeItem(Material.CHEST, 1, "§6Pelaajan reppu", Arrays.asList(
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.CHEST, 1, "§6Pelaajan reppu", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Klikkaa avataksesi",
                 " §7pelaajan §6" + target.getName(),
@@ -237,6 +226,21 @@ public class StaffManager implements Listener, CommandExecutor {
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 Bukkit.dispatchCommand(clicker, "reppu katso " + target.getName());
+            }
+        });
+
+
+        gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.BOOK, 1, "§aPelaajan profiili", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa avataksesi",
+                " §7pelaajan §a" + target.getName(),
+                " §7profiilin!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                Profile.openProfile(player, target.getUniqueId());
             }
         });
 
@@ -253,6 +257,15 @@ public class StaffManager implements Listener, CommandExecutor {
             }
         });
 
+        int[] glassSlots = new int[] { 10,11,15,16 };
+        for(int slot : glassSlots) { gui.addItem(1, new ItemStack(Material.RED_STAINED_GLASS_PANE), slot); }
+
+        for(int i = 0; i < 27; i++) {
+            if(gui.getItem(i) != null) continue;
+            if(gui.getButton(i) != null) continue;
+            gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+        }
+
         gui.open(player);
     }
 
@@ -268,17 +281,9 @@ public class StaffManager implements Listener, CommandExecutor {
     public static boolean toggleStaffMode(Player player) {
 
         UUID uuid = player.getUniqueId();
-
-        if(staffMode.containsKey(uuid)) {
-
-            if(!staffMode.get(uuid)) {
-                enableStaffMode(player);
-                return true;
-            }
-
+        if(staffMode.getOrDefault(uuid, false)) {
             disableStaffMode(player);
             return false;
-
         } else {
             enableStaffMode(player);
             return true;
@@ -288,13 +293,13 @@ public class StaffManager implements Listener, CommandExecutor {
     public static void enableStaffMode(Player player) {
 
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-
         Chat.sendMessage(player, "Ylläpito-tila §a§lPÄÄLLÄ§7!");
-
         lastLocation.put(player.getUniqueId(), player.getLocation());
         hide(player);
         staffMode.put(player.getUniqueId(), true);
         player.setGameMode(GameMode.SPECTATOR);
+        Particles.removeCurrentParticle(player);
+        Particles.removeCurrentArrowTrail(player);
 
     }
 
@@ -302,7 +307,6 @@ public class StaffManager implements Listener, CommandExecutor {
 
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
         Chat.sendMessage(player, "Ylläpito-tila §c§lPOIS PÄÄLTÄ§7!");
-
         if(lastLocation.containsKey(player.getUniqueId())) {
             player.teleport(lastLocation.get(player.getUniqueId()));
         }
@@ -319,22 +323,18 @@ public class StaffManager implements Listener, CommandExecutor {
     }
 
     public static boolean toggleVanish(Player player) {
-
         if(hidden.contains(player.getUniqueId())) {
             show(player);
             return false;
-
         } else {
             hide(player);
             return true;
         }
-
     }
 
     public static void hide(Player player) {
         hidden.add(player.getUniqueId());
         //Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
-
 
         player.setPlayerListName("§7" + player.getName() + " §8[PIILOSSA]");
 

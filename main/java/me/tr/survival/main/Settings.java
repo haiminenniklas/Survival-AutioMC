@@ -139,7 +139,7 @@ public class Settings {
             }
         });
 
-        String areVipSettingsApplicable = (Ranks.isVIP(player.getUniqueId())) ? "§aKlikkaa avataksesi" : "§cVaatii §aPremium§c-arvon!";
+        String areVipSettingsApplicable = (Ranks.isVIP(player.getUniqueId())) ? "§aKlikkaa avataksesi" : "§cVaatii §e§lPremium§c-arvon!";
 
         gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.GOLDEN_CARROT, 1, "§6VIP-Asetukset", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -186,7 +186,7 @@ public class Settings {
 
         if(!Ranks.isVIP(player.getUniqueId())) {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tämä toiminto vaatii vähintään §aPremium§7-arvon! Lisätietoa §a/kauppa§7!");
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tämä toiminto vaatii vähintään §e§lPremium§7-arvon! Lisätietoa §a/kauppa§7!");
             return;
         }
 
@@ -198,7 +198,7 @@ public class Settings {
 
             for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot); }
 
-            String isWeatherApplicable = (!Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §aPremium§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
+            String isWeatherApplicable = (!Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §e§lPremium§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
 
             gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.CLOCK, 1, "§2Sää ja aika", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -214,7 +214,7 @@ public class Settings {
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
                     if(!Ranks.isVIP(clicker.getUniqueId()) && !Ranks.isStaff(clicker.getUniqueId())) {
-                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §aPremium§7-arvon!");
+                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §e§lPremium§7-arvon!");
                     } else {
                         PlayerWeather.panel(clicker);
                     }
@@ -244,7 +244,7 @@ public class Settings {
                 }
             });
 
-            String areDeathMessagesApplicable = (!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §aPremium§f+§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
+            String areDeathMessagesApplicable = (!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §6§lPremium§f+§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
 
             gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.SKELETON_SKULL, 1, "§2Kuolemaviestit", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -258,15 +258,15 @@ public class Settings {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus") && !Ranks.isStaff(clicker.getUniqueId())) {
-                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §aPremium§f+§7-arvon!");
+                    if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(clicker.getUniqueId())) {
+                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§f+§7-arvon!");
                     } else {
                         PlayerDeathMessageManager.deathMessagePanel(clicker);
                     }
                 }
             });
 
-            String areKillMessagesApplicable = (!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §aPremium§f+§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
+            String areKillMessagesApplicable = (!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §6§lPremium§f+§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
 
             gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.IRON_SWORD, 1, "§2Tappoviestit", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -280,8 +280,8 @@ public class Settings {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus") && !Ranks.isStaff(clicker.getUniqueId())) {
-                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §aPremium§f+§7-arvon!");
+                    if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(clicker.getUniqueId())) {
+                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§f+§7-arvon!");
                     } else {
                         PlayerDeathMessageManager.killMessagePanel(clicker);
                     }
@@ -327,7 +327,7 @@ public class Settings {
                     gui.close(clicker);
 
                     if(!Ranks.isVIP(clicker.getUniqueId())) {
-                        Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §a§lPremium§7-arvo tähän toimintoon!");
+                        Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §e§lPremium§7-arvo tähän toimintoon!");
                     } else {
                         Particles.openMainGui(clicker);
                     }

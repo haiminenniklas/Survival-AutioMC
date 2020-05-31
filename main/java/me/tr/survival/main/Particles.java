@@ -141,7 +141,7 @@ public class Particles implements Listener, CommandExecutor {
             });
         } else {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän ominaisuuteen vaaditaan vähintään §a§lPremium§7-arvo!");
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän ominaisuuteen vaaditaan vähintään §e§lPremium§7-arvo!");
         }
 
     }
@@ -231,7 +231,7 @@ public class Particles implements Listener, CommandExecutor {
             });
         } else {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän ominaisuuteen vaaditaan vähintään §a§lPremium§7-arvo!");
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän ominaisuuteen vaaditaan vähintään §e§lPremium§7-arvo!");
         }
     }
 
@@ -325,7 +325,7 @@ public class Particles implements Listener, CommandExecutor {
             });
         } else {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän ominaisuuteen vaaditaan vähintään §a§lPremium§7-arvo!");
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän ominaisuuteen vaaditaan vähintään §e§lPremium§7-arvo!");
         }
     }
 
@@ -719,7 +719,7 @@ public class Particles implements Listener, CommandExecutor {
 
             return getPremiumPlusArrowTrails();
 
-        } else if(Ranks.hasRank(player, "kuningas")) {
+        } else if(Ranks.hasRank(player, "sorsa")) {
 
             return getKuningasArrowtrails();
 

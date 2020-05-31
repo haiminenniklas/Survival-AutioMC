@@ -14,8 +14,10 @@ import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -75,7 +77,7 @@ public class Profile {
         if(!opener.getUniqueId().equals(targetUUID)) {
             Gui.openGui(opener, "Pelaajan " + target.getName() + " tiedot", 27, (gui) -> {
 
-                Timestamp lastTimestamp = new Timestamp(target.getLastSeen());
+                Timestamp lastTimestamp = new Timestamp(target.getLastPlayed());
                 LocalDateTime lastSeen = lastTimestamp.toLocalDateTime();
 
                 HashMap<String, Object> data = PlayerData.getData(targetUUID);
@@ -108,7 +110,7 @@ public class Profile {
                     }
                 });
 
-                gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.PAPER, 1, "§eRikkaimmat", Arrays.asList(
+                gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eRikkaimmat", Arrays.asList(
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         " §7Voit myös katsoa miten",
                         " §7tämä kyseinen pelaaja",
@@ -161,7 +163,7 @@ public class Profile {
         Gui gui = new Gui("Pelaajan tiedot", 5 * 9);
         HashMap<String, Object> data = PlayerData.getData(targetUUID);
 
-        Timestamp lastTimestamp = new Timestamp(target.getLastSeen());
+        Timestamp lastTimestamp = new Timestamp(target.getLastPlayed());
         LocalDateTime lastSeen = lastTimestamp.toLocalDateTime();
 
         gui.addItem(1, ItemUtil.makeSkullItem(target, 1, "§2Profiili", Arrays.asList(
@@ -174,7 +176,23 @@ public class Profile {
                 " §7Liittynyt: §a" + data.get("joined"),
                 " §7Viimeksi nähty: §a" + lastSeen.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-        )), 13);
+        )), 0);
+
+        gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eRikkaimmat", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Katso miten sijoitut",
+                " §7palvelimen §erikkaimpien",
+                " §7joukossa!",
+                " ",
+                " §aKlikkaa tästä!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                BaltopCommand.openGui(clicker);
+            }
+        });
 
         double diamond_percentage;
         if(Ores.getDiamonds(targetUUID) >= 1) {
@@ -211,6 +229,37 @@ public class Profile {
             other_percentage = 0;
         }
 
+        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§2Pelaajakylät", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Vuokraa ja hallinnoi",
+                " §7pelaajakyliäsi!",
+                " ",
+                " §eTulossa pian...",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+            }
+        });
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.RED_BED, 1, "§2Kodit", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Tallenna kotisi ja muiden",
+                " §7tärkeiden paikkojen sijainnit",
+                " §7helposti ja kätevästi!",
+                " ",
+                " §7Kodit: §e" + new Homes(target).getHomesAmount(),
+                " ",
+                " §aKlikkaa avataksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                Homes.panel(clicker, clicker);
+            }
+        });
 
         gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§2Tuhotut blockit", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -222,25 +271,17 @@ public class Profile {
                 " §7Hiili: §8" + Ores.getCoal(targetUUID)  +" §7§o(" + coal_percentage +  "%)",
                 " §7Muu: §e" + Ores.getOther(targetUUID) + " §7§o(" + other_percentage +  "%)",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-        )), 19);
+        )), 13);
 
-        gui.addButton(new Button(1, 22, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§2Kodit", Arrays.asList(
+
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.LEGACY_REDSTONE_COMPARATOR, 1, "§2Asetukset", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                " §7Kodit: §e" + new Homes(target).getHomesAmount(),
+                " §7Mukauta pelikokemustasi",
+                " §7juuri sinulle sopivaksi",
+                " §7tarjoamillamme asetuksilla!",
                 " ",
-                " §aKlikkaa nähdäksesi kotisi!",
-                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-        ))) {
-            @Override
-            public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
-                Homes.panel(clicker, clicker);
-            }
-        });
-
-        gui.addButton(new Button(1, 25, ItemUtil.makeItem(Material.LEGACY_REDSTONE_COMPARATOR, 1, "§2Asetukset", Arrays.asList(
-                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                " §aKlikkaa avataksesi asetukset!",
+                " §aKlikkaa avataksesi",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -250,14 +291,37 @@ public class Profile {
             }
         });
 
+
+        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.CHEST, 1, "§2Reppu", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Säilytä arvotavaroitasi",
+                " §7turvallisesti repullasi!",
+                " ",
+                " §7Reppusi taso: §e" + Backpack.getLevelNumber(targetUUID),
+                " ",
+                " §aKlikkaa avataksesi",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+
+                gui.close(clicker);
+                Backpack.openBackpack(clicker);
+
+            }
+        });
+
+
         // 39 40 41
 
-        gui.addButton(new Button(1, 38, ItemUtil.makeItem(Material.EMERALD, 1, "§aTehostukset", Arrays.asList(
+        gui.addButton(new Button(1, 29, ItemUtil.makeItem(Material.EMERALD, 1, "§aTehostukset", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Tästä klikkaamalla pääset",
                 " §atehostuksien §7valikkoon",
                 " §7joilla voit hieman tehostaa",
                 " §7pelin kulkua! ;)",
+                " ",
+                " §aKlikkaa avataksesi",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -279,12 +343,14 @@ public class Profile {
                 "  §9/discord §7Discord-yhteisö",
                 "  §e/osta §7verkkokauppa",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-        )), 39);
+        )), 30);
 
-        gui.addButton(new Button(1, 40, ItemUtil.makeItem(Material.MAP, 1, "§eMatkustaminen", Arrays.asList(
+        gui.addButton(new Button(1, 31, ItemUtil.makeItem(Material.MAP, 1, "§eMatkustaminen", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Tästä klikkaamalla, pääset",
                 " §7matkustamaan eri §emaailmoihin§7!",
+                " ",
+                " §aKlikkaa avataksesi",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -296,11 +362,13 @@ public class Profile {
 
 
 
-        gui.addButton(new Button(1, 41, ItemUtil.makeItem(Material.PAPER, 1, "§dPosti", Arrays.asList(
+        gui.addButton(new Button(1, 32, ItemUtil.makeItem(Material.PAPER, 1, "§dPosti", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Tästä klikkaamalla pääset",
                 " §7katsomaan §dpäivittäisiä",
                 " §dtoimituksiasi§7!",
+                " ",
+                " §aKlikkaa avataksesi",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -310,62 +378,37 @@ public class Profile {
             }
         });
 
-        gui.addButton(new Button(1, 42, ItemUtil.makeItem(Material.NETHER_STAR, 1, "§bKosmetiikka", Arrays.asList(
+        gui.addButton(new Button(1, 33, ItemUtil.makeItem(Material.NETHER_STAR, 1, "§bKosmetiikka", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Tästä klikkaamalla pääset",
                 " §7katsomaan §bkosmetiisia efektejä",
                 " §7ja §bominaisuuksia §7jotka ovat",
                 " §7sinulle avoinna!",
+                " ",
+                (Ranks.isVIP(opener.getUniqueId()) ? " §aKlikkaa avataksesi" : " §cVaatii §e§lPremium§c-arvon!"),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
 
                 if(!Ranks.isVIP(clicker.getUniqueId())) {
-                    Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §aPremium§7-arvo tähän toimintoon!");
+                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 } else {
+                    gui.close(clicker);
                     Particles.openMainGui(clicker);
                 }
 
             }
         });
 
-        List<String> backpackLore = Arrays.asList(
-                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                " §7Klikkaa tarkastellaksesi",
-                " §7reppuasi!",
-                " ",
-                " §7Reppusi taso: §e" + Backpack.getLevelNumber(targetUUID),
-                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-        );
+        int[] glassSlots = new int[] { 10,19,28, 16,25,34 };
+        for(int slot : glassSlots) { gui.addItem(1, new ItemStack(Material.BLUE_STAINED_GLASS_PANE), slot); }
 
-        if(Ranks.isStaff(opener.getUniqueId()) && targetUUID != opener.getUniqueId()) {
-            backpackLore = Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Klikkaa tarkastellaksesi",
-                    " §7pelaajan §6" + target.getName(),
-                    " §7reppua!",
-                    " ",
-                    " §7Repun taso: §e" + Backpack.getLevelNumber(targetUUID),
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            );
+        for(int i = 0; i < 5*9; i++) {
+            if (gui.getItem(i) != null) continue;
+            if (gui.getButton(i) != null) continue;
+            gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
         }
-
-        gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.CHEST, 1, "§2Reppu", backpackLore)) {
-            @Override
-            public void onClick(Player clicker, ClickType clickType) {
-
-                gui.close(clicker);
-
-                if(Ranks.isStaff(opener.getUniqueId()) && targetUUID != opener.getUniqueId()) {
-                    Bukkit.dispatchCommand(opener, "reppu katso " + target.getName());
-                } else {
-                    Backpack.openBackpack(clicker);
-                }
-
-            }
-        });
 
         gui.open(opener);
 

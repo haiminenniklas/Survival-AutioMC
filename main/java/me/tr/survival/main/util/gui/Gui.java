@@ -2,6 +2,8 @@ package me.tr.survival.main.util.gui;
 
 import java.util.*;
 
+import me.tr.survival.main.Autio;
+import me.tr.survival.main.Main;
 import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -221,47 +223,41 @@ public class Gui implements Listener {
 
     public Inventory open(Player player){
 
-        final long start = System.currentTimeMillis();
-        System.out.println("[/Gui] Started opening a GUI...");
-
-        System.out.println("[/Gui] Checking for pages...");
+        //final long start = System.currentTimeMillis();
+        //System.out.println("[/Gui] Started opening a GUI...");
+        //System.out.println("[/Gui] Checking for pages...");
         if(getPages() == null || getPages().isEmpty()){
             throw new IllegalArgumentException("You must have at least 1 page in your gui!");
         }
 
-        System.out.println("[/Gui] Creating an empty inventory...");
+        //System.out.println("[/Gui] Creating an empty inventory...");
         this.inv = Bukkit.createInventory(null, this.size, this.title + "§r");
         if(this.items.isEmpty() && this.buttons.isEmpty()){
             player.openInventory(inv);
             return inv;
         }
 
-        System.out.println("[/Gui] Looping given items and adding them...");
-        final long itemLoopStart = System.currentTimeMillis();
+        //System.out.println("[/Gui] Looping given items and adding them...");
+        //final long itemLoopStart = System.currentTimeMillis();
         HashMap<Integer, ItemStack> items = this.items.get(1);
         if(!this.items.isEmpty()) {
             for(Map.Entry<Integer, ItemStack> e : items.entrySet()) {
                 inv.setItem(e.getKey(), e.getValue());
             }
         }
-        System.out.println("[/Gui] Item adding took in total " + (System.currentTimeMillis() - itemLoopStart) + "ms!");
-
-
-        System.out.println("[/Gui] Looping given Buttons and adding them...");
-        final long buttonLoopStart = System.currentTimeMillis();
+        //System.out.println("[/Gui] Item adding took in total " + (System.currentTimeMillis() - itemLoopStart) + "ms!");
+        //System.out.println("[/Gui] Looping given Buttons and adding them...");
+        //final long buttonLoopStart = System.currentTimeMillis();
         if(!this.buttons.isEmpty()) {
             for(Button b : this.getButtons()) {
                 inv.setItem(b.pos, b.item);
             }
         }
-        System.out.println("[/Gui] Button adding took in total " + (System.currentTimeMillis() - buttonLoopStart) + "ms!");
-
+        //System.out.println("[/Gui] Button adding took in total " + (System.currentTimeMillis() - buttonLoopStart) + "ms!");
         playerPages.put(player, 1);
-
-        System.out.println("[/Gui] Opening the Inventory...");
+        //System.out.println("[/Gui] Opening the Inventory...");
         player.openInventory(inv);
-
-        System.out.println("[/Gui] Gui opening took in total " + (System.currentTimeMillis() - start) + "ms!");
+        //System.out.println("[/Gui] Gui opening took in total " + (System.currentTimeMillis() - start) + "ms!");
 
         return inv;
     }
@@ -380,11 +376,12 @@ public class Gui implements Listener {
         return null;
     }
 
-    public static Gui openGui(Player player, String title, int size, TypedCallback<Gui> cb) {
-        Gui gui = new Gui(title, size);
-        cb.execute(gui);
-        gui.open(player);
-        return gui;
+    public static void openGui(final Player player,final  String title, final int size, final TypedCallback<Gui> cb) {
+        Autio.async(() -> {
+            Gui gui = new Gui(title, size);
+            cb.execute(gui);
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> gui.open(player), 2);
+        });
     }
 
 }

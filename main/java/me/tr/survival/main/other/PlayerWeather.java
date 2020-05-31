@@ -30,12 +30,12 @@ public class PlayerWeather {
                 " §c§lHUOM! §7Tämä on vain näkyvä",
                 " §7ominaisuus!",
                 " ",
-                (!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId()) ? "§cVaatii §6§lPremium§f+§7!" : "§aKlikkaa vaihtaaksesi!"),
+                (!Ranks.hasRank(player.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(player.getUniqueId()) ? "§cVaatii §6§lPremium§f+§7!" : "§aKlikkaa vaihtaaksesi!"),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                if(Ranks.hasRank(clicker.getUniqueId(), "premiumplus") || Ranks.isStaff(clicker.getUniqueId())) {
+                if(Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") || Ranks.isStaff(clicker.getUniqueId())) {
                     gui.close(clicker);
                     Chat.sendMessage(clicker, "Sää asetttu selkeäksi!");
                     player.setPlayerWeather(Weathers.SUNNY);
@@ -53,7 +53,7 @@ public class PlayerWeather {
                 " §c§lHUOM! §7Tämä on vain näkyvä",
                 " §7ominaisuus!",
                 " ",
-                (!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId()) ? "§cVaatii §6§lPremium§f+§7!" : "§aKlikkaa vaihtaaksesi!"),
+                (!Ranks.hasRank(player.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(player.getUniqueId()) ? "§cVaatii §6§lPremium§f+§7!" : "§aKlikkaa vaihtaaksesi!"),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override

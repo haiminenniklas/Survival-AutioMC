@@ -85,13 +85,7 @@ public class Home {
 
         Autio.afterAsync(3, () -> {
             Util.sendNotification(player, "§7Teleportataan...", true);
-            CompletableFuture<Boolean> teleport = player.teleportAsync(this.getLocation());
-            if(!teleport.join()) {
-                Chat.sendMessage(player, Chat.Prefix.ERROR, "Teleporttaus kotiin epäonnistui... Yritä pian uudestaan!");
-                result.execute(false);
-            } else {
-                result.execute(true);
-            }
+            player.teleport(this.getLocation());
         });
     }
 

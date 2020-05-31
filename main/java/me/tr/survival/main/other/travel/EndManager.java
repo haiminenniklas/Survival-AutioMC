@@ -1,5 +1,6 @@
 package me.tr.survival.main.other.travel;
 
+import com.sk89q.worldedit.util.FileDialogUtil;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
@@ -8,6 +9,7 @@ import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -16,7 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -24,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -481,7 +483,6 @@ public class EndManager implements CommandExecutor {
         }
 
         File worldFolder = world.getWorldFolder();
-        // Delete End World
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv remove world_the_end");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mvconfirm");
 
@@ -494,7 +495,6 @@ public class EndManager implements CommandExecutor {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         }.runTaskLater(Main.getInstance(), 20);
 

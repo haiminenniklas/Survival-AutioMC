@@ -119,7 +119,7 @@ public class Mail {
                 " §7komennolla §a/vote§7, saat      ",
                 " §7itsellesi §eyhden arvan§7,    ",
                 " §7jolla voit voittaa itsellesi  ",
-                " §7jopa §6§lPremium§7-arvon!     ",
+                " §7jopa §e§lPremium§7-arvon!     ",
                 " §7Arpoja voi myös voittaa",
                 " §atoimituksista§7.",
                 "",

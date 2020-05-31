@@ -161,10 +161,10 @@ public class TeleportRequest {
     public void teleport() {
 
         if(this.here) {
-            two.teleportAsync(one.getLocation());
+            two.teleport(one.getLocation());
             Util.sendNotification(two, "§7Sinua viedään pelaajan §a" + one.getName() + " §7luo!");
         } else {
-            one.teleportAsync(two.getLocation());
+            one.teleport(two.getLocation());
             Util.sendNotification(one, "§7Sinua viedään pelaajan §a" + two.getName() + " §7luo!");
         }
 

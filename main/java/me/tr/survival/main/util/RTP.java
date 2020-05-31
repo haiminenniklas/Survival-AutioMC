@@ -17,7 +17,7 @@ public class RTP {
 
     public static HashMap<UUID, Long> cooldown = new HashMap<>();
 
-    public static boolean teleport(Player player) {
+    public static boolean teleport(final Player player) {
 
         if(cooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < cooldown.get(player.getUniqueId()) ) {
             long timeLeftRaw = (cooldown.get(player.getUniqueId()) - System.currentTimeMillis()) / 1000;
@@ -40,29 +40,25 @@ public class RTP {
             World world = Bukkit.getWorld("world");
             Location loc = randomLocation(player.getWorld());
 
+            if(world != null && loc != null){
+                Autio.afterAsync(1, () -> {
 
-            CompletableFuture<Chunk> chunkFuture  = world.getChunkAtAsync(loc);
-            Chunk chunk = chunkFuture.join();
+                    double y = world.getHighestBlockYAt(loc.getBlockX(), loc.getBlockZ());
+                    final Location newLoc = new Location(world, loc.getX(), y + 1, loc.getZ());
 
-            if(!chunk.isLoaded()) {
-                chunk.load();
+                    Autio.task(() -> player.teleport(newLoc));
+                    Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
+
+                    if(!player.isOp()) {
+                        cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));
+                    }
+
+                });
+            } else {
+                Chat.sendMessage(player, Chat.Prefix.ERROR, "Teleporttaus epäonnistui, yritä pian uudestaan!");
             }
 
-            Autio.afterAsync(1, () -> {
-
-                double y = world.getHighestBlockYAt(loc.getBlockX(), loc.getBlockZ());
-                final Location newLoc = new Location(world, loc.getX(), y + 1, loc.getZ());
-
-                player.teleportAsync(newLoc);
-                Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
-
-            });
-
         });
-
-        if(!player.isOp()) {
-            cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));
-        }
 
         return true;
     }

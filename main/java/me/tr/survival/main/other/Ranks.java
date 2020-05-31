@@ -110,6 +110,13 @@ public class Ranks {
         return (user.getPrimaryGroup().equalsIgnoreCase(rank));
     }
 
+    public static boolean hasRank(UUID uuid, String... ranks) {
+        for(String rank : ranks) {
+            if(!hasRank(uuid, rank)) return false;
+        }
+        return true;
+    }
+
     public static boolean isVIP(UUID uuid) {
         if(isStaff(uuid)) return true;
         if(isPartner(uuid)) return true;

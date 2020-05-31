@@ -28,21 +28,23 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
+
+import static dev.esophose.playerparticles.particles.spawning.reflective.ReflectionUtils.PackageType.getServerVersion;
 
 public class Autio {
 
     private static Map<UUID, Long> debugs = new HashMap<>();
 
     public static void teleportToSpawn(Player player) {
-        CompletableFuture<Boolean> result = player.teleportAsync(Autio.getSpawn());
-        if(!result.join()) {
-            player.teleport(Autio.getSpawn());
-        }
+        Location loc = getSpawn();
+        player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
         if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24d);
             player.setHealth(24d);
@@ -75,10 +77,11 @@ public class Autio {
 
     public static void async(Runnable task) {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), task);
+
     }
 
     public static void teleportToNether(Player player) {
-        player.teleportAsync(new Location(Bukkit.getWorld("world_nether"), 0.5, 61, 0.5));
+        player.teleport(new Location(Bukkit.getWorld("world_nether"), 0.5, 61, 0.5));
     }
 
     public static void every(int seconds, Runnable task, boolean async) {
@@ -114,7 +117,18 @@ public class Autio {
     }
 
     public static double getCurrentTPS() {
-        return Bukkit.getTPS()[0];
+        double average;
+        try {
+            Class<?> craftServer = Class.forName ( "org.bukkit.craftbukkit." + getServerVersion() + ".CraftServer" );
+            Method getServer = craftServer.getMethod ( "getServer" );
+            Object nmsServer = getServer.invoke ( Bukkit.getServer ( ) );
+            double[] recentTps = (double[]) nmsServer.getClass().getField("recentTps").get(nmsServer);
+            average = (recentTps[0] + recentTps[1] + recentTps[2]) / 3;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return 0.0d;
+        }
+        return Util.round(average);
     }
 
     public static void setSpawn(Location loc) {
@@ -315,7 +329,7 @@ public class Autio {
                    }
 
                    Util.sendNotification(player, "§7TPS: §e" + Util.round(Autio.getCurrentTPS()) +
-                           " §7| RAM: §a" + Util.getFreeMemory() + "Mb/" + Util.getMaxMemory() + "Mb" +
+                           " §7| RAM: §a" + Util.getUsedMemory() + "Mb/" + Util.getMaxMemory() + "Mb" +
                            " §7| CPU: §b" + Util.getProcessCPULoad() + "%/" + Util.getSystemCPULoad() + "%");
                }
            }.runTaskTimerAsynchronously(Main.getInstance(), 20, 20);

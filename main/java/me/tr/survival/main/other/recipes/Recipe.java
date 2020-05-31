@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.material.MaterialData;
 
 import java.util.Map;
 
@@ -23,7 +24,10 @@ public abstract class Recipe {
         this.recipe.shape(getShape());
 
         for(Map.Entry<Character, ItemStack> entry : getIngredients().entrySet()) {
-            this.recipe.setIngredient(entry.getKey(), entry.getValue());
+            MaterialData data = entry.getValue().getData();
+            if(data != null) {
+                this.recipe.setIngredient(entry.getKey(), entry.getValue().getData());
+            }
         }
 
     }

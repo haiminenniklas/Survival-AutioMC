@@ -1,6 +1,9 @@
 package me.tr.survival.main.util;
 
 import java.util.List;
+
+import me.tr.survival.main.Autio;
+import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -19,6 +22,18 @@ public class ItemUtil {
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
+    }
+
+    public static void makeSkullItem(OfflinePlayer target, int amount, String displayName, List<String> lore, TypedCallback<ItemStack> cb) {
+        Autio.async(() -> {
+            ItemStack item = new ItemStack(Material.PLAYER_HEAD, amount);
+            SkullMeta meta = (SkullMeta)item.getItemMeta();
+            meta.setOwningPlayer(target);
+            meta.setDisplayName(displayName);
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            cb.execute(item);
+        });
     }
 
     public static ItemStack makeSkullItem(OfflinePlayer target, int amount, String displayName) {

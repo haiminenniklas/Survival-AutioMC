@@ -28,8 +28,8 @@ public class PlayerDeathMessageManager implements Listener {
 
     public static void deathMessagePanel(Player player) {
 
-        if(!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) {
-            Chat.sendMessage(player, "§7Tähän toimintoon tarvitset vähintään §aPremium§f+§7-arvon!");
+        if(!Ranks.hasRank(player.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(player.getUniqueId())) {
+            Chat.sendMessage(player, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§f+§7-arvon!");
             return;
         }
 
@@ -112,8 +112,8 @@ public class PlayerDeathMessageManager implements Listener {
 
     public static void killMessagePanel(Player player) {
 
-        if(!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) {
-            Chat.sendMessage(player, "§7Tähän toimintoon tarvitset vähintään §aPremium§f+§7-arvon!");
+        if(!Ranks.hasRank(player.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(player.getUniqueId())) {
+            Chat.sendMessage(player, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§f+§7-arvon!");
         }
 
         UUID uuid = player.getUniqueId();
