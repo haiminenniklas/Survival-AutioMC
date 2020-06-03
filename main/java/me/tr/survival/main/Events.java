@@ -98,10 +98,10 @@ public class Events implements Listener {
         player.sendMessage(" ");
 
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
-        if(Ranks.isStaff(player.getUniqueId()) && !StaffManager.hasStaffMode(player)) StaffManager.enableStaffMode(player);
 
         // Fix vanish
         for(UUID vanished : StaffManager.hidden) {
+            if(StaffManager.hasStaffMode(player)) break;
             Player v = Bukkit.getPlayer(vanished);
             if(v == null) continue;
             player.hidePlayer(Main.getInstance(), v);
@@ -131,7 +131,13 @@ public class Events implements Listener {
             Autio.teleportToSpawn(e.getPlayer());
          }
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
-        Settings.scoreboard(player);
+
+         Bukkit.getScheduler().runTaskLater(Main.getInstance(), (r) -> {
+             if(Ranks.isStaff(player.getUniqueId()) && !StaffManager.hasStaffMode(player)) StaffManager.enableStaffMode(player);
+             Settings.scoreboard(player);
+             r.cancel();
+         }, 20 * 2);
+
         Autio.everyAsync(3, () -> Autio.sendTablist(player));
    }
 
@@ -139,6 +145,10 @@ public class Events implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         e.setQuitMessage(null);
         Player player = e.getPlayer();
+        if(Settings.scoreboardRunnables.containsKey(player.getUniqueId())) {
+            Settings.scoreboardRunnables.get(player.getUniqueId()).cancel();
+            Settings.scoreboardRunnables.remove(player.getUniqueId());
+        }
         // Disable staff mode
         if(StaffManager.hasStaffMode(player)) StaffManager.disableStaffMode(player);
         // Save player's data
@@ -150,8 +160,8 @@ public class Events implements Listener {
         if(e.getClickedInventory() == null) return;
         if(e.getCurrentItem() == null) return;
         Player player = (Player) e.getWhoClicked();
-        if(Gui.getGui(player) != null) {
-            Gui gui = Gui.getGui(player);
+        Gui gui = Gui.getGui(player);
+        if(gui != null) {
             if(e.getView().getTitle().contains("§r")) {
                 if(gui.isPartiallyTouchable()) {
                     // If user didn't do the allowed procedures with a partially touchable inventory
@@ -264,7 +274,7 @@ public class Events implements Listener {
                     if(timer > 0) {
                         player.sendTitle("§c§lKUOLIT", "§7Pääset §c" + timer + "s §7päästä takaisin!", 15, 20, 15);
                         timer--;
-                    } else if(timer <= 0){
+                    } else {
 
                         Autio.task(() -> {
                             Util.heal(player);
@@ -383,15 +393,22 @@ public class Events implements Listener {
 
     }
 
+    @EventHandler
+    public void onItemPickUp(EntityPickupItemEvent e) {
+        if(e.getEntity() instanceof Player) {
+            Player player = (Player) e.getEntity();
+            if(StaffManager.hasStaffMode(player)) e.setCancelled(true);
+        }
+    }
 
     // Here downwards are just events for disabling unwanted actions from players
 
     @EventHandler
     public void onKick(PlayerKickEvent e) {
         if (e.getReason().equalsIgnoreCase("disconnect.spam")) {
+            e.setCancelled(true);
             return;
         }
-        e.setCancelled(true);
     }
 
 

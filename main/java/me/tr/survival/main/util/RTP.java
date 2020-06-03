@@ -19,6 +19,10 @@ public class RTP {
 
     public static boolean teleport(final Player player) {
 
+        if(!player.getWorld().getName().equals("world")) {
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "RTP toimii vain tavallisessa maailmassa!");
+        }
+
         if(cooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < cooldown.get(player.getUniqueId()) ) {
             long timeLeftRaw = (cooldown.get(player.getUniqueId()) - System.currentTimeMillis()) / 1000;
 

@@ -28,8 +28,8 @@ public class TpaCommand implements CommandExecutor, Listener {
 
             if(command.getLabel().equalsIgnoreCase("tpa")) {
 
-                if(player.getWorld().getName().equals("world_nether")) {
-                    Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
+                if(!player.getWorld().getName().equals("world")) {
+                    Chat.sendMessage(player, "§7Tämä toimii vain tavallisessa maailmassa!");
                     return true;
                 }
 
@@ -53,8 +53,8 @@ public class TpaCommand implements CommandExecutor, Listener {
 
             } else if(command.getLabel().equalsIgnoreCase("tpaccept")) {
 
-                if(player.getWorld().getName().equals("world_nether")) {
-                    Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
+                if(!player.getWorld().getName().equals("world")) {
+                    Chat.sendMessage(player, "§7Tämä toimii vain tavallisessa maailmassa!");
                     return true;
                 }
 
@@ -91,8 +91,8 @@ public class TpaCommand implements CommandExecutor, Listener {
 
             } else if(command.getLabel().equalsIgnoreCase("tpahere")) {
 
-                if(player.getWorld().getName().equals("world_nether")) {
-                    Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
+                if(!player.getWorld().getName().equals("world")) {
+                    Chat.sendMessage(player, "§7Tämä toimii vain tavallisessa maailmassa!");
                     return true;
                 }
 

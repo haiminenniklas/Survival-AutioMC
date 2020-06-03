@@ -44,6 +44,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -357,7 +358,16 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             return true;
                         }
                     } else if(!StaffManager.hasStaffMode(player)) spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));
-                    Autio.teleportToSpawn(player);
+
+                    Chat.sendMessage(player, "Sinut viedään spawnille §c5s §7päästä!");
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            Autio.teleportToSpawn(player);
+                            cancel();
+                        }
+                    }.runTaskLater(Main.getInstance(), 20 * 5);
+
                 } else {
                     if(player.isOp()) {
                         Player target = Bukkit.getPlayer(args[0]);
@@ -446,19 +456,30 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
             } else if(command.getLabel().equalsIgnoreCase("Settings")) {
                 Settings.panel(player);
             } else if(command.getLabel().equalsIgnoreCase("gamemode")) {
-                if(player.isOp()) {
+                if(Ranks.isStaff(player.getUniqueId())) {
                     if(!StaffManager.hasStaffMode(player)) {
                         Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
                         return true;
                     }
                     if(args.length < 1) {
-                        if(player.getGameMode() != GameMode.SURVIVAL) {
-                            player.setGameMode(GameMode.SURVIVAL);
-                            Chat.sendMessage(player, "Pelimuoto Survival");
-                            Util.heal(player);
-                        } else if(player.getGameMode() == GameMode.SURVIVAL) {
-                            player.setGameMode(GameMode.CREATIVE);
-                            Chat.sendMessage(player, "Pelimuoto Creative");
+                        if(player.isOp()) {
+                            if(player.getGameMode() != GameMode.SURVIVAL) {
+                                player.setGameMode(GameMode.SURVIVAL);
+                                Chat.sendMessage(player, "Pelimuoto Survival");
+                                Util.heal(player);
+                            } else if(player.getGameMode() == GameMode.SURVIVAL) {
+                                player.setGameMode(GameMode.CREATIVE);
+                                Chat.sendMessage(player, "Pelimuoto Creative");
+                            }
+                        } else {
+                            if(player.getGameMode() == GameMode.SPECTATOR) {
+                                player.setGameMode(GameMode.SURVIVAL);
+                                Chat.sendMessage(player, "Pelimuoto Survival");
+                                Util.heal(player);
+                            } else if(player.getGameMode() == GameMode.SURVIVAL) {
+                                player.setGameMode(GameMode.SPECTATOR);
+                                Chat.sendMessage(player, "Pelimuoto Spectator");
+                            }
                         }
                     } else {
                         if(args.length == 1) {
@@ -469,8 +490,10 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                                 Util.heal(player);
                             } else if(args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("creative") ||
                                     args[0].equalsIgnoreCase("1")) {
-                                player.setGameMode(GameMode.CREATIVE);
-                                Chat.sendMessage(player, "Pelimuoto Creative");
+                                if(player.isOp()) {
+                                    player.setGameMode(GameMode.CREATIVE);
+                                    Chat.sendMessage(player, "Pelimuoto Creative");
+                                }
                             } else if(args[0].equalsIgnoreCase("adventure") || args[0].equalsIgnoreCase("2")
                                     || args[0].equalsIgnoreCase("a")) {
                                 player.setGameMode(GameMode.ADVENTURE);
@@ -481,28 +504,30 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                                 Chat.sendMessage(player, "Pelimuoto Spectator");
                             }
                         } else {
-                            Player target = Bukkit.getPlayer(args[1]);
-                            if(target == null) {
-                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty...");
-                                return true;
-                            }
-                            if(args[0].equalsIgnoreCase("s") || args[0].equalsIgnoreCase("survival")
-                                    || args[0].equalsIgnoreCase("0")) {
-                                target.setGameMode(GameMode.SURVIVAL);
-                                Chat.sendMessage(player, "Pelimuoto Survival pelaajalle §a" + target.getName());
-                                Util.heal(player);
-                            } else if(args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("creative") ||
-                                    args[0].equalsIgnoreCase("1")) {
-                                target.setGameMode(GameMode.CREATIVE);
-                                Chat.sendMessage(player, "Pelimuoto Creative pelaajalle §a" + target.getName());
-                            } else if(args[0].equalsIgnoreCase("adventure") || args[0].equalsIgnoreCase("2")
-                                    || args[0].equalsIgnoreCase("a")) {
-                                target.setGameMode(GameMode.ADVENTURE);
-                                Chat.sendMessage(player, "Pelimuoto Adeventure pelaajalle §a" + target.getName());
-                            } else if(args[0].equalsIgnoreCase("spectator") || args[0].equalsIgnoreCase("3")
-                                    || args[0].equalsIgnoreCase("sp")) {
-                                target.setGameMode(GameMode.SPECTATOR);
-                                Chat.sendMessage(player, "Pelimuoto Spectator pelaajalle §a" + target.getName());
+                            if(player.isOp()) {
+                                Player target = Bukkit.getPlayer(args[1]);
+                                if(target == null) {
+                                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty...");
+                                    return true;
+                                }
+                                if(args[0].equalsIgnoreCase("s") || args[0].equalsIgnoreCase("survival")
+                                        || args[0].equalsIgnoreCase("0")) {
+                                    target.setGameMode(GameMode.SURVIVAL);
+                                    Chat.sendMessage(player, "Pelimuoto Survival pelaajalle §a" + target.getName());
+                                    Util.heal(player);
+                                } else if(args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("creative") ||
+                                        args[0].equalsIgnoreCase("1")) {
+                                    target.setGameMode(GameMode.CREATIVE);
+                                    Chat.sendMessage(player, "Pelimuoto Creative pelaajalle §a" + target.getName());
+                                } else if(args[0].equalsIgnoreCase("adventure") || args[0].equalsIgnoreCase("2")
+                                        || args[0].equalsIgnoreCase("a")) {
+                                    target.setGameMode(GameMode.ADVENTURE);
+                                    Chat.sendMessage(player, "Pelimuoto Adeventure pelaajalle §a" + target.getName());
+                                } else if(args[0].equalsIgnoreCase("spectator") || args[0].equalsIgnoreCase("3")
+                                        || args[0].equalsIgnoreCase("sp")) {
+                                    target.setGameMode(GameMode.SPECTATOR);
+                                    Chat.sendMessage(player, "Pelimuoto Spectator pelaajalle §a" + target.getName());
+                                }
                             }
                         }
                     }

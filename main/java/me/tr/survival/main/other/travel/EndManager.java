@@ -4,6 +4,7 @@ import com.sk89q.worldedit.util.FileDialogUtil;
 import me.tr.survival.main.Autio;
 import me.tr.survival.main.Chat;
 import me.tr.survival.main.Main;
+import me.tr.survival.main.Settings;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.data.Balance;
@@ -57,6 +58,11 @@ public class EndManager implements CommandExecutor {
                             return true;
                         }
 
+                        if(player.getName().equals(target.getName())) {
+                            Chat.sendMessage(player, Chat.Prefix.ERROR, "Älä nyt hullu ole ja itseäsi uudelleen kutsu endiin!");
+                            return true;
+                        }
+
                         invite(player, target);
 
                     } else {
@@ -71,6 +77,12 @@ public class EndManager implements CommandExecutor {
                             Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty!");
                             return true;
                         }
+
+                        if(player.getName().equals(target.getName())) {
+                            Chat.sendMessage(player, Chat.Prefix.ERROR, "Älä nyt hullu ole ja itseäsi poista Endin pääsylistalta!");
+                            return true;
+                        }
+
 
                         remove(player, target);
 
@@ -101,7 +113,9 @@ public class EndManager implements CommandExecutor {
 
                    if(player.isOp()) {
                        enabled = false;
-                       Chat.sendMessage(player, "End on nyt §cpois päältä§7!");
+                       Chat.sendMessage(player, "End on nyt §cpois päältä§7! End suljetaan ja siellä olevat pelaajat teleportataan pois.");
+                       end();
+
                    }
 
                 } else if(args[0].equalsIgnoreCase("enable")) {
@@ -178,9 +192,9 @@ public class EndManager implements CommandExecutor {
     }
 
     //SETTINGS
-    private static final long durationMillis = 1000 * 60 * 60 * 2;
+    private static final long durationMillis = 1000 * 60 * 60 * 3;
     private static final long durationMinutes = durationMillis / 1000 / 60;
-    private static final int price = 500000;
+    private static final int price = 250000;
 
     private static List<UUID> allowedPlayers = new ArrayList<>();
     private static UUID holder = null;
@@ -190,10 +204,10 @@ public class EndManager implements CommandExecutor {
 
     private static final int MAX_PLAYERS = 3;
 
-    public static void panel(Player player) {
+    public static void panel(final Player player) {
         Gui.openGui(player, "Matkusta Endiin", 27, (gui) -> {
 
-            int[] purpleGlass = new int[] { 4, 12, 14, 22 };
+            int[] purpleGlass = new int[] { 11,12, 14,15  };
 
             List<String> lore = new ArrayList<>();
             lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -211,14 +225,14 @@ public class EndManager implements CommandExecutor {
                 lore.add(" ");
 
                 // Text to show participants
-
-                List<UUID> temp = allowedPlayers;
-                temp.remove(getHolderPlayer().getUniqueId());
+                List<String> temp = new ArrayList<>();
+                for(UUID uuid : allowedPlayers) {
+                    temp.add(Bukkit.getOfflinePlayer(uuid).getName());
+                }
                 if(temp.size() >= 1) {
-                    lore.add("Osallistujat: ");
+                    lore.add(" §7Osallistujat: ");
                     lore.add("  §c" + StringUtils.join(temp, "§7,§c "));
                 }
-
                 if(allowedPlayers.contains(player.getUniqueId())) {
                     lore.add(" ");
                     lore.add(" §aKlikkaa teleportataksesi!");
@@ -226,7 +240,7 @@ public class EndManager implements CommandExecutor {
 
             } else {
                 lore.add(" §7Tila: §a§lVAPAA");
-                lore.add(" §7Hinta: §a§l500 000€");
+                lore.add(" §7Hinta: §a§l" + Util.formatDecimals(price) + "€");
                 lore.add(" ");
                 if(Balance.canRemove(player.getUniqueId(), price)) {
                     lore.add(" §aKlikkaa aktivoidaksesi!");
@@ -310,6 +324,8 @@ public class EndManager implements CommandExecutor {
 
         if(Balance.canRemove(player.getUniqueId(), price)) {
 
+            allowedPlayers.clear();
+
             Balance.remove(player.getUniqueId(), price);
 
             started = System.currentTimeMillis();
@@ -321,7 +337,7 @@ public class EndManager implements CommandExecutor {
             Bukkit.broadcastMessage(" §5§lEND AKTIVOITU!");
             Bukkit.broadcastMessage(" ");
             Bukkit.broadcastMessage(" §7Aktivoija: §a" + player.getName());
-            Bukkit.broadcastMessage(" §7Kesto: §a2h");
+            Bukkit.broadcastMessage(" §7Kesto: §a3h");
             Bukkit.broadcastMessage(" ");
             Bukkit.broadcastMessage(" §cGeneroimme End-maailmaa, joka");
             Bukkit.broadcastMessage(" §csaattaa synnyttää lagia.");
@@ -333,6 +349,7 @@ public class EndManager implements CommandExecutor {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv create world_the_end end");
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mvconfirm");
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv import world_the_end");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv gamerule announceAdvancements false world_the_end");
 
             Chat.sendMessage(player, "§7Aktivoit §5Endin§7! Hienoa työtä! Jos haluat jakaa §5Endin §7salaisuudet ystäviesi kanssa, pystyt päästämään " +
                     "heidät komennolla §a/ääri lisää <pelaaja>§7! Hienoja löytöretkiä ja onnea matkaan! Sinulla on §e2 tuntia §7aikaa!");
@@ -433,11 +450,30 @@ public class EndManager implements CommandExecutor {
     }
 
     private static boolean canContinue() {
+
+        if(!enabled) return false;
+
         if(isOccupied()) {
             long shouldEnd = started + durationMillis;
             return System.currentTimeMillis() < shouldEnd;
         }
         return false;
+    }
+
+    private static void returnFees() {
+        if(isOccupied()) {
+            // If end hadn't been up for more than 20min, give the money back
+            if(System.currentTimeMillis() - started < 1000 * 60 * 20) {
+                if(holder != null) {
+                    Balance.add(holder, 500000);
+                    Player h = Bukkit.getPlayer(holder);
+                    if(h != null && h.isOnline()) {
+                        if(!Settings.get(holder, "chat_mentions")) h.playSound(h.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+                        Chat.sendMessage(h, "Sinun aktivoima §5End §7oli päällä alle §a20min§7, ennen kuin se suljettiin, niin saat täyden summan takaisin itsellesi (§e" +  Util.formatDecimals(price) + "€§7)! ");
+                    }
+                }
+            }
+        }
     }
 
     public static void end() {
@@ -451,7 +487,7 @@ public class EndManager implements CommandExecutor {
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §aEnd taas aktivoitavissa!");
         Bukkit.broadcastMessage(" §7Aktivoija: §c" + player.getName());
-        Bukkit.broadcastMessage(" §7Kesto: §c2h");
+        Bukkit.broadcastMessage(" §7Kesto: §c3h");
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §cPoistamme End-maailmaa, joka");
         Bukkit.broadcastMessage(" §csaattaa synnyttää lagia.");
@@ -466,6 +502,8 @@ public class EndManager implements CommandExecutor {
                 Autio.teleportToSpawn(o);
             }
         }
+
+        returnFees();
 
         started = 0L;
         holder = null;
@@ -525,7 +563,7 @@ public class EndManager implements CommandExecutor {
     }
 
     public static boolean isOccupied() {
-        return !allowedPlayers.isEmpty();
+        return holder != null && started != 0L;
     }
 
 

@@ -6,6 +6,7 @@ import me.tr.survival.main.Main;
 import me.tr.survival.main.Profile;
 import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.callback.TypedCallback;
 import me.tr.survival.main.util.data.Balance;
 import me.tr.survival.main.util.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
@@ -13,12 +14,15 @@ import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -42,12 +46,12 @@ public class BaltopCommand implements CommandExecutor {
         return true;
     }
 
-    public static void openGui(final Player player) {
+    public static void loadGui(final Player player, TypedCallback<Gui> cb) {
         final long start = System.currentTimeMillis();
         //System.out.println("[/Baltop] Opening BalanceTop GUI... ");
-       // System.out.println("[/Baltop] Getting balance Map... ");
+        // System.out.println("[/Baltop] Getting balance Map... ");
         Balance.getBalances((rawBalanceMap) -> {
-           // System.out.println("[/Baltop] Sorting balance Map... ");
+            // System.out.println("[/Baltop] Sorting balance Map... ");
             Util.sortByValue(rawBalanceMap, (balanceMap) -> {
                 if (balanceMap.size() >= 1) {
 
@@ -69,7 +73,7 @@ public class BaltopCommand implements CommandExecutor {
                         double balance = e.getValue();
                         int placement = i + 1;
                         int slot = playerSlots[i];
-                        if (player.getUniqueId().equals(e.getKey())) {
+                        if (player.getUniqueId().equals(target.getUniqueId())) {
 
                             ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §6§lSinä", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -92,19 +96,10 @@ public class BaltopCommand implements CommandExecutor {
                             ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §7" + target.getName(), Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Rahatilanne: §a" + Util.formatDecimals(balance) + "€",
-                                    " ",
-                                    " §aKlikkaa nähdäksesi lisätietoja",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             ), (item) -> {
                                 heads.add(item);
-                                gui.addButton(new Button(1, slot, item) {
-                                    @Override
-                                    public void onClick(Player clicker, ClickType clickType) {
-                                        System.out.println(1);
-                                        gui.close(clicker);
-                                        Profile.openProfile(clicker, target.getUniqueId());
-                                    }
-                                });
+                                gui.addItem(1, item, slot);
                             });
                         }
                         i += 1;
@@ -147,38 +142,102 @@ public class BaltopCommand implements CommandExecutor {
                     });
 
                     //System.out.println("[/Baltop] Adding Glass Panes... ");
-                    for (int slot : yellowGlassSlots) {
-                        gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot);
-                    }
+                    for (int slot : yellowGlassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot); }
                     for (int j = 0; j < 54; j++) {
                         if (gui.getItem(j) != null) continue;
                         if (gui.getButton(j) != null) continue;
                         gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE), j);
                     }
 
-                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), (runnable) -> {
-                        // System.out.println("[/Baltop] Opening Gui... ");
-                        //final long invStart = System.currentTimeMillis();
-                        gui.open(player);
-                        player.updateInventory();
-                        runnable.cancel();
-                        //System.out.println("[/Baltop] Gui opening took " + (System.currentTimeMillis() - invStart) + "ms. ");
-                        //System.out.println("[/Baltop] It took in total " + (System.currentTimeMillis() - start) + "ms. ");
-                    }, 10);
+                    cb.execute(gui);
 
                 } else {
-                    Autio.task(() ->
-                            Gui.openGui(player, "TOP 10 - Rikkaimmat", 27, (gui) -> {
-                                gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§cEi tietoja", Arrays.asList(
-                                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                                        " §7Pelaajien rahatietoja ei",
-                                        " §7löydetty... Yritä",
-                                        " §7myöhemmin uudestaan!",
-                                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                                )), 13);
-                            }));
+                    Autio.task(() -> {
+
+                        Gui gui = new Gui("TOP 10 - Rikkaimmat", 27);
+                        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§cEi tietoja", Arrays.asList(
+                                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                " §7Pelaajien rahatietoja ei",
+                                " §7löydetty... Yritä",
+                                " §7myöhemmin uudestaan!",
+                                " ",
+                                " §aKlikkaa uudelleenladataksesi!",
+                                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                        ))) {
+                            @Override
+                            public void onClick(Player clicker, ClickType clickType) {
+                                gui.close(clicker);
+                                openGui(clicker);
+                            }
+                        });
+
+                        int[] glass = new int[] { 12,14  };
+                        for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.RED_STAINED_GLASS_PANE), slot); }
+                        for(int i = 0; i < 27; i++) {
+                            if(gui.getItem(i) != null) continue;
+                            if(gui.getButton(i) != null) continue;
+                            gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                        }
+
+                        cb.execute(gui);
+
+                    });
+
                 }
             });
         });
+    }
+
+    public static void openGui(final Player player) {
+
+        final Gui loadGui = new Gui("Ladataan...", 27);
+
+        loadGui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§eLadataan...", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Ladataan pelaajien rahatietoja",
+                " §7tässä saattaa mennä hetki...",
+                " ",
+                " §cKlikkaa peruuttaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                loadGui.close(clicker);
+                Chat.sendMessage(clicker, "Etsintä peruutettiin!");
+            }
+        });
+
+        int[] glass = new int[] { 12,14  };
+        for(int slot : glass) { loadGui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot); }
+        for(int i = 0; i < 27; i++) {
+            if(loadGui.getItem(i) != null) continue;
+            if(loadGui.getButton(i) != null) continue;
+            loadGui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+        }
+
+        loadGui.open(player);
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                InventoryView current = player.getOpenInventory();
+                if(current.getTitle().contains("Ladataan...")) {
+                    loadGui(player, (gui) -> {
+                        Bukkit.getScheduler().runTaskLater(Main.getInstance(), (runnable) -> {
+                            loadGui.close(player);
+                            // System.out.println("[/Baltop] Opening Gui... ");
+                            //final long invStart = System.currentTimeMillis();
+                            gui.open(player);
+                            player.updateInventory();
+                            runnable.cancel();
+                            //System.out.println("[/Baltop] Gui opening took " + (System.currentTimeMillis() - invStart) + "ms. ");
+                            //System.out.println("[/Baltop] It took in total " + (System.currentTimeMillis() - start) + "ms. ");
+                        }, 5);
+                    });
+                }
+            }
+        }.runTaskLater(Main.getInstance(), 5);
+
     }
 }

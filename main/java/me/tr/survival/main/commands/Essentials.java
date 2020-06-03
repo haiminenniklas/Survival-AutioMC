@@ -8,6 +8,7 @@ import me.tr.survival.main.other.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import me.tr.survival.main.util.staff.StaffManager;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -79,6 +80,9 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
 
+                            int[] glass = new int[] { 11,12, 14,15  };
+                            for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
+
                             for(int i = 0; i < 27; i++) {
                                 if(gui.getItem(i) != null) continue;
                                 if(gui.getButton(i) != null) continue;
@@ -112,6 +116,9 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 14);
 
+                            int[] glass = new int[] { 11,13,15  };
+                            for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
+
                             for(int i = 0; i < 27; i++) {
                                 if(gui.getItem(i) != null) continue;
                                 if(gui.getButton(i) != null) continue;
@@ -136,6 +143,9 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7verkkokaupassamme: §a/osta",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            int[] glass = new int[] { 11,12, 14,15  };
+                            for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
 
                             for(int i = 0; i < 27; i++) {
                                 if(gui.getItem(i) != null) continue;
@@ -166,6 +176,9 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
 
+                            int[] glass = new int[] { 11,12, 14,15  };
+                            for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
+
                             for(int i = 0; i < 27; i++) {
                                 if(gui.getItem(i) != null) continue;
                                 if(gui.getButton(i) != null) continue;
@@ -189,6 +202,9 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
 
+                            int[] glass = new int[] { 11,12, 14,15  };
+                            for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
+
                             for(int i = 0; i < 27; i++) {
                                 if(gui.getItem(i) != null) continue;
                                 if(gui.getButton(i) != null) continue;
@@ -210,6 +226,9 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §6/asetukset",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            int[] glass = new int[] { 11,12, 14,15  };
+                            for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
 
                             for(int i = 0; i < 27; i++) {
                                 if(gui.getItem(i) != null) continue;
@@ -260,6 +279,9 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 26);
 
+                            int[] glass = new int[] { 11,12, 14,15  };
+                            for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
+
                             for(int i = 0; i < 27; i++) {
                                 if(gui.getItem(i) != null) continue;
                                 if(gui.getButton(i) != null) continue;
@@ -283,6 +305,7 @@ public class Essentials implements CommandExecutor, Listener {
                         });
                     }*/ else if(args[0].equalsIgnoreCase("matkustaminen")) {
                         Gui.openGui(player, "Apua (Matkustaminen)", 27, (gui) -> {
+
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitä tarkoittaa?", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Palvelimellamme voit matkustaa",
@@ -290,13 +313,16 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7Netheriin matkustaminen on ilmaista,",
                                     " §7mutta Endiin se on §amaksullista§7.",
                                     " §7Endiin matkustamiseen vaaditaan ",
-                                    " §e500 000€ §7rahaa ja voit kutsua",
-                                    " §7kaverisi mukaan samalla hinnalla!",
+                                    " §e250 000€ §7rahaa ja voit kutsua",
+                                    " §a2 kaveriasi §7mukaan samalla!",
                                     " ",
                                     " §7Lisätietoa matkustamisesta: §a/matkustaminen",
                                     " §7Discord: §9/discord",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            int[] glass = new int[] { 11,12, 14,15  };
+                            for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
 
                             for(int i = 0; i < 27; i++) {
                                 if(gui.getItem(i) != null) continue;
@@ -323,6 +349,9 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §a/reppu päivitä§7!",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            int[] glass = new int[] { 11,12, 14,15  };
+                            for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
 
                             for(int i = 0; i < 27; i++) {
                                 if(gui.getItem(i) != null) continue;
@@ -375,9 +404,29 @@ public class Essentials implements CommandExecutor, Listener {
 
             } else if(cmd.getLabel().equalsIgnoreCase("clear")) {
 
-                if(Ranks.isStaff(uuid)) {
-                    Util.clearInventory(player);
-                    Chat.sendMessage(player, "Inventorysi tyhjennettiin!");
+                if(!StaffManager.hasStaffMode(player)) {
+                    Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
+                    return true;
+                }
+
+                if(args.length < 1) {
+                    if(Ranks.isStaff(uuid)) {
+                        Util.clearInventory(player);
+                        Chat.sendMessage(player, "Inventorysi tyhjennettiin!");
+                    }
+                } else {
+                    if(Ranks.isStaff(uuid)) {
+
+                        Player target = Bukkit.getPlayer(args[0]);
+                        if(target == null) {
+                            Chat.sendMessage(player, "Pelaajaa ei löydetty!");
+                            return true;
+                        }
+
+                        Util.clearInventory(target);
+                        Chat.sendMessage(target, "Pelaajan §a" + target.getName() + " §7inventory tyhjennettiin!");
+
+                    }
                 }
 
             } else if(cmd.getLabel().equalsIgnoreCase("kordinaatit")) {
@@ -421,6 +470,11 @@ public class Essentials implements CommandExecutor, Listener {
 
                 if(Ranks.isStaff(player.getUniqueId())) {
 
+                    if(!StaffManager.hasStaffMode(player)) {
+                        Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
+                        return true;
+                    }
+
                     if(args.length < 1) {
                         Chat.sendMessage(player, "Käytä §a/invsee <pelaaja>");
                     } else {
@@ -432,7 +486,6 @@ public class Essentials implements CommandExecutor, Listener {
                         }
 
                         invsee(player, target);
-
 
                     }
 
@@ -450,12 +503,7 @@ public class Essentials implements CommandExecutor, Listener {
 
         Inventory inv = Bukkit.createInventory(target, InventoryType.PLAYER, "Tarkastele inventoryä (" + target.getName() + ")");
         for(ItemStack item : target.getInventory().getContents()) {
-            if(item == null) {
-                item = new ItemStack(Material.AIR);
-            }
-
             inv.addItem(item);
-
         }
         opener.openInventory(inv);
 

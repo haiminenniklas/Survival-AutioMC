@@ -19,10 +19,14 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.*;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Settings {
@@ -394,21 +398,25 @@ public class Settings {
         return value ? "§a§lPÄÄLLÄ" : "§c§lEI PÄÄLLÄ";
     }
 
+    public static final Map<UUID, BukkitTask> scoreboardRunnables = new HashMap<>();
+
     public static void scoreboard(Player player) {
+
+        if(scoreboardRunnables.containsKey(player.getUniqueId())) scoreboardRunnables.get(player.getUniqueId()).cancel();
+
         if(!Settings.get(player.getUniqueId(), "scoreboard")){
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             return;
         }
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective obj = board.registerNewObjective("AutioMC", "dummy", "dummy");
+        Objective obj = board.registerNewObjective("Sorsa", "dummy", "  §2§lSorsaMC §8| §7Survival  ", RenderType.INTEGER);
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName("  §2§lSorsaMC §8| §7Survival  ");
         obj.getScore("§7 §a §o").setScore(14);
         obj.getScore("§7» Rahatilanne").setScore(13);
 
         Team moneyCounter = board.registerNewTeam("bal");
         moneyCounter.addEntry(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED);
-        moneyCounter.setPrefix("§e" + Balance.get(player.getUniqueId()) + "€");
+        moneyCounter.setPrefix("§a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
         obj.getScore(ChatColor.BLUE + "" + ChatColor.RED + "" + ChatColor.RED).setScore(12);
         obj.getScore("§7 §9 §l").setScore(11);
         obj.getScore("§7» Arvo").setScore(10);
@@ -428,11 +436,20 @@ public class Settings {
         obj.getScore("§7 §1 §k").setScore(5);
         obj.getScore("       §2sorsamc.fi").setScore(4);
 
-        Main.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(Main.getInstance(), (runnable) -> {
-            board.getTeam("bal").setPrefix("§a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
-            board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
-            board.getTeam("players").setPrefix("§a" + Autio.getOnlinePlayers().size());
-        }, 0, 20 * 2);
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                if(player == null) cancel();
+                if(board == null) cancel();
+
+                board.getTeam("bal").setPrefix("§a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
+                board.getTeam("rank").setPrefix(Ranks.getDisplayName(Ranks.getRank(player.getUniqueId())));
+                board.getTeam("players").setPrefix("§a" + Autio.getOnlinePlayers().size());
+            }
+        }.runTaskTimerAsynchronously(Main.getInstance(), 20, 20 * 3);
+        scoreboardRunnables.put(player.getUniqueId(), task);
+
         player.setScoreboard(board);
     }
 

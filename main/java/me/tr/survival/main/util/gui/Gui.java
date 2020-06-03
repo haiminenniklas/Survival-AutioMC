@@ -349,11 +349,11 @@ public class Gui implements Listener {
         }
     }
 
-    public void close(Player player) {
-        if(getPlayerPages().containsKey(player)) {
-            getPlayerPages().remove(player);
-        }
-        player.closeInventory();
+    public void close(Player player) { close(player, true); }
+
+    public void close(Player player, boolean closeInventory) {
+        getPlayerPages().remove(player);
+        if(closeInventory) player.closeInventory();
     }
 
     public Set<Button> getButtons(){
@@ -364,13 +364,14 @@ public class Gui implements Listener {
         return playerPages;
     }
 
+    public static void closeCurrent(Player player) {
+        Gui gui = getGui(player);
+        if(gui != null) gui.close(player);
+    }
+
     public static Gui getGui(Player player){
         for(Gui gui : Gui.guis){
-
-            if(gui.getPlayerPages().containsKey(player)){
-                return gui;
-            }
-
+            if(gui.getPlayerPages().containsKey(player)) return gui;
         }
         return null;
     }

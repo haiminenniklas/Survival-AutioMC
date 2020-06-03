@@ -283,8 +283,8 @@ public class Autio {
                        return;
                    }
                    Util.sendNotification(player, "§7TPS: §e" + new DecimalFormat("#.##").format(Autio.getCurrentTPS()) +
-                           " §7| RAM: §a" + new DecimalFormat("#.##").format(Util.getUsedMemory()) + "Mb/" + Util.getMaxMemory() + "Mb" +
-                           " §7| CPU: §b" + Util.getProcessCPULoad() + "%", false);
+                           " §8|§7 RAM: §a" + ((int)Util.getUsedMemory()) + "Mb/" + ((int)Util.getMaxMemory()) + "Mb" +
+                           " §8|§7 CPU: §b" + Util.getProcessCPULoad() + "%", false);
                }
            }.runTaskTimerAsynchronously(Main.getInstance(), 20, 20);
         } else {

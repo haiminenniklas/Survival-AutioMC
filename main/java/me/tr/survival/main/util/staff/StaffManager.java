@@ -26,6 +26,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -277,9 +278,22 @@ public class StaffManager implements Listener, CommandExecutor {
         lastLocation.put(player.getUniqueId(), player.getLocation());
         hide(player);
         staffMode.put(player.getUniqueId(), true);
-        player.setGameMode(GameMode.SPECTATOR);
+        player.setGameMode(GameMode.SURVIVAL);
         Particles.removeCurrentParticle(player);
         Particles.removeCurrentArrowTrail(player);
+        player.setInvulnerable(true);
+        player.setAllowFlight(true);
+        player.setFlying(true);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(staffMode.getOrDefault(player.getUniqueId(), false)) {
+                    Util.sendNotification(player, "§7Piiloutuminen: " + (hidden.contains(player.getUniqueId()) ? "§a§lPÄÄLLÄ" : "§c§lPOIS PÄÄLTÄ") + " §8| §7TPS: §a" + Util.round(Autio.getCurrentTPS()), false);
+                } else cancel();
+
+            }
+        }.runTaskTimerAsynchronously(Main.getInstance(), 20, 20 * 2);
 
     }
 
@@ -295,6 +309,10 @@ public class StaffManager implements Listener, CommandExecutor {
         player.setGameMode(GameMode.SURVIVAL);
         Util.heal(player);
         Util.removePotionEffects(player);
+        Settings.scoreboard(player);
+        player.setInvulnerable(false);
+        player.setAllowFlight(false);
+        player.setFlying(false);
 
     }
 
@@ -315,18 +333,14 @@ public class StaffManager implements Listener, CommandExecutor {
     public static void hide(Player player) {
         hidden.add(player.getUniqueId());
         //Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
-
         player.setPlayerListName("§7" + player.getName() + " §8[PIILOSSA]");
-
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999, 999999));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 999999));
-
+       // player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 999999));
         for(Player online : Bukkit.getOnlinePlayers()) {
             if(online.getUniqueId().equals(player.getUniqueId())) continue;
             if(Ranks.isStaff(online.getUniqueId())) continue;
             online.hidePlayer(Main.getInstance(), player);
         }
-
         Chat.sendMessage(player, "Piilouduit pelaajilta!");
     }
 
