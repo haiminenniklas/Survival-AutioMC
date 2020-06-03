@@ -34,16 +34,8 @@ public class Trade {
         this.accepted = new HashMap<>();
 
         this.playerSlots = new int[][] {
-                new int[] {
-                        10,11,12,
-                        19,20,21,
-                        28,29,30,
-                },
-                new int[] {
-                        14,15,16,
-                        23,24,25,
-                        32,33,34
-                }
+                new int[]{10, 11, 12, 19, 20, 21, 28, 29, 30 },
+                new int[] { 14,15,16, 23,24,25, 32,33,34 }
         };
 
         this.accepted.put(sender.getUniqueId(), false);
@@ -60,8 +52,7 @@ public class Trade {
         this.inv = Bukkit.createInventory(null, 54, "Vaihtokauppa - Käynnissä");
         this.initGui();
 
-        TradeManager.getOngoingTrades().add(this);
-
+        Main.getTradeManager().getOngoingTrades().add(this);
     }
 
     private void initGui() {
@@ -137,16 +128,12 @@ public class Trade {
             for(int i = 0; i < glassSlots.length; i++) {
                 for(int j = 0; j < glassSlots[i].length; j++) {
                     // We only want to change the sender and target glass slots
-                    if(i == 0 || i == 1) {
-                        inv.setItem(glassSlots[i][j], new ItemStack(Material.RED_STAINED_GLASS_PANE, 1));
-                    }
+                    if(i == 0 || i == 1) inv.setItem(glassSlots[i][j], new ItemStack(Material.RED_STAINED_GLASS_PANE, 1));
                 }
             }
-
             // Remove the old buttons
             inv.setItem(48, ItemUtil.makeItem(Material.AIR));
             inv.setItem(50, ItemUtil.makeItem(Material.AIR));
-
         }
 
         this.getSender().updateInventory();
@@ -158,9 +145,7 @@ public class Trade {
         // The event handles the request, just to make this class file cleaner
         // For this very purpose, this approach should be just fine
         TradeRequestSendEvent event = new TradeRequestSendEvent(this, this.sender, this.target);
-        if(!event.isCancelled()) {
-            Bukkit.getPluginManager().callEvent(event);
-        }
+        if(!event.isCancelled()) Bukkit.getPluginManager().callEvent(event);
     }
 
     public void denyRequest() {
@@ -195,10 +180,7 @@ public class Trade {
         // Check if the trade is still valid and can continue
         if(canContinue(true)) {
             // Check if  both players have accepted the trade
-            if(this.accepted.getOrDefault(sender.getUniqueId(), false) &&
-                    this.accepted.getOrDefault(target.getUniqueId(), false)) {
-                return true;
-            }
+            if(this.accepted.getOrDefault(sender.getUniqueId(), false) && this.accepted.getOrDefault(target.getUniqueId(), false)) return true;
         }
         return false;
     }
@@ -224,9 +206,7 @@ public class Trade {
 
                 if(counter < 0) {
                     // If neither of the players declined
-                    if(getState() == TradeState.CONFIRMING) {
-                        trade();
-                    }
+                    if(getState() == TradeState.CONFIRMING) trade();
                     this.cancel();
                 } else {
                     sender.playSound(sender.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL,1,1);
@@ -250,28 +230,22 @@ public class Trade {
         // Let's check the Trade's state just to be sure
         if(this.getState() == TradeState.CONFIRMING) {
             Chat.sendMessage("Vaihtokauppa onnistui! Tavarat vaihtavat nyt omistajaa!", this.sender, this.target);
-
             // Return target's items to the sender
             giveItems(sender, target);
             // Return sender's items to the target
             giveItems(target, sender);
-
             this.end();
         }
-
     }
 
     public void start() {
 
         if(canContinue(true)) {
-
             this.setState(TradeState.RUNNING); // Change the state
             // Open the gui, nothing else, I think...?
             this.sender.openInventory(this.inv);
             this.target.openInventory(this.inv);
-
         }
-
     }
 
     public void deny() {
@@ -280,7 +254,6 @@ public class Trade {
         // whole thing
         this.accepted.put(sender.getUniqueId(), false);
         this.accepted.put(target.getUniqueId(), false);
-
 
         this.sender.playSound(sender.getLocation(), Sound.BLOCK_ANVIL_PLACE,1,1);
         this.target.playSound(target.getLocation(), Sound.BLOCK_ANVIL_PLACE,1,1);
@@ -332,9 +305,7 @@ public class Trade {
         HashMap<Integer, ItemStack> rest = receiver.getInventory().addItem(getItems(giver));
         if(rest.size() >= 1) {
             // Drop the rest of the items to the ground
-            for(Map.Entry<Integer, ItemStack> e : rest.entrySet()) {
-                receiver.getWorld().dropItemNaturally(receiver.getLocation(), e.getValue());
-            }
+            for(Map.Entry<Integer, ItemStack> e : rest.entrySet()) { receiver.getWorld().dropItemNaturally(receiver.getLocation(), e.getValue()); }
         }
     }
 
@@ -348,9 +319,7 @@ public class Trade {
         HashMap<Integer, ItemStack> rest = player.getInventory().addItem(getItems(player));
         if(rest.size() >= 1) {
             // Drop the rest of the items to the ground
-            for(Map.Entry<Integer, ItemStack> e : rest.entrySet()) {
-                player.getWorld().dropItemNaturally(player.getLocation(), e.getValue());
-            }
+            for(Map.Entry<Integer, ItemStack> e : rest.entrySet()) { player.getWorld().dropItemNaturally(player.getLocation(), e.getValue()); }
         }
     }
 
@@ -368,7 +337,7 @@ public class Trade {
 
     private void end() {
         this.setState(TradeState.OVER);
-        TradeManager.getOngoingTrades().remove(this);
+        Main.getTradeManager().getOngoingTrades().remove(this);
         if(this.sender != null) this.sender.closeInventory();
         if(this.target != null) this.target.closeInventory();
     }
@@ -389,9 +358,7 @@ public class Trade {
 
 
     public boolean hasAccepted(Player player) {
-        if(accepted.containsKey(player.getUniqueId())) {
-            return accepted.get(player.getUniqueId());
-        }
+        if(accepted.containsKey(player.getUniqueId())) return accepted.get(player.getUniqueId());
         return false;
     }
 

@@ -1,5 +1,6 @@
 package me.tr.survival.main.managers.features;
 
+import me.tr.survival.main.Main;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.managers.Mail;
@@ -14,17 +15,10 @@ import java.util.Random;
 public class Lottery {
 
     public static Prize findPrize() {
-
         double random = new Random().nextDouble();
         Prize randomPrize = Prize.values()[new Random().nextInt(Prize.values().length)];
-
-        if(random <= randomPrize.getPercentage()) {
-            return randomPrize;
-        }
-
+        if(random <= randomPrize.getPercentage()) return randomPrize;
         return null;
-
-
     }
 
     public static Prize lot(Player player) {
@@ -69,14 +63,13 @@ public class Lottery {
                         player.getInventory().addItem(ItemUtil.makeItem(Material.DIAMOND, 3));
                         break;
                     case MONEY:
-                        MoneyManager.forceWriteCheque(player, 500);
+                        Main.getMoneyManager().forceWriteCheque(player, 500);
                         break;
                 }
 
                 return prize;
             }
         }
-
         player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         player.sendMessage("  §c§lEi voittoa...");
         player.sendMessage(" ");
@@ -84,7 +77,6 @@ public class Lottery {
         player.sendMessage(" §7iskenyt voittoa. Yritäthän");
         player.sendMessage(" §7silti uudestaan myöhemmin!");
         player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-
         return null;
     }
 

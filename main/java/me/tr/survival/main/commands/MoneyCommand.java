@@ -31,7 +31,11 @@ public class MoneyCommand implements CommandExecutor {
                     if(!player.isOp()){
 
                         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-                        Profile.openProfile(player, target.getUniqueId());
+                        if(player.getName().equals(target.getName())) {
+                            Profile.openProfile(player, target.getUniqueId());
+                        } else {
+                            Profile.openOther(player, target);
+                        }
 
                     } else {
 

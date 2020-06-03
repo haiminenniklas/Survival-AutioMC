@@ -56,36 +56,24 @@ public class Particles implements Listener, CommandExecutor {
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         Sorsa.getParticlesAPI().resetActivePlayerParticles(player);
-
     }
 
-    public static void loadParticles(Player player) {
+    private void loadParticles(Player player) {
         UUID uuid = player.getUniqueId();
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
-
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         Sorsa.getParticlesAPI().resetActivePlayerParticles(player);
         String rawParticleID = String.valueOf(PlayerData.getValue(uuid, "particle"));
         String rawArrowTrailID = String.valueOf(PlayerData.getValue(uuid, "arrowtrail"));
-
-        //System.out.println("Raw Particle: " + rawParticleID + ", Raw ArrowTrail: " + rawArrowTrailID);
-
-        if(!rawArrowTrailID.equalsIgnoreCase("default") && !rawArrowTrailID.equalsIgnoreCase("null")) {
-            Sorsa.getParticlesAPI().addActivePlayerParticle(player, findArrowTrail(Integer.parseInt(rawArrowTrailID)));
-        }
-
-        if(!rawParticleID.equalsIgnoreCase("default") && !rawParticleID.equalsIgnoreCase("null")) {
-            Sorsa.getParticlesAPI().addActivePlayerParticle(player, findParticle(Integer.parseInt(rawParticleID)));
-        }
+        if(!rawArrowTrailID.equalsIgnoreCase("default") && !rawArrowTrailID.equalsIgnoreCase("null")) Sorsa.getParticlesAPI().addActivePlayerParticle(player, findArrowTrail(Integer.parseInt(rawArrowTrailID)));
+        if(!rawParticleID.equalsIgnoreCase("default") && !rawParticleID.equalsIgnoreCase("null")) Sorsa.getParticlesAPI().addActivePlayerParticle(player, findParticle(Integer.parseInt(rawParticleID)));
         PlayerParticles.getInstance().reload();
     }
 
-    public static void reloadParticles(Player player) {
+    public void reloadParticles(Player player) {
         loadParticles(player);
     }
 
-    public static void openMainGui(Player player) {
+    public void openMainGui(Player player) {
 
         if(Ranks.isVIP(player.getUniqueId())) {
             Gui.openGui(player, "Kosmetiikka", 27, (gui) -> {
@@ -158,16 +146,12 @@ public class Particles implements Listener, CommandExecutor {
 
     }
 
-    public static void openArrowTrailGui(Player player) {
+    private void openArrowTrailGui(Player player) {
         if(Ranks.isVIP(player.getUniqueId())) {
             Gui.openGui(player, "Nuolijanat", 36, (gui) -> {
 
                 int i = 0;
                 for(int pos = 10; pos < 26; pos++) {
-
-                    // 17 18 26 27 35 36
-                    //int pos = i + 10;
-
                     if(pos == 17 || pos == 18) continue;
 
                     ParticlePair loopParticle = getAllArrowTrails().get(i);
@@ -217,13 +201,10 @@ public class Particles implements Listener, CommandExecutor {
                             });
                         }
 
-                    } else {
-                        gui.addItem(1, ItemUtil.makeItem(Material.GRAY_DYE, 1, "§cEi saatavilla"), pos);
-                    }
+                    } else gui.addItem(1, ItemUtil.makeItem(Material.GRAY_DYE, 1, "§cEi saatavilla"), pos);
 
                     i += 1;
                     if(i >= getAllArrowTrails().size()) break;
-
                 }
 
                 gui.addButton(new Button(1, 27, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
@@ -251,7 +232,6 @@ public class Particles implements Listener, CommandExecutor {
                     gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), j);
 
                 }
-
             });
         } else {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
@@ -259,20 +239,14 @@ public class Particles implements Listener, CommandExecutor {
         }
     }
 
-    public static void openParticlesGui(Player player) {
+    private void openParticlesGui(Player player) {
         if(Ranks.isVIP(player.getUniqueId())) {
             Gui.openGui(player, "Partikkelit", 45, (gui) -> {
 
                 int i = 0;
                 for(int pos = 10; pos < 35; pos++) {
-
-                    // 17 18 26 27 35 36
-                    //int pos = i + 10;
-
                     if(pos == 17 || pos == 18 || pos == 26 || pos == 27) continue;
-
                     ParticlePair loopParticle = getAllParticles().get(i);
-                    //System.out.println("Loop ID" + loopParticle.getId());
                     ParticlePair particle = findParticle(loopParticle.getId());
 
                     if(isAllowedForParticle(player, particle)) {
@@ -282,10 +256,6 @@ public class Particles implements Listener, CommandExecutor {
                         lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                         lore.add(" §7Klikkaa aktivoidaksesi!");
                         lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-
-                       // System.out.println("GUI ID" + particle.getId());
-
-                        //System.out.println("Current ID: " + String.valueOf(PlayerData.getValue(player.getUniqueId(), "particle")));
 
                         ItemStack item = ItemUtil.makeItem(particle.getItemMaterial(), 1, getDisplayNameForParticle(particle.getId()), lore);
 
@@ -324,13 +294,10 @@ public class Particles implements Listener, CommandExecutor {
                             });
                         }
 
-                    } else {
-                        gui.addItem(1, ItemUtil.makeItem(Material.GRAY_DYE, 1, "§cEi saatavilla"), pos);
-                    }
+                    } else gui.addItem(1, ItemUtil.makeItem(Material.GRAY_DYE, 1, "§cEi saatavilla"), pos);
 
                     i += 1;
                     if(i >= getAllParticles().size()) break;
-
                 }
 
                 gui.addButton(new Button(1, 36, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
@@ -365,167 +332,91 @@ public class Particles implements Listener, CommandExecutor {
         }
     }
 
-    public static ParticlePair getCurrentParticle(Player player) {
-
-        if(!PlayerData.isLoaded(player.getUniqueId())) {
-            PlayerData.loadNull(player.getUniqueId(), false);
-        }
-
+    private ParticlePair getCurrentParticle(Player player) {
+        if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
         if(!String.valueOf(PlayerData.getValue(player.getUniqueId(), "particle")).equalsIgnoreCase("default")) {
-
-            if(String.valueOf(PlayerData.getValue(player.getUniqueId(), "particle")).equals("null")) {
-                return null;
-            }
-
+            if(String.valueOf(PlayerData.getValue(player.getUniqueId(), "particle")).equals("null")) return null;
             return Sorsa.getParticlesAPI().getActivePlayerParticle(player,
                     Integer.parseInt(String.valueOf(PlayerData.getValue(player.getUniqueId(), "particle"))));
-
-        }
-
-        return null;
-
-    }
-
-    public static ParticlePair findParticle(int id) {
-        for(ParticlePair p : getAllParticles()) {
-            if(p.getId() == id) {
-                return p;
-            }
         }
         return null;
     }
 
-    public static ParticlePair findArrowTrail(int id) {
-        for(ParticlePair p : getAllArrowTrails()) {
-            if(p.getId() == id) {
-                return p;
-            }
-        }
+    private ParticlePair findParticle(int id) {
+        for(ParticlePair p : getAllParticles()) { if(p.getId() == id) return p; }
+        return null;
+    }
+
+    private ParticlePair findArrowTrail(int id) {
+        for(ParticlePair p : getAllArrowTrails()) { if(p.getId() == id) return p; }
         return null;
     }
 
 
-    public static void setCurrentParticle(Player player, ParticlePair particle) {
-        if(!PlayerData.isLoaded(player.getUniqueId())) {
-            PlayerData.loadNull(player.getUniqueId(), false);
-        }
-
-        if(!isUsingDefaultParticle(player)) {
-            Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentParticle(player).getId());
-        }
-
+    private void setCurrentParticle(Player player, ParticlePair particle) {
+        if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
+        if(!isUsingDefaultParticle(player)) Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentParticle(player).getId());
         Sorsa.getParticlesAPI().addActivePlayerParticle(player, particle);
         PlayerData.set(player.getUniqueId(), "particle", String.valueOf(particle.getId()));
-
     }
 
-    public static boolean isUsingDefaultParticle(Player player) {
+    private boolean isUsingDefaultParticle(Player player) {
         return getCurrentParticle(player) == null;
     }
 
-    public static ParticlePair getCurrentArrowTrail(Player player) {
-        if(!PlayerData.isLoaded(player.getUniqueId())) {
-            PlayerData.loadNull(player.getUniqueId(), false);
-        }
-
+    private ParticlePair getCurrentArrowTrail(Player player) {
+        if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
         if(!String.valueOf(PlayerData.getValue(player.getUniqueId(), "arrowtrail")).equalsIgnoreCase("default")) {
-
-            if(String.valueOf(PlayerData.getValue(player.getUniqueId(), "arrowtrail")).equals("null")) {
-                return null;
-            }
-
+            if(String.valueOf(PlayerData.getValue(player.getUniqueId(), "arrowtrail")).equals("null")) return null;
             return Sorsa.getParticlesAPI().getActivePlayerParticle(player,
                     Integer.parseInt(String.valueOf(PlayerData.getValue(player.getUniqueId(), "arrowtrail"))));
-
         }
-
         return null;
     }
 
-    public static void setCurrentArrowTrail(Player player, ParticlePair particle) {
-        if(!PlayerData.isLoaded(player.getUniqueId())) {
-            PlayerData.loadNull(player.getUniqueId(), false);
-        }
-
-        if(!isUsingDefaultArrowTrail(player)) {
-            Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentArrowTrail(player).getId());
-        }
+    private void setCurrentArrowTrail(Player player, ParticlePair particle) {
+        if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
+        if(!isUsingDefaultArrowTrail(player)) Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentArrowTrail(player).getId());
         Sorsa.getParticlesAPI().addActivePlayerParticle(player, particle);
         PlayerData.set(player.getUniqueId(), "arrowtrail", String.valueOf(particle.getId()));
-
         PlayerParticles.getInstance().reload();
-
     }
 
-    public static boolean isUsingDefaultArrowTrail(Player player) {
+    private boolean isUsingDefaultArrowTrail(Player player) {
         return getCurrentArrowTrail(player) == null;
     }
 
-    public static void removeCurrentParticle(Player player) {
-
-        if(!PlayerData.isLoaded(player.getUniqueId())) {
-            PlayerData.loadNull(player.getUniqueId(), false);
-        }
-
-        if(!isUsingDefaultParticle(player)) {
-            Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentParticle(player).getId());
-        }
+    public void removeCurrentParticle(Player player) {
+        if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
+        if(!isUsingDefaultParticle(player)) Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentParticle(player).getId());
         PlayerData.set(player.getUniqueId(), "particle", "default");
-
-
     }
 
-    public static void removeCurrentArrowTrail(Player player) {
-
-
-        if(!PlayerData.isLoaded(player.getUniqueId())) {
-            PlayerData.loadNull(player.getUniqueId(), false);
-        }
-
-        if(!isUsingDefaultArrowTrail(player)) {
-            Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentArrowTrail(player).getId());
-        }
+    public void removeCurrentArrowTrail(Player player) {
+        if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
+        if(!isUsingDefaultArrowTrail(player)) Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentArrowTrail(player).getId());
         PlayerData.set(player.getUniqueId(), "arrowtrail", "default");
-
     }
 
-    public static boolean isAllowedForParticle(Player player, ParticlePair particle) {
-
+    private boolean isAllowedForParticle(Player player, ParticlePair particle) {
         for(ParticlePair p : getParticlesForPlayer(player)) {
             if(p == null) continue;
             if(p.getId() == particle.getId()) return true;
         }
-
         return false;
-
     }
 
-    public static List<ParticlePair> getParticlesForPlayer(Player player) {
-
-        if(Ranks.hasRank(player, "premium")) {
-
-            return getPremiumPlusParticles();
-
-        } else if(Ranks.hasRank(player, "premiumplus")) {
-
-            return getPremiumPlusParticles();
-
-        } else if(Ranks.hasRank(player, "sorsa")) {
-
-            return getKuningasParticles();
-
-        } else if(Ranks.isStaff(player.getUniqueId())) {
-            return getAllParticles();
-        } else {
-            return new ArrayList<>();
-        }
-
+    private List<ParticlePair> getParticlesForPlayer(Player player) {
+        if(Ranks.hasRank(player, "premium")) return getPremiumPlusParticles();
+        else if(Ranks.hasRank(player, "premiumplus")) return getPremiumPlusParticles();
+        else if(Ranks.hasRank(player, "sorsa")) return getKuningasParticles();
+        else if(Ranks.isStaff(player.getUniqueId())) return getAllParticles();
+        else return new ArrayList<>();
     }
 
-    public static List<ParticlePair> getPremiumParticles() {
+    private List<ParticlePair> getPremiumParticles() {
 
         List<ParticlePair> particles = new ArrayList<>();
-
         particles.add(new ParticlePair(null, 1, ParticleEffect.ENCHANT, DefaultStyles.NORMAL,
                 Material.ENCHANTED_BOOK,null, null, null));
 
@@ -544,12 +435,10 @@ public class Particles implements Listener, CommandExecutor {
         particles.add(new ParticlePair(null, 6, ParticleEffect.FALLING_WATER, DefaultStyles.OVERHEAD,
                 Material.BLUE_DYE, null, null, null));
 
-
         return particles;
-
     }
 
-    public static List<ParticlePair> getPremiumPlusParticles() {
+    private List<ParticlePair> getPremiumPlusParticles() {
 
         List<ParticlePair> particles = new ArrayList<>();
 
@@ -576,15 +465,12 @@ public class Particles implements Listener, CommandExecutor {
         particles.add(new ParticlePair(null, 12, ParticleEffect.HEART, DefaultStyles.OVERHEAD,
                 Material.APPLE, null, null, null));
 
-
         return particles;
-
     }
 
-    public static List<ParticlePair> getKuningasParticles() {
+    private List<ParticlePair> getKuningasParticles() {
 
         List<ParticlePair> particles = new ArrayList<>();
-
         for(ParticlePair p : getPremiumPlusParticles()) {
             if(p == null) continue;
             particles.add(p);
@@ -593,35 +479,26 @@ public class Particles implements Listener, CommandExecutor {
         particles.add(new ParticlePair(null, 13, ParticleEffect.ANGRY_VILLAGER, DefaultStyles.SPIN,
                 Material.BLAZE_ROD, null, null, null));
 
-
         particles.add(new ParticlePair(null, 14, ParticleEffect.DUST, DefaultStyles.WINGS,
                 Material.ELYTRA, null, new OrdinaryColor(255, 255, 255), null));
 
         particles.add(new ParticlePair(null, 15, ParticleEffect.ENTITY_EFFECT, DefaultStyles.WHIRL,
                 Material.GLOWSTONE_DUST, null, null, null));
 
-
         particles.add(new ParticlePair(null, 16, ParticleEffect.ENCHANTED_HIT, DefaultStyles.SPIRAL,
                 Material.DIAMOND_SWORD, null, null, null));
-
 
         particles.add(new ParticlePair(null, 17, ParticleEffect.CRIT, DefaultStyles.COMPANION,
                 Material.NAME_TAG, null, null, null));
 
-
         particles.add(new ParticlePair(null, 18, ParticleEffect.DUST, DefaultStyles.SPIRAL,
                 Material.REDSTONE, null, OrdinaryColor.RAINBOW, null));
 
-
-
         return particles;
-
     }
 
-    public static String getDisplayNameForParticle(int id) {
-
+    private String getDisplayNameForParticle(int id) {
         String name = "";
-
         switch(id) {
             case 1:
                 name = "§5Lumottu";
@@ -677,17 +554,12 @@ public class Particles implements Listener, CommandExecutor {
             case 18:
                 name = "§cSa§etee§ank§baa§dri";
                 break;
-
         }
-
         return name;
-
     }
 
-    public static String getDisplayNameForArrowTrail(int id) {
-
+    private String getDisplayNameForArrowTrail(int id) {
         String name = "";
-
         switch(id) {
             case 100:
                 name = "§4Sydämet";
@@ -722,51 +594,32 @@ public class Particles implements Listener, CommandExecutor {
             case 110:
                 name = "§4Veri";
                 break;
-
         }
-
         return name;
 
     }
 
-    public static List<ParticlePair> getAllParticles() {
+    private List<ParticlePair> getAllParticles() {
         return getKuningasParticles();
     }
 
-    public static boolean isAllowedForArrowTrail(Player player, ParticlePair particle) {
-
+    private boolean isAllowedForArrowTrail(Player player, ParticlePair particle) {
         for(ParticlePair p : getArrowTrailsForPlayer(player)) {
             if(p == null) continue;
             if(p.getId() == particle.getId()) return true;
         }
-
         return false;
-
     }
 
-    public static List<ParticlePair> getArrowTrailsForPlayer(Player player) {
-
-        if(Ranks.hasRank(player, "premium")) {
-
-            return getPremiumArrowTrails();
-
-        } else if(Ranks.hasRank(player, "premiumplus")) {
-
-            return getPremiumPlusArrowTrails();
-
-        } else if(Ranks.hasRank(player, "sorsa")) {
-
-            return getKuningasArrowtrails();
-
-        } else if(Ranks.isStaff(player.getUniqueId())) {
-            return getAllArrowTrails();
-        } else {
-            return new ArrayList<>();
-        }
-
+    private List<ParticlePair> getArrowTrailsForPlayer(Player player) {
+        if(Ranks.hasRank(player, "premium")) return getPremiumArrowTrails();
+        else if(Ranks.hasRank(player, "premiumplus")) return getPremiumPlusArrowTrails();
+        else if(Ranks.hasRank(player, "sorsa")) return getKuningasArrowtrails();
+        else if(Ranks.isStaff(player.getUniqueId())) return getAllArrowTrails();
+        else return new ArrayList<>();
     }
 
-    public static List<ParticlePair> getPremiumArrowTrails() {
+    private List<ParticlePair> getPremiumArrowTrails() {
 
         List<ParticlePair> particles = new ArrayList<>();
 
@@ -782,15 +635,12 @@ public class Particles implements Listener, CommandExecutor {
         particles.add(new ParticlePair(null, 103, ParticleEffect.FLAME, DefaultStyles.ARROWS,
                 Material.BLAZE_POWDER, null, null, null));
 
-
         return particles;
-
     }
 
-    public static List<ParticlePair> getPremiumPlusArrowTrails() {
+    private List<ParticlePair> getPremiumPlusArrowTrails() {
 
         List<ParticlePair> particles = new ArrayList<>();
-
         for(ParticlePair p : getPremiumArrowTrails()) {
             if(p == null) continue;
             particles.add(p);
@@ -806,38 +656,30 @@ public class Particles implements Listener, CommandExecutor {
                 Material.TOTEM_OF_UNDYING, null, null, null));
 
         return particles;
-
     }
 
-    public static List<ParticlePair> getKuningasArrowtrails() {
+    private List<ParticlePair> getKuningasArrowtrails() {
 
         List<ParticlePair> particles = new ArrayList<>();
-
         for(ParticlePair p : getPremiumPlusArrowTrails()) {
             if(p == null) continue;
             particles.add(p);
         }
-
         particles.add(new ParticlePair(null, 107, ParticleEffect.DUST, DefaultStyles.ARROWS,
                 Material.SLIME_BALL, null, OrdinaryColor.RAINBOW, null));
-
 
         particles.add(new ParticlePair(null, 108, ParticleEffect.WITCH, DefaultStyles.ARROWS,
                 Material.GHAST_TEAR, null, null, null));
 
-
         particles.add(new ParticlePair(null, 109, ParticleEffect.CRIT, DefaultStyles.ARROWS,
                 Material.IRON_SWORD, null, null, null));
 
-
         particles.add(new ParticlePair(null, 110, ParticleEffect.DAMAGE_INDICATOR, DefaultStyles.ARROWS,
                 Material.REDSTONE, null, null, null));
-
         return particles;
-
     }
 
-    public static List<ParticlePair> getAllArrowTrails() {
+    private List<ParticlePair> getAllArrowTrails() {
         return getKuningasArrowtrails();
     }
 

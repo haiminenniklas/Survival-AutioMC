@@ -54,27 +54,19 @@ public class Mail {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
 
-                if(!canOpenDaily(clicker)) {
-                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1,1 );
-                } else {
-
+                if(!canOpenDaily(clicker)) clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1,1 );
+                else {
                     gui.close(clicker);
-                    if(Mail.getStreak(clicker) < 1) {
-                        Mail.setStreak(clicker, 1);
-                    } else if(Mail.getStreak(clicker) >= 1 && timeFromLastMail(clicker.getUniqueId()) < (1000 * 60 * 60 * 24 * 2)) {
-                        Mail.addStreak(clicker);
-                    } else {
-                        Mail.setStreak(clicker, 1);
-                    }
+                    if(Mail.getStreak(clicker) < 1) Mail.setStreak(clicker, 1);
+                    else if(Mail.getStreak(clicker) >= 1 && timeFromLastMail(clicker.getUniqueId()) < (1000 * 60 * 60 * 24 * 2)) Mail.addStreak(clicker);
+                    else Mail.setStreak(clicker, 1);
 
                     int multiplier = getMultiplier(clicker);
 
                     clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
                     clicker.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-                    if(multiplier > 1) {
-                        clicker.sendMessage("§7Kerroin §b§l" + multiplier + "x§7!");
-                    }
+                    if(multiplier > 1) clicker.sendMessage("§7Kerroin §b§l" + multiplier + "x§7!");
 
                     Balance.add(clicker.getUniqueId(), 50*multiplier);
                     clicker.sendMessage("§a§l+ " + (50*multiplier) + "€");
@@ -93,9 +85,7 @@ public class Mail {
                     clicker.sendMessage("§f§l+" + (3 * multiplier) + " rautaa");
                     clicker.getInventory().addItem(ItemUtil.makeItem(Material.COOKED_BEEF, 10 * multiplier));
                     clicker.sendMessage("§c§l+" + (10 * multiplier) + " pihviä");
-
                     clicker.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-
                     Mail.setLastMail(clicker.getUniqueId());
                 }
 
@@ -175,9 +165,7 @@ public class Mail {
     }
 
     public static int getTickets(OfflinePlayer player) {
-        if(!PlayerData.isLoaded(player.getUniqueId())) {
-            PlayerData.loadNull(player.getUniqueId(), false);
-        }
+        if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
         return (int) PlayerData.getValue(player.getUniqueId(), "tickets");
     }
 

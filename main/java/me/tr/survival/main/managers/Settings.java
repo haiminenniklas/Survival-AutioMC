@@ -36,8 +36,7 @@ public class Settings {
         Gui gui = new Gui("Asetukset", 27);
         UUID uuid = player.getUniqueId();
 
-        int[] glassSlots = new int[] {10, 16};
-
+        int[] glassSlots = new int[] { 10, 16 };
         for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.GREEN_STAINED_GLASS_PANE), slot); }
 
         gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAINTING, 1, "§2Scoreboard", Arrays.asList(
@@ -52,7 +51,6 @@ public class Settings {
                 "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
-
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -75,7 +73,6 @@ public class Settings {
                 "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
-
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -93,15 +90,13 @@ public class Settings {
                 "§7§oet näe enää chat-viestejä"  ,
                 "§7§omuilta pelaajilta",
                 "",
-                "§aKlikkaa vaihtaaksesi asetusta!",
+                "§cPois käytöstä!!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
-
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
-                Settings.toggle(uuid, "chat");
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1,1 );
                 panel(clicker);
             }
         });
@@ -118,7 +113,6 @@ public class Settings {
                 "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
-
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -139,7 +133,6 @@ public class Settings {
                 "§aKlikkaa vaihtaaksesi asetusta!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
-
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
@@ -149,14 +142,12 @@ public class Settings {
             }
         });
 
-        String areVipSettingsApplicable = (Ranks.isVIP(player.getUniqueId())) ? "§aKlikkaa avataksesi" : "§cVaatii §e§lPremium§c-arvon!";
-
         gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.GOLDEN_CARROT, 1, "§6VIP-Asetukset", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Klikkaa päästäksesi",
                 " §6VIP§7-asetuksiin!",
                 " ",
-                areVipSettingsApplicable,
+                ((Ranks.isVIP(player.getUniqueId())) ? "§aKlikkaa avataksesi" : "§cVaatii §e§lPremium§c-arvon!"),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -171,7 +162,6 @@ public class Settings {
                     clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                     vipPanel(clicker);
                 }
-
             }
         });
 
@@ -197,9 +187,7 @@ public class Settings {
             if(gui.getButton(i) != null) continue;
             gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
         }
-
         gui.open(player);
-
     }
 
     public static void vipPanel(Player player) {
@@ -211,14 +199,10 @@ public class Settings {
         }
 
         UUID uuid = player.getUniqueId();
-
         Gui.openGui(player, "VIP-asetukset", 27, (gui) -> {
 
             int[] glassSlots = new int[] {10, 16};
-
             for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot); }
-
-            String isWeatherApplicable = (!Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §e§lPremium§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
 
             gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.CLOCK, 1, "§2Sää ja aika", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -226,22 +210,19 @@ public class Settings {
                     "§7§osäätäsi ja aikaasi",
                     "§7§opalvelimella!",
                     " ",
-                    isWeatherApplicable,
+                    ((!Ranks.isVIP(player.getUniqueId()) && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §e§lPremium§c-arvon!" : "§aKlikkaa vaihtaaksesi!"),
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
 
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    if(!Ranks.isVIP(clicker.getUniqueId()) && !Ranks.isStaff(clicker.getUniqueId())) {
-                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                    } else {
+                    if(!Ranks.isVIP(clicker.getUniqueId()) && !Ranks.isStaff(clicker.getUniqueId())) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    else {
                         gui.close(clicker);
                         PlayerWeather.panel(clicker);
                     }
                 }
             });
-
-            String isGlowApplicable = (!Ranks.isStaff(player.getUniqueId()) && !Ranks.hasRank(player, "sorsa")) ? "§cVaatii §2§lSORSA§c-arvon!" : "§aKlikkaa vaihtaaksesi asetusta!";
 
             gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.PHANTOM_MEMBRANE, 1, "§2Hehkumimnen", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -252,66 +233,54 @@ public class Settings {
                     "§7§oja pelaajat voivat nähdä sinut",
                     "§7§opalikoiden läpi!",
                     "",
-                    isGlowApplicable,
+                    ((!Ranks.isStaff(player.getUniqueId()) && !Ranks.hasRank(player, "sorsa")) ? "§cVaatii §2§lSORSA§c-arvon!" : "§aKlikkaa vaihtaaksesi asetusta!"),
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
-
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
                     clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
-                    PlayerGlowManager.toggle(player);
+                    Main.getPlayerGlowManager().toggle(player);
                     vipPanel(clicker);
                 }
             });
-
-            String areDeathMessagesApplicable = (!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §6§lPremium§f+§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
-
             gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.SKELETON_SKULL, 1, "§2Kuolemaviestit", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     "§7§oPäivitä henkilökohtaista",
                     "§7§okuolemaviestiäsi!",
                     " ",
-                    areDeathMessagesApplicable,
+                    ((!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §6§lPremium§f+§c-arvon!" : "§aKlikkaa vaihtaaksesi!"),
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
-
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(clicker.getUniqueId())) {
-                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                    } else {
+                    if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(clicker.getUniqueId())) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    else {
                         gui.close(clicker);
                         clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
-                        PlayerDeathMessageManager.deathMessagePanel(clicker);
+                        Main.getPlayerDeathMessageManager().deathMessagePanel(clicker);
                     }
                 }
             });
-
-            String areKillMessagesApplicable = (!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §6§lPremium§f+§c-arvon!" : "§aKlikkaa vaihtaaksesi!";
 
             gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.IRON_SWORD, 1, "§2Tappoviestit", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     "§7§oPäivitä henkilökohtaista",
                     "§7§otappoviestiäsi!",
                     " ",
-                    areKillMessagesApplicable,
+                    ((!Ranks.hasRank(player.getUniqueId(), "premiumplus") && !Ranks.isStaff(player.getUniqueId())) ? "§cVaatii §6§lPremium§f+§c-arvon!" : "§aKlikkaa vaihtaaksesi!"),
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
-
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(clicker.getUniqueId())) {
-                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                    } else {
+                    if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(clicker.getUniqueId())) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    else {
                         gui.close(clicker);
                         clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
-                        PlayerDeathMessageManager.killMessagePanel(clicker);
+                        Main.getPlayerDeathMessageManager().killMessagePanel(clicker);
                     }
                 }
             });
-
-            String isFlighApplicable = (Ranks.hasRank(uuid, "sorsa") || Ranks.isStaff(uuid)) ? "§aKlikkaa vaihtaaksesi asetusta!" : "§cVaatii §2§lSORSA§c-arvon!";
 
             gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.FEATHER, 1, "§2Lento", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -320,15 +289,13 @@ public class Settings {
                     "§7§oTämän avulla pystyt",
                     "§7lentämään spawnilla!",
                     " ",
-                    isFlighApplicable,
+                    ((Ranks.hasRank(uuid, "sorsa") || Ranks.isStaff(uuid)) ? "§aKlikkaa vaihtaaksesi asetusta!" : "§cVaatii §2§lSORSA§c-arvon!"),
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
-
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    if(!Ranks.hasRank(uuid, "sorsa") && !Ranks.isStaff(uuid)) {
-                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                    } else {
+                    if(!Ranks.hasRank(uuid, "sorsa") && !Ranks.isStaff(uuid)) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    else {
                         gui.close(clicker);
                         clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         toggleFlight(clicker);
@@ -350,7 +317,7 @@ public class Settings {
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
                     if(!Ranks.isVIP(clicker.getUniqueId())) Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla täytyy olla vähintään §e§lPremium§7-arvo tähän toimintoon!");
-                    else Particles.openMainGui(clicker);
+                    else Main.getParticles().openMainGui(clicker);
                 }
             });
             gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
@@ -384,7 +351,7 @@ public class Settings {
                 Chat.sendMessage(player, "Lentotila §apäällä§7!");
             } else {
                 if(Ranks.isStaff(player.getUniqueId())) {
-                    if(StaffManager.hasStaffMode(player)) {
+                    if(Main.getStaffManager().hasStaffMode(player)) {
                         player.setAllowFlight(true);
                         player.setFlying(true);
                         Chat.sendMessage(player, "Lentotila §apäällä§7!");
@@ -459,7 +426,6 @@ public class Settings {
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-
                 if(player == null) cancel();
                 if(board == null) cancel();
 

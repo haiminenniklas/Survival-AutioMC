@@ -27,7 +27,7 @@ import java.util.UUID;
 
 public class PlayerDeathMessageManager implements Listener {
 
-    public static void deathMessagePanel(Player player) {
+    public void deathMessagePanel(Player player) {
 
         if(!Ranks.hasRank(player.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(player.getUniqueId())) {
             Chat.sendMessage(player, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§f+§7-arvon!");
@@ -114,10 +114,11 @@ public class PlayerDeathMessageManager implements Listener {
 
     }
 
-    public static void killMessagePanel(Player player) {
+    public void killMessagePanel(Player player) {
 
         if(!Ranks.hasRank(player.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(player.getUniqueId())) {
             Chat.sendMessage(player, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§f+§7-arvon!");
+            return;
         }
 
         UUID uuid = player.getUniqueId();
@@ -130,7 +131,6 @@ public class PlayerDeathMessageManager implements Listener {
                 final boolean selected = (getSelectedKillMessage(uuid) != null) && getSelectedKillMessage(uuid) == killMessage;
 
                 lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-
                 lore.add(" ");
 
                 if(killMessage != KillMessage.DEFAULT) {
@@ -210,82 +210,63 @@ public class PlayerDeathMessageManager implements Listener {
 
         if(victim.getLastDamageCause() == null) return;
 
-
         if(victim.getKiller() != null) {
-
             if(victim.getLastDamageCause().getEntityType() != EntityType.PLAYER) return;
-
             Player killer = victim.getKiller();
             KillMessage msg = getSelectedKillMessage(killer.getUniqueId());
             if(msg == null) return;
             if(msg == KillMessage.DEFAULT) return;
-
             String text = translateKillMessage(victim.getName(), killer.getName(), msg.format);
             Bukkit.broadcastMessage("§2§l» " + text);
 
         } else {
-
             DeathMessage msg = getSelectedDeathMessage(victim.getUniqueId());
             if(msg == null) return;
             if(msg == DeathMessage.DEFAULT) return;
-
             String text = translateDeathMessage(victim.getName(), msg.format);
             Bukkit.broadcastMessage("§2§l» " + text);
-
         }
 
     }
 
-    public static DeathMessage getSelectedDeathMessage(UUID uuid) {
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
+    public DeathMessage getSelectedDeathMessage(UUID uuid) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         String raw = String.valueOf(PlayerData.getValue(uuid, "death_message"));
         return DeathMessage.valueOf(raw.toUpperCase());
     }
 
-    public static KillMessage getSelectedKillMessage(UUID uuid) {
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
+    public KillMessage getSelectedKillMessage(UUID uuid) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         String raw = String.valueOf(PlayerData.getValue(uuid, "kill_message"));
         return KillMessage.valueOf(raw.toUpperCase());
     }
 
-    public static void selectKillMessage(UUID uuid, KillMessage message) {
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
+    public void selectKillMessage(UUID uuid, KillMessage message) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "kill_message", message.name());
     }
 
-    public static void selectDeathMessage(UUID uuid, DeathMessage message) {
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
+    public void selectDeathMessage(UUID uuid, DeathMessage message) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "death_message", message.name());
     }
 
-    public static void resetKillMessages(UUID uuid) {
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
+    public void resetKillMessages(UUID uuid) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "kill_message", "DEFAULT");
     }
 
-    public static void resetDeathMessages(UUID uuid) {
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
+    public void resetDeathMessages(UUID uuid) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "death_message", "DEFAULT");
     }
 
-    public static String translateDeathMessage(String victim, String message) {
+    public String translateDeathMessage(String victim, String message) {
         message = message.replaceAll("%victim%", victim);
         return message;
     }
 
-    public static String translateKillMessage(String victim, String killer, String message) {
+    public String translateKillMessage(String victim, String killer, String message) {
         message = message.replaceAll("%victim%", victim);
         message = message.replaceAll("%killer%", killer);
         return message;

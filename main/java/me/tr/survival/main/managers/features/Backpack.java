@@ -1,5 +1,6 @@
 package me.tr.survival.main.managers.features;
 
+import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.managers.Chat;
@@ -46,11 +47,9 @@ public class Backpack implements CommandExecutor, Listener {
                     openBackpack(player);
                 } else {
 
-                   if(args[0].equalsIgnoreCase("päivitä") || args[0].equalsIgnoreCase("upgrade")) {
-                        Backpack.upgradeConfirm(player);
-                   } else if(args[0].equalsIgnoreCase("help")) {
+                   if(args[0].equalsIgnoreCase("päivitä") || args[0].equalsIgnoreCase("upgrade")) Main.getBackpack().upgradeConfirm(player);
+                   else if(args[0].equalsIgnoreCase("help"))
                        if(Ranks.isStaff(player.getUniqueId())) Chat.sendMessage(player, "/backpack katso <pelaaja>");
-                   }
 
                    if(args.length >= 2) {
 
@@ -64,34 +63,21 @@ public class Backpack implements CommandExecutor, Listener {
 
                                    Sorsa.async(() ->
                                        PlayerData.loadPlayer(target.getUniqueId(), (result) -> {
-                                           if(result) {
-                                               openOther(player, target);
-                                           } else {
-                                               Chat.sendMessage(player, "Pelaajaa ei löydetty... Ei voida avata reppua!");
-                                           }
+                                           if(result) openOther(player, target);
+                                           else Chat.sendMessage(player, "Pelaajaa ei löydetty... Ei voida avata reppua!");
                                        }));
 
-                               } else {
-                                   openOther(player, target);
-                               }
-
+                               } else openOther(player, target);
                            }
-                       } else {
-                           Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei oikeuksia!");
-                       }
-
+                       } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei oikeuksia!");
                    }
-
                 }
-
             }
-
         }
-
         return true;
     }
 
-    public static void openOther(Player opener, OfflinePlayer target) {
+    public void openOther(Player opener, OfflinePlayer target) {
 
         ItemStack[] items = getSavedInventory(target.getUniqueId());
         Inventory inv = Bukkit.createInventory(null, getLevel(target.getUniqueId()).size, "Tarkastele reppua (" + target.getName() + ")");
@@ -106,7 +92,7 @@ public class Backpack implements CommandExecutor, Listener {
 
     }
 
-    public static void openBackpack(Player player) {
+    public void openBackpack(Player player) {
 
         UUID uuid = player.getUniqueId();
 
@@ -183,11 +169,8 @@ public class Backpack implements CommandExecutor, Listener {
                 if(item.getType() == Material.PINK_STAINED_GLASS_PANE) {
 
                     int index = e.getSlot();
-                    if(index >= e.getInventory().getSize() - 9 && index < e.getInventory().getSize()) {
-                        e.setCancelled(true);
-                    } else if(index >= 0 && index <= 8) {
-                        e.setCancelled(true);
-                    }
+                    if(index >= e.getInventory().getSize() - 9 && index < e.getInventory().getSize()) e.setCancelled(true);
+                    else if(index >= 0 && index <= 8) e.setCancelled(true);
 
                 } else if(item.getType() == Material.EXPERIENCE_BOTTLE && e.getSlot() == 4) {
                     if(item.hasItemMeta()) {
@@ -226,11 +209,8 @@ public class Backpack implements CommandExecutor, Listener {
 
             Inventory correctInv = Bukkit.createInventory(null, getLevel(player.getUniqueId()).size);
             for(int i = 0; i < inv.getSize(); i++) {
-
                 ItemStack item = inv.getItem(i);
-                if(item == null) {
-                    item = new ItemStack(Material.AIR);
-                }
+                if(item == null) item = new ItemStack(Material.AIR);
                 // Remove the inaccessible rows from the calculations
                 if(i < 9) continue;
                 if(i >= inv.getSize() - 9 && i < inv.getSize()) continue;
@@ -242,107 +222,64 @@ public class Backpack implements CommandExecutor, Listener {
         } else if(e.getView().getTitle().startsWith("Tarkastele reppua")) {
 
             String title = e.getView().getTitle();
-
             String playerName = title.substring(title.indexOf('('));
             playerName = playerName.replace(")", "");
             playerName = playerName.replace("(", "");
-
             OfflinePlayer target = Bukkit.getOfflinePlayer(playerName);
             saveInventory(target.getUniqueId(), inv.getContents());
-
             Chat.sendMessage(player, "Tallennettiin pelaajan §6" + playerName + " §7reppu!");
-
         }
-
     }
 
-    public static String getRawSavedInventory(UUID uuid) {
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
+    public String getRawSavedInventory(UUID uuid) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         return String.valueOf(PlayerData.getValue(uuid, "backpack_inventory"));
     }
 
-    public static void setRawSavedInventory(UUID uuid, String inv) {
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
+    public void setRawSavedInventory(UUID uuid, String inv) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "backpack_inventory", inv);
     }
 
-    public static ItemStack[] getSavedInventory(UUID uuid) {
-
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
-
+    public ItemStack[] getSavedInventory(UUID uuid) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         String raw = getRawSavedInventory(uuid);
-        if(raw.equalsIgnoreCase("null")) {
-            return new ItemStack[0];
-        } else {
-            try {
-                return Util.itemStackArrayFromBase64(raw);
-            } catch(IOException ex) {
-                ex.printStackTrace();
-            }
-
+        if(raw.equalsIgnoreCase("null")) return new ItemStack[0];
+        else {
+            try { return Util.itemStackArrayFromBase64(raw);
+            } catch(IOException ex) { ex.printStackTrace(); }
         }
-
         return new ItemStack[0];
-
     }
 
-    public static void saveInventory(UUID uuid, ItemStack[] inv) {
-
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
-
+    public void saveInventory(UUID uuid, ItemStack[] inv) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         String raw = Util.itemStackArrayToBase64(inv);
         setRawSavedInventory(uuid, raw);
-
     }
 
-    public static Level getLevel(UUID uuid) {
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
-
+    public Level getLevel(UUID uuid) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         return Level.valueOf(String.valueOf(PlayerData.getValue(uuid, "backpack_level")));
-
     }
 
-    public static int getLevelNumber(UUID uuid) {
-        if(getLevel(uuid) == Level.ONE) {
-            return 1;
-        } else if(getLevel(uuid) == Level.TWO) {
-            return 2;
-        } else {
-            return 3;
-        }
+    public int getLevelNumber(UUID uuid) {
+        if(getLevel(uuid) == Level.ONE) return 1;
+        else if(getLevel(uuid) == Level.TWO) return 2;
+        else return 3;
     }
 
-    public static void setLevel(UUID uuid, Level level) {
-
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
-
+    public void setLevel(UUID uuid, Level level) {
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "backpack_level", level.toString());
     }
 
-    public static void upgradeConfirm(Player player) {
-
+    public void upgradeConfirm(Player player) {
         UUID uuid = player.getUniqueId();
         Level current = getLevel(uuid);
-
         int price = 30000;
-        if(current == Level.TWO) {
-            price = 45000;
-        }
-
+        if(current == Level.TWO) price = 45000;
         final int finalPrice = price;
-
         Gui.openGui(player, "Päivitä reppusi", 27, (gui) -> {
 
             gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
@@ -353,10 +290,8 @@ public class Backpack implements CommandExecutor, Listener {
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-
-                    upgrade(clicker);
                     gui.close(player);
-
+                    upgrade(clicker);
                 }
             });
 
@@ -367,30 +302,22 @@ public class Backpack implements CommandExecutor, Listener {
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-
                     gui.close(clicker);
-
                 }
             });
-
         });
-
     }
 
-    public static void upgrade(Player player) {
+    public void upgrade(Player player) {
 
         UUID uuid = player.getUniqueId();
         Level current = getLevel(uuid);
 
         int price = 30000;
-        if(current == Level.TWO) {
-            price = 45000;
-        }
+        if(current == Level.TWO) price = 45000;
 
         if(Balance.canRemove(uuid, price)) {
-
             if(addLevel(uuid)) {
-
                 Balance.add(uuid, -price);
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
@@ -405,34 +332,24 @@ public class Backpack implements CommandExecutor, Listener {
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 Chat.sendMessage(player, Chat.Prefix.ERROR, "Reppusi on jo ylimmällä tasolla!");
             }
-
         } else {
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Päivitys maksaa §e" + price + "€§7!");
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
         }
-
-
     }
 
-    public static boolean addLevel(UUID uuid) {
+    public boolean addLevel(UUID uuid) {
 
-        if(!PlayerData.isLoaded(uuid)) {
-            PlayerData.loadNull(uuid, false);
-        }
+        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
 
         Level current = getLevel(uuid);
         Level newLevel = null;
-        if(current == Level.ONE) {
-            newLevel = Level.TWO;
-        } else if(current == Level.TWO) {
-            newLevel = Level.THREE;
-        } else {
-            return false;
-        }
+        if(current == Level.ONE) newLevel = Level.TWO;
+        else if(current == Level.TWO) newLevel = Level.THREE;
+        else return false;
 
         setLevel(uuid, newLevel);
         return true;
-
     }
 
 
@@ -446,10 +363,8 @@ public class Backpack implements CommandExecutor, Listener {
         private String displayName;
 
         Level(int size, String displayName) {
-
             this.size = size;
             this.displayName = displayName;
-
         }
 
     }

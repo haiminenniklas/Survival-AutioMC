@@ -27,12 +27,12 @@ import java.util.List;
 
 public class TradeManager implements CommandExecutor, Listener {
 
-    public static boolean ENABLED = true;
+    public boolean ENABLED = true;
 
-    private static final List<Trade> trades = new ArrayList<>();
-    public static List<Trade> getOngoingTrades() { return trades; }
+    private final List<Trade> trades = new ArrayList<>();
+    public List<Trade> getOngoingTrades() { return trades; }
 
-    public static List<Trade> getTradesForPlayer(Player player) {
+    public List<Trade> getTradesForPlayer(Player player) {
 
         final List<Trade> list = new ArrayList<>();
         for(final Trade trade : getOngoingTrades()) {
@@ -42,20 +42,16 @@ public class TradeManager implements CommandExecutor, Listener {
         return list;
     }
 
-    public static Trade getCurrentTrade(Player player) {
-        for(final Trade trade : getOngoingTrades()) {
-            if(trade.isParticipant(player) && trade.isOnGoing()) {
-                return trade;
-            }
-        }
+    public Trade getCurrentTrade(Player player) {
+        for(final Trade trade : getOngoingTrades()) { if(trade.isParticipant(player) && trade.isOnGoing()) return trade; }
         return null;
     }
 
-    public static boolean isInTrade(Player player) {
+    public boolean isInTrade(Player player) {
         return getCurrentTrade(player) != null;
     }
 
-    public static boolean hasAsked(Player sender, Player target) {
+    public boolean hasAsked(Player sender, Player target) {
         boolean hasAsked = false;
         for(Trade trade : getOngoingTrades()) {
             if(trade.getSender().getUniqueId().equals(sender.getUniqueId())
@@ -81,12 +77,9 @@ public class TradeManager implements CommandExecutor, Listener {
                 return true;
             }
 
-            if(args.length < 1) {
-                Chat.sendMessage(player, "Käytä: §a/trade <pelaaja>");
-            } else {
-
+            if(args.length < 1) Chat.sendMessage(player, "Käytä: §a/trade <pelaaja>");
+            else {
                 if(args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("hyväksy")) {
-
                     if(args.length < 2) {
 
                         // If there are no trade invitations...
@@ -102,9 +95,7 @@ public class TradeManager implements CommandExecutor, Listener {
                         if(trade == null) {
                             Chat.sendMessage(player, Chat.Prefix.ERROR, "Kävi virhe etsiessä vaihtokauppatarjouksia. Yritäthän kohta uudestaan!");
                             return true;
-                        } else {
-                            trade.acceptRequest();
-                        }
+                        } else trade.acceptRequest();
 
                     } else {
 
@@ -195,10 +186,8 @@ public class TradeManager implements CommandExecutor, Listener {
                     if(player.isOp()) {
 
                         if(args[0].equalsIgnoreCase("help")) {
-
                             Chat.sendMessage(player, "/trade (enable | disable)");
                             return true;
-
                         } else if(args[0].equalsIgnoreCase("disable")) {
                             ENABLED = false;
                             Chat.sendMessage(player, "Trade on nyt §cpois päältä§7!");
@@ -215,31 +204,25 @@ public class TradeManager implements CommandExecutor, Listener {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty...");
                         return true;
                     }
-
                     if(target.getName().equals(player.getName())) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Et voi lähettää vaihtokauppapyyntöä itsellesi!");
                         return true;
                     }
-
                     if(isInTrade(player)) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Olet jo lähettänyt pyynnön tai olet jo vaihtokaupassa toisen pelaajan kanssa!");
                         return true;
                     }
-
                     if(isInTrade(target)) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Kyseinen pelaaja on jo vaihtokaupassa tai hänellä on pyyntö hyväksymättä. Odotathan hetken.");
                         return true;
                     }
-
                     if(hasAsked(player, target)) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Olet jo lähettänyt tälle pelaajalle vaihtokauppapyynnön. Odota kunnes nykyinen pyyntö umpeutuu!");
                         return true;
                     }
-
                     // If the given target has already asked our player for a trade, accept it
-                    if(hasAsked(target, player)) {
-                        Bukkit.dispatchCommand(player, "trade accept " + target.getName());
-                    } else {
+                    if(hasAsked(target, player)) Bukkit.dispatchCommand(player, "trade accept " + target.getName());
+                    else {
                         Trade trade = new Trade(player, target);
                         trade.ask();
                     }
@@ -336,21 +319,17 @@ public class TradeManager implements CommandExecutor, Listener {
                 // We want to check if the player clicked the GUI window, not their inventory
                 if(clickedSlot < 54) e.setCancelled(true);
 
-                if(clickedSlot == 48) {
+                if(clickedSlot == 48)
                     // Player presses the accept button
                     trade.accept(player);
-                } else if(clickedSlot == 50) {
+                else if(clickedSlot == 50)
                     // Player presses the decline button
                     trade.deny();
-                } else if(clickedSlot == 49) {
-
+                else if(clickedSlot == 49) {
                     // This is the new cancel button when confirming is on.
                     if(e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR) {
-                        if(trade.getState() == Trade.TradeState.CONFIRMING) {
-                            trade.deny();
-                        }
+                        if(trade.getState() == Trade.TradeState.CONFIRMING) trade.deny();
                     }
-
                 }
             } else {
 
@@ -378,15 +357,10 @@ public class TradeManager implements CommandExecutor, Listener {
                 // item has been added.
                 Bukkit.getScheduler().runTaskLater(Main.getInstance(), (runnable) -> {
                     ItemStack item = e.getCurrentItem();
-                    if(item != null && item.getType() != Material.AIR) {
-                        trade.addItem(item, clickedSlot);
-                    }
+                    if(item != null && item.getType() != Material.AIR) trade.addItem(item, clickedSlot);
                 }, 2);
-
             }
-
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -423,9 +397,7 @@ public class TradeManager implements CommandExecutor, Listener {
         Player sender = e.getSender();
         Player target = e.getTarget();
 
-        if(!Settings.get(target.getUniqueId(), "chat_mentions")) {
-            Util.sendNotification(target, "§a§lILMOITUS! Sait uuden vaihtokauppapyynnön!", true);
-        }
+        if(!Settings.get(target.getUniqueId(), "chat_mentions")) Util.sendNotification(target, "§a§lILMOITUS! Sait uuden vaihtokauppapyynnön!", true);
 
         target.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         target.sendMessage(" ");
@@ -456,9 +428,7 @@ public class TradeManager implements CommandExecutor, Listener {
 
         Sorsa.after(60, () -> {
             // If nothing has happened to the trade request, remove it
-            if(trade.getState() == Trade.TradeState.WAITING) {
-                trade.cancel();
-            }
+            if(trade.getState() == Trade.TradeState.WAITING) trade.cancel();
         });
 
     }

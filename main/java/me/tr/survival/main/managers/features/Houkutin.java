@@ -34,11 +34,8 @@ public class Houkutin implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if(args.length < 1) {
-            if(sender instanceof Player) {
-                panel((Player) sender);
-            }
+            if(sender instanceof Player) panel((Player) sender);
         } else {
-
             if(sender.isOp()) {
                 if(args[0].equals("deactivate")) {
                     deactivate();
@@ -54,25 +51,22 @@ public class Houkutin implements CommandExecutor {
                     sender.sendMessage("Houkutin on nyt §apäällä§7!");
                 }
             }
-
         }
-
         return true;
     }
 
-
     // Options
 
-    private static final long durationMillis = 1000 * 60 * 60;
-    private static final long durationMinutes = durationMillis / 1000 / 60;
+    private final long durationMillis = 1000 * 60 * 60;
+    private final long durationMinutes = durationMillis / 1000 / 60;
 
     // Variables
 
-    private static UUID activator;
-    private static long started;
-    private static EntityType entityType;
+    private UUID activator;
+    private long started;
+    private EntityType entityType;
 
-    public static void panel(Player player) {
+    public void panel(Player player) {
 
         Gui.openGui(player, "Houkutin", 27, (gui) -> {
 
@@ -98,10 +92,9 @@ public class Houkutin implements CommandExecutor {
 
             } else {
                 if(ENABLED) {
-                    lore.add(" §a§lKlikkaa aktivoidaksesi");
-                } else {
-                    lore.add(" §cEi käytettävissä...");
-                }
+                    if(Balance.canRemove(player.getUniqueId(), 10000)) lore.add(" §a§lKlikkaa aktivoidaksesi");
+                    else lore.add(" §cEi varaa...");
+                } else lore.add(" §cEi käytettävissä...");
             }
             lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
@@ -122,14 +115,8 @@ public class Houkutin implements CommandExecutor {
                             clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                             selectGui(clicker);
 
-                        } else {
-                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                        }
-
-                    } else {
-                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                    }
-
+                        } else clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    } else clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 }
             });
 
@@ -137,7 +124,7 @@ public class Houkutin implements CommandExecutor {
 
     }
 
-    private static void selectGui(Player player) {
+    private void selectGui(Player player) {
 
         Gui.openGui(player, "Houkutin - Valitse Eläin", 27, (gui) -> {
 
@@ -205,10 +192,7 @@ public class Houkutin implements CommandExecutor {
 
                             }
 
-                        } else {
-                            Chat.sendMessage(player, Chat.Prefix.ERROR, "Houkutin on jo aktivoitu!");
-                        }
-
+                        } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Houkutin on jo aktivoitu!");
                     }
                 });
 
@@ -221,7 +205,7 @@ public class Houkutin implements CommandExecutor {
 
     }
 
-    private static void activate() {
+    private void activate() {
 
         if(!ENABLED) return;
 
@@ -235,14 +219,14 @@ public class Houkutin implements CommandExecutor {
 
     }
 
-    public static void deactivate() {
+    public void deactivate() {
         activator = null;
         entityType = null;
         Block block = Bukkit.getWorld("world").getBlockAt(-16, 59, -33);
         block.setType(Material.EMERALD_BLOCK);
     }
 
-    public static void activateManager() {
+    public void activateManager() {
 
          new BukkitRunnable() {
 
@@ -274,7 +258,7 @@ public class Houkutin implements CommandExecutor {
 
     }
 
-    private static String translateEntityType(EntityType type) {
+    private String translateEntityType(EntityType type) {
         switch(type) {
             case COW:
                 return "Lehmä";
@@ -291,7 +275,7 @@ public class Houkutin implements CommandExecutor {
         return "";
     }
 
-    private static double getPrice(EntityType type) {
+    private double getPrice(EntityType type) {
         switch (type) {
             case COW:
                 return 10000;
@@ -307,7 +291,7 @@ public class Houkutin implements CommandExecutor {
         return 10000;
     }
 
-    private static EntityType[] allowedEntityTypes() {
+    private EntityType[] allowedEntityTypes() {
         EntityType[] entities = new EntityType[] {
                 EntityType.COW,
                 EntityType.PIG,
@@ -318,7 +302,7 @@ public class Houkutin implements CommandExecutor {
         return entities;
     }
 
-    private static Material getSpawnEggMaterial(EntityType type) {
+    private Material getSpawnEggMaterial(EntityType type) {
         switch (type) {
             case COW:
                 return Material.COW_SPAWN_EGG;
@@ -334,7 +318,7 @@ public class Houkutin implements CommandExecutor {
         return Material.COW_SPAWN_EGG;
     }
 
-    public static long getTimeLeftMillis() {
+    private long getTimeLeftMillis() {
         if(activator != null && entityType != null) {
             long now = System.currentTimeMillis();
             long shouldEnd = started + durationMillis;
@@ -343,25 +327,22 @@ public class Houkutin implements CommandExecutor {
         return 0L;
     }
 
-    private static String getTimeLeft() {
+    private String getTimeLeft() {
         long timeLeft = getTimeLeftMillis();
         long minutes = timeLeft / 1000 / 60;
-        if(minutes >= 1) {
-            return minutes + "min";
-        } else {
+        if(minutes >= 1) return minutes + "min";
+        else {
             long seconds = timeLeft / 1000;
             return seconds + "s";
         }
     }
 
-    private static boolean isActivated() {
+    private boolean isActivated() {
         return getTimeLeftMillis() >= 1L;
     }
 
-    private static OfflinePlayer getActivator() {
-        if(isActivated()) {
-            return Bukkit.getOfflinePlayer(activator);
-        }
+    private OfflinePlayer getActivator() {
+        if(isActivated()) return Bukkit.getOfflinePlayer(activator);
         return null;
     }
 

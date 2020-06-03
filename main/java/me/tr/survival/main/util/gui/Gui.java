@@ -18,7 +18,7 @@ public class Gui implements Listener {
 
     private HashMap<Integer, Inventory> pages;
     private HashMap<Integer, HashMap<Integer, ItemStack>> items;
-    public static List<Gui> guis = new ArrayList<>();
+    public static final List<Gui> guis = new ArrayList<>();
     private HashMap<Player, Integer> playerPages = new HashMap<>();
     private final Set<Button> buttons;
     private String title;
@@ -31,9 +31,8 @@ public class Gui implements Listener {
 
     public Gui(String title, int size){
 
-        if(!(guis.contains(this))){
-            guis.add(this);
-        }
+        if(!(guis.contains(this))) guis.add(this);
+
         this.pages = new HashMap<>();
         this.items = new HashMap<>();
         this.buttons = new HashSet<>();
@@ -47,95 +46,51 @@ public class Gui implements Listener {
         init();
     }
 
-    public boolean isPartiallyTouchable() {
-        return this.partiallyTouchable;
-    }
+    public boolean isPartiallyTouchable() { return this.partiallyTouchable; }
 
-    public void setPartiallyTouchable(boolean value) {
-        this.partiallyTouchable = value;
-    }
+    public void setPartiallyTouchable(boolean value) { this.partiallyTouchable = value; }
 
-    public int[] getAllowedSlots() {
-        return this.allowedSlots;
-    }
+    public int[] getAllowedSlots() { return this.allowedSlots; }
 
-    public void setAllowedSlots(int... slots) {
-        this.allowedSlots = slots;
-    }
+    public void setAllowedSlots(int... slots) { this.allowedSlots = slots; }
 
     public boolean clickedAllowedSlot(int clickedSlot) {
-
         if(this.allowedSlots.length < 1) return false;
-
         for(int i = 0; i < this.allowedSlots.length; i++) {
             int allowedSlot = this.allowedSlots[i];
-            if(clickedSlot == allowedSlot) {
-                return true;
-            }
+            if(clickedSlot == allowedSlot) return true;
         }
-
         return false;
-
     }
 
-    public HashMap<Integer, Inventory> getPages() {
-        return pages;
-    }
+    public HashMap<Integer, Inventory> getPages() { return pages; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() { return title; }
 
-    public int getSize() {
-        return size;
-    }
+    public int getSize() { return size; }
 
-    public void init(){
-        createPage(false);
-    }
+    public void init(){ createPage(false); }
 
     public ItemStack getItem(int pos) {
-
         HashMap<Integer, ItemStack> items = this.items.get(1);
-
-        if(items != null) {
-            if(!items.isEmpty() && items.containsKey(pos)) {
-                return items.get(pos);
-            }
-        }
-
+        if(items != null) if(!items.isEmpty() && items.containsKey(pos)) return items.get(pos);
         return null;
-
     }
 
     public int nextEmptySlot() {
         ItemStack[] items = getPages().get(1).getContents();
-
         for(int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
             if(item == null) return i;
         }
-
         return 0;
-
     }
 
-    public void addButton(Button button){
-        if(button != null) {
-            if(button.item != null) {
-                buttons.add(button);
-            }
-        }
-        //button.inv.setItem(button.pos, button.item);
-    }
+    public void addButton(Button button){ if(button != null) if(button.item != null) buttons.add(button); }
 
     public Inventory createPage(boolean addPageButtons){
-
-        if(getPages() == null || getPages().isEmpty()){
-            return createPage(1, false);
-        } else {
-            return createPage(getPages().size() + 1, addPageButtons);
-        }
+        if(getPages() == null || getPages().isEmpty()) return createPage(1, false);
+        else return createPage(getPages().size() + 1, addPageButtons);
     }
 
     private Inventory createPage(int page, boolean addPageButtons){
@@ -149,29 +104,14 @@ public class Gui implements Listener {
         return inv;
     }
 
+    @Deprecated
     public void hardRefresh(Player player) {
         this.close(player);
         this.open(player);
     }
 
-    public void refresh(Player player) {
-        /*HashMap<Integer, ItemStack> items = this.items.get(1);
-        if(!this.items.isEmpty()) {
-            for(Map.Entry<Integer, ItemStack> e : items.entrySet()) {
-                inv.setItem(e.getKey(), e.getValue());
-            }
-        }
-
-        if(!this.buttons.isEmpty()) {
-            for(Button b : this.getButtons()) {
-                inv.setItem(b.pos, b.item);
-            }
-        }
-
-        playerPages.put(player, 1);
-        player.updateInventory(); */
-        this.hardRefresh(player);
-    }
+    @Deprecated
+    public void refresh(Player player) { this.hardRefresh(player); }
 
     public void addPageButtons(Inventory inv){
 
@@ -200,23 +140,17 @@ public class Gui implements Listener {
     }
 
     public void addPageButtons(int page){
-        if(getPages() == null || getPages().isEmpty() || getPages().get(page) == null){
-            throw new IllegalArgumentException("You must have at least 1 page in your gui!");
-        }
+        if(getPages() == null || getPages().isEmpty() || getPages().get(page) == null) throw new IllegalArgumentException("You must have at least 1 page in your gui!");
         Inventory inv = getPages().get(page);
         addPageButtons(inv);
     }
 
     public void removePage(int page){
-        if(getPages() == null || getPages().isEmpty() || getPages().get(page) == null){
-            throw new IllegalArgumentException("You don't have any pages in your inventory or the page you're removing doesn't exist!");
-        }
+        if(getPages() == null || getPages().isEmpty() || getPages().get(page) == null) throw new IllegalArgumentException("You don't have any pages in your inventory or the page you're removing doesn't exist!");
         getPages().remove(page);
     }
 
-    public void removeAllPages(){
-        getPages().clear();
-    }
+    public void removeAllPages(){ getPages().clear(); }
 
     public void open(Player player){
 
@@ -260,10 +194,7 @@ public class Gui implements Listener {
 
     public void addItem(int page, ItemStack item, int pos) {
 
-        if(getPages() == null || getPages().isEmpty()){
-            throw new IllegalArgumentException("You must have at least 1 page in your gui!");
-        }
-
+        if(getPages() == null || getPages().isEmpty()) throw new IllegalArgumentException("You must have at least 1 page in your gui!");
 
         if(!this.items.containsKey(page)){
             HashMap<Integer, HashMap<Integer, ItemStack>> list = new HashMap<>();
@@ -273,9 +204,8 @@ public class Gui implements Listener {
             this.items.put(page, items);
         } else {
             HashMap<Integer, ItemStack> items = this.items.get(page);
-            if(items.containsKey(pos)) {
-                items.replace(pos, item);
-            } else items.put(pos, item);
+            if(items.containsKey(pos)) items.replace(pos, item);
+            else items.put(pos, item);
             this.items.replace(page, items);
         }
 
@@ -283,9 +213,7 @@ public class Gui implements Listener {
 
     public Inventory openPage(Player player, int page){
 
-        if(getPages() == null || getPages().isEmpty() || getPages().get(page) == null){
-            throw new IllegalArgumentException("You must have at least 1 page in your gui!");
-        }
+        if(getPages() == null || getPages().isEmpty() || getPages().get(page) == null) throw new IllegalArgumentException("You must have at least 1 page in your gui!");
 
         Inventory inv = getPages().get(page);
         player.openInventory(inv);
@@ -296,54 +224,39 @@ public class Gui implements Listener {
 
     public void nextPage(Player player){
 
-        if(getPages() == null || getPages().isEmpty()){
-            throw new IllegalArgumentException("You must have at least 1 page in your gui!");
-        }
+        if(getPages() == null || getPages().isEmpty()) throw new IllegalArgumentException("You must have at least 1 page in your gui!");
 
         if(playerPages.containsKey(player)){
-
             int currentPage = playerPages.get(player);
             if(getPages().size() >= currentPage + 1){
                 Inventory nextPage = getPages().get(currentPage + 1);
                 player.openInventory(nextPage);
                 playerPages.put(player, currentPage + 1);
             }
-
         }
-
     }
 
     public void previousPage(Player player){
-        if(getPages() == null || getPages().isEmpty()){
-            throw new IllegalArgumentException("You must have at least 1 page in your gui!");
-        }
+        if(getPages() == null || getPages().isEmpty()) throw new IllegalArgumentException("You must have at least 1 page in your gui!");
 
         if(playerPages.containsKey(player)){
-
             int currentPage = playerPages.get(player);
             if(currentPage - 1 >= 1){
                 Inventory nextPage = getPages().get(currentPage - 1);
                 player.openInventory(nextPage);
                 playerPages.put(player, currentPage - 1);
             }
-
         }
     }
 
     public Button getButton(int pos) {
-        for(Button b : getButtons()) {
-            if(b.pos == pos) return b;
-        }
+        for(Button b : getButtons()) { if(b.pos == pos) return b; }
         return null;
     }
 
     public int getPage(Player player){
-        if(playerPages.containsKey(player)){
-            return playerPages.get(player);
-        }
-        else {
-            return 0;
-        }
+        if(playerPages.containsKey(player)) return playerPages.get(player);
+        else return 0;
     }
 
     public void close(Player player) { close(player, true); }
@@ -351,15 +264,12 @@ public class Gui implements Listener {
     public void close(Player player, boolean closeInventory) {
         getPlayerPages().remove(player);
         if(closeInventory) player.closeInventory();
+        guis.remove(this); // Don't leave the gui hanging around...
     }
 
-    public Set<Button> getButtons(){
-        return buttons;
-    }
+    public Set<Button> getButtons() { return buttons; }
 
-    public HashMap<Player, Integer> getPlayerPages(){
-        return playerPages;
-    }
+    public HashMap<Player, Integer> getPlayerPages(){ return playerPages; }
 
     public static void closeCurrent(Player player) {
         Gui gui = getGui(player);
@@ -367,9 +277,7 @@ public class Gui implements Listener {
     }
 
     public static Gui getGui(Player player){
-        for(Gui gui : Gui.guis){
-            if(gui.getPlayerPages().containsKey(player)) return gui;
-        }
+        for(Gui gui : Gui.guis){ if(gui.getPlayerPages().containsKey(player)) return gui; }
         return null;
     }
 

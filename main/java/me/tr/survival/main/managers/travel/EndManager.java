@@ -42,12 +42,9 @@ public class EndManager implements CommandExecutor {
         if(sender instanceof Player) {
 
             Player player = (Player) sender;
-            if(args.length < 1) {
-                panel(player);
-            } else {
-
+            if(args.length < 1) panel(player);
+            else {
                 if(args[0].equalsIgnoreCase("kutsu") || args[0].equalsIgnoreCase("luota")  || args[0].equalsIgnoreCase("lisää")) {
-
                     if(args.length == 2) {
 
                         Player target = Bukkit.getPlayer(args[1]);
@@ -63,9 +60,7 @@ public class EndManager implements CommandExecutor {
 
                         invite(player, target);
 
-                    } else {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytä §c/end kutsu <pelaaja>§7!");
-                    }
+                    } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytä §c/end kutsu <pelaaja>§7!");
 
                 } else if(args[0].equalsIgnoreCase("poista")) {
                     if(args.length == 2) {
@@ -81,22 +76,16 @@ public class EndManager implements CommandExecutor {
                             return true;
                         }
 
-
                         remove(player, target);
 
-                    } else {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytä §c/end poista <pelaaja>§7!");
-                    }
+                    } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytä §c/end poista <pelaaja>§7!");
+
                 } else if(args[0].equalsIgnoreCase("forcestop")) {
-                    if(player.isOp()) {
-                        end();
-                    }
+                    if(player.isOp()) end();
                 } else if(args[0].equalsIgnoreCase("forcetp")) {
 
                     if(args.length < 2) {
-
                         teleport(player, true);
-
                     } else {
                         Player target = Bukkit.getPlayer(args[1]);
                         if(target == null) {
@@ -128,23 +117,18 @@ public class EndManager implements CommandExecutor {
                         Chat.sendMessage(player, "§c/ääri forcestop");
                         Chat.sendMessage(player, "§c/ääri forcetp [pelaaja]");
                         Chat.sendMessage(player, "§c/ääri (disable / enable)");
-                    } else {
-                        Bukkit.dispatchCommand(player, "apua matkustaminen");
-                    }
+                    } else Bukkit.dispatchCommand(player, "apua matkustaminen");
                 }
-
             }
-
         }
-
         return true;
     }
 
     // File Management
-    private static File endFile;
-    private static FileConfiguration endConfig;
+    private File endFile;
+    private FileConfiguration endConfig;
 
-    public static void createEndConfig() {
+    public void createEndConfig() {
         endFile = new File(Main.getInstance().getDataFolder(), "end.yml");
         if (!endFile.exists()) {
             endFile.getParentFile().mkdirs();
@@ -154,7 +138,7 @@ public class EndManager implements CommandExecutor {
         reloadEndConfig();
     }
 
-    public static void saveEndConfig() {
+    public void saveEndConfig() {
 
         if(isOccupied()) {
             getEndConfig().set("running", true);
@@ -162,47 +146,37 @@ public class EndManager implements CommandExecutor {
             getEndConfig().set("started", started);
             getEndConfig().set("enabled", enabled);
             List<String> uuids = new ArrayList<>();
-            for(UUID uuid : allowedPlayers) {
-                uuids.add(uuid.toString());
-            }
+            for(UUID uuid : allowedPlayers) { uuids.add(uuid.toString()); }
             getEndConfig().set("allowed", uuids);
-        } else {
-            getEndConfig().set("running", false);
-        }
+        } else getEndConfig().set("running", false);
 
-        try {
-            endConfig.save(endFile);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+        try { endConfig.save(endFile);
+        } catch(IOException e) { e.printStackTrace(); }
     }
 
-    public static void reloadEndConfig() {
-        try {
-            endConfig.load(endFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
+    public void reloadEndConfig() {
+        try { endConfig.load(endFile);
+        } catch (IOException | InvalidConfigurationException e) { e.printStackTrace(); }
     }
 
-    public static FileConfiguration getEndConfig() {
+    public FileConfiguration getEndConfig() {
         return endConfig;
     }
 
     //SETTINGS
-    private static final long durationMillis = 1000 * 60 * 60 * 3;
-    private static final long durationMinutes = durationMillis / 1000 / 60;
-    private static final int price = 250000;
+    private final long durationMillis = 1000 * 60 * 60 * 3;
+    private final long durationMinutes = durationMillis / 1000 / 60;
+    private final int price = 250000;
 
-    private static List<UUID> allowedPlayers = new ArrayList<>();
-    private static UUID holder = null;
+    private List<UUID> allowedPlayers = new ArrayList<>();
+    private UUID holder = null;
 
-    private static long started = 0L;
-    private static boolean enabled = true;
+    private long started = 0L;
+    private boolean enabled = true;
 
-    private static final int MAX_PLAYERS = 3;
+    private final int MAX_PLAYERS = 3;
 
-    public static void panel(final Player player) {
+    public void panel(final Player player) {
         Gui.openGui(player, "Matkusta Endiin", 27, (gui) -> {
 
             int[] purpleGlass = new int[] { 11,12, 14,15  };
@@ -240,11 +214,9 @@ public class EndManager implements CommandExecutor {
                 lore.add(" §7Tila: §a§lVAPAA");
                 lore.add(" §7Hinta: §a§l" + Util.formatDecimals(price) + "€");
                 lore.add(" ");
-                if(Balance.canRemove(player.getUniqueId(), price)) {
-                    lore.add(" §aKlikkaa aktivoidaksesi!");
-                } else {
-                    lore.add(" §cSinulla ei ole varaa");
-                }
+                if(Balance.canRemove(player.getUniqueId(), price)) lore.add(" §aKlikkaa aktivoidaksesi!");
+                else lore.add(" §cSinulla ei ole varaa");
+
             }
 
             lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -278,13 +250,11 @@ public class EndManager implements CommandExecutor {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    TravelManager.gui(clicker);
+                    Main.getTravelManager().gui(clicker);
                 }
             });
 
-            for(int slot : purpleGlass) {
-                gui.addItem(1, ItemUtil.makeItem(Material.PURPLE_STAINED_GLASS_PANE), slot);
-            }
+            for(int slot : purpleGlass) { gui.addItem(1, ItemUtil.makeItem(Material.PURPLE_STAINED_GLASS_PANE), slot); }
 
             for(int i = 0; i < 27; i++) {
                 if(gui.getItem(i) != null) continue;
@@ -295,25 +265,21 @@ public class EndManager implements CommandExecutor {
         });
     }
 
-    public static void loadPreviousData() {
+    public void loadPreviousData() {
         if(getEndConfig().get("running") != null && getEndConfig().getBoolean("running")) {
             started = getEndConfig().getLong("started");
             holder = UUID.fromString(getEndConfig().getString("holder"));
             allowedPlayers = new ArrayList<>();
-            for(String sUuid : getEndConfig().getStringList("allowed")) {
-                allowedPlayers.add(UUID.fromString(sUuid));
-            }
+            for(String sUuid : getEndConfig().getStringList("allowed")) { allowedPlayers.add(UUID.fromString(sUuid)); }
         }
 
-        if(getEndConfig().get("enabled") != null) {
-            enabled = getEndConfig().getBoolean("enabled");
-        } else {
-            enabled = true;
-        }
+        if(getEndConfig().get("enabled") != null) enabled = getEndConfig().getBoolean("enabled");
+        else enabled = true;
+
 
     }
 
-    public static void start(Player player) {
+    public void start(Player player) {
 
         if(!enabled) {
             Chat.sendMessage(player, "End ei ole käytettävissä tällä hetkellä... Odotathan, kunnes ylläpito pistää sen takaisin päälle!");
@@ -366,7 +332,7 @@ public class EndManager implements CommandExecutor {
 
     }
 
-    public static void invite(Player invitor, Player target) {
+    public void invite(Player invitor, Player target) {
 
         if(isOccupied()) {
 
@@ -389,13 +355,11 @@ public class EndManager implements CommandExecutor {
             Chat.sendMessage(invitor, "Pelaaja §a" + target.getName() + " §7on nyt sallittu kulkemaan §5Endiin§7! Voit poistaa pääsyn komennolla §a/ääri poista " + target.getName() + "§7!");
             Chat.sendMessage(target, "Pääset nyt kulkemaan §5Endiin§7! Pääsyn myönsi pelaaja §a" + invitor.getName() + "§7!");
 
-        } else {
-            Chat.sendMessage(invitor, Chat.Prefix.ERROR, "End ei ole aktivoitu");
-        }
+        } else Chat.sendMessage(invitor, Chat.Prefix.ERROR, "End ei ole aktivoitu");
 
     }
 
-    public static void remove(Player invitor, Player target) {
+    public void remove(Player invitor, Player target) {
 
         if(isOccupied()) {
 
@@ -413,17 +377,13 @@ public class EndManager implements CommandExecutor {
             Chat.sendMessage(invitor, "Pelaajalta §a" + target.getName() + " §7on nyt evätty pääsy kulkemaan §5Endiin§7! Voit antaa pääsyn uudelleen komennolla §a/ääri luota " + target.getName() + "§7!");
             Chat.sendMessage(target, "Pääsysi §5Endiin §7on evätty! Pääsyn poisti pelaaja §a" + invitor.getName() + "§7!");
 
-        } else {
-            Chat.sendMessage(invitor, Chat.Prefix.ERROR, "End ei ole aktivoitu");
-        }
+        } else Chat.sendMessage(invitor, Chat.Prefix.ERROR, "End ei ole aktivoitu");
 
     }
 
-    public static boolean isInEnd(Player player) {
-        return player.getWorld().getName().equalsIgnoreCase("world_the_end");
-    }
+    public boolean isInEnd(Player player) { return player.getWorld().getName().equalsIgnoreCase("world_the_end"); }
 
-    public static void teleport(Player player, boolean force) {
+    public void teleport(Player player, boolean force) {
 
         if(!force && !enabled) {
             Chat.sendMessage(player, "End ei ole käytettävissä tällä hetkellä... Odotathan, kunnes ylläpito pistää sen takaisin päälle!");
@@ -438,16 +398,13 @@ public class EndManager implements CommandExecutor {
         Chat.sendMessage(player, "Sinut viedään §5Endiin §c3s §7kuluttua...");
         Sorsa.after(3, () -> player.teleport(Bukkit.getWorld("world_the_end").getSpawnLocation()));
 
-
     }
 
-    public static void startManager() {
-        Sorsa.everyAsync(5, () -> {
-            if(!canContinue()) Sorsa.task(EndManager::end);
-        });
+    public void startManager() {
+        Sorsa.everyAsync(5, () -> { if(!canContinue()) Sorsa.task(this::end); });
     }
 
-    private static boolean canContinue() {
+    private boolean canContinue() {
 
         if(!enabled) return false;
 
@@ -458,12 +415,12 @@ public class EndManager implements CommandExecutor {
         return false;
     }
 
-    private static void returnFees() {
+    private void returnFees() {
         if(isOccupied()) {
             // If end hadn't been up for more than 20min, give the money back
             if(System.currentTimeMillis() - started < 1000 * 60 * 20) {
                 if(holder != null) {
-                    Balance.add(holder, 500000);
+                    Balance.add(holder, price);
                     Player h = Bukkit.getPlayer(holder);
                     if(h != null && h.isOnline()) {
                         if(!Settings.get(holder, "chat_mentions")) h.playSound(h.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
@@ -474,7 +431,7 @@ public class EndManager implements CommandExecutor {
         }
     }
 
-    public static void end() {
+    public void end() {
 
         if(!isOccupied()) return;
 
@@ -526,22 +483,19 @@ public class EndManager implements CommandExecutor {
         new BukkitRunnable() {
             @Override
             public void run() {
-                try {
-                    FileUtils.deleteDirectory(worldFolder);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                try { FileUtils.deleteDirectory(worldFolder);
+                } catch (IOException e) { e.printStackTrace(); }
             }
         }.runTaskLater(Main.getInstance(), 20);
 
     }
 
-    public static OfflinePlayer getHolderPlayer() {
+    public OfflinePlayer getHolderPlayer() {
         if(holder == null) return null;
         return Bukkit.getOfflinePlayer(holder);
     }
 
-    public static long getTimeLeftMillis() {
+    public long getTimeLeftMillis() {
         if(isOccupied()) {
             long shouldStop = started + durationMillis;
             return shouldStop - System.currentTimeMillis();
@@ -549,7 +503,7 @@ public class EndManager implements CommandExecutor {
         return 0L;
     }
 
-    public static String getTimeLeft() {
+    public String getTimeLeft() {
         if(getTimeLeftMillis() >= 1) {
             long millis = getTimeLeftMillis();
             long second = (millis / (1000)) % 60;
@@ -560,7 +514,7 @@ public class EndManager implements CommandExecutor {
         return "§cEi käynnissä";
     }
 
-    public static boolean isOccupied() {
+    public boolean isOccupied() {
         return holder != null && started != 0L;
     }
 

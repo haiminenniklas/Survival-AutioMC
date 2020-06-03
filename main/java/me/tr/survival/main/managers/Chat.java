@@ -1,5 +1,6 @@
 package me.tr.survival.main.managers;
 
+import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.Util;
@@ -24,9 +25,9 @@ import java.util.UUID;
 
 public class Chat implements Listener {
 
-    private static HashMap<String, Object> settings = new HashMap<>();
-    private static HashMap<UUID, Long> sentMessages = new HashMap<>();
-    private static HashMap<UUID, String> lastMessage = new HashMap<>();
+    private static final HashMap<String, Object> settings = new HashMap<>();
+    private static final HashMap<UUID, Long> sentMessages = new HashMap<>();
+    private static final HashMap<UUID, String> lastMessage = new HashMap<>();
 
     public static void init() {
         Chat.settings.put("mute", false);
@@ -37,24 +38,16 @@ public class Chat implements Listener {
         return Prefix.DEFAULT.text;
     }
 
-    public static void sendMessage(Player player, String message) {
-        player.sendMessage(Chat.getPrefix() + " §7" + ChatColor.translateAlternateColorCodes('&', message));
-    }
+    public static void sendMessage(Player player, String message) { player.sendMessage(Chat.getPrefix() + " §7" + ChatColor.translateAlternateColorCodes('&', message)); }
 
-    public static void sendMessage(Player player, Chat.Prefix prefix, String message) {
-
-        player.sendMessage(prefix.text + " §7" + ChatColor.translateAlternateColorCodes('&', message));
-
-    }
+    public static void sendMessage(Player player, Chat.Prefix prefix, String message) { player.sendMessage(prefix.text + " §7" + ChatColor.translateAlternateColorCodes('&', message)); }
 
     public static void sendMessage(String message, Player... players) {
         sendMessage(message, Prefix.DEFAULT, players);
     }
 
     public static void sendMessage(String message, Chat.Prefix prefix,  Player... players) {
-        for(Player player : players) {
-            sendMessage(player, prefix, message);
-        }
+        for(Player player : players) { sendMessage(player, prefix, message); }
     }
 
     public static void sendCenteredMessage(Player player, String message) {
@@ -80,8 +73,7 @@ public class Chat implements Listener {
                 if (c == 'l' || c == 'L') {
                     isBold = true;
                     continue;
-                } else
-                    isBold = false;
+                } else isBold = false;
             } else if (c == ' ')
                 lastSpaceIndex = charIndex;
             else {
@@ -106,19 +98,16 @@ public class Chat implements Listener {
             compensated += spaceLength;
         }
         player.sendMessage(sb.toString() + message);
-        if (toSendAfter != null)
-            sendCenteredMessage(player, toSendAfter);
+        if (toSendAfter != null) sendCenteredMessage(player, toSendAfter);
     }
 
     @Deprecated
     public static String getFormat(Player player, String message) {
-
         String format = ChatColor.translateAlternateColorCodes('&', Sorsa.getConfig().getString("chat.format"));
         format = ChatColor.translateAlternateColorCodes('&',
                 format.replaceAll("%rank%", "&" + Ranks.getRankColor(Ranks.getRank(player.getUniqueId())).getChar()));
         format = format.replaceAll("%name%", player.getName());
         format = format.replaceAll("%message%", message);
-
         return format;
 
     }
@@ -129,7 +118,6 @@ public class Chat implements Listener {
         ERROR(ChatColor.translateAlternateColorCodes('&', Sorsa.getConfig().getString("chat.prefixes.error")).trim()),
         AFK(ChatColor.translateAlternateColorCodes('&', Sorsa.getConfig().getString("chat.prefixes.afk")).trim()),
         DEBUG(ChatColor.translateAlternateColorCodes('&', Sorsa.getConfig().getString("chat.prefixes.debug")).trim());
-
 
         public String text;
 
@@ -142,9 +130,7 @@ public class Chat implements Listener {
 
         Gui gui = new Gui("Chat-asetukset", 27);
 
-        if(!Ranks.isStaff(opener.getUniqueId())) {
-            return;
-        }
+        if(!Ranks.isStaff(opener.getUniqueId())) return;
 
         String isSilenced = ((boolean) Chat.settings.get("mute")) ? "§cHiljennetty" : "§aAvoin";
 
@@ -158,12 +144,9 @@ public class Chat implements Listener {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-
                 Chat.settings.put("mute",  !(boolean)Chat.settings.get("mute"));
                 String isSilenced = ((boolean) Chat.settings.get("mute")) ? "§c§lHILJENNETTY" : "§a§lAVOIN";
-
                 Chat.sendMessage(clicker, "Chatin tila: " + isSilenced);
-
                 panel(opener);
 
             }
@@ -211,7 +194,7 @@ public class Chat implements Listener {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                StaffManager.panel(clicker);
+                Main.getStaffManager().panel(clicker);
             }
         });
 
@@ -222,12 +205,7 @@ public class Chat implements Listener {
     public static void clear() {
 
         for(Player online : Bukkit.getOnlinePlayers()) {
-            if(!Ranks.isStaff(online.getUniqueId())) {
-                for(int i = 0; i < 200; i++) {
-                    online.sendMessage(" ");
-                }
-            }
-
+            if(!Ranks.isStaff(online.getUniqueId())) for(int i = 0; i < 200; i++) { online.sendMessage(" "); }
         }
 
         Bukkit.broadcastMessage("§c§lChat tyhjennetty!");
@@ -250,9 +228,7 @@ public class Chat implements Listener {
         Set<Player> recipients = e.getRecipients();
 
         for(Player r : recipients) {
-            if(!Settings.get(r.getUniqueId(), "chat") && !r.getName().equalsIgnoreCase(player.getName())) {
-                e.getRecipients().remove(r);
-            }
+            if(!Settings.get(r.getUniqueId(), "chat") && !r.getName().equalsIgnoreCase(player.getName())) e.getRecipients().remove(r);
         }
 
         if((boolean) Chat.settings.get("mute")) {
@@ -313,11 +289,8 @@ public class Chat implements Listener {
 
                 int startIndex = msg.toLowerCase().indexOf(online.getName().toLowerCase());
 
-                if(startIndex > 0 && msg.toLowerCase().charAt(startIndex - 1) == '@') {
-                    msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a" + online.getName() + "§r");
-                } else {
-                    msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a@" + online.getName() + "§r");
-                }
+                if(startIndex > 0 && msg.toLowerCase().charAt(startIndex - 1) == '@') msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a" + online.getName() + "§r");
+                else msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a@" + online.getName() + "§r");
 
                 Util.sendNotification(online, "§a" + player.getName() + " §7mainitsi sinut Chatissa!", !Settings.get(online.getUniqueId(), "chat_mentions"));
 
@@ -325,21 +298,7 @@ public class Chat implements Listener {
         }
 
         e.setMessage(msg);
-
-        if(Ranks.isStaff(uuid)) {
-            e.setFormat((ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + player.getName()).trim() + ChatColor.translateAlternateColorCodes('&', "&r: %2$s")));
-        } else {
-            e.setFormat((ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + player.getName()).trim() + "§r: %2$s"));
-        }
-
-        /*if(e.getMessage().startsWith("#") && Ranks.isStaff(uuid)) {
-            e.setCancelled(true);
-            for(Player online : Bukkit.getOnlinePlayers()) {
-                if(Ranks.isStaff(online.getUniqueId())) {
-                    online.sendMessage("§7§l(§6§lYLLÄPITO§7§l) §6" + player.getName() + " §7» §f" + e.getMessage().substring(1));
-                }
-            }
-        } */
+        e.setFormat((ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + player.getName()).trim() + "§r: %2$s"));
 
     }
 

@@ -19,6 +19,7 @@ public class RTP {
 
         if(!player.getWorld().getName().equals("world")) {
             Chat.sendMessage(player, Chat.Prefix.ERROR, "RTP toimii vain tavallisessa maailmassa!");
+            return false;
         }
 
         if(cooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < cooldown.get(player.getUniqueId()) ) {
@@ -41,25 +42,18 @@ public class RTP {
         Sorsa.async(() -> {
             World world = Bukkit.getWorld("world");
             Location loc = randomLocation(player.getWorld());
-
             if(world != null && loc != null){
                 Sorsa.afterAsync(1, () -> {
-
                     double y = world.getHighestBlockYAt(loc.getBlockX(), loc.getBlockZ());
                     final Location newLoc = new Location(world, loc.getX(), y + 1, loc.getZ());
 
                     Sorsa.task(() -> player.teleport(newLoc));
                     Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
 
-                    if(!player.isOp()) {
-                        cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));
-                    }
+                    if(!player.isOp() && !Main.getStaffManager().hasStaffMode(player)) cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));
 
                 });
-            } else {
-                Chat.sendMessage(player, Chat.Prefix.ERROR, "Teleporttaus epäonnistui, yritä pian uudestaan!");
-            }
-
+            } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Teleporttaus epäonnistui, yritä pian uudestaan!");
         });
 
         return true;
@@ -70,27 +64,18 @@ public class RTP {
         int range = Main.getInstance().getConfig().getInt("random-tp.range");
         int newX = r.nextInt(range), newZ = r.nextInt(range);
 
-        if(newX >= 14000) {
+        if(newX >= 14000) newX = 14000;
+        else if(newX <= -14000) newX = -14000;
 
-            newX = 14000;
 
-        } else if(newX <= -14000) {
-            newX = -14000;
-        }
-
-        if(newZ >= 14000) {
-            newZ = 14000;
-        } else if(newZ <= -14000) {
-            newZ = -14000;
-        }
+        if(newZ >= 14000) newZ = 14000;
+        else if(newZ <= -14000) newZ = -14000;
 
         int newY = world.getHighestBlockYAt(newX, newZ);
         Location loc = new Location(world, newX, newY, newZ);
 
         Block block = loc.clone().add(0d, -1d, 0d).getBlock();
-        if(block.isLiquid()) {
-            return randomLocation(world);
-        }
+        if(block.isLiquid()) return randomLocation(world);
         return loc;
     }
 

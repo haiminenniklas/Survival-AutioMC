@@ -34,8 +34,6 @@ public class Balance {
         }
     }
 
-
-
     public static boolean canRemove(UUID player, double value) {
         double current_balance = Balance.get(player);
         return canRemove(current_balance, value);
@@ -49,34 +47,25 @@ public class Balance {
         cb.execute(topBalance);
     }
 
-    public static void fetchTopBalance() {
-
+    public void fetchTopBalance() {
         Sorsa.async(() -> {
-
             SQL.query("SELECT * FROM `players`;", (result, conn) -> {
                 try {
-                    Map<UUID, Double> temp = new HashMap<>();
+                    final Map<UUID, Double> temp = new HashMap<>();
                     while(result.next()) {
                         // Load the OfflinePlayer when server starts, so it doens't take that long later
                         OfflinePlayer op = Bukkit.getOfflinePlayer(UUID.fromString(result.getString("uuid")));
                         temp.put(op.getUniqueId(), result.getDouble("money"));
                     }
-                    topBalance = temp;
-                } catch(SQLException ex) {
-                    ex.printStackTrace();
-                } finally {
+                    Balance.topBalance = temp;
+                } catch(SQLException ex) { ex.printStackTrace(); }
+                finally {
                     if(conn != null) {
-                        try {
-                            conn.close();
-                        } catch (SQLException ex) {
-                            ex.printStackTrace();
-                        }
+                        try { conn.close();
+                        } catch (SQLException ex) { ex.printStackTrace(); }
                     }
                 }
             });
-
-
         });
     }
-
 }

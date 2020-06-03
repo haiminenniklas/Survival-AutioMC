@@ -32,12 +32,12 @@ import java.util.*;
 
 public class StaffManager implements Listener, CommandExecutor {
 
-    private static Map<UUID, Map<Material, Integer>> blocksPerHour = new HashMap<>();
-    public static List<UUID> hidden = new ArrayList<>();
-    private static Map<UUID, Boolean> staffMode = new HashMap<>();
-    private static Map<UUID, Location> lastLocation = new HashMap<>();
+    private Map<UUID, Map<Material, Integer>> blocksPerHour = new HashMap<>();
+    public List<UUID> hidden = new ArrayList<>();
+    private Map<UUID, Boolean> staffMode = new HashMap<>();
+    private Map<UUID, Location> lastLocation = new HashMap<>();
 
-    public static int getBlockMinedPerHour(UUID uuid, Material mat) {
+    public int getBlockMinedPerHour(UUID uuid, Material mat) {
 
         if(blocksPerHour.containsKey(uuid)) {
             Map<Material, Integer> blockData = blocksPerHour.get(uuid);
@@ -51,7 +51,7 @@ public class StaffManager implements Listener, CommandExecutor {
         return 0;
     }
 
-    public static void panel(Player player) {
+    public void panel(Player player) {
 
         if(!Ranks.isStaff(player.getUniqueId())) return;
         Gui gui = new Gui("Ylläpitopaneeli", 45);
@@ -64,9 +64,7 @@ public class StaffManager implements Listener, CommandExecutor {
                 36,37,38,39,40,41,42,43,44
         };
 
-        for(int i = 0; i < glassPanes.length; i++) {
-            gui.addItem(1, ItemUtil.makeItem(Material.RED_STAINED_GLASS_PANE, 1, ""), glassPanes[i]);
-        }
+        for(int i = 0; i < glassPanes.length; i++) { gui.addItem(1, ItemUtil.makeItem(Material.RED_STAINED_GLASS_PANE, 1, ""), glassPanes[i]); }
 
         gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.PAPER, 1, "§bChat-asetukset", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -90,14 +88,12 @@ public class StaffManager implements Listener, CommandExecutor {
 
         )),12);
 
-        String isVanished = (hidden.contains(player.getUniqueId())) ? "§cPiiloutunut" : "§aNäkyvillä";
-
         gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.ENDER_PEARL, 1, "§9Piiloutuminen", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Piiloudu muilta pelaajilta",
                 " §7palvelimella!",
                 " ",
-                " §7Tila: " + isVanished,
+                " §7Tila: " + ((hidden.contains(player.getUniqueId())) ? "§cPiiloutunut" : "§aNäkyvillä"),
                 " ",
                 " §eKlikkaa vaihtaaksesi!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
@@ -133,9 +129,6 @@ public class StaffManager implements Listener, CommandExecutor {
                 timeGui(clicker);
             }
         });
-
-        String hasStaffMode = hasStaffMode(player) ? "§aPäällä" : "§cPois päältä";
-
         gui.addButton(new Button(1, 30, ItemUtil.makeItem(Material.REPEATER, 1, "§eYlläpito-tila", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Tämä tila päällä saat",
@@ -144,7 +137,7 @@ public class StaffManager implements Listener, CommandExecutor {
                 " §atimantti§7- ja §aemeraldi§7-",
                 " §7blockien mainauksesta.",
                 " ",
-                " §7Tila: " + hasStaffMode,
+                " §7Tila: " + (hasStaffMode(player) ? "§aPäällä" : "§cPois päältä"),
                 " ",
                 " §aKlikkaa vaihtaaksesi!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
@@ -164,7 +157,7 @@ public class StaffManager implements Listener, CommandExecutor {
 
     }
 
-    public static void panel(Player player, Player target) {
+    public void panel(Player player, Player target) {
         Gui gui = new Gui("Valvonta " + target.getName(), 27);
 
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§6X-RAY-tilastot", Arrays.asList(
@@ -234,7 +227,7 @@ public class StaffManager implements Listener, CommandExecutor {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                StaffManager.panel(player);
+                panel(player);
             }
         });
 
@@ -250,16 +243,16 @@ public class StaffManager implements Listener, CommandExecutor {
         gui.open(player);
     }
 
-    public static void staffTeleport(Player teleporter, Player target) {
+    public void staffTeleport(Player teleporter, Player target) {
         if(!hidden.contains(teleporter.getUniqueId())) {
-            StaffManager.hide(teleporter);
+            hide(teleporter);
             Chat.sendMessage(teleporter, "Olet nyt piilossa! Tee §a/vanish §7tullaksesi takaisin näkyviin!");
         }
         TeleportRequest request = new TeleportRequest(teleporter, target, TeleportManager.Teleport.FORCE);
         request.ask();
     }
 
-    public static boolean toggleStaffMode(Player player) {
+    public boolean toggleStaffMode(Player player) {
 
         UUID uuid = player.getUniqueId();
         if(staffMode.getOrDefault(uuid, false)) {
@@ -271,7 +264,7 @@ public class StaffManager implements Listener, CommandExecutor {
         }
     }
 
-    public static void enableStaffMode(Player player) {
+    public void enableStaffMode(Player player) {
 
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
         Chat.sendMessage(player, "Ylläpito-tila §a§lPÄÄLLÄ§7!");
@@ -279,8 +272,8 @@ public class StaffManager implements Listener, CommandExecutor {
         hide(player);
         staffMode.put(player.getUniqueId(), true);
         player.setGameMode(GameMode.SURVIVAL);
-        Particles.removeCurrentParticle(player);
-        Particles.removeCurrentArrowTrail(player);
+        Main.getParticles().removeCurrentParticle(player);
+        Main.getParticles().removeCurrentArrowTrail(player);
         player.setInvulnerable(true);
         player.setAllowFlight(true);
         player.setFlying(true);
@@ -288,24 +281,20 @@ public class StaffManager implements Listener, CommandExecutor {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if(staffMode.getOrDefault(player.getUniqueId(), false)) {
-                    if(!Events.adminMode.getOrDefault(player.getUniqueId(), false)) {
+                if(staffMode.getOrDefault(player.getUniqueId(), false))
+                    if(!Main.getEventsListener().adminMode.getOrDefault(player.getUniqueId(), false))
                         Util.sendNotification(player, "§7Piiloutuminen: " + (hidden.contains(player.getUniqueId()) ? "§a§lPÄÄLLÄ" : "§c§lPOIS PÄÄLTÄ") + " §8| §7TPS: §a" + Util.round(Sorsa.getCurrentTPS()), false);
-                    }
-                } else cancel();
+                else cancel();
 
             }
         }.runTaskTimerAsynchronously(Main.getInstance(), 20, 20 * 2);
 
     }
 
-    public static void disableStaffMode(Player player) {
-
+    public void disableStaffMode(Player player) {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
         Chat.sendMessage(player, "Ylläpito-tila §c§lPOIS PÄÄLTÄ§7!");
-        if(lastLocation.containsKey(player.getUniqueId())) {
-            player.teleport(lastLocation.get(player.getUniqueId()));
-        }
+        if(lastLocation.containsKey(player.getUniqueId())) player.teleport(lastLocation.get(player.getUniqueId()));
         show(player);
         staffMode.put(player.getUniqueId(), false);
         player.setGameMode(GameMode.SURVIVAL);
@@ -315,14 +304,11 @@ public class StaffManager implements Listener, CommandExecutor {
         player.setInvulnerable(false);
         player.setAllowFlight(false);
         player.setFlying(false);
-
     }
 
-    public static boolean hasStaffMode(Player player) {
-        return staffMode.containsKey(player.getUniqueId()) && staffMode.get(player.getUniqueId());
-    }
+    public boolean hasStaffMode(Player player) { return staffMode.containsKey(player.getUniqueId()) && staffMode.get(player.getUniqueId()); }
 
-    public static boolean toggleVanish(Player player) {
+    public boolean toggleVanish(Player player) {
         if(hidden.contains(player.getUniqueId())) {
             show(player);
             return false;
@@ -332,7 +318,7 @@ public class StaffManager implements Listener, CommandExecutor {
         }
     }
 
-    public static void hide(Player player) {
+    public void hide(Player player) {
         hidden.add(player.getUniqueId());
         //Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
         player.setPlayerListName("§7" + player.getName() + " §8[PIILOSSA]");
@@ -341,12 +327,13 @@ public class StaffManager implements Listener, CommandExecutor {
         for(Player online : Bukkit.getOnlinePlayers()) {
             if(online.getUniqueId().equals(player.getUniqueId())) continue;
             if(Ranks.isStaff(online.getUniqueId())) continue;
+            if(hasStaffMode(online)) continue;
             online.hidePlayer(Main.getInstance(), player);
         }
         Chat.sendMessage(player, "Piilouduit pelaajilta!");
     }
 
-    public static void show(Player player) {
+    public void show(Player player) {
         hidden.remove(player.getUniqueId());
         player.setPlayerListName(player.getName());
         //Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Main.getInstance().getConfig().getString("messages.join").replaceAll("%player%", player.getName())));
@@ -369,22 +356,17 @@ public class StaffManager implements Listener, CommandExecutor {
             UUID uuid = player.getUniqueId();
             if(command.getLabel().equalsIgnoreCase("staff")) {
                 if(Ranks.isStaff(uuid)) {
-                    if(args.length < 1) {
-                        StaffManager.panel(player);
-                    } else {
+                    if(args.length < 1) panel(player);
+                    else {
                         Player target = Bukkit.getPlayer(args[0]);
                         if(target == null) {
                             Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty!");
                             return true;
                         }
-                        StaffManager.panel(player, target);
+                        panel(player, target);
                     }
                 }
-            } else if(command.getLabel().equalsIgnoreCase("staffmode")) {
-                if(Ranks.isStaff(uuid)) {
-                    StaffManager.toggleStaffMode(player);
-                }
-            }
+            } else if(command.getLabel().equalsIgnoreCase("staffmode")) if(Ranks.isStaff(uuid)) toggleStaffMode(player);
         }
         return true;
     }
@@ -397,7 +379,6 @@ public class StaffManager implements Listener, CommandExecutor {
         UUID uuid = player.getUniqueId();
 
         if(Util.isMineralOre(block)) {
-
             if(!blocksPerHour.containsKey(uuid)) {
                 Map<Material, Integer> map = new HashMap<>();
                 map.put(block.getType(), 1);
@@ -425,23 +406,17 @@ public class StaffManager implements Listener, CommandExecutor {
                     int current = map.get(block.getType());
                     map.put(block.getType(), current + 1);
                     int minedPerHour = getBlockMinedPerHour(uuid, block.getType());
-                    if(block.getType() == Material.DIAMOND_ORE) {
-                        if(minedPerHour >= 15 && minedPerHour % 5 == 0) {
-                            Util.broadcastStaff("§8[§e§l⚡!§8] §fPelaajan §e" + player.getName() + " §fBPH §o(blockit per tunti) §etimanteille §fon §e" + minedPerHour + "§f!");
-                        }
-                    } else if(block.getType() == Material.EMERALD_ORE) {
-                        if(minedPerHour >= 5 && minedPerHour % 5 == 0) {
-                            Util.broadcastStaff("§8[§e§l⚡§8] §fPelaajan §e" + player.getName() + " §fBPH §o(blockit per tunti) §eemeraldeille §fon §e" + minedPerHour + "§e!");
-                        }
-                    }
-                } else {
-                    map.put(block.getType(), 1);
-                }
+                    if(block.getType() == Material.DIAMOND_ORE)
+                        if(minedPerHour >= 15 && minedPerHour % 5 == 0) Util.broadcastStaff("§8[§e§l⚡!§8] §fPelaajan §e" + player.getName() + " §fBPH §o(blockit per tunti) §etimanteille §fon §e" + minedPerHour + "§f!");
+                    else if(block.getType() == Material.EMERALD_ORE)
+                        if(minedPerHour >= 5 && minedPerHour % 5 == 0) Util.broadcastStaff("§8[§e§l⚡§8] §fPelaajan §e" + player.getName() + " §fBPH §o(blockit per tunti) §eemeraldeille §fon §e" + minedPerHour + "§e!");
+
+                } else map.put(block.getType(), 1);
             }
         }
     }
 
-    public static void weatherGui(Player player) {
+    public void weatherGui(Player player) {
         Gui gui = new Gui("Säätila", 27);
 
         if(!player.isOp()) {
@@ -486,14 +461,14 @@ public class StaffManager implements Listener, CommandExecutor {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                StaffManager.panel(player);
+                panel(player);
             }
         });
 
         gui.open(player);
     }
 
-    public static void timeGui(Player player) {
+    public void timeGui(Player player) {
         Gui gui = new Gui("Maailman aika", 27);
 
         if(!player.isOp()) {
@@ -531,7 +506,7 @@ public class StaffManager implements Listener, CommandExecutor {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                StaffManager.panel(player);
+                panel(player);
             }
         });
 

@@ -51,9 +51,7 @@ public class Boosters implements Listener {
                 lore.add("§7 ");
 
                 if(isActive(booster)) {
-                    if(booster.getDuration() >= 1) {
-                        lore.add("§7 Aikaa jäljellä: §c" + getTimeLeft(booster) + "min");
-                    }
+                    if(booster.getDuration() >= 1) lore.add("§7 Aikaa jäljellä: §c" + getTimeLeft(booster) + "min");
                     lore.add("§7 Aktivoinut: §a" + Bukkit.getOfflinePlayer(getActivator(booster)).getName());
                     lore.add("§7 ");
                 } else {
@@ -65,18 +63,13 @@ public class Boosters implements Listener {
                         if(getTimeForNextUsage(booster) >= 1) {
                             lore.add(" §c§lJÄÄHYLLÄ §7(§c" + getTimeForNextUsage(booster) + "min §7jäljellä)");
                             lore.add("§7 ");
-                        } else {
-                            getActive().remove(booster.getDisplayName());
-                        }
-
+                        } else getActive().remove(booster.getDisplayName());
                     }
 
                 }
 
                 String[] text = Util.splitPreservingWords(booster.getDescription(), 30);
-                for(int j = 0; j < text.length; j++) {
-                    lore.add(" §7" + ChatColor.translateAlternateColorCodes('&', text[j]));
-                }
+                for(int j = 0; j < text.length; j++) { lore.add(" §7" + ChatColor.translateAlternateColorCodes('&', text[j])); }
 
                 lore.add("§7 ");
                 lore.add(" §7§oTehostus vaikuttaa kaikkiin");
@@ -86,9 +79,7 @@ public class Boosters implements Listener {
                     lore.add("§a§lKLIKKAA AKTIVOIDAKSESI!");
                 }
                 ItemStack item = ItemUtil.makeItem(booster.getItem(), 1, booster.getDisplayName(), lore);
-                if(isActive(booster)) {
-                    item = Util.makeEnchanted(item);
-                }
+                if(isActive(booster)) item = Util.makeEnchanted(item);
 
                 gui.addButton(new Button(1, i, item) {
                     @Override
@@ -99,9 +90,7 @@ public class Boosters implements Listener {
                             if(getTimeForNextUsage(booster) > 0) {
                                 Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Tuo tehostus on jäähyllä. Odota vielä §c" + getTimeForNextUsage(booster) + "min§7!");
                                 return;
-                            } else {
-                                cooldown.remove(booster.getDisplayName());
-                            }
+                            } else cooldown.remove(booster.getDisplayName());
                         }
 
                         if(!isActive(booster)) {
@@ -109,19 +98,12 @@ public class Boosters implements Listener {
                                 Balance.add(clicker.getUniqueId(), -booster.getCost());
                                 Boosters.activate(booster, clicker.getUniqueId());
                                 Chat.sendMessage(clicker, "Aktivoit tehostuksen " + booster.getDisplayName() + "§7!");
-                            } else {
-                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tuohon!");
-                            }
-                        } else {
-                            Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Tuo tehostus on jo käynnistetty!");
-                        }
+                            } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tuohon!");
+                        } else Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Tuo tehostus on jo käynnistetty!");
                     }
                 });
-
                 break;
-
             }
-
         }
 
         for(int i : itemSlots) {
@@ -140,9 +122,7 @@ public class Boosters implements Listener {
             }
         }
 
-        for(int i : glassSlots) {
-            gui.addItem(1, ItemUtil.makeItem(Material.BROWN_STAINED_GLASS_PANE), i);
-        }
+        for(int i : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.BROWN_STAINED_GLASS_PANE), i); }
 
         for(int i = 0; i < 45; i++) {
 
@@ -171,33 +151,23 @@ public class Boosters implements Listener {
     public static void debug() {
         for(Map.Entry<String, Long> entry : getInCooldown().entrySet()) {
             Booster booster = Boosters.getBoosterByName(entry.getKey());
-            if(getTimeForNextUsage(booster) <= 0) {
-                getInCooldown().remove(entry.getKey());
-            }
+            if(getTimeForNextUsage(booster) <= 0) getInCooldown().remove(entry.getKey());
         }
 
         for(Map.Entry<String, HashMap<UUID, Long>> entry : getActive().entrySet()) {
-
             Booster booster = Boosters.getBoosterByName(entry.getKey());
-
             if(booster == null) {
                 getActive().remove(entry.getKey());
                 continue;
             }
-
-            if(getTimeLeft(booster) <= 0) {
-                deactivate(booster);
-            }
-
+            if(getTimeLeft(booster) <= 0) deactivate(booster);
         }
 
     }
 
     public static Booster getBoosterByName(String name) {
         for(Booster booster : Booster.values()) {
-            if(booster.getDisplayName().equalsIgnoreCase(name)) {
-                return booster;
-            }
+            if(booster.getDisplayName().equalsIgnoreCase(name)) return booster;
         }
         return null;
     }
@@ -207,22 +177,15 @@ public class Boosters implements Listener {
     }
 
     public static boolean isInCooldown(Booster booster) {
-
         return getInCooldown().containsKey(booster.getDisplayName());
     }
 
     public static long getTimeForNextUsage(Booster booster) {
         if(!isInCooldown(booster)) return 0;
-
         long putInCooldown = getInCooldown().get(booster.getDisplayName());
         long shouldExpire = putInCooldown + (60 * 1000 * 60);
-
         long timeLeft = shouldExpire - System.currentTimeMillis();
-
-        if(timeLeft <= 0) {
-            return 0;
-        }
-
+        if(timeLeft <= 0) return 0;
         return timeLeft / 1000 / 60;
 
     }
@@ -230,18 +193,12 @@ public class Boosters implements Listener {
     public static void activateManager() {
 
         Sorsa.every(60, () -> {
-
             if(getActive().size() < 1) return;
-
             for(Map.Entry<String, HashMap<UUID, Long>> e : getActive().entrySet()) {
                 Booster booster = getBoosterByName(e.getKey());
                 if(booster == null) continue;
-                if(getTimeLeft(booster) <= 0) {
-                    deactivate(booster);
-                }
+                if(getTimeLeft(booster) <= 0) deactivate(booster);
             }
-
-
         }, true);
 
     }
@@ -253,9 +210,7 @@ public class Boosters implements Listener {
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §7Aktivoinut: §a" + getActivatorPlayer(booster).getName());
 
-        if(booster.getDuration() >= 1) {
-            Bukkit.broadcastMessage(" §7Kesto: §c" + booster.getDuration() + "min");
-        }
+        if(booster.getDuration() >= 1) Bukkit.broadcastMessage(" §7Kesto: §c" + booster.getDuration() + "min");
 
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -264,9 +219,7 @@ public class Boosters implements Listener {
         getInCooldown().put(booster.getDisplayName(), System.currentTimeMillis());
 
         if(booster == Booster.EXTRA_HEARTS) {
-            for(Player player : Bukkit.getOnlinePlayers()) {
-                player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
-            }
+            for(Player player : Bukkit.getOnlinePlayers()) { player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d); }
         }
 
         Util.broadcastSound(Sound.BLOCK_ANVIL_FALL);
@@ -297,9 +250,7 @@ public class Boosters implements Listener {
         Bukkit.broadcastMessage(" §a§lTEHOSTUS AKTIVOITU §7(" + booster.getDisplayName() + "§7)");
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §7Aktivoinut: §6" + getActivatorPlayer(booster).getName());
-        if(booster.getDuration() >= 1) {
-            Bukkit.broadcastMessage(" §7Kesto: §c" + booster.getDuration() + "min");
-        }
+        if(booster.getDuration() >= 1) Bukkit.broadcastMessage(" §7Kesto: §c" + booster.getDuration() + "min");
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         Util.broadcastSound(Sound.ENTITY_ENDER_DRAGON_GROWL);
@@ -324,13 +275,9 @@ public class Boosters implements Listener {
         return null;
     }
 
-    public static boolean isActive(Booster booster) {
-        return getActive().containsKey(booster.getDisplayName());
-    }
+    public static boolean isActive(Booster booster) { return getActive().containsKey(booster.getDisplayName()); }
 
-    public static HashMap<String, HashMap<UUID, Long>> getActive() {
-        return Boosters.active;
-    }
+    public static HashMap<String, HashMap<UUID, Long>> getActive() { return Boosters.active; }
 
     public enum Booster {
 
@@ -356,14 +303,10 @@ public class Boosters implements Listener {
 
             for(Player player : Bukkit.getOnlinePlayers()) {
                 for(ItemStack item : player.getInventory().getContents()) {
-                    if(item != null) {
-                        Util.fixItem(item);
-                    }
+                    if(item != null) Util.fixItem(item);
                 }
                 for(ItemStack armor : player.getInventory().getArmorContents()) {
-                    if(armor != null) {
-                        Util.fixItem(armor);
-                    }
+                    if(armor != null) Util.fixItem(armor);
                 }
                 Util.sendNotification(player, "§a§lTEHOSTUS §7Itemisi korjattiin!", true);
             }
@@ -376,11 +319,7 @@ public class Boosters implements Listener {
         DOUBLE_XP(45, "§eKokemuspisteiden kapina",
                 "§7Tällä tehostuksella saat jokaisesta tappamastasi mobista §a2x §7enemmän §eXP:§7tä! Tehostus kestää §6§l45MIN§7!", 4000, () -> {
 
-        }, Material.EXPERIENCE_BOTTLE),
-
-            // Efekti-idea -> pystyy "hengittämään" veden alla
-
-        ;
+        }, Material.EXPERIENCE_BOTTLE);
 
         // Duration in minutes
         int duration;

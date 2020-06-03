@@ -220,8 +220,8 @@ public class Sorsa {
 
         Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjataan yleiset virheet ja bugit...");
         Boosters.debug();
-        Particles.reloadParticles(player);
-        PlayerGlowManager.disableGlow(player);
+        Main.getParticles().reloadParticles(player);
+        Main.getPlayerGlowManager().disableGlow(player);
         Chat.sendMessage(player, Chat.Prefix.DEBUG, "Korjattu! Jos mikään ei muuttunut yritä poistua ja liittyä palvelimelle uudestaan!" +
                 " Jos muutosta ei vieläkään näy, laita ilmoitus ylläpidollemme Discordissa kanavalla §9#ilmoita-bugeista§7!");
     }
@@ -265,14 +265,14 @@ public class Sorsa {
 
     public static void toggleDebugMode(Player player) {
         UUID uuid = player.getUniqueId();
-        if(!Events.adminMode.containsKey(uuid)) {
-            Events.adminMode.put(uuid, true);
+        if(!Main.getEventsListener().adminMode.containsKey(uuid)) {
+            Main.getEventsListener().adminMode.put(uuid, true);
             Chat.sendMessage(player, Chat.Prefix.DEBUG, "Virheenkorjaustila päällä!");
 
            new BukkitRunnable() {
                @Override
                public void run() {
-                   if(!Events.adminMode.containsKey(uuid)) {
+                   if(!Main.getEventsListener().adminMode.containsKey(uuid)) {
                         cancel();
                        return;
                    }
@@ -282,7 +282,7 @@ public class Sorsa {
                }
            }.runTaskTimerAsynchronously(Main.getInstance(), 20, 20);
         } else {
-            Events.adminMode.remove(uuid);
+            Main.getEventsListener().adminMode.remove(uuid);
             Chat.sendMessage(player, Chat.Prefix.DEBUG, "Virheenkorjaustila pois päältä!");
         }
     }
@@ -290,7 +290,7 @@ public class Sorsa {
     public static Set<Player> getOnlinePlayers() {
         Set<Player> online = new HashSet<>();
         for(Player player : Bukkit.getOnlinePlayers()) {
-            if(StaffManager.hasStaffMode(player)) continue;
+            if(Main.getStaffManager().hasStaffMode(player)) continue;
             online.add(player);
         }
         return online;

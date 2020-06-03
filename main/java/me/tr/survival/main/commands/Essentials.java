@@ -402,7 +402,7 @@ public class Essentials implements CommandExecutor, Listener {
 
             } else if(cmd.getLabel().equalsIgnoreCase("clear")) {
 
-                if(!StaffManager.hasStaffMode(player)) {
+                if(!Main.getStaffManager().hasStaffMode(player)) {
                     Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
                     return true;
                 }
@@ -468,7 +468,7 @@ public class Essentials implements CommandExecutor, Listener {
 
                 if(Ranks.isStaff(player.getUniqueId())) {
 
-                    if(!StaffManager.hasStaffMode(player)) {
+                    if(!Main.getStaffManager().hasStaffMode(player)) {
                         Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
                         return true;
                     }

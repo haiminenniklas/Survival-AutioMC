@@ -29,9 +29,9 @@ import java.util.*;
 
 public class Events implements Listener {
 
-    public static final HashMap<UUID, Boolean> adminMode = new HashMap<>();
-    public static final HashMap<UUID, Location> lastLocation = new HashMap<>();
-    public static final ArrayList<UUID> deathIsland = new ArrayList<>();
+    public final HashMap<UUID, Boolean> adminMode = new HashMap<>();
+    public final HashMap<UUID, Location> lastLocation = new HashMap<>();
+    public final ArrayList<UUID> deathIsland = new ArrayList<>();
 
     @EventHandler
     public void onLevelUp(LevelUpEvent e){

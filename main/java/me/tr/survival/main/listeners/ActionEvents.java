@@ -1,5 +1,6 @@
 package me.tr.survival.main.listeners;
 
+import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.managers.StaffManager;
@@ -28,8 +29,7 @@ public class ActionEvents implements Listener {
 
     // Here downwards are just events for disabling unwanted actions from players or staff
 
-
-    private static final Map<UUID, Long> lastCommand = new HashMap<>();
+    private final Map<UUID, Long> lastCommand = new HashMap<>();
 
     @EventHandler
     public void onCommandPreProcessEvent(PlayerCommandPreprocessEvent e) {
@@ -42,10 +42,8 @@ public class ActionEvents implements Listener {
             return;
         }
 
-        if(!lastCommand.containsKey(uuid)) {
-            lastCommand.put(uuid, System.currentTimeMillis());
-        } else {
-
+        if(!lastCommand.containsKey(uuid)) lastCommand.put(uuid, System.currentTimeMillis());
+        else {
             long last = lastCommand.get(uuid);
             long now = System.currentTimeMillis();
             if(now - last < 1000 * 2) {
@@ -53,12 +51,10 @@ public class ActionEvents implements Listener {
                     e.setCancelled(true);
                     Chat.sendMessage(player, "Rauhoituthan noiden komentojen kanssa!");
                 }
-            } else {
-                lastCommand.remove(uuid);
-            }
+            } else lastCommand.remove(uuid);
         }
 
-        if(Events.deathIsland.contains(player.getUniqueId())) {
+        if(Main.getEventsListener().deathIsland.contains(player.getUniqueId())) {
             if(player.isOp()) return;
             e.setCancelled(true);
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Kun olet odottamassa pääsyä takaisin elävien joukkoon et voi suorittaa mitään komentoja!");
@@ -70,7 +66,7 @@ public class ActionEvents implements Listener {
     public void onItemPickUp(EntityPickupItemEvent e) {
         if(e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
-            if(StaffManager.hasStaffMode(player)) e.setCancelled(true);
+            if(Main.getStaffManager().hasStaffMode(player)) e.setCancelled(true);
         }
     }
 
@@ -81,7 +77,7 @@ public class ActionEvents implements Listener {
 
         if(player.getAllowFlight()) {
             if(Util.getRegions(player).size() < 1) {
-                if(!StaffManager.hasStaffMode(player)) {
+                if(!Main.getStaffManager().hasStaffMode(player)) {
                     if(player.isFlying()) {
                         player.teleport(e.getFrom());
                         player.setFlying(false);
@@ -97,19 +93,13 @@ public class ActionEvents implements Listener {
 
     @EventHandler
     public void onKick(PlayerKickEvent e) {
-        if (e.getReason().equalsIgnoreCase("disconnect.spam")) {
-            e.setCancelled(true);
-            return;
-        }
+        if (e.getReason().equalsIgnoreCase("disconnect.spam")) e.setCancelled(true);
     }
 
 
     @EventHandler(ignoreCancelled = true)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        if (event.getEntity().getType().equals(EntityType.PHANTOM)) {
-            event.setCancelled(true);
-        }
-
+        if (event.getEntity().getType().equals(EntityType.PHANTOM)) event.setCancelled(true);
     }
 
     @EventHandler
@@ -140,9 +130,7 @@ public class ActionEvents implements Listener {
             return;
         }
 
-        if(e.getInventory().getType() == InventoryType.MERCHANT) {
-            e.setCancelled(true);
-        }
+        if(e.getInventory().getType() == InventoryType.MERCHANT) e.setCancelled(true);
 
         Sorsa.async(() -> {
 

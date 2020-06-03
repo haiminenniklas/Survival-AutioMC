@@ -37,16 +37,14 @@ public class MoneyManager implements CommandExecutor, Listener {
         if(sender instanceof Player) {
 
             Player player = (Player) sender;
-            if(command.getLabel().equalsIgnoreCase("valuutta")) {
-                main(player);
-            } else if(command.getLabel().equalsIgnoreCase("shekki")) {
+            if(command.getLabel().equalsIgnoreCase("valuutta")) main(player);
+            else if(command.getLabel().equalsIgnoreCase("shekki")) {
 
                 if(args.length < 1) {
                     Chat.sendMessage(player, "Käytä §6/shekki <haluttu määrä>");
                     cheques(player);
                     return true;
                 } else {
-
                     if(player.isOp()) {
                         if(args[0].equalsIgnoreCase("help")) {
                             sender.sendMessage("§7/shekki (enable | disable)");
@@ -67,8 +65,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                     }
 
                     int value;
-                    try {
-                        value = Integer.parseInt(args[0]);
+                    try { value = Integer.parseInt(args[0]);
                     } catch (NumberFormatException ex) {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytä oikeita numeroita!");
                         return true;
@@ -79,39 +76,20 @@ public class MoneyManager implements CommandExecutor, Listener {
                         return true;
                     }
 
-                    if(Balance.canRemove(player.getUniqueId(), value)) {
-
-                        writeCheque(player, value);
-
-                    } else {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän!");
-                    }
-
+                    if(Balance.canRemove(player.getUniqueId(), value)) writeCheque(player, value);
+                    else Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän!");
                 }
-
             }
-
         }
-
         return true;
     }
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
-
         Player player = e.getPlayer();
-        if(e.getItem() != null) {
-
-            if(e.getItem().hasItemMeta()) {
-                confirmChequeWithdrawal(player, e.getItem());
-            }
-
-        }
-
+        if(e.getItem() != null) if(e.getItem().hasItemMeta()) confirmChequeWithdrawal(player, e.getItem());
     }
-    public static void main(Player player) {
-
-        // 10 13 16
+    public void main(Player player) {
 
         Gui.openGui(player, "Finanssivalvonta", 27, (gui) -> {
 
@@ -152,98 +130,7 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     }
 
-    @Deprecated
-    public static void moneyExchange(Player player) {
-
-        Gui.openGui(player, "Vaihda valuuttaa", 27, (gui) -> {
-
-            gui.addButton(new Button(1, 10, ItemUtil.makeItem(Material.DIAMOND, 1, "§b1 kristalli", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Vaadittu raha: §a" + getMoneyString(player, 1) + "€",
-                    " ",
-                    " §6Klikkaa vaihtaaksesi!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            ))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    changeMoneyToCrystals(clicker, 1);
-                }
-            });
-
-            gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.DIAMOND, 1, "§b10 kristallia", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Vaadittu raha: §a" + getMoneyString(player, 10) + "€",
-                    " ",
-                    " §6Klikkaa vaihtaaksesi!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            ))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    changeMoneyToCrystals(clicker, 10);
-                }
-            });
-
-            gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.DIAMOND, 1, "§b50 kristallia", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Vaadittu raha: §a" + getMoneyString(player, 50) + "€",
-                    " ",
-                    " §6Klikkaa vaihtaaksesi!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            ))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    changeMoneyToCrystals(clicker, 50);
-                }
-            });
-
-            gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.DIAMOND, 1, "§b100 kristallia", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Vaadittu raha: §a" + getMoneyString(player, 100) + "€",
-                    " ",
-                    " §6Klikkaa vaihtaaksesi!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            ))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    changeMoneyToCrystals(clicker, 100);
-                }
-            });
-
-            gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.DIAMOND, 1, "§b1250 kristallia", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Vaadittu raha: §a" + getMoneyString(player, 250) + "€",
-                    " ",
-                    " §6Klikkaa vaihtaaksesi!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            ))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    changeMoneyToCrystals(clicker, 250);
-                }
-            });
-
-            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§6Muu määrä?", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Jos haluat muuntaa jonkin",
-                    " §7toisen määrän, se onnistuu",
-                    " §7komennolla",
-                    " §6/vaihda <määrä kristalleja>§7!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            )), 16);
-
-            gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
-                    main(clicker);
-                }
-            });
-
-        });
-
-    }
-
-    public static void cheques(Player player) {
+    public void cheques(Player player) {
 
         Gui.openGui(player, "Kirjoita shekkejä", 27, (gui) -> {
             gui.addButton(new Button(1, 11, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a50€", Arrays.asList(
@@ -355,31 +242,22 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     }
 
-    private static String getMoneyString(Player player, int crystalsWanted) {
-
+    private String getMoneyString(Player player, int crystalsWanted) {
         int price = getPriceForCrystals(crystalsWanted);
-
         return Balance.canRemove(player.getUniqueId(), price) ? "§a" + price : "§c" + price;
-
     }
 
-    public static void changeMoneyToCrystals(Player player, int crystalsWanted) {
+    public void changeMoneyToCrystals(Player player, int crystalsWanted) {
 
         int price = 15000 * crystalsWanted;
-
         if(Balance.canRemove(player.getUniqueId(), price)) {
-
             Balance.remove(player.getUniqueId(), price);
             Crystals.add(player.getUniqueId(), crystalsWanted);
-
-        } else {
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän...");
-        }
-
+        } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän...");
 
     }
 
-    public static void writeCheque(Player player, int amount) {
+    public void writeCheque(Player player, int amount) {
 
         if(!player.isOp() && !ENABLED) {
             Chat.sendMessage(player, "Tämä toiminto on toistaiseksi poissa käytöstä. Yritähän myöhemmin uudelleen.");
@@ -399,7 +277,7 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     }
 
-    public static void forceWriteCheque(Player player, int amount) {
+    public void forceWriteCheque(Player player, int amount) {
 
         ItemStack item = ItemUtil.makeItem(Material.PAPER, 1, "§a§lShekki", Arrays.asList(
                 " §7Tämä shekki sisältää ",
@@ -416,12 +294,10 @@ public class MoneyManager implements CommandExecutor, Listener {
         item.setItemMeta(itemMeta);
 
         HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(Util.makeEnchanted(item));
-        for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) {
-            player.getWorld().dropItemNaturally(player.getLocation(), entry.getValue());
-        }
+        for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) { player.getWorld().dropItemNaturally(player.getLocation(), entry.getValue()); }
     }
 
-    public static void withdrawCheque(Player player, ItemStack cheque) {
+    public void withdrawCheque(Player player, ItemStack cheque) {
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
         ItemMeta itemMeta = cheque.getItemMeta();
@@ -440,7 +316,7 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     }
 
-    public static void confirmChequeWithdrawal(Player player, ItemStack cheque) {
+    public void confirmChequeWithdrawal(Player player, ItemStack cheque) {
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
         ItemMeta itemMeta = cheque.getItemMeta();
@@ -465,10 +341,8 @@ public class MoneyManager implements CommandExecutor, Listener {
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
-
                         withdrawCheque(player, cheque);
                         gui.close(player);
-
                     }
                 });
 
@@ -484,20 +358,14 @@ public class MoneyManager implements CommandExecutor, Listener {
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
-
                         gui.close(clicker);
                         Chat.sendMessage(clicker, "Shekin nostaminen peruutettiin");
-
                     }
                 });
-
             });
-
         }
     }
 
-    public static int getPriceForCrystals(int crystalsWanted) {
-        return 15000 * crystalsWanted;
-    }
+    public int getPriceForCrystals(int crystalsWanted) { return 15000 * crystalsWanted; }
 
 }

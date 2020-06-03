@@ -74,16 +74,89 @@ public final class Main extends JavaPlugin implements Listener {
 
     private static long started = 0L;
 
+    // Instances for Managers
+    private static Backpack backpack ;
+    public static Backpack getBackpack() { return backpack; }
+
+    private static MoneyManager moneyManager;
+    public static MoneyManager getMoneyManager() { return moneyManager; }
+
+    private static TravelManager travelManager;
+    public static TravelManager getTravelManager() { return travelManager; }
+
+    private static StaffManager staffManager;
+    public static StaffManager getStaffManager() { return staffManager; }
+
+    private static TradeManager tradeManager;
+    public static TradeManager getTradeManager() { return tradeManager; }
+
+    private static EndManager endManager;
+    public static EndManager getEndManager() { return endManager; }
+
+    private static PlayerGlowManager playerGlowManager;
+    public static PlayerGlowManager getPlayerGlowManager() { return playerGlowManager; }
+
+    private static PlayerDeathMessageManager playerDeathMessageManager;
+    public static PlayerDeathMessageManager getPlayerDeathMessageManager() { return playerDeathMessageManager; }
+
+    private static Particles particles;
+    public static Particles getParticles() { return particles; }
+
+    private static Houkutin houkutin;
+    public static Houkutin getHoukutin() { return houkutin; }
+
+    // Other instances
+    private static TpaCommand tpaCommand;
+    private static Essentials essentials;
+    private static MoneyCommand moneyCommand;
+    private static StopCommand stopCommand;
+    private static VipCommand vipCommand;
+
+    // Listener instances
+    private static Events events;
+    public static Events getEventsListener() { return events; }
+
+    private static ActionEvents actionEvents;
+    private static GuiEvents guiEvents;
+    private static ConnectionEvents connectionEvents;
+
     @Override
     public void onEnable() {
-        // Some setupping
+        // Setup instances
         Main.instance = this;
         Main.luckPerms = LuckPermsProvider.get();
+
+        // Managers
+        Main.backpack = new Backpack();
+        Main.moneyManager = new MoneyManager();
+        Main.travelManager = new TravelManager();
+        Main.staffManager = new StaffManager();
+        Main.tradeManager = new TradeManager();
+        Main.endManager = new EndManager();
+        Main.playerGlowManager = new PlayerGlowManager();
+        Main.playerDeathMessageManager = new PlayerDeathMessageManager();
+        Main.particles = new Particles();
+        Main.houkutin = new Houkutin();
+
+        // Commands
+        Main.tpaCommand = new TpaCommand();
+        Main.essentials = new Essentials();
+        Main.moneyCommand = new MoneyCommand();
+        Main.stopCommand = new StopCommand();
+        Main.vipCommand = new VipCommand();
+
+        // Listeners
+        Main.events = new Events();
+        Main.actionEvents = new ActionEvents();
+        Main.guiEvents = new GuiEvents();
+        Main.connectionEvents = new ConnectionEvents();
+
+        new SpigotCallback(this);
 
         Sorsa.logColored("§a---------------------------");
         Sorsa.logColored(" §aEnabling SorsaSurvival....");
 
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
 
         Sorsa.logColored(" ");
         Sorsa.logColored(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
@@ -91,49 +164,33 @@ public final class Main extends JavaPlugin implements Listener {
         Sorsa.logColored(" §aSetupping configs and database...");
 
         saveDefaultConfig();
-        EndManager.createEndConfig();
-        EndManager.loadPreviousData();
+        endManager.createEndConfig();
+        endManager.loadPreviousData();
         SQL.setup();
-
-
-        /*Sorsa.logColored(" §aSetupping Boosters-system...");
-
-        File boosterJson = new File(getDataFolder() + File.separator + "boosters.json");
-        if(!boosterJson.exists()) {
-            try {
-                if(boosterJson.createNewFile()) {
-                    Sorsa.logColored(" §aCreated file for Boosters!");
-                } else {
-                    Sorsa.warn(" Could not create file for booster. Boosters will not be saved!");
-                }
-            } catch(IOException ex) {
-                ex.printStackTrace();
-            }
-        } */
 
         Sorsa.logColored(" §aRegistering plugin event listeners...");
 
         // Events
         PluginManager pm = getServer().getPluginManager();
 
-        new SpigotCallback(this);
-
+        // Listeners
         pm.registerEvents(this, this);
-        pm.registerEvents(new Events(), this);
-        pm.registerEvents(new ActionEvents(), this);
-        pm.registerEvents(new GuiEvents(), this);
-        pm.registerEvents(new ConnectionEvents(), this);
+        pm.registerEvents(events, this);
+        pm.registerEvents(actionEvents, this);
+        pm.registerEvents(guiEvents, this);
+        pm.registerEvents(connectionEvents, this);
 
         // Managers
         pm.registerEvents(new Chat(), this);
-        pm.registerEvents(new StaffManager(), this);
-        pm.registerEvents(new Essentials(), this);
-        pm.registerEvents(new TradeManager(), this);
-        pm.registerEvents(new TravelManager(), this);
-        pm.registerEvents(new MoneyManager(), this);
-        pm.registerEvents(new Backpack(), this);
-        pm.registerEvents(new Particles(), this);
-        pm.registerEvents(new PlayerDeathMessageManager(), this);
+
+        pm.registerEvents(staffManager, this);
+        pm.registerEvents(essentials, this);
+        pm.registerEvents(tradeManager, this);
+        pm.registerEvents(travelManager, this);
+        pm.registerEvents(moneyManager, this);
+        pm.registerEvents(backpack, this);
+        pm.registerEvents(playerDeathMessageManager, this);
+        pm.registerEvents(particles, this);
 
         Sorsa.logColored(" §aRegistering messaging channels for BungeeCord...");
 
@@ -142,115 +199,94 @@ public final class Main extends JavaPlugin implements Listener {
 
         Sorsa.logColored(" §aRegistering PlayerParticlesAPI...");
 
-        if (Bukkit.getPluginManager().getPlugin("PlayerParticles") != null) {
-            Main.particlesAPI = PlayerParticlesAPI.getInstance();
-        } else {
+        if (Bukkit.getPluginManager().getPlugin("PlayerParticles") != null) Main.particlesAPI = PlayerParticlesAPI.getInstance();
+        else {
             Sorsa.log("§cCould not find PlayerParticles plugin, disabling...");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
-
         Sorsa.logColored(" §aDisabling Announcement of Advancements...");
 
         // Disable Advancement announcing
-        for(World world : Bukkit.getWorlds()) {
-            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        }
+        for(World world : Bukkit.getWorlds()) { world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false); }
 
         // Commands
-
         Sorsa.logColored(" §aRegistering plugin commands....");
 
+        getCommand("tpa").setExecutor(tpaCommand);
+        getCommand("tpaccept").setExecutor(tpaCommand);
+        getCommand("tpahere").setExecutor(tpaCommand);
+        getCommand("tp").setExecutor(tpaCommand);
+        getCommand("tphere").setExecutor(tpaCommand);
+        getCommand("tpdeny").setExecutor(tpaCommand);
+
+        getCommand("reppu").setExecutor(backpack);
+
+        getCommand("apua").setExecutor(essentials);
+        getCommand("broadcast").setExecutor(essentials);
+        getCommand("world").setExecutor(essentials);
+        getCommand("clear").setExecutor(essentials);
+        getCommand("invsee").setExecutor(essentials);
+
+        getCommand("bal").setExecutor(moneyCommand);
+        getCommand("pay").setExecutor(moneyCommand);
+
+        getCommand("valuutta").setExecutor(moneyManager);
+        getCommand("shekki").setExecutor(moneyManager);
+
+        getCommand("stop").setExecutor(stopCommand);
+        getCommand("forcestop").setExecutor(stopCommand);
+
+        getCommand("trade").setExecutor(tradeManager);
+        getCommand("staff").setExecutor(staffManager);
+        getCommand("ääri").setExecutor(endManager);
+        getCommand("hehku").setExecutor(playerGlowManager);
+        getCommand("matkusta").setExecutor(travelManager);
+        getCommand("givevip").setExecutor(vipCommand);
+        getCommand("kosmetiikka").setExecutor(particles);
+        getCommand("houkutin").setExecutor(houkutin);
+
         getCommand("home").setExecutor(new HomeCommand());
-
-        getCommand("tpa").setExecutor(new TpaCommand());
-        getCommand("tpaccept").setExecutor(new TpaCommand());
-        getCommand("tpahere").setExecutor(new TpaCommand());
-        getCommand("tp").setExecutor(new TpaCommand());
-        getCommand("tphere").setExecutor(new TpaCommand());
-        getCommand("tpdeny").setExecutor(new TpaCommand());
-
-        getCommand("staff").setExecutor(new StaffManager());
-
-        getCommand("apua").setExecutor(new Essentials());
-        getCommand("broadcast").setExecutor(new Essentials());
-
-        getCommand("bal").setExecutor(new MoneyCommand());
-        getCommand("pay").setExecutor(new MoneyCommand());
-
-        getCommand("trade").setExecutor(new TradeManager());
-
-        getCommand("world").setExecutor(new Essentials());
-        getCommand("clear").setExecutor(new Essentials());
-
         getCommand("baltop").setExecutor(new BaltopCommand());
-        getCommand("matkusta").setExecutor(new TravelManager());
 
-        getCommand("valuutta").setExecutor(new MoneyManager());
-        getCommand("shekki").setExecutor(new MoneyManager());
-
-        getCommand("stop").setExecutor(new StopCommand());
-        getCommand("forcestop").setExecutor(new StopCommand());
-
-        getCommand("reppu").setExecutor(new Backpack());
-        getCommand("invsee").setExecutor(new Essentials());
-
-        getCommand("kosmetiikka").setExecutor(new Particles());
-        getCommand("givevip").setExecutor(new VipCommand());
-        getCommand("hehku").setExecutor(new PlayerGlowManager());
-        getCommand("houkutin").setExecutor(new Houkutin());
-
-        getCommand("ääri").setExecutor(new EndManager());
 
         // Autosave code...
 
         Sorsa.logColored(" §aStarting autosaving for players...");
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
-
-
             if(Sorsa.getCurrentTPS() >= 18.5) {
                 Sorsa.log("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
                 int times_saved = 0;
                 for(Player player : Bukkit.getOnlinePlayers()) {
                     times_saved += 1;
                     PlayerData.savePlayer(player.getUniqueId());
-                    //Chat.sendMessage(player, "Tietosi tallennettiin automaattisesti!");
                 }
                 Sorsa.log("Saved the data of " + times_saved + " players!");
-            } else {
-                Sorsa.warn("Server TPS too low, not updating players this time...");
-            }
+            } else Sorsa.warn("Server TPS too low, not updating players this time...");
 
             // Fetch Balances...
-            Balance.fetchTopBalance();
+            new Balance().fetchTopBalance();
 
         }, 20, (20*60) * 5);
 
 
-
         Sorsa.logColored(" §aStarting AutoBroadcaster...");
         AutoBroadcaster.start();
-        Warps.loadWarps((value) -> {
-            String output = (value) ? "Loaded warps from the Database!" : "Did not load warps from the database, did an error occur?";
-            System.out.println(output);
-        });
 
         Sorsa.logColored(" §aStarting Managers...");
         Boosters.activateManager();
-        Houkutin.activateManager();
-        EndManager.startManager();
+        Main.getHoukutin().activateManager();
+        Main.getEndManager().startManager();
 
         Sorsa.logColored(" §aInitializing ChatManager");
         Chat.init();
 
         Sorsa.log(" §aLoading Custom Recipes...");
-        // Recipe.load(); There aren't in use anymore
 
         Sorsa.log(" §aIntegrating custom economy into Vault...");
-        if(Bukkit.getServer().getPluginManager().getPlugin("Vault") != null) {
-            Bukkit.getServer().getServicesManager().register(Economy.class, new CustomEconomy(), this, ServicePriority.Highest);
-        } else {
+        if(Bukkit.getServer().getPluginManager().getPlugin("Vault") != null) Bukkit.getServer().getServicesManager().register(Economy.class, new CustomEconomy(), this, ServicePriority.Highest);
+        else {
             Sorsa.log(" §cCould not find Vault! Disabling plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
         }
@@ -274,7 +310,7 @@ public final class Main extends JavaPlugin implements Listener {
         long start = System.currentTimeMillis();
         Sorsa.logColored(" §aSaving configs...");
         saveConfig();
-        EndManager.saveEndConfig();
+        Main.getEndManager().saveEndConfig();
         Sorsa.logColored(" §aClosing Database Connection...");
         SQL.source.close();
         Sorsa.logColored("§a Disabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
@@ -320,15 +356,13 @@ public final class Main extends JavaPlugin implements Listener {
                long uptime = now - started;
                Chat.sendMessage(player, String.format("Palvelin on ollut päällä §c%s", DurationFormatUtils.formatDurationWords(uptime, false, true)));
            } else if(command.getLabel().equalsIgnoreCase("profile")) {
-                if(args.length == 0) {
-                    Profile.openProfile(player, player.getUniqueId());
-                } else if(args.length >= 1) {
+                if(args.length == 0) Profile.openProfile(player, player.getUniqueId());
+                else if(args.length >= 1) {
                     OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                     Profile.openProfile(player, target.getUniqueId());
                 }
-            } else if(command.getLabel().equalsIgnoreCase("vip")) {
-               Settings.vipPanel(player);
-           } else if(command.getLabel().equalsIgnoreCase("spawn")) {
+            } else if(command.getLabel().equalsIgnoreCase("vip")) Settings.vipPanel(player);
+            else if(command.getLabel().equalsIgnoreCase("spawn")) {
                 if(args.length < 1) {
                     if(player.getWorld().getName().equals("world_nether")) {
                         Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
@@ -341,7 +375,7 @@ public final class Main extends JavaPlugin implements Listener {
                             Chat.sendMessage(player, Chat.Prefix.ERROR, "Pystyt lähtemään spawnille uudestaan §c" + secondsLeft + "s §7jälkeen.");
                             return true;
                         }
-                    } else if(!StaffManager.hasStaffMode(player)) spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));
+                    } else if(!Main.getStaffManager().hasStaffMode(player)) spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));
 
                     Chat.sendMessage(player, "Sinut viedään spawnille §c5s §7päästä!");
                     new BukkitRunnable() {
@@ -376,8 +410,7 @@ public final class Main extends JavaPlugin implements Listener {
                         Chat.sendMessage(player, "§6/level addXP <player> <level>");
                     } if(args.length >= 3) {
                         OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
-                        if(!PlayerData.isLoaded(target.getUniqueId()))
-                            PlayerData.loadNull(target.getUniqueId(), false);
+                        if(!PlayerData.isLoaded(target.getUniqueId())) PlayerData.loadNull(target.getUniqueId(), false);
                         int value;
                         try { value = Integer.parseInt(args[2]);
                         } catch(NumberFormatException ex){
@@ -426,11 +459,11 @@ public final class Main extends JavaPlugin implements Listener {
                         }
                     }
                 }
-            } else if(command.getLabel().equalsIgnoreCase("Settings")) {
-                Settings.panel(player);
-            } else if(command.getLabel().equalsIgnoreCase("gamemode")) {
+            }
+            else if(command.getLabel().equalsIgnoreCase("Settings")) Settings.panel(player);
+            else if(command.getLabel().equalsIgnoreCase("gamemode")) {
                 if(Ranks.isStaff(player.getUniqueId())) {
-                    if(!StaffManager.hasStaffMode(player)) {
+                    if(!Main.getStaffManager().hasStaffMode(player)) {
                         Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
                         return true;
                     }
@@ -519,7 +552,7 @@ public final class Main extends JavaPlugin implements Listener {
                 }
             } else if(command.getLabel().equalsIgnoreCase("heal")) {
                 if(Ranks.isStaff(player.getUniqueId())) {
-                    if(StaffManager.hasStaffMode(player)) {
+                    if(Main.getStaffManager().hasStaffMode(player)) {
                         if(args.length < 1) {
                             Util.heal(player);
                             Chat.sendMessage(player, "Paransit itsesi!");
@@ -543,7 +576,7 @@ public final class Main extends JavaPlugin implements Listener {
                 if(player.isOp()) {
                     if(args.length < 1) {
                         Chat.sendMessage(player, "§7Käytä: §a/aika <day|night|noon>");
-                        StaffManager.timeGui(player);
+                        Main.getStaffManager().timeGui(player);
                     } else {
                         World world = player.getWorld();
                         switch(args[0]) {
@@ -936,17 +969,17 @@ public final class Main extends JavaPlugin implements Listener {
                    Chat.sendMessage(player, "Ei oikeuksia!");
                    return true;
                }
-               if(!StaffManager.hasStaffMode(player)) {
+               if(!Main.getStaffManager().hasStaffMode(player)) {
                    Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
                    return true;
                }
-                if(!Events.lastLocation.containsKey(uuid)) {
+                if(!Main.getEventsListener().lastLocation.containsKey(uuid)) {
                     Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei ole mitään mihin viedä.");
                 } else {
-                    Location loc = Events.lastLocation.get(uuid);
+                    Location loc = Main.getEventsListener().lastLocation.get(uuid);
                     if(loc != null) {
                         Chat.sendMessage(player, "Viedään äskeiseen sijaintiin...");
-                        player.teleport(Events.lastLocation.get(uuid));
+                        player.teleport(Main.getEventsListener().lastLocation.get(uuid));
                     } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei ole mitään mihin viedä.");
                 }
             } else if(command.getLabel().equalsIgnoreCase("enderchest")) {
@@ -954,7 +987,7 @@ public final class Main extends JavaPlugin implements Listener {
                     Chat.sendMessage(player, "Ei oikeuksia!");
                     return true;
                 }
-               if(!StaffManager.hasStaffMode(player)) {
+               if(!Main.getStaffManager().hasStaffMode(player)) {
                    Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
                    return true;
                }
@@ -970,19 +1003,19 @@ public final class Main extends JavaPlugin implements Listener {
                     player.openInventory(player.getEnderChest());
                 }
             } else if(command.getLabel().equalsIgnoreCase("weather")) {
-               if(!StaffManager.hasStaffMode(player)) {
+               if(!Main.getStaffManager().hasStaffMode(player)) {
                    Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
                    return true;
                }
-                if(Ranks.isStaff(uuid)) StaffManager.weatherGui(player);
+                if(Ranks.isStaff(uuid)) Main.getStaffManager().weatherGui(player);
             } else if(command.getLabel().equalsIgnoreCase("vanish")) {
-               if(!StaffManager.hasStaffMode(player)) {
+               if(!Main.getStaffManager().hasStaffMode(player)) {
                    Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
                    return true;
                }
-                if(Ranks.isStaff(uuid)) StaffManager.toggleVanish(player);
+                if(Ranks.isStaff(uuid)) Main.getStaffManager().toggleVanish(player);
             } else if(command.getLabel().equalsIgnoreCase("staffmode")) {
-               if(Ranks.isStaff(uuid)) StaffManager.toggleStaffMode(player);
+               if(Ranks.isStaff(uuid)) Main.getStaffManager().toggleStaffMode(player);
            }
         } else {
             //CONSOLE ONLY COMMANDS
