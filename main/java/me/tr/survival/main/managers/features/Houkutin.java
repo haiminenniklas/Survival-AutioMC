@@ -28,7 +28,7 @@ public class Houkutin implements CommandExecutor {
 
     // Command
 
-    private static boolean ENABLED;
+    private static boolean ENABLED = true;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -117,10 +117,9 @@ public class Houkutin implements CommandExecutor {
                     }
 
                     if(!isActivated()) {
-
                         if(Balance.canRemove(clicker.getUniqueId(), 10000)) {
-
                             gui.close(clicker);
+                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                             selectGui(clicker);
 
                         } else {

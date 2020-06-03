@@ -1,6 +1,7 @@
 package me.tr.survival.main.managers;
 
 import me.tr.survival.main.*;
+import me.tr.survival.main.listeners.Events;
 import me.tr.survival.main.managers.perks.Particles;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.Util;
@@ -288,7 +289,9 @@ public class StaffManager implements Listener, CommandExecutor {
             @Override
             public void run() {
                 if(staffMode.getOrDefault(player.getUniqueId(), false)) {
-                    Util.sendNotification(player, "§7Piiloutuminen: " + (hidden.contains(player.getUniqueId()) ? "§a§lPÄÄLLÄ" : "§c§lPOIS PÄÄLTÄ") + " §8| §7TPS: §a" + Util.round(Sorsa.getCurrentTPS()), false);
+                    if(!Events.adminMode.getOrDefault(player.getUniqueId(), false)) {
+                        Util.sendNotification(player, "§7Piiloutuminen: " + (hidden.contains(player.getUniqueId()) ? "§a§lPÄÄLLÄ" : "§c§lPOIS PÄÄLTÄ") + " §8| §7TPS: §a" + Util.round(Sorsa.getCurrentTPS()), false);
+                    }
                 } else cancel();
 
             }

@@ -88,10 +88,10 @@ public class TeleportRequest {
             two.sendMessage(" ");
             two.spigot().sendMessage(accept);
             two.sendMessage(" ");
-            two.sendMessage(" §7Sinulla on §a60 sekuntia §7aikaa hyväksyä");
+            two.sendMessage(" §7Sinulla on §e60 sekuntia §7aikaa hyväksyä");
             two.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-            Chat.sendMessage(one, "Lähetit §eteleporttaus§7-pyynnön pelaajalle §6" + two.getName() + "§7!" +
+            Chat.sendMessage(one, "Lähetit §eTeleporttaus§7-pyynnön pelaajalle §a" + two.getName() + "§7!" +
                     " Pyyntö umpeutuu automaattisesti §e60 sekunnin §7kuluttua...");
 
             this.requestTime = System.currentTimeMillis();

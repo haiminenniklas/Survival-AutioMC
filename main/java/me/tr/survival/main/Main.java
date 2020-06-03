@@ -175,7 +175,6 @@ public final class Main extends JavaPlugin implements Listener {
 
         getCommand("apua").setExecutor(new Essentials());
         getCommand("broadcast").setExecutor(new Essentials());
-        getCommand("discord").setExecutor(new Essentials());
 
         getCommand("bal").setExecutor(new MoneyCommand());
         getCommand("pay").setExecutor(new MoneyCommand());
@@ -184,7 +183,6 @@ public final class Main extends JavaPlugin implements Listener {
 
         getCommand("world").setExecutor(new Essentials());
         getCommand("clear").setExecutor(new Essentials());
-        getCommand("koordinaatit").setExecutor(new Essentials());
 
         getCommand("baltop").setExecutor(new BaltopCommand());
         getCommand("matkusta").setExecutor(new TravelManager());
@@ -401,17 +399,6 @@ public final class Main extends JavaPlugin implements Listener {
                             Chat.sendMessage(player, "Lisätty §6" + value + " §7XP:tä pelaajalle §6" + target.getName());
                         }
                     }
-                }
-            } else if(command.getLabel().equalsIgnoreCase("ping")) {
-                if(args.length < 1) {
-                    Chat.sendMessage(player, "Viiveesi: §a" + Util.getPing(player) + "ms");
-                } else {
-                    Player target = Bukkit.getPlayer(args[0]);
-                    if(target == null) {
-                        Chat.sendMessage(player, "Pelaajaa ei löydetty!");
-                        return true;
-                    }
-                    Chat.sendMessage(player, "Pelaajan §6" + target.getName() +  " §7viive: §a" + Util.getPing(target) + "ms");
                 }
             } else if(command.getLabel().equalsIgnoreCase("speed")) {
                 if(player.isOp()) {

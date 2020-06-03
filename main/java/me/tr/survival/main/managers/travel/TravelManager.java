@@ -9,6 +9,7 @@ import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -112,6 +113,7 @@ public class TravelManager implements CommandExecutor, Listener {
                 public void onClick(Player clicker, ClickType clickType) {
 
                     gui.close(clicker);
+                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                     EndManager.panel(clicker);
                 }
             });

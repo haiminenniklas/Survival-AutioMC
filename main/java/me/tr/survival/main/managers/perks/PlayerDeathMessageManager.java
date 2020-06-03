@@ -10,6 +10,7 @@ import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -72,11 +73,14 @@ public class PlayerDeathMessageManager implements Listener {
                 gui.addButton(new Button(1, index, item) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
-                        gui.close(clicker);
+                        deathMessagePanel(clicker);
                         if(!selected) {
+                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
                             selectDeathMessage(clicker.getUniqueId(), deathMessage);
                             Chat.sendMessage(player, "Valitsit kuolemanviestiksesi: " + deathMessage.title);
                         } else {
+                            gui.close(clicker);
+                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
                             resetDeathMessages(clicker.getUniqueId());
                             Chat.sendMessage(player, "Tyhjensit kuolemanviestisi!");
                         }
@@ -158,9 +162,11 @@ public class PlayerDeathMessageManager implements Listener {
                         gui.close(clicker);
                         if(!selected) {
                             selectKillMessage(clicker.getUniqueId(), killMessage);
+                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
                             Chat.sendMessage(player, "Valitsit tappoviestiksesi: " + killMessage.title);
                         } else {
                             resetKillMessages(clicker.getUniqueId());
+                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
                             Chat.sendMessage(player, "Tyhjensit tappoviestisi!");
                         }
                         killMessagePanel(clicker);

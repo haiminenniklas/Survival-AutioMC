@@ -31,9 +31,9 @@ commands:
   #level:
    # description: Hallinnoi Leveleitä
    # aliases: [lvl]
-  ping:
-    description: Viive
-    aliases: [viive]
+  #ping:
+    #description: Viive
+    #aliases: [viive]
   speed:
     description: Lentonopeus
   settings:
@@ -42,12 +42,6 @@ commands:
   gamemode:
     description: Pelimuoto
     aliases: [gm]
-  #msg:
-   # description: Yksityisviestit
-    #aliases: [tell, whisper, viesti]
-  #r:
-    #description: Vastaa viestiin
-    #aliases: [vastaa]
   sethome:
     description: Aseta koti
   heal:
@@ -87,7 +81,7 @@ commands:
     aliases: [warps]
   tehostus:
     description: Tehostukset
-    aliases: [booster, boosters, tehostukset]
+    aliases: [tehostukset, boost]
   back:
     description: Viimeisein sijainti
     aliases: [takaisin]
@@ -114,22 +108,16 @@ commands:
     aliases: [sää]
   staff:
     description: Ylläpito-paneeli
-    aliases: [yp, ylläpito, admin, mod]
+    aliases: [yp]
   apua:
     description: Apua
     aliases: [help, commands, komennot, faq]
-  koordinaatit:
-    description: Katso sijaintisi
-    aliases: [here, loc, location]
   world:
     description: Maailmat
     aliases: [worlds, maailma, maailmat]
   broadcast:
     description: Ilmoita
     aliases: [bc, ilmoita, shout]
-  discord:
-    description: Discord-yhteisö
-    aliases: [dc]
   vanish:
     description: Piiloudu
     aliases: [v, piiloudu]
@@ -167,12 +155,13 @@ commands:
     description: Give Vip command
   hehku:
     description: Hehkuefektit
-    aliases: [glow, hehkuefektit]
+    aliases: [glow]
   vip:
     description: Vip-ominaisuudet
     aliases: [vipsettings]
   houkutin:
     description: Spawnin houkutin
+    aliases: [spawner]
   uptime:
     description: Uptime
   ääri:
@@ -183,4 +172,3 @@ commands:
     aliases: [roskakori, trash]
   staffmode:
     description: Staffmode
-    aliases: [adminmode, modmode]

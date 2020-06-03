@@ -156,7 +156,7 @@ public class Sorsa {
 
         return new Location(world, x, y, z, yaw, pitch);
     }
-    
+
     public static void setDeathSpawn(Location loc) {
 
         FileConfiguration config = Main.getInstance().getConfig();

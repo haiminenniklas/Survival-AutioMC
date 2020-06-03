@@ -37,7 +37,6 @@ public class Particles implements Listener, CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if(command.getLabel().equalsIgnoreCase("kosmetiikka")) {
             if(sender instanceof Player) {
                 Player player = (Player) sender;
@@ -96,14 +95,19 @@ public class Particles implements Listener, CommandExecutor {
 
                 gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.HEART_OF_THE_SEA, 1, "§aPartikkelit", Arrays.asList(
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        " §7Klikkaa hallinnoidaksesi",
-                        " §apartikkeliefektejäsi§7!",
+                        " §7Parikkeliefektit ovat siistejä",
+                        " §7animaatioita jotka hyrräävät",
+                        " §7ympärilläsi! Täydellinen tapa",
+                        " §7tehdä ystävästi §ekateelliseksi§7!",
+                        " ",
+                        " §aKlikkaa avataksesi!",
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
 
                         gui.close(player);
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         openParticlesGui(player);
 
                     }
@@ -111,14 +115,18 @@ public class Particles implements Listener, CommandExecutor {
 
                 gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.BOW, 1, "§bNuolijanat", Arrays.asList(
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        " §7Klikkaa hallinnoidaksesi",
-                        " §bnuolijanojasi§7!",
+                        " §7Nuolijanoilla saat hienoja",
+                        " §7partikkeleita seuraamaan",
+                        " §7nuoliasi! Huimaa!",
+                        " ",
+                        " §aKlikkaa avataksesi!",
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
 
                         gui.close(player);
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         openArrowTrailGui(player);
 
                     }
@@ -128,6 +136,7 @@ public class Particles implements Listener, CommandExecutor {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(player);
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         Profile.openProfile(player, clicker.getUniqueId());
                     }
                 });
@@ -191,6 +200,7 @@ public class Particles implements Listener, CommandExecutor {
                                 public void onClick(Player clicker, ClickType clickType) {
                                     gui.close(player);
                                     removeCurrentArrowTrail(player);
+                                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
                                     Chat.sendMessage(player, "Deaktivoit nuolijanan §6" + getDisplayNameForArrowTrail(particle.getId()));
                                 }
                             });
@@ -201,6 +211,7 @@ public class Particles implements Listener, CommandExecutor {
                                 public void onClick(Player clicker, ClickType clickType) {
                                     gui.close(player);
                                     setCurrentArrowTrail(player, particle);
+                                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
                                     Chat.sendMessage(player, "Aktivoit nuolijanan §6" + getDisplayNameForArrowTrail(particle.getId()));
                                 }
                             });
@@ -220,6 +231,16 @@ public class Particles implements Listener, CommandExecutor {
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(player);
                         openMainGui(player);
+                    }
+                });
+
+                gui.addButton(new Button(1, 35, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä")) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(clicker);
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
+                        Chat.sendMessage(player, "Deaktivoit nuolijanan §6" + getDisplayNameForArrowTrail(getCurrentArrowTrail(clicker).getId()));
+                        removeCurrentArrowTrail(player);
                     }
                 });
 
@@ -285,6 +306,7 @@ public class Particles implements Listener, CommandExecutor {
                                 public void onClick(Player clicker, ClickType clickType) {
                                     gui.close(player);
                                     removeCurrentParticle(player);
+                                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
                                     Chat.sendMessage(player, "Deaktivoit partikkelin §6" + getDisplayNameForParticle(particle.getId()));
                                 }
                             });
@@ -296,6 +318,7 @@ public class Particles implements Listener, CommandExecutor {
                                     gui.close(player);
                                    // System.out.println("Click ID" + particle.getId());
                                     setCurrentParticle(player, particle);
+                                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
                                     Chat.sendMessage(player, "Aktivoit partikkelin §6" + getDisplayNameForParticle(particle.getId()));
                                 }
                             });
@@ -315,6 +338,16 @@ public class Particles implements Listener, CommandExecutor {
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(player);
                         openMainGui(player);
+                    }
+                });
+
+                gui.addButton(new Button(1, 44, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä")) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(clicker);
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
+                        Chat.sendMessage(player, "Deaktivoit partikkelin §6" + getDisplayNameForParticle(getCurrentParticle(clicker).getId()));
+                        removeCurrentParticle(player);
                     }
                 });
 

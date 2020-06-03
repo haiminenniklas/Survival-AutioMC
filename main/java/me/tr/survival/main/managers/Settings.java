@@ -56,6 +56,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Settings.toggle(uuid, "scoreboard");
                 Settings.scoreboard(clicker);
                 panel(clicker);
@@ -78,6 +79,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Settings.toggle(uuid, "privacy");
                 panel(clicker);
             }
@@ -98,6 +100,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Settings.toggle(uuid, "chat");
                 panel(clicker);
             }
@@ -119,6 +122,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 UltimateTimber.getInstance().getChoppingManager().togglePlayer(clicker);
                 panel(clicker);
             }
@@ -139,6 +143,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Settings.toggle(uuid, "chat_mentions");
                 panel(clicker);
             }
@@ -156,8 +161,17 @@ public class Settings {
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
-                vipPanel(clicker);
+
+                if(!Ranks.isVIP(player.getUniqueId())) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Tämä toiminto vaatii vähintään §e§lPremium§7-arvon! Lisätietoa §a/kauppa§7!");
+                    return;
+                } else {
+                    gui.close(clicker);
+                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
+                    vipPanel(clicker);
+                }
+
             }
         });
 
@@ -165,6 +179,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Profile.openProfile(clicker, clicker.getUniqueId());
             }
         });
@@ -217,10 +232,10 @@ public class Settings {
 
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
                     if(!Ranks.isVIP(clicker.getUniqueId()) && !Ranks.isStaff(clicker.getUniqueId())) {
-                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §e§lPremium§7-arvon!");
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     } else {
+                        gui.close(clicker);
                         PlayerWeather.panel(clicker);
                     }
                 }
@@ -244,6 +259,7 @@ public class Settings {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
+                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                     PlayerGlowManager.toggle(player);
                     vipPanel(clicker);
                 }
@@ -262,10 +278,11 @@ public class Settings {
 
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
                     if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(clicker.getUniqueId())) {
-                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§f+§7-arvon!");
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     } else {
+                        gui.close(clicker);
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         PlayerDeathMessageManager.deathMessagePanel(clicker);
                     }
                 }
@@ -284,10 +301,11 @@ public class Settings {
 
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
                     if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(clicker.getUniqueId())) {
-                        Chat.sendMessage(clicker, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§f+§7-arvon!");
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     } else {
+                        gui.close(clicker);
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         PlayerDeathMessageManager.killMessagePanel(clicker);
                     }
                 }
@@ -308,13 +326,14 @@ public class Settings {
 
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
                     if(!Ranks.hasRank(uuid, "sorsa") && !Ranks.isStaff(uuid)) {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Tähän toimintoon vaaditaan §2§lSORSA§7-arvo! Lisätietoa §a/kauppa§7!");
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     } else {
+                        gui.close(clicker);
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         toggleFlight(clicker);
+                        vipPanel(clicker);
                     }
-                    vipPanel(clicker);
 
                 }
             });
@@ -338,6 +357,7 @@ public class Settings {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
+                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                     Settings.panel(clicker);
                 }
             });
