@@ -50,7 +50,7 @@ public class PlayerGlowManager implements CommandExecutor {
         }
     }
 
-    public void enableGlow(Player player) {
+    private void enableGlow(Player player) {
         if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
         PlayerData.set(player.getUniqueId(), "glow_effect", true);
         player.setGlowing(true);
@@ -65,7 +65,7 @@ public class PlayerGlowManager implements CommandExecutor {
 
     }
 
-    public boolean hasGlowEnabled(Player player) {
+    private boolean hasGlowEnabled(Player player) {
         if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
         return (boolean) PlayerData.getValue(player.getUniqueId(), "glow_effect");
     }

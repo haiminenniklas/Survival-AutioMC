@@ -4,6 +4,7 @@ import me.tr.survival.main.database.PlayerData;
 
 import java.util.UUID;
 
+@Deprecated
 public class Crystals {
 
     public static int get(UUID uuid) {

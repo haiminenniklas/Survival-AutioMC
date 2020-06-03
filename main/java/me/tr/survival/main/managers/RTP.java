@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class RTP {
 
-    public static HashMap<UUID, Long> cooldown = new HashMap<>();
+    private static HashMap<UUID, Long> cooldown = new HashMap<>();
 
     public static boolean teleport(final Player player) {
 
@@ -59,7 +59,7 @@ public class RTP {
         return true;
     }
 
-    public static Location randomLocation(World world) {
+    private static Location randomLocation(World world) {
         Random r = new Random();
         int range = Main.getInstance().getConfig().getInt("random-tp.range");
         int newX = r.nextInt(range), newZ = r.nextInt(range);

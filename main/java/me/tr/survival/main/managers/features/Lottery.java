@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class Lottery {
 
-    public static Prize findPrize() {
+    private static Prize findPrize() {
         double random = new Random().nextDouble();
         Prize randomPrize = Prize.values()[new Random().nextInt(Prize.values().length)];
         if(random <= randomPrize.getPercentage()) return randomPrize;

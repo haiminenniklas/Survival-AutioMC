@@ -22,13 +22,14 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class BaltopCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if(sender instanceof Player) {
             Player player = (Player) sender;
@@ -44,8 +45,8 @@ public class BaltopCommand implements CommandExecutor {
         return true;
     }
 
-    public static void loadGui(final Player player, TypedCallback<Gui> cb) {
-        final long start = System.currentTimeMillis();
+    private static void loadGui(final Player player, TypedCallback<Gui> cb) {
+        //final long start = System.currentTimeMillis();
         //System.out.println("[/Baltop] Opening BalanceTop GUI... ");
         // System.out.println("[/Baltop] Getting balance Map... ");
         Balance.getBalances((rawBalanceMap) -> {
@@ -62,7 +63,6 @@ public class BaltopCommand implements CommandExecutor {
                     //System.out.println("[/Baltop] Starting looping Map Entries... ");
                     //final long loopStart = System.currentTimeMillis();
 
-                    final List<ItemStack> heads = new ArrayList<>();
 
                     for (final Map.Entry<UUID, Double> e : balanceMap.entrySet()) {
                         if(e == null) continue;
@@ -79,26 +79,21 @@ public class BaltopCommand implements CommandExecutor {
                                     " ",
                                     " §aKlikkaa nähdäksesi lisätietoja",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                            ), (item) -> {
-                                heads.add(item);
+                            ), (item) ->
                                 gui.addButton(new Button(1, slot, item) {
                                     @Override
                                     public void onClick(Player clicker, ClickType clickType) {
                                         gui.close(clicker);
                                         Profile.openProfile(clicker, clicker.getUniqueId());
                                     }
-                                });
-                            });
+                                }));
 
                         } else {
                             ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §7" + target.getName(), Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Rahatilanne: §a" + Util.formatDecimals(balance) + "€",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                            ), (item) -> {
-                                heads.add(item);
-                                gui.addItem(1, item, slot);
-                            });
+                            ), (item) -> gui.addItem(1, item, slot));
                         }
                         i += 1;
                         if (i > 12) break;
@@ -221,7 +216,7 @@ public class BaltopCommand implements CommandExecutor {
             public void run() {
                 InventoryView current = player.getOpenInventory();
                 if(current.getTitle().contains("Ladataan...")) {
-                    loadGui(player, (gui) -> {
+                    loadGui(player, (gui) ->
                         Bukkit.getScheduler().runTaskLater(Main.getInstance(), (runnable) -> {
                             loadGui.close(player);
                             // System.out.println("[/Baltop] Opening Gui... ");
@@ -231,11 +226,9 @@ public class BaltopCommand implements CommandExecutor {
                             runnable.cancel();
                             //System.out.println("[/Baltop] Gui opening took " + (System.currentTimeMillis() - invStart) + "ms. ");
                             //System.out.println("[/Baltop] It took in total " + (System.currentTimeMillis() - start) + "ms. ");
-                        }, 5);
-                    });
+                        }, 5));
                 }
             }
         }.runTaskLater(Main.getInstance(), 5);
-
     }
 }

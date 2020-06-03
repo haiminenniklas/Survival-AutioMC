@@ -62,11 +62,11 @@ public final class Main extends JavaPlugin implements Listener {
         return Main.instance;
     }
     private static LuckPerms luckPerms;
-    public static LuckPerms getLuckPerms() {
+    static LuckPerms getLuckPerms() {
         return Main.luckPerms;
     }
     private static PlayerParticlesAPI particlesAPI;
-    public static PlayerParticlesAPI getParticlesAPI() {
+    static PlayerParticlesAPI getParticlesAPI() {
         return particlesAPI;
     }
     private static Map<UUID, Long> spawnCommandDelay = new HashMap<>();
@@ -537,18 +537,6 @@ public final class Main extends JavaPlugin implements Listener {
                             }
                         }
                     }
-                }
-            } else if(command.getLabel().equalsIgnoreCase("sethome")) {
-                if(!player.isOp()) Homes.panel(player, player);
-                else {
-                    if(args.length >= 1) {
-                        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-                        if(!PlayerData.isLoaded(target.getUniqueId())) {
-                            Chat.sendMessage(player, "Pelaajan §a" + target.getName() + " §7koteja ei ole ladattu. Tee §a/debug load "
-                                    + target.getName() + " §7ja kokeile uudestaan!");
-                            return true;
-                        } else Homes.panel(player, target);
-                    } else Homes.panel(player, player);
                 }
             } else if(command.getLabel().equalsIgnoreCase("heal")) {
                 if(Ranks.isStaff(player.getUniqueId())) {

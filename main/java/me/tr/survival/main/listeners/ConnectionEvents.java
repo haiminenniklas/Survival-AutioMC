@@ -78,8 +78,13 @@ public class ConnectionEvents implements Listener {
         for(UUID vanished : Main.getStaffManager().hidden) {
             Player v = Bukkit.getPlayer(vanished);
             if(v == null) continue;
-            if(Main.getStaffManager().hasStaffMode(player)) player.showPlayer(Main.getInstance(), v);
             else player.hidePlayer(Main.getInstance(), v);
+
+            if(Ranks.isStaff(player.getUniqueId())) {
+                v.showPlayer(Main.getInstance(), player);
+                player.showPlayer(Main.getInstance(), v);
+            }
+
         }
 
         // Setup backpacks
@@ -106,10 +111,10 @@ public class ConnectionEvents implements Listener {
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
 
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), (r) -> {
-            if(Ranks.isStaff(player.getUniqueId()) && !Main.getStaffManager().hasStaffMode(player)) Main.getStaffManager().enableStaffMode(player);
             Settings.scoreboard(player);
+            if(Ranks.isStaff(player.getUniqueId()) && !Main.getStaffManager().hasStaffMode(player)) Main.getStaffManager().enableStaffMode(player);
             r.cancel();
-        }, 20 * 2);
+        }, 5);
 
         Sorsa.everyAsync(3, () -> Sorsa.sendTablist(player));
     }
@@ -124,6 +129,10 @@ public class ConnectionEvents implements Listener {
         }
         // Disable staff mode
         if(Main.getStaffManager().hasStaffMode(player)) Main.getStaffManager().disableStaffMode(player);
+
+        // Disable Vanish
+        if(Main.getStaffManager().hidden.contains(player.getUniqueId())) Main.getStaffManager().show(player);
+
         // Save player's data
         Main.getInstance().getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> PlayerData.savePlayer(player.getUniqueId()));
     }

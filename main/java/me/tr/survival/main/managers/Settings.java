@@ -376,7 +376,7 @@ public class Settings {
         PlayerData.set(uuid, setting, value);
     }
 
-    public static void toggle(UUID uuid, String setting) {
+    private static void toggle(UUID uuid, String setting) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         Settings.set(uuid, setting, !Settings.get(uuid, setting));
     }

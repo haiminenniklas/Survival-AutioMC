@@ -10,7 +10,7 @@ public abstract class Button {
     public int pos;
     @Deprecated public Inventory inv;
     public ItemStack item;
-    public int page;
+    private int page;
 
     @Deprecated
     public Button(Inventory inv, int pos, ItemStack item){

@@ -77,7 +77,7 @@ public class Backpack implements CommandExecutor, Listener {
         return true;
     }
 
-    public void openOther(Player opener, OfflinePlayer target) {
+    private void openOther(Player opener, OfflinePlayer target) {
 
         ItemStack[] items = getSavedInventory(target.getUniqueId());
         Inventory inv = Bukkit.createInventory(null, getLevel(target.getUniqueId()).size, "Tarkastele reppua (" + target.getName() + ")");
@@ -231,17 +231,17 @@ public class Backpack implements CommandExecutor, Listener {
         }
     }
 
-    public String getRawSavedInventory(UUID uuid) {
+    private String getRawSavedInventory(UUID uuid) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         return String.valueOf(PlayerData.getValue(uuid, "backpack_inventory"));
     }
 
-    public void setRawSavedInventory(UUID uuid, String inv) {
+    private void setRawSavedInventory(UUID uuid, String inv) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "backpack_inventory", inv);
     }
 
-    public ItemStack[] getSavedInventory(UUID uuid) {
+    private ItemStack[] getSavedInventory(UUID uuid) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         String raw = getRawSavedInventory(uuid);
         if(raw.equalsIgnoreCase("null")) return new ItemStack[0];
@@ -252,7 +252,7 @@ public class Backpack implements CommandExecutor, Listener {
         return new ItemStack[0];
     }
 
-    public void saveInventory(UUID uuid, ItemStack[] inv) {
+    private void saveInventory(UUID uuid, ItemStack[] inv) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         String raw = Util.itemStackArrayToBase64(inv);
         setRawSavedInventory(uuid, raw);
@@ -274,7 +274,7 @@ public class Backpack implements CommandExecutor, Listener {
         PlayerData.set(uuid, "backpack_level", level.toString());
     }
 
-    public void upgradeConfirm(Player player) {
+    private void upgradeConfirm(Player player) {
         UUID uuid = player.getUniqueId();
         Level current = getLevel(uuid);
         int price = 30000;
@@ -308,7 +308,7 @@ public class Backpack implements CommandExecutor, Listener {
         });
     }
 
-    public void upgrade(Player player) {
+    private void upgrade(Player player) {
 
         UUID uuid = player.getUniqueId();
         Level current = getLevel(uuid);
@@ -338,7 +338,7 @@ public class Backpack implements CommandExecutor, Listener {
         }
     }
 
-    public boolean addLevel(UUID uuid) {
+    private boolean addLevel(UUID uuid) {
 
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
 

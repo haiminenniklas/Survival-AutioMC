@@ -10,19 +10,17 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
+@Deprecated
 public class Level {
 
     public static int get(UUID player){
-        if(!PlayerData.isLoaded(player)) {
-            PlayerData.loadNull(player, false);
-        }
+        if(!PlayerData.isLoaded(player)) PlayerData.loadNull(player, false);
         return Integer.parseInt(PlayerData.getValue(player, "level").toString());
     }
 
     public static void add(OfflinePlayer player, int value){
-        if(!PlayerData.isLoaded(player.getUniqueId())) {
-            PlayerData.loadNull(player.getUniqueId(), false);
-        }
+        if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
+
         PlayerData.add(player.getUniqueId(), "level", value);
     }
 
@@ -33,7 +31,7 @@ public class Level {
         PlayerData.set(player.getUniqueId(), "level", value);
     }
 
-    public static void levelUp(Player player){
+    private static void levelUp(Player player){
         Level.add(player, 1);
         PlayerData.set(player.getUniqueId(), "xp", 0);
         LevelUpEvent event = new LevelUpEvent(player, Level.get(player.getUniqueId()));
@@ -42,57 +40,23 @@ public class Level {
 
 
     public static String format(int level){
-
-        if(level <= 10){
-            return "§7[" + ChatColor.GRAY + level + "§7]";
-        } else if(level > 10 && level <= 30){
-            return "§7[" + ChatColor.GREEN + level + "§7]";
-        } else if(level > 30 && level <= 40){
-            return "§7[" + ChatColor.BLUE + level + "§7]";
-        } else if(level > 40 && level <= 50){
-            return "§7[" + ChatColor.LIGHT_PURPLE + level + "§7]";
-        } else if(level > 50 && level <= 60){
-            return "§7[" + ChatColor.YELLOW + level + "§7]";
-        } else if(level > 60 && level <= 70){
-            return "§7[" + ChatColor.GOLD + level + "§7]";
-        } else if(level > 70 && level <= 80){
-            return "§7[" + ChatColor.AQUA + level + "§7]";
-        } else if(level > 80 && level <= 99){
-            return "§7[" + ChatColor.RED + level + "§7]";
-        } else if(level > 99){
-            return "§7[" + ChatColor.RED + ChatColor.BOLD + level + "§7]";
-        }
-
-        return "§7[" + ChatColor.GRAY + level + "§7]";
-
+        return "§7[" + formatChat(level) + "§7]";
     }
-    
+
     public static String formatChat(int level) {
-        if(level <= 10){
-            return "" + ChatColor.GRAY + level + "";
-        } else if(level > 10 && level <= 30){
-            return "" + ChatColor.GREEN + level + "";
-        } else if(level > 30 && level <= 40){
-            return "" + ChatColor.BLUE + level + "";
-        } else if(level > 40 && level <= 50){
-            return "" + ChatColor.LIGHT_PURPLE + level + "";
-        } else if(level > 50 && level <= 60){
-            return "" + ChatColor.YELLOW + level + "";
-        } else if(level > 60 && level <= 70){
-            return "" + ChatColor.GOLD + level + "";
-        } else if(level > 70 && level <= 80){
-            return "" + ChatColor.AQUA + level + "";
-        } else if(level > 80 && level <= 99){
-            return "" + ChatColor.RED + level + "";
-        } else if(level > 99){
-            return "" + ChatColor.RED + ChatColor.BOLD + level + "";
-        }
-
-        return "" + ChatColor.GRAY + level + "";
+        if(level <= 10) return "" + ChatColor.GRAY + level + "";
+        else if( level <= 30) return "" + ChatColor.GREEN + level + "";
+        else if(level <= 40) return "" + ChatColor.BLUE + level + "";
+        else if(level <= 50) return "" + ChatColor.LIGHT_PURPLE + level + "";
+        else if(level <= 60) return "" + ChatColor.YELLOW + level + "";
+        else if(level <= 70) return "" + ChatColor.GOLD + level + "";
+        else if(level <= 80) return "" + ChatColor.AQUA + level + "";
+        else if(level <= 99) return "" + ChatColor.RED + level + "";
+        else return "" + ChatColor.RED + ChatColor.BOLD + level + "";
     }
-        
 
-    public static int getXP(UUID player){
+
+    private static int getXP(UUID player){
         return Integer.parseInt(PlayerData.getValue(player, "xp").toString());
     }
 
@@ -124,7 +88,7 @@ public class Level {
 
     }
 
-    public static float getXPToNextLevel(UUID player){
+    private static float getXPToNextLevel(UUID player){
         float maxXP = Util.roundInt(Level.get(player)) * 10;
         if(maxXP % 10 <= 5 && maxXP % 10 > 0) maxXP += (10 - (maxXP % 10));
         return maxXP;

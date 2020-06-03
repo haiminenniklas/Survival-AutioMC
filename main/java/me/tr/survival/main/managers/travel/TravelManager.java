@@ -15,15 +15,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class TravelManager implements CommandExecutor, Listener {
 
@@ -112,21 +108,16 @@ public class TravelManager implements CommandExecutor, Listener {
         });
     }
 
-    public void nether(Player player) {
+    private void nether(Player player) {
 
         if(Sorsa.getNetherWorld() != null) Sorsa.teleportToNether(player);
         else Chat.sendMessage(player, Chat.Prefix.ERROR, "Matkustaminen epäonnistui...");
     }
 
-    public List<Player> getNetherPlayers() {
-        if(Sorsa.getNetherWorld() != null) return Sorsa.getNetherWorld().getPlayers();
-        return new ArrayList<>();
-    }
-
+    @Deprecated
     public void removePearl(Player player) {
         for(ItemStack item : player.getInventory().getContents()) {
 
-            if(item == null) continue;
             if(item.getType() != Material.ENDER_PEARL) continue;
 
             if(item.isSimilar(getPearlItem())) {
@@ -138,13 +129,14 @@ public class TravelManager implements CommandExecutor, Listener {
         }
     }
 
+    @Deprecated
     public boolean hasPearls(Player player) { return player.getInventory().containsAtLeast(getPearlItem(), 1); }
 
+    @Deprecated
     public int getPearls(Player player) {
 
         int amount = 0;
         for(ItemStack item : player.getInventory().getContents()) {
-            if(item == null) continue;
             if(item.getType() != Material.ENDER_PEARL) continue;
             if(item.isSimilar(getPearlItem())) amount += item.getAmount();
         }

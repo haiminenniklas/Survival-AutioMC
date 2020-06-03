@@ -20,7 +20,7 @@ commands:
     aliases: [stats, tiedot, profiili]
   home:
     description: Koti
-    aliases: [koti, homes, delhome]
+    aliases: [koti, homes, delhome, sethome]
   #arvo:
    # description: Arvojen hallinta
     #aliases: [rank]
@@ -42,8 +42,6 @@ commands:
   gamemode:
     description: Pelimuoto
     aliases: [gm]
-  sethome:
-    description: Aseta koti
   heal:
     description: Paranna pelaaja
   time:

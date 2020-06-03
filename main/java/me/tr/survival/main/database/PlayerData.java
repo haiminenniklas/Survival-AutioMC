@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class PlayerData {
 
-    public static HashMap<UUID, HashMap<String, Object>> player_data = new HashMap<>();
+    private static final HashMap<UUID, HashMap<String, Object>> player_data = new HashMap<>();
 
     public static void loadNull(UUID uuid, boolean save) {
         HashMap<String, Object> empty = new HashMap<>();

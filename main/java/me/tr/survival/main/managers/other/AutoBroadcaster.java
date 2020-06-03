@@ -1,6 +1,7 @@
 package me.tr.survival.main.managers.other;
 
 import me.tr.survival.main.Main;
+import me.tr.survival.main.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitTask;
@@ -21,17 +22,17 @@ public class AutoBroadcaster {
     }
 
     private static void sendMessage() {
-        Bukkit.broadcastMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+        Util.broadcast("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
 
         int random = new Random().nextInt(getMessages().size());
         String messageRaw = getMessages().get(random);
         String[] splitted = messageRaw.split("<br>");
-        for(int i = 0; i < splitted.length; i++) { Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', splitted[i])); }
+        for(int i = 0; i < splitted.length; i++) { Util.broadcast(ChatColor.translateAlternateColorCodes('&', splitted[i])); }
         //Bukkit.broadcastMessage("§7§m-----------------------------");
-        Bukkit.broadcastMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+        Util.broadcast("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
     }
 
-    public static List<String> getMessages() {
+    private static List<String> getMessages() {
         return Main.getInstance().getConfig().getStringList("auto-broadcaster.messages");
     }
 }

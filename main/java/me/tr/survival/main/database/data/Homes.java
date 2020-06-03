@@ -97,7 +97,7 @@ public class Homes {
         return amount;
     }
 
-    public boolean createHome(Player creator, String pos, Location loc) {
+    private boolean createHome(Player creator, String pos, Location loc) {
 
         if(!loc.getWorld().getName().equals("world")) {
             Chat.sendMessage(creator, Chat.Prefix.ERROR, "Pystyt luomaan kotisi vain tavalliseen maailmaan!");
@@ -109,7 +109,7 @@ public class Homes {
         return true;
     }
 
-    public void deleteHome(Player player, String position) {
+    private void deleteHome(Player player, String position) {
 
         Gui gui = new Gui("Poiston varmistus", 27);
 
@@ -149,12 +149,12 @@ public class Homes {
 
     }
 
-    public void deleteHomeReal(String pos) {
+    private void deleteHomeReal(String pos) {
         HashMap<String, Object> data = PlayerData.getData(this.owner.getUniqueId());
         data.put(pos, "null");
     }
 
-    public static Home parse(UUID owner, String text) {
+    private static Home parse(UUID owner, String text) {
 
         if(text.equalsIgnoreCase("null")) {
             return null;
@@ -201,17 +201,14 @@ public class Homes {
 
         UUID uuid = target.getUniqueId();
         Homes homeList = new Homes(target);
-        ArrayList<Home> homes = homeList.get();
+        final ArrayList<Home> homes = homeList.get();
 
         Gui gui = new Gui("Kodit", 36);
 
         int maxHomes = 3;
         if(Ranks.isVIP(uuid) || Ranks.isStaff(uuid)) maxHomes = homes.size();
 
-        int[] positions = new int[] {
-            12,13,14,
-            21,22,23
-        };
+        int[] positions = new int[] { 12,13,14, 21,22,23 };
 
         int[] glassPositions = new int[] {
                 0, 1, 2, 3, 4, 5, 6, 7, 8,
@@ -220,10 +217,7 @@ public class Homes {
                   28,29,30,31,32,33,34,35
         };
 
-        int[] colorGlassPositions = new int [] {
-          11,15,
-          20,24
-        };
+        int[] colorGlassPositions = new int [] { 11,15, 20,24};
 
         for(int i = 0; i < homes.size(); i++) {
 
@@ -295,13 +289,9 @@ public class Homes {
 
         }
 
-        for(int glassPos : glassPositions) {
-            gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1), glassPos);
-        }
+        for(int glassPos : glassPositions) { gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1), glassPos); }
 
-        for(int colorGlassPos : colorGlassPositions) {
-            gui.addItem(1, new ItemStack(Material.LIME_STAINED_GLASS_PANE, 1), colorGlassPos);
-        }
+        for(int colorGlassPos : colorGlassPositions) { gui.addItem(1, new ItemStack(Material.LIME_STAINED_GLASS_PANE, 1), colorGlassPos); }
 
         gui.addButton(new Button(1, 27, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
             @Override

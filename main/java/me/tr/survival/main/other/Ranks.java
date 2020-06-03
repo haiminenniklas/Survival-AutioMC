@@ -136,9 +136,7 @@ public class Ranks {
         return hasRank(uuid, "admin") || hasRank(uuid, "mod") || hasRank(uuid, "builder"); }
 
     public static boolean hasRank(Player player, String rank) {
-
         return hasRank(player.getUniqueId(), rank);
-
     }
 
 }

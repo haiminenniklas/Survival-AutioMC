@@ -11,35 +11,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class HomeCommand implements CommandExecutor {
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if(sender instanceof Player) {
-
             Player player = (Player) sender;
-
-            if(!player.isOp()) {
-                Homes.panel(player, player);
-            } else {
+            if(!player.isOp()) Homes.panel(player, player);
+            else {
                 if(args.length >= 1) {
-
                     OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-
                     if(!PlayerData.isLoaded(target.getUniqueId())) {
                         Chat.sendMessage(player, "Pelaajan §a" + target.getName() + " §7koteja ei ole ladattu. Tee §a/debug load "
                                 + target.getName() + " §7ja kokeile uudestaan!");
                         return true;
-                    } else {
-                        Homes.panel(player, target);
-                    }
-
-                } else {
-                    Homes.panel(player, player);
-                }
+                    } else Homes.panel(player, target);
+                } else Homes.panel(player, player);
             }
         }
-
         return false;
     }
 }

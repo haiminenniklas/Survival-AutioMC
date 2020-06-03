@@ -14,7 +14,6 @@ import java.sql.*;
 
 public class SQL {
 
-    public static Connection conn = null;
     public static HikariDataSource source = null;
 
     public static void setup() {
@@ -36,7 +35,6 @@ public class SQL {
 
             try {
                 Class.forName("org.sqlite.JDBC");
-                SQL.conn = DriverManager.getConnection("jdbc:sqlite:" + dataFolder);
                 System.out.println("Opened database successfully");
 
                 queries();
@@ -84,27 +82,25 @@ public class SQL {
 
         for(String query : queries) {
             try {
-                if(!update(query)) {
-                    Sorsa.logColored("§cCould not execute query (" + query + ")");
-                }
+                if(!update(query)) Sorsa.logColored("§cCould not execute query (" + query + ")");
+
             } catch(SQLException ex){
                 ex.printStackTrace();
                 System.err.println("Could not setup the database");
             }
         }
-
     }
 
-    public static Connection getConnection() throws SQLException {
+    private static Connection getConnection() throws SQLException {
         if(source.isClosed()) {
             setupDataSource();
         }
         return source.getConnection();
     }
 
-    @Deprecated
     // Not working properly with connection pools. Use the async function instead
     // with callbacks
+    @Deprecated
     public static Result query(String sql) throws SQLException {
         Connection conn = null;
         Result result = null;

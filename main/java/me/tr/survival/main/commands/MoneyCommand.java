@@ -29,14 +29,9 @@ public class MoneyCommand implements CommandExecutor {
                     Chat.sendMessage(player, "Rahatilanteesi: §e" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
                 } else {
                     if(!player.isOp()){
-
                         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-                        if(player.getName().equals(target.getName())) {
-                            Profile.openProfile(player, target.getUniqueId());
-                        } else {
-                            Profile.openOther(player, target);
-                        }
-
+                        if(player.getName().equals(target.getName())) Profile.openProfile(player, target.getUniqueId());
+                        else Profile.openOther(player, target);
                     } else {
 
                         if(args.length == 1 && args[0].equalsIgnoreCase("help")) {
@@ -54,8 +49,7 @@ public class MoneyCommand implements CommandExecutor {
                             if(args.length >= 3) {
 
                                 double value;
-                                try {
-                                    value = Double.parseDouble(args[2]);
+                                try { value = Double.parseDouble(args[2]);
                                 } catch(NumberFormatException ex) {
                                     Chat.sendMessage(player, "Käytä numeroita!");
                                     return true;
@@ -72,25 +66,22 @@ public class MoneyCommand implements CommandExecutor {
                                 } else if(args[0].equalsIgnoreCase("remove")) {
                                     Balance.remove(target.getUniqueId(), value);
                                     Chat.sendMessage(player, "Pelaajalta §a" + target.getName() + " §7 poistettu §a" + value + "€! §7Hänen rahatilanteensa: §a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
+                                } else if(args[0].equalsIgnoreCase("set")) {
+                                    Balance.set(target.getUniqueId(), value);
+                                    Chat.sendMessage(player, "Pelaajan §a" + target.getName() + " §7nykyinen rahatilanne on nyt: §a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
                                 }
 
-                                Chat.sendMessage(player, "Tallenna pelaajan tiedot komennolla §6/save " + target.getName());
+                                Chat.sendMessage(player, "Tallenna pelaajan tiedot komennolla §a/save " + target.getName());
 
-                            } else {
-                                if(args[0].equalsIgnoreCase("get")) {
-                                    Chat.sendMessage(player, "Pelaajan §4" + target.getName() + " rahatilanne: " + PlayerData.getValue(target.getUniqueId(), "money") + "€");
-                                }
-                            }
-
+                            } else if(args[0].equalsIgnoreCase("get")) Chat.sendMessage(player, "Pelaajan §a" + target.getName() + " rahatilanne: " + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
                         }
 
                     }
                 }
             } else if(command.getLabel().equalsIgnoreCase("pay")) {
 
-                if(args.length < 2) {
-                    Chat.sendMessage(player, "Käytä: §a/maksa <pelaaja> <määrä>");
-                } else {
+                if(args.length < 2) Chat.sendMessage(player, "Käytä: §a/maksa <pelaaja> <määrä>");
+                else {
 
                     Player target = Bukkit.getPlayer(args[0]);
                     if(target == null) {
@@ -127,7 +118,6 @@ public class MoneyCommand implements CommandExecutor {
                 }
             }
         }
-
         return true;
     }
 }

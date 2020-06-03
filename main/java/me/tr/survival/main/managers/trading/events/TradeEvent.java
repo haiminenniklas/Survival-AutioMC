@@ -4,13 +4,14 @@ import me.tr.survival.main.managers.trading.Trade;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class TradeEvent extends Event implements Cancellable {
 
     private boolean cancelled;
     private final Trade trade;
 
-    public TradeEvent(Trade trade) {
+    TradeEvent(Trade trade) {
         super(false); // Make sure event is NOT async
         this.trade = trade;
         this.cancelled = false;
@@ -32,6 +33,7 @@ public abstract class TradeEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
+    @NotNull
     public HandlerList getHandlers() {
         return HANDLERS;
     }

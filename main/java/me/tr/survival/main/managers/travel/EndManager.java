@@ -154,12 +154,12 @@ public class EndManager implements CommandExecutor {
         } catch(IOException e) { e.printStackTrace(); }
     }
 
-    public void reloadEndConfig() {
+    private void reloadEndConfig() {
         try { endConfig.load(endFile);
         } catch (IOException | InvalidConfigurationException e) { e.printStackTrace(); }
     }
 
-    public FileConfiguration getEndConfig() {
+    private FileConfiguration getEndConfig() {
         return endConfig;
     }
 
@@ -332,7 +332,7 @@ public class EndManager implements CommandExecutor {
 
     }
 
-    public void invite(Player invitor, Player target) {
+    private void invite(Player invitor, Player target) {
 
         if(isOccupied()) {
 
@@ -490,12 +490,12 @@ public class EndManager implements CommandExecutor {
 
     }
 
-    public OfflinePlayer getHolderPlayer() {
+    private OfflinePlayer getHolderPlayer() {
         if(holder == null) return null;
         return Bukkit.getOfflinePlayer(holder);
     }
 
-    public long getTimeLeftMillis() {
+    private long getTimeLeftMillis() {
         if(isOccupied()) {
             long shouldStop = started + durationMillis;
             return shouldStop - System.currentTimeMillis();
@@ -503,7 +503,7 @@ public class EndManager implements CommandExecutor {
         return 0L;
     }
 
-    public String getTimeLeft() {
+    private String getTimeLeft() {
         if(getTimeLeftMillis() >= 1) {
             long millis = getTimeLeftMillis();
             long second = (millis / (1000)) % 60;
@@ -514,7 +514,7 @@ public class EndManager implements CommandExecutor {
         return "§cEi käynnissä";
     }
 
-    public boolean isOccupied() {
+    private boolean isOccupied() {
         return holder != null && started != 0L;
     }
 

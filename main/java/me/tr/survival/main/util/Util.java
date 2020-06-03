@@ -351,6 +351,13 @@ public class Util {
         return list;
     }
 
+    public static void broadcast(String message) {
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            if(!Settings.get(player.getUniqueId(), "chat_mentions"))
+                player.sendMessage(message);
+        }
+    }
+
     public static int getPing(Player player) {
         try {
             Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);

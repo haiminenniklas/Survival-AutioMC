@@ -18,7 +18,7 @@ public class Gui implements Listener {
 
     private HashMap<Integer, Inventory> pages;
     private HashMap<Integer, HashMap<Integer, ItemStack>> items;
-    public static final List<Gui> guis = new ArrayList<>();
+    private static final List<Gui> guis = new ArrayList<>();
     private HashMap<Player, Integer> playerPages = new HashMap<>();
     private final Set<Button> buttons;
     private String title;
@@ -65,11 +65,11 @@ public class Gui implements Listener {
 
     public HashMap<Integer, Inventory> getPages() { return pages; }
 
-    public String getTitle() { return title; }
+    private String getTitle() { return title; }
 
     public int getSize() { return size; }
 
-    public void init(){ createPage(false); }
+    private void init(){ createPage(false); }
 
     public ItemStack getItem(int pos) {
         HashMap<Integer, ItemStack> items = this.items.get(1);
@@ -88,7 +88,7 @@ public class Gui implements Listener {
 
     public void addButton(Button button){ if(button != null) if(button.item != null) buttons.add(button); }
 
-    public Inventory createPage(boolean addPageButtons){
+    private Inventory createPage(boolean addPageButtons){
         if(getPages() == null || getPages().isEmpty()) return createPage(1, false);
         else return createPage(getPages().size() + 1, addPageButtons);
     }
@@ -113,7 +113,7 @@ public class Gui implements Listener {
     @Deprecated
     public void refresh(Player player) { this.hardRefresh(player); }
 
-    public void addPageButtons(Inventory inv){
+    private void addPageButtons(Inventory inv){
 
         ItemStack nextPageItem = new ItemStack(Material.PAPER);
         ItemMeta nextMeta = nextPageItem.getItemMeta();
@@ -222,7 +222,7 @@ public class Gui implements Listener {
 
     }
 
-    public void nextPage(Player player){
+    private void nextPage(Player player){
 
         if(getPages() == null || getPages().isEmpty()) throw new IllegalArgumentException("You must have at least 1 page in your gui!");
 
@@ -236,7 +236,7 @@ public class Gui implements Listener {
         }
     }
 
-    public void previousPage(Player player){
+    private void previousPage(Player player){
         if(getPages() == null || getPages().isEmpty()) throw new IllegalArgumentException("You must have at least 1 page in your gui!");
 
         if(playerPages.containsKey(player)){
@@ -255,8 +255,7 @@ public class Gui implements Listener {
     }
 
     public int getPage(Player player){
-        if(playerPages.containsKey(player)) return playerPages.get(player);
-        else return 0;
+        return playerPages.getOrDefault(player, 0);
     }
 
     public void close(Player player) { close(player, true); }
@@ -269,7 +268,7 @@ public class Gui implements Listener {
 
     public Set<Button> getButtons() { return buttons; }
 
-    public HashMap<Player, Integer> getPlayerPages(){ return playerPages; }
+    private HashMap<Player, Integer> getPlayerPages(){ return playerPages; }
 
     public static void closeCurrent(Player player) {
         Gui gui = getGui(player);

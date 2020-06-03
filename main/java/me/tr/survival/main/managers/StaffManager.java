@@ -37,7 +37,7 @@ public class StaffManager implements Listener, CommandExecutor {
     private Map<UUID, Boolean> staffMode = new HashMap<>();
     private Map<UUID, Location> lastLocation = new HashMap<>();
 
-    public int getBlockMinedPerHour(UUID uuid, Material mat) {
+    private int getBlockMinedPerHour(UUID uuid, Material mat) {
 
         if(blocksPerHour.containsKey(uuid)) {
             Map<Material, Integer> blockData = blocksPerHour.get(uuid);
@@ -243,7 +243,7 @@ public class StaffManager implements Listener, CommandExecutor {
         gui.open(player);
     }
 
-    public void staffTeleport(Player teleporter, Player target) {
+    private void staffTeleport(Player teleporter, Player target) {
         if(!hidden.contains(teleporter.getUniqueId())) {
             hide(teleporter);
             Chat.sendMessage(teleporter, "Olet nyt piilossa! Tee §a/vanish §7tullaksesi takaisin näkyviin!");
@@ -252,16 +252,10 @@ public class StaffManager implements Listener, CommandExecutor {
         request.ask();
     }
 
-    public boolean toggleStaffMode(Player player) {
-
+    public void toggleStaffMode(Player player) {
         UUID uuid = player.getUniqueId();
-        if(staffMode.getOrDefault(uuid, false)) {
-            disableStaffMode(player);
-            return false;
-        } else {
-            enableStaffMode(player);
-            return true;
-        }
+        if(staffMode.getOrDefault(uuid, false)) disableStaffMode(player);
+        else enableStaffMode(player);
     }
 
     public void enableStaffMode(Player player) {
@@ -285,7 +279,6 @@ public class StaffManager implements Listener, CommandExecutor {
                     if(!Main.getEventsListener().adminMode.getOrDefault(player.getUniqueId(), false))
                         Util.sendNotification(player, "§7Piiloutuminen: " + (hidden.contains(player.getUniqueId()) ? "§a§lPÄÄLLÄ" : "§c§lPOIS PÄÄLTÄ") + " §8| §7TPS: §a" + Util.round(Sorsa.getCurrentTPS()), false);
                 else cancel();
-
             }
         }.runTaskTimerAsynchronously(Main.getInstance(), 20, 20 * 2);
 
@@ -318,8 +311,8 @@ public class StaffManager implements Listener, CommandExecutor {
         }
     }
 
-    public void hide(Player player) {
-        hidden.add(player.getUniqueId());
+    private void hide(Player player) {
+        if(!hidden.contains(player.getUniqueId())) hidden.add(player.getUniqueId());
         //Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Main.getInstance().getConfig().getString("messages.leave").replaceAll("%player%", player.getName())));
         player.setPlayerListName("§7" + player.getName() + " §8[PIILOSSA]");
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999, 999999));

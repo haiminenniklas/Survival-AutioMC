@@ -152,7 +152,7 @@ public class Mail {
         gui.open(player);
     }
 
-    public static int getMultiplier(OfflinePlayer player) {
+    private static int getMultiplier(OfflinePlayer player) {
         int multiplier = 1;
         int streak = Mail.getStreak(player);
         if(streak >= 7 && streak <= 21) multiplier = 2;
@@ -160,7 +160,7 @@ public class Mail {
         return multiplier;
     }
 
-    public static boolean canOpenDaily(OfflinePlayer player) {
+    private static boolean canOpenDaily(OfflinePlayer player) {
         return (timeLeftForNextMail(player.getUniqueId()) / 1000 / 60 / 60) <= 0;
     }
 
@@ -179,7 +179,7 @@ public class Mail {
         return (int) PlayerData.getValue(player.getUniqueId(), "streak");
     }
 
-    public static void setStreak(OfflinePlayer player, int val) {
+    private static void setStreak(OfflinePlayer player, int val) {
         if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
         PlayerData.set(player.getUniqueId(), "streak", val);
     }
@@ -190,12 +190,12 @@ public class Mail {
 
     }
 
-    public static long getLastMail(UUID uuid) {
+    private static long getLastMail(UUID uuid) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         return (long) PlayerData.getValue(uuid, "last_mail");
     }
 
-    public static void setLastMail(UUID uuid) {
+    private static void setLastMail(UUID uuid) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "last_mail", System.currentTimeMillis());
     }
@@ -205,11 +205,11 @@ public class Mail {
         PlayerData.set(uuid, "last_mail", value);
     }
 
-    public static long timeFromLastMail(UUID uuid) {
+    private static long timeFromLastMail(UUID uuid) {
         return System.currentTimeMillis() - getLastMail(uuid);
     }
 
-    public static long timeLeftForNextMail(UUID uuid) {
+    private static long timeLeftForNextMail(UUID uuid) {
         long next = getLastMail(uuid) + 1000 * 60 * 60 * 24;
         return next - System.currentTimeMillis();
     }

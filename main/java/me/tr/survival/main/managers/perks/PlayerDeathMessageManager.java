@@ -229,44 +229,44 @@ public class PlayerDeathMessageManager implements Listener {
 
     }
 
-    public DeathMessage getSelectedDeathMessage(UUID uuid) {
+    private DeathMessage getSelectedDeathMessage(UUID uuid) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         String raw = String.valueOf(PlayerData.getValue(uuid, "death_message"));
         return DeathMessage.valueOf(raw.toUpperCase());
     }
 
-    public KillMessage getSelectedKillMessage(UUID uuid) {
+    private KillMessage getSelectedKillMessage(UUID uuid) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         String raw = String.valueOf(PlayerData.getValue(uuid, "kill_message"));
         return KillMessage.valueOf(raw.toUpperCase());
     }
 
-    public void selectKillMessage(UUID uuid, KillMessage message) {
+    private void selectKillMessage(UUID uuid, KillMessage message) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "kill_message", message.name());
     }
 
-    public void selectDeathMessage(UUID uuid, DeathMessage message) {
+    private void selectDeathMessage(UUID uuid, DeathMessage message) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "death_message", message.name());
     }
 
-    public void resetKillMessages(UUID uuid) {
+    private void resetKillMessages(UUID uuid) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "kill_message", "DEFAULT");
     }
 
-    public void resetDeathMessages(UUID uuid) {
+    private void resetDeathMessages(UUID uuid) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         PlayerData.set(uuid, "death_message", "DEFAULT");
     }
 
-    public String translateDeathMessage(String victim, String message) {
+    private String translateDeathMessage(String victim, String message) {
         message = message.replaceAll("%victim%", victim);
         return message;
     }
 
-    public String translateKillMessage(String victim, String killer, String message) {
+    private String translateKillMessage(String victim, String killer, String message) {
         message = message.replaceAll("%victim%", victim);
         message = message.replaceAll("%killer%", killer);
         return message;

@@ -27,7 +27,7 @@ public class Trade {
 
     private final InventoryAction[] illegalActions;
 
-    public Trade(Player sender, Player target) {
+    Trade(Player sender, Player target) {
         this.sender = sender;
         this.target = target;
         this.state = TradeState.DEFAULT;
@@ -97,7 +97,7 @@ public class Trade {
 
     }
 
-    public void updateGui() {
+    private void updateGui() {
 
         // Place player heads
         inv.setItem(45, ItemUtil.makeSkullItem(this.sender, 1, "§a" + this.sender.getName(), Arrays.asList(
@@ -140,7 +140,7 @@ public class Trade {
         this.getTarget().updateInventory();
     }
 
-    public void ask() {
+    void ask() {
         this.setState(TradeState.WAITING);
         // The event handles the request, just to make this class file cleaner
         // For this very purpose, this approach should be just fine
@@ -148,13 +148,13 @@ public class Trade {
         if(!event.isCancelled()) Bukkit.getPluginManager().callEvent(event);
     }
 
-    public void denyRequest() {
+    void denyRequest() {
         Chat.sendMessage("Vaihtokauppapyyntöä ei hyväksytty...", sender);
         Chat.sendMessage("Kielsit vaihtokauppapyynnön!", target);
         this.end();
     }
 
-    public void acceptRequest() {
+    void acceptRequest() {
         // The trade is accepted, so just open the inventory and start the trade
         this.start();
     }
@@ -180,7 +180,7 @@ public class Trade {
         // Check if the trade is still valid and can continue
         if(canContinue(true)) {
             // Check if  both players have accepted the trade
-            if(this.accepted.getOrDefault(sender.getUniqueId(), false) && this.accepted.getOrDefault(target.getUniqueId(), false)) return true;
+            return this.accepted.getOrDefault(sender.getUniqueId(), false) && this.accepted.getOrDefault(target.getUniqueId(), false);
         }
         return false;
     }
@@ -225,7 +225,7 @@ public class Trade {
 
     }
 
-    public void trade() {
+    private void trade() {
 
         // Let's check the Trade's state just to be sure
         if(this.getState() == TradeState.CONFIRMING) {
@@ -248,7 +248,7 @@ public class Trade {
         }
     }
 
-    public void deny() {
+    void deny() {
 
         // Just in case, put 'false' for both players, since we're closing the
         // whole thing
@@ -272,9 +272,7 @@ public class Trade {
         // We need to calculate the next best slot to add the new item
        if(canContinue(true)) {
            int[] playerSlots = (this.sender.getUniqueId().equals(player.getUniqueId())) ? getSenderSlots() : getTargetSlots();
-
-           for(int i = 0; i < playerSlots.length; i++) {
-               int slot = playerSlots[i];
+           for(int slot : playerSlots) {
                // Let's check if the slot is not taken.
                ItemStack item = this.inv.getItem(slot);
                if(item != null) continue;
@@ -293,7 +291,7 @@ public class Trade {
 
     // Just a function to check different things
     // if the current trade is still able to continue
-    public boolean canContinue(boolean doesCancel) {
+    private boolean canContinue(boolean doesCancel) {
         if(this.sender == null || this.target == null) {
             if(doesCancel) this.cancel();
             return false;
@@ -342,12 +340,11 @@ public class Trade {
         if(this.target != null) this.target.closeInventory();
     }
 
-    public ItemStack[] getItems(Player player) {
+    private ItemStack[] getItems(Player player) {
         List<ItemStack> items = new ArrayList<>();
         if(player != null && this.isParticipant(player)) {
             int[] slots = (this.sender.getUniqueId().equals(player.getUniqueId())) ? getSenderSlots() : getTargetSlots();
-            for(int j = 0; j < slots.length; j++) {
-                int slot = slots[j];
+            for(int slot : slots) {
                 ItemStack item = player.getOpenInventory().getTopInventory().getItem(slot);
                 if(item == null) continue;
                 items.add(item);
@@ -357,42 +354,38 @@ public class Trade {
     }
 
 
-    public boolean hasAccepted(Player player) {
+    private boolean hasAccepted(Player player) {
         if(accepted.containsKey(player.getUniqueId())) return accepted.get(player.getUniqueId());
         return false;
     }
 
-    public boolean isParticipant(Player player) {
+    boolean isParticipant(Player player) {
         return this.target.getUniqueId().equals(player.getUniqueId()) || this.sender.getUniqueId().equals(player.getUniqueId());
     }
 
-    public boolean isOnGoing() {
+    boolean isOnGoing() {
         return this.getState() != TradeState.DEFAULT && this.getState() != TradeState.OVER && this.getState() != TradeState.WAITING;
     }
 
-    public InventoryAction[] getIllegalActions() {
+    InventoryAction[] getIllegalActions() {
         return this.illegalActions;
     }
 
     public void setState(TradeState state) {
         this.state = state;
     }
-    public int[] getSenderSlots() {
+    private int[] getSenderSlots() {
         return this.getPlayerSlots()[0];
     }
-    public int[] getTargetSlots() {
+    private int[] getTargetSlots() {
         return this.getPlayerSlots()[1];
     }
-    public int[][] getPlayerSlots() {
+    int[][] getPlayerSlots() {
         return playerSlots;
     }
 
     public Player getSender() {
         return sender;
-    }
-
-    public Inventory getInv() {
-        return inv;
     }
 
     public Player getTarget() {
@@ -403,7 +396,7 @@ public class Trade {
     }
 
     public enum TradeState {
-        WAITING, RUNNING, OVER, CONFIRMING, DEFAULT;
+        WAITING, RUNNING, OVER, CONFIRMING, DEFAULT
     }
 
 }

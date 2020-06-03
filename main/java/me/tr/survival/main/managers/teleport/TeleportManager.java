@@ -6,14 +6,9 @@ import java.util.*;
 
 public class TeleportManager {
 
-    private static Map<UUID, TeleportRequest> requests = new HashMap<>();
-    public static Map<UUID, TeleportRequest> getActiveRequests() {
+    private static final Map<UUID, TeleportRequest> requests = new HashMap<>();
+    static Map<UUID, TeleportRequest> getActiveRequests() {
         return TeleportManager.requests;
-    }
-
-    public static TeleportRequest getRequestFromPlayer(UUID uuid) {
-        if(getActiveRequests().containsKey(uuid)) return getActiveRequests().get(uuid);
-        return null;
     }
 
     public static List<TeleportRequest> getRequestsFromRecipient(UUID uuid) {

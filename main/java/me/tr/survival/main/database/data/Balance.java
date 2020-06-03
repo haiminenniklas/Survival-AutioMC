@@ -27,11 +27,12 @@ public class Balance {
 
     public static void remove(UUID player, double value) {
         double current = get(player);
-        if(current - value < 0) {
-            PlayerData.set(player, "money", 0d);
-        } else {
-            PlayerData.set(player, "money", current - value);
-        }
+        if(current - value < 0) PlayerData.set(player, "money", 0d);
+        else PlayerData.set(player, "money", current - value);
+    }
+
+    public static void set(UUID player, double value) {
+        PlayerData.set(player, "money", value);
     }
 
     public static boolean canRemove(UUID player, double value) {

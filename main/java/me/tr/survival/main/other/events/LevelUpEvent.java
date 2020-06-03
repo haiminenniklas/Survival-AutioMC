@@ -5,6 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
+@Deprecated
 public class LevelUpEvent extends PlayerEvent implements Cancellable {
 
 

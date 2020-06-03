@@ -37,7 +37,7 @@ import static dev.esophose.playerparticles.particles.spawning.reflective.Reflect
 
 public class Sorsa {
 
-    private static Map<UUID, Long> debugs = new HashMap<>();
+    private static final Map<UUID, Long> debugs = new HashMap<>();
 
     public static void teleportToSpawn(Player player) {
         Location loc = getSpawn();
@@ -64,7 +64,7 @@ public class Sorsa {
         Bukkit.getConsoleSender().sendMessage(msg);
     }
 
-    public static void warn(String message) {
+    static void warn(String message) {
         Bukkit.getLogger().log(Level.WARNING, message);
     }
 
@@ -72,46 +72,29 @@ public class Sorsa {
         Bukkit.getScheduler().runTask(Main.getInstance(), task);
     }
 
-    public static void async(Runnable task) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), task);
-
-    }
+    public static void async(Runnable task) { Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), task); }
 
     public static void teleportToNether(Player player) {
         player.teleport(new Location(Bukkit.getWorld("world_nether"), 0.5, 61, 0.5));
     }
 
     public static void every(int seconds, Runnable task, boolean async) {
-        if(async) {
-            Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds);
-        } else {
-            Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds);
-        }
+        if(async) Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds);
+        else Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds);
     }
 
-    public static void after(int seconds, Runnable task) {
-        Bukkit.getScheduler().runTaskLater(Main.getInstance(), task, 20 * seconds);
-    }
+    public static void after(int seconds, Runnable task) { Bukkit.getScheduler().runTaskLater(Main.getInstance(), task, 20 * seconds); }
 
     public static void after(int seconds, Runnable task, boolean async) {
-        if(async) {
-            Sorsa.after(seconds, task);
-        } else {
-            Sorsa.afterAsync(seconds, task);
-        }
+        if(async) Sorsa.after(seconds, task);
+        else Sorsa.afterAsync(seconds, task);
     }
 
-    public static void afterAsync(int seconds, Runnable task) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), task, (long) getCurrentTPS() * seconds);
-    }
+    public static void afterAsync(int seconds, Runnable task) { Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), task, (long) getCurrentTPS() * seconds); }
 
-    public static void every(int seconds, Runnable task) {
-        Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds);
-    }
+    public static void every(int seconds, Runnable task) { Bukkit.getScheduler().runTaskTimer(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds); }
 
-    public static void everyAsync(int seconds, Runnable task) {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds);
-    }
+    public static void everyAsync(int seconds, Runnable task) { Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds); }
 
     public static double getCurrentTPS() {
         double average;
@@ -128,8 +111,7 @@ public class Sorsa {
         return Util.round(average);
     }
 
-    public static void setSpawn(Location loc) {
-
+    static void setSpawn(Location loc) {
         FileConfiguration config = Main.getInstance().getConfig();
         config.set("spawn.x", loc.getX());
         config.set("spawn.y", loc.getY());
@@ -137,27 +119,21 @@ public class Sorsa {
         config.set("spawn.yaw", String.valueOf(loc.getYaw()));
         config.set("spawn.pitch", String.valueOf(loc.getPitch()));
         config.set("spawn.world", loc.getWorld().getName());
-
         Main.getInstance().saveConfig();
     }
 
-    public static Location getSpawn() {
-
+    private static Location getSpawn() {
         FileConfiguration config = Main.getInstance().getConfig();
-
         double x = config.getDouble("spawn.x");
         double y = config.getDouble("spawn.y");
         double z = config.getDouble("spawn.z");
-
         float yaw = Float.parseFloat(config.getString("spawn.yaw"));
         float pitch = Float.parseFloat(config.getString("spawn.pitch"));
-
         World world = Bukkit.getWorld(config.getString("spawn.world"));
-
         return new Location(world, x, y, z, yaw, pitch);
     }
 
-    public static void setDeathSpawn(Location loc) {
+    static void setDeathSpawn(Location loc) {
 
         FileConfiguration config = Main.getInstance().getConfig();
         config.set("deathspawn.x", loc.getX());
@@ -184,26 +160,7 @@ public class Sorsa {
         return Main.getInstance().getConfig();
     }
 
-    public static void savePlayer(Player player) {
-        Sorsa.async(() -> {
-            PlayerData.savePlayer(player.getUniqueId());
-        });
-    }
-
-    public static void loadPlayer(Player player) {
-        Sorsa.async(() -> {
-           PlayerData.loadPlayer(player.getUniqueId(), (res) -> {});
-        });
-    }
-
-    public static Server getServer() {
-        return Bukkit.getServer();
-    }
-    public static Main getPlugin() {
-        return Main.getInstance();
-    }
-
-    public static void runDebug(Player player) {
+    static void runDebug(Player player) {
 
         UUID uuid = player.getUniqueId();
         if(!player.isOp()) {
@@ -234,7 +191,7 @@ public class Sorsa {
         return Bukkit.getWorld("world_nether");
     }
 
-    public static ProtocolManager getProtocolManager(){
+    private static ProtocolManager getProtocolManager(){
         return ProtocolLibrary.getProtocolManager();
     }
 
@@ -263,7 +220,7 @@ public class Sorsa {
         return prefix;
     }
 
-    public static void toggleDebugMode(Player player) {
+    static void toggleDebugMode(Player player) {
         UUID uuid = player.getUniqueId();
         if(!Main.getEventsListener().adminMode.containsKey(uuid)) {
             Main.getEventsListener().adminMode.put(uuid, true);

@@ -139,8 +139,6 @@ public class TeleportRequest {
 
     }
 
-
-
     public void teleport() {
         if(this.here) {
             two.teleport(one.getLocation());
@@ -157,11 +155,11 @@ public class TeleportRequest {
         TeleportManager.getActiveRequests().remove(this.one.getUniqueId());
     }
 
-    public void setExpired(boolean value) {
+    private void setExpired(boolean value) {
         this.expired = value;
     }
 
-    public boolean isExpired() {
+    private boolean isExpired() {
         return expired;
     }
 
@@ -181,7 +179,7 @@ public class TeleportRequest {
         return one;
     }
 
-    public Player getRecipient() {
+    Player getRecipient() {
         return two;
     }
 

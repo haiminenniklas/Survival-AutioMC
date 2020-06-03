@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class MoneyManager implements CommandExecutor, Listener {
 
-    public static boolean ENABLED = true;
+    private static boolean ENABLED = true;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -89,6 +89,7 @@ public class MoneyManager implements CommandExecutor, Listener {
         Player player = e.getPlayer();
         if(e.getItem() != null) if(e.getItem().hasItemMeta()) confirmChequeWithdrawal(player, e.getItem());
     }
+
     public void main(Player player) {
 
         Gui.openGui(player, "Finanssivalvonta", 27, (gui) -> {
@@ -130,7 +131,7 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     }
 
-    public void cheques(Player player) {
+    private void cheques(Player player) {
 
         Gui.openGui(player, "Kirjoita shekkejä", 27, (gui) -> {
             gui.addButton(new Button(1, 11, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a50€", Arrays.asList(
@@ -242,11 +243,13 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     }
 
+    @Deprecated
     private String getMoneyString(Player player, int crystalsWanted) {
         int price = getPriceForCrystals(crystalsWanted);
         return Balance.canRemove(player.getUniqueId(), price) ? "§a" + price : "§c" + price;
     }
 
+    @Deprecated
     public void changeMoneyToCrystals(Player player, int crystalsWanted) {
 
         int price = 15000 * crystalsWanted;
@@ -257,7 +260,7 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     }
 
-    public void writeCheque(Player player, int amount) {
+    private void writeCheque(Player player, int amount) {
 
         if(!player.isOp() && !ENABLED) {
             Chat.sendMessage(player, "Tämä toiminto on toistaiseksi poissa käytöstä. Yritähän myöhemmin uudelleen.");
@@ -297,7 +300,7 @@ public class MoneyManager implements CommandExecutor, Listener {
         for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) { player.getWorld().dropItemNaturally(player.getLocation(), entry.getValue()); }
     }
 
-    public void withdrawCheque(Player player, ItemStack cheque) {
+    private void withdrawCheque(Player player, ItemStack cheque) {
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
         ItemMeta itemMeta = cheque.getItemMeta();
@@ -316,7 +319,7 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     }
 
-    public void confirmChequeWithdrawal(Player player, ItemStack cheque) {
+    private void confirmChequeWithdrawal(Player player, ItemStack cheque) {
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
         ItemMeta itemMeta = cheque.getItemMeta();
@@ -366,6 +369,7 @@ public class MoneyManager implements CommandExecutor, Listener {
         }
     }
 
-    public int getPriceForCrystals(int crystalsWanted) { return 15000 * crystalsWanted; }
+    @Deprecated
+    private int getPriceForCrystals(int crystalsWanted) { return 15000 * crystalsWanted; }
 
 }

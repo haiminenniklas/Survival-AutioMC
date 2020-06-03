@@ -29,9 +29,6 @@ import java.util.*;
 
 public class Essentials implements CommandExecutor, Listener {
 
-    public static List<UUID> afk = new ArrayList<UUID>();
-    public static Map<UUID, Long> moved = new HashMap<>();
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
@@ -288,20 +285,7 @@ public class Essentials implements CommandExecutor, Listener {
 
 
                         });
-                    }/* else if(args[0].equalsIgnoreCase("tehtävät")) {
-                        Gui.openGui(player, "Apua (Tehtävät)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitä tehtävät ovat?", Arrays.asList(
-                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                                    " §7Pitääksemme pelaamisen mielekkäänä",
-                                    " §7ja hauskana, olemme lisänneet",
-                                    " §7monenlaisia tehtäviä, joita voit",
-                                    " §7suorittaa ja saada niistä palkintoja!",
-                                    " ",
-                                    " §7Lista tehtävistä: §6/tehtävät§7!",
-                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                            )), 13);
-                        });
-                    }*/ else if(args[0].equalsIgnoreCase("matkustaminen")) {
+                    } else if(args[0].equalsIgnoreCase("matkustaminen")) {
                         Gui.openGui(player, "Apua (Matkustaminen)", 27, (gui) -> {
 
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitä tarkoittaa?", Arrays.asList(
@@ -358,48 +342,19 @@ public class Essentials implements CommandExecutor, Listener {
                             }
 
                         });
-                    }/* else if(args[0].equalsIgnoreCase("huutokauppa")) {
-                        Gui.openGui(player, "Apua (Huutokauppa)", 27, (gui) -> {
-                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten tienaan rahaa?", Arrays.asList(
-                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                                    " §7Huutokauppa on palvelimemme yleinen",
-                                    " §akauppapaikka§7, jossa voit myydä",
-                                    " §7esineitäsi ja tienata siitä §erahaa§7!",
-                                    " §7Muista seurata tavaroiden hintaa ja",
-                                    " §7ota myy ne parhaaseen mahdolliseen hintaan!",
-                                    " ",
-                                    " §7Huutokauppaan pääset komennolla",
-                                    " §a/huutokauppa",
-                                    " §7Lisää tietoa rahasta palvelimellamme",
-                                    " §a/apua valuutta",
-                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                            )), 13);
-                        });
-                    } */
-
+                    }
                 }
 
             } else if(cmd.getLabel().equalsIgnoreCase("broadcast")) {
-
                 if(Ranks.isStaff(uuid)) {
-
                     if(args.length >= 1) {
                         StringBuilder sb = new StringBuilder();
                         for(int i = 0; i < args.length; i++) {
                             sb.append(args[i] + " ");
                         }
-
                         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "➤ &2&lILMOITUS " + sb.toString()));
-                    } else {
-                        Chat.sendMessage(player, "Täytyyhän sinun hyvä ihminen kirjoittaakin jotain! Käytä §a/broadcast <viesti>§7!");
-                    }
-
+                    } else Chat.sendMessage(player, "Täytyyhän sinun hyvä ihminen kirjoittaakin jotain! Käytä §a/broadcast <viesti>§7!");
                 }
-
-            } else if(cmd.getLabel().equalsIgnoreCase("discord")) {
-
-                Chat.sendMessage(player, "Discord: §9www.sorsamc.fi/discord");
-
             } else if(cmd.getLabel().equalsIgnoreCase("clear")) {
 
                 if(!Main.getStaffManager().hasStaffMode(player)) {
@@ -414,16 +369,13 @@ public class Essentials implements CommandExecutor, Listener {
                     }
                 } else {
                     if(Ranks.isStaff(uuid)) {
-
                         Player target = Bukkit.getPlayer(args[0]);
                         if(target == null) {
                             Chat.sendMessage(player, "Pelaajaa ei löydetty!");
                             return true;
                         }
-
                         Util.clearInventory(target);
                         Chat.sendMessage(target, "Pelaajan §a" + target.getName() + " §7inventory tyhjennettiin!");
-
                     }
                 }
 
@@ -443,11 +395,8 @@ public class Essentials implements CommandExecutor, Listener {
                         player.sendMessage(" §7Maailmat (" + Bukkit.getWorlds().size() +  "):");
 
                         for(World w : Bukkit.getWorlds()) {
-                            if(player.getWorld().getName().equalsIgnoreCase(w.getName())) {
-                                player.sendMessage("§7- §a" + w.getName() + " §8(sinä)");
-                            } else {
-                                player.sendMessage("§7- §a" + w.getName());
-                            }
+                            if(player.getWorld().getName().equalsIgnoreCase(w.getName())) player.sendMessage("§7- §a" + w.getName() + " §8(sinä)");
+                            else player.sendMessage("§7- §a" + w.getName());
                         }
 
                         player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -457,13 +406,9 @@ public class Essentials implements CommandExecutor, Listener {
                         if(w != null) {
                             Chat.sendMessage(player, "Viedään maailmaan §a" + w.getName() + "§7...");
                             player.teleport(w.getSpawnLocation());
-                        } else {
-                            Chat.sendMessage(player, "Maailmaa ei löydetty...");
-                        }
+                        } else Chat.sendMessage(player, "Maailmaa ei löydetty...");
                     }
-
                 }
-
             } else if(cmd.getLabel().equalsIgnoreCase("invsee")) {
 
                 if(Ranks.isStaff(player.getUniqueId())) {
@@ -473,31 +418,24 @@ public class Essentials implements CommandExecutor, Listener {
                         return true;
                     }
 
-                    if(args.length < 1) {
-                        Chat.sendMessage(player, "Käytä §a/invsee <pelaaja>");
-                    } else {
-
+                    if(args.length < 1) Chat.sendMessage(player, "Käytä §a/invsee <pelaaja>");
+                    else {
                         Player target = Bukkit.getPlayer(args[0]);
                         if(target == null) {
                             Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty!");
                             return true;
                         }
-
                         invsee(player, target);
-
                     }
 
-                } else {
-                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei oikeuksia!");
-                }
+                } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei oikeuksia!");
+
             }
-
         }
-
         return true;
     }
 
-    public static void invsee(Player opener, Player target) {
+    private void invsee(Player opener, Player target) {
 
         Inventory inv = Bukkit.createInventory(target, InventoryType.PLAYER, "Tarkastele inventoryä (" + target.getName() + ")");
         for(ItemStack item : target.getInventory().getContents()) {
@@ -532,6 +470,7 @@ public class Essentials implements CommandExecutor, Listener {
 
     }
 
+    @Deprecated
     public static ItemStack createCustomXPBottle(int experienceAmount) {
 
         ItemStack item = Util.makeEnchanted(ItemUtil.makeItem(Material.EXPERIENCE_BOTTLE, 1, "§a§lXP-Pullo", Arrays.asList(
@@ -550,7 +489,8 @@ public class Essentials implements CommandExecutor, Listener {
 
     }
 
-    public static int getExperienceFromCustomXPBottle(ItemStack bottle) {
+    @Deprecated
+    private static int getExperienceFromCustomXPBottle(ItemStack bottle) {
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "xp-amount");
         ItemMeta itemMeta = bottle.getItemMeta();
         CustomItemTagContainer tagContainer = itemMeta.getCustomTagContainer();
@@ -560,35 +500,6 @@ public class Essentials implements CommandExecutor, Listener {
         }
 
         return 0;
-
-    }
-
-    @EventHandler
-    public void onClick(PlayerInteractEvent e) {
-
-        Player player = e.getPlayer();
-        if(e.getItem() != null) {
-
-            ItemStack item = e.getItem();
-            if(item.hasItemMeta()) {
-
-                ItemMeta meta = item.getItemMeta();
-                if(meta.getDisplayName().equalsIgnoreCase("§a§lXP-Pullo")) {
-
-                    int exp = getExperienceFromCustomXPBottle(item);
-                    if(exp > 0) {
-                        e.setCancelled(true);
-                        player.giveExp(exp);
-                        Chat.sendMessage(player, "Sait §d" + exp + " §7kokemusta!");
-                        item.setAmount(item.getAmount() - 1);
-                        if(item.getAmount() < 1) player.getInventory().remove(item);
-                    }
-
-                }
-
-            }
-
-        }
 
     }
 

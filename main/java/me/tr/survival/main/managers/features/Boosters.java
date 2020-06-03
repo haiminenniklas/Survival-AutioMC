@@ -180,7 +180,7 @@ public class Boosters implements Listener {
         return getInCooldown().containsKey(booster.getDisplayName());
     }
 
-    public static long getTimeForNextUsage(Booster booster) {
+    private static long getTimeForNextUsage(Booster booster) {
         if(!isInCooldown(booster)) return 0;
         long putInCooldown = getInCooldown().get(booster.getDisplayName());
         long shouldExpire = putInCooldown + (60 * 1000 * 60);
@@ -225,7 +225,7 @@ public class Boosters implements Listener {
         Util.broadcastSound(Sound.BLOCK_ANVIL_FALL);
     }
 
-    public static long getTimeLeft(Booster booster) {
+    private static long getTimeLeft(Booster booster) {
         if(getActive().containsKey(booster.getDisplayName())) {
             HashMap<UUID, Long> map = getActive().get(booster.getDisplayName());
             long value = (long) map.values().toArray()[0];
@@ -236,7 +236,7 @@ public class Boosters implements Listener {
         return 0L;
     }
 
-    public static void activate(Booster booster, UUID uuid) {
+    private static void activate(Booster booster, UUID uuid) {
 
         long time = System.currentTimeMillis();
 
@@ -262,11 +262,11 @@ public class Boosters implements Listener {
         }
     }
 
-    public static OfflinePlayer getActivatorPlayer(Booster booster) {
+    private static OfflinePlayer getActivatorPlayer(Booster booster) {
         return Bukkit.getOfflinePlayer(getActivator(booster));
     }
 
-    public static UUID getActivator(Booster booster) {
+    private static UUID getActivator(Booster booster) {
         if(getActive().containsKey(booster.getDisplayName())) {
             for(Map.Entry<UUID, Long> e : getActive().get(booster.getDisplayName()).entrySet()) {
                 return e.getKey();

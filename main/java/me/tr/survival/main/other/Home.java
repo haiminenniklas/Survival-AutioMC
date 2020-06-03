@@ -23,41 +23,28 @@ public class Home {
     private Float yaw, pitch;
 
     public Home(UUID owner, double x, double y, double z, String worldName) {
-
         this.ownerUUID = owner;
         this.owner = Bukkit.getOfflinePlayer(owner);
-
         this.x = x;
         this.y = y;
         this.z = z;
-
         this.world = Bukkit.getWorld(worldName);
-
     }
 
     public Home(UUID owner, double x, double y, double z, String worldName, float yaw, float pitch) {
-
         this.ownerUUID = owner;
         this.owner = Bukkit.getOfflinePlayer(owner);
-
         this.x = x;
         this.y = y;
         this.z = z;
-
         this.yaw = yaw;
         this.pitch = pitch;
-
         this.world = Bukkit.getWorld(worldName);
     }
 
     public Location getLocation() {
-
-        if(this.yaw == null || this.pitch == null) {
-            return new Location(this.world, this.x, this.y, this.z);
-        } else {
-            return new Location(this.world, this.x, this.y, this.z, this.yaw, this.pitch);
-        }
-
+        if(this.yaw == null || this.pitch == null) return new Location(this.world, this.x, this.y, this.z);
+        else return new Location(this.world, this.x, this.y, this.z, this.yaw, this.pitch);
     }
 
     public boolean teleport() {
@@ -87,14 +74,6 @@ public class Home {
             Util.sendNotification(player, "§7Teleportataan...", true);
             player.teleport(this.getLocation());
         });
-    }
-
-    public OfflinePlayer getOwner() {
-        return owner;
-    }
-
-    public UUID getOwnerUUID() {
-        return ownerUUID;
     }
 
     public double getX() {

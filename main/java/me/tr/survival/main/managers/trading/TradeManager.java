@@ -27,12 +27,12 @@ import java.util.List;
 
 public class TradeManager implements CommandExecutor, Listener {
 
-    public boolean ENABLED = true;
+    private boolean ENABLED = true;
 
     private final List<Trade> trades = new ArrayList<>();
-    public List<Trade> getOngoingTrades() { return trades; }
+    List<Trade> getOngoingTrades() { return trades; }
 
-    public List<Trade> getTradesForPlayer(Player player) {
+    private List<Trade> getTradesForPlayer(Player player) {
 
         final List<Trade> list = new ArrayList<>();
         for(final Trade trade : getOngoingTrades()) {
@@ -42,16 +42,16 @@ public class TradeManager implements CommandExecutor, Listener {
         return list;
     }
 
-    public Trade getCurrentTrade(Player player) {
+    private Trade getCurrentTrade(Player player) {
         for(final Trade trade : getOngoingTrades()) { if(trade.isParticipant(player) && trade.isOnGoing()) return trade; }
         return null;
     }
 
-    public boolean isInTrade(Player player) {
+    private boolean isInTrade(Player player) {
         return getCurrentTrade(player) != null;
     }
 
-    public boolean hasAsked(Player sender, Player target) {
+    private boolean hasAsked(Player sender, Player target) {
         boolean hasAsked = false;
         for(Trade trade : getOngoingTrades()) {
             if(trade.getSender().getUniqueId().equals(sender.getUniqueId())
