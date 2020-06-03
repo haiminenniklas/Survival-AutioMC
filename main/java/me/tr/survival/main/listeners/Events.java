@@ -31,14 +31,7 @@ public class Events implements Listener {
 
     public final HashMap<UUID, Boolean> adminMode = new HashMap<>();
     public final HashMap<UUID, Location> lastLocation = new HashMap<>();
-    public final ArrayList<UUID> deathIsland = new ArrayList<>();
-
-    @EventHandler
-    public void onLevelUp(LevelUpEvent e){
-        Player player = e.getPlayer();
-        Util.sendNotification(player, "§a§lTASO! §7Nousit tasolle §a" + e.getLevel() + "§7!");
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-    }
+    final ArrayList<UUID> deathIsland = new ArrayList<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent e) {

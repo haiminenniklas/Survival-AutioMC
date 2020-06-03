@@ -72,7 +72,7 @@ public final class Main extends JavaPlugin implements Listener {
     private static Map<UUID, Long> spawnCommandDelay = new HashMap<>();
     //public static final HashMap<Player, Player> messages = new HashMap<>();
 
-    private static long started = 0L;
+    private long started = 0L;
 
     // Instances for Managers
     private static Backpack backpack ;
@@ -154,7 +154,7 @@ public final class Main extends JavaPlugin implements Listener {
         new SpigotCallback(this);
 
         Sorsa.logColored("§a---------------------------");
-        Sorsa.logColored(" §aEnabling SorsaSurvival....");
+        Sorsa.logColored(" §aEnabling SorsaSurvival...");
 
         final long start = System.currentTimeMillis();
 

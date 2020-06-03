@@ -1,5 +1,5 @@
 name: SorsaSurvival
-version: 0.8
+version: 1.0
 main: me.tr.survival.main.Main
 description: SorsaMC survival plugin
 api-version: 1.13
@@ -21,19 +21,10 @@ commands:
   home:
     description: Koti
     aliases: [koti, homes, delhome, sethome]
-  #arvo:
-   # description: Arvojen hallinta
-    #aliases: [rank]
   spawn:
     description: Vie Spawnille
   setspawn:
     description: Aseta Spawn
-  #level:
-   # description: Hallinnoi Leveleitä
-   # aliases: [lvl]
-  #ping:
-    #description: Viive
-    #aliases: [viive]
   speed:
     description: Lentonopeus
   settings:
