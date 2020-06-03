@@ -67,7 +67,7 @@ commands:
   rtp:
     description: RTP
   autio:
-    description: Autio
+    description: Sorsa
     aliases: [sorsa, sorsamc]
   skull:
     description: Pelaajan kallo

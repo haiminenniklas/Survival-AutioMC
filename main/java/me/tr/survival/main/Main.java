@@ -1,29 +1,35 @@
 package me.tr.survival.main;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import me.tr.survival.main.commands.*;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
+import me.tr.survival.main.listeners.*;
+import me.tr.survival.main.managers.*;
+import me.tr.survival.main.managers.features.Backpack;
+import me.tr.survival.main.managers.features.Boosters;
+import me.tr.survival.main.managers.features.Houkutin;
+import me.tr.survival.main.managers.features.Lottery;
+import me.tr.survival.main.managers.other.AutoBroadcaster;
+import me.tr.survival.main.managers.perks.Particles;
+import me.tr.survival.main.managers.perks.PlayerDeathMessageManager;
+import me.tr.survival.main.managers.perks.PlayerGlowManager;
+import me.tr.survival.main.managers.travel.EndManager;
+import me.tr.survival.main.managers.travel.TravelManager;
 import me.tr.survival.main.other.*;
-import me.tr.survival.main.other.backpacks.Backpack;
-import me.tr.survival.main.other.booster.Boosters;
-import me.tr.survival.main.other.recipes.Recipe;
-import me.tr.survival.main.other.travel.EndManager;
-import me.tr.survival.main.other.travel.TravelManager;
-import me.tr.survival.main.other.warps.Warp;
-import me.tr.survival.main.other.warps.Warps;
-import me.tr.survival.main.trading.TradeManager;
+import me.tr.survival.main.managers.warps.Warp;
+import me.tr.survival.main.managers.warps.Warps;
+import me.tr.survival.main.managers.trading.TradeManager;
 import me.tr.survival.main.util.ItemUtil;
-import me.tr.survival.main.util.RTP;
+import me.tr.survival.main.managers.RTP;
 import me.tr.survival.main.util.Times;
+import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.callback.SpigotCallback;
-import me.tr.survival.main.util.data.Balance;
-import me.tr.survival.main.util.data.Crystals;
-import me.tr.survival.main.util.data.Homes;
-import me.tr.survival.main.util.data.Level;
-import me.tr.survival.main.util.staff.StaffManager;
+import me.tr.survival.main.database.data.Balance;
+import me.tr.survival.main.database.data.Crystals;
+import me.tr.survival.main.database.data.Homes;
+import me.tr.survival.main.database.data.Level;
+import me.tr.survival.main.managers.StaffManager;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -43,15 +49,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public final class Main extends JavaPlugin implements Listener, PluginMessageListener {
+public final class Main extends JavaPlugin implements Listener {
 
     public static Main instance;
     public static Main getInstance() {
@@ -76,15 +80,15 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         Main.instance = this;
         Main.luckPerms = LuckPermsProvider.get();
 
-        Autio.logColored("§a---------------------------");
-        Autio.logColored(" §aEnabling SorsaSurvival....");
+        Sorsa.logColored("§a---------------------------");
+        Sorsa.logColored(" §aEnabling SorsaSurvival....");
 
         long start = System.currentTimeMillis();
 
-        Autio.logColored(" ");
-        Autio.logColored(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
-        Autio.logColored(" ");
-        Autio.logColored(" §aSetupping configs and database...");
+        Sorsa.logColored(" ");
+        Sorsa.logColored(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
+        Sorsa.logColored(" ");
+        Sorsa.logColored(" §aSetupping configs and database...");
 
         saveDefaultConfig();
         EndManager.createEndConfig();
@@ -92,22 +96,22 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         SQL.setup();
 
 
-        /*Autio.logColored(" §aSetupping Boosters-system...");
+        /*Sorsa.logColored(" §aSetupping Boosters-system...");
 
         File boosterJson = new File(getDataFolder() + File.separator + "boosters.json");
         if(!boosterJson.exists()) {
             try {
                 if(boosterJson.createNewFile()) {
-                    Autio.logColored(" §aCreated file for Boosters!");
+                    Sorsa.logColored(" §aCreated file for Boosters!");
                 } else {
-                    Autio.warn(" Could not create file for booster. Boosters will not be saved!");
+                    Sorsa.warn(" Could not create file for booster. Boosters will not be saved!");
                 }
             } catch(IOException ex) {
                 ex.printStackTrace();
             }
         } */
 
-        Autio.logColored(" §aRegistering plugin event listeners...");
+        Sorsa.logColored(" §aRegistering plugin event listeners...");
 
         // Events
         PluginManager pm = getServer().getPluginManager();
@@ -116,7 +120,11 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
         pm.registerEvents(this, this);
         pm.registerEvents(new Events(), this);
-        //pm.registerEvents(new EnderpearlCooldown(), this);
+        pm.registerEvents(new ActionEvents(), this);
+        pm.registerEvents(new GuiEvents(), this);
+        pm.registerEvents(new ConnectionEvents(), this);
+
+        // Managers
         pm.registerEvents(new Chat(), this);
         pm.registerEvents(new StaffManager(), this);
         pm.registerEvents(new Essentials(), this);
@@ -127,23 +135,23 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         pm.registerEvents(new Particles(), this);
         pm.registerEvents(new PlayerDeathMessageManager(), this);
 
-        Autio.logColored(" §aRegistering messaging channels for BungeeCord...");
+        Sorsa.logColored(" §aRegistering messaging channels for BungeeCord...");
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeEvents());
 
-        Autio.logColored(" §aRegistering PlayerParticlesAPI...");
+        Sorsa.logColored(" §aRegistering PlayerParticlesAPI...");
 
         if (Bukkit.getPluginManager().getPlugin("PlayerParticles") != null) {
             Main.particlesAPI = PlayerParticlesAPI.getInstance();
         } else {
-            Autio.log("§cCould not find PlayerParticles plugin, disabling...");
+            Sorsa.log("§cCould not find PlayerParticles plugin, disabling...");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
 
-        Autio.logColored(" §aDisabling Announcement of Advancements...");
+        Sorsa.logColored(" §aDisabling Announcement of Advancements...");
 
         // Disable Advancement announcing
         for(World world : Bukkit.getWorlds()) {
@@ -152,7 +160,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
         // Commands
 
-        Autio.logColored(" §aRegistering plugin commands....");
+        Sorsa.logColored(" §aRegistering plugin commands....");
 
         getCommand("home").setExecutor(new HomeCommand());
 
@@ -188,7 +196,6 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
         getCommand("forcestop").setExecutor(new StopCommand());
 
         getCommand("reppu").setExecutor(new Backpack());
-      //  getCommand("huutokauppa").setExecutor(new AuctionCommands());
         getCommand("invsee").setExecutor(new Essentials());
 
         getCommand("kosmetiikka").setExecutor(new Particles());
@@ -200,21 +207,21 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
         // Autosave code...
 
-        Autio.logColored(" §aStarting autosaving for players...");
+        Sorsa.logColored(" §aStarting autosaving for players...");
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
 
 
-            if(Autio.getCurrentTPS() >= 18.5) {
-                Autio.log("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
+            if(Sorsa.getCurrentTPS() >= 18.5) {
+                Sorsa.log("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
                 int times_saved = 0;
                 for(Player player : Bukkit.getOnlinePlayers()) {
                     times_saved += 1;
                     PlayerData.savePlayer(player.getUniqueId());
                     //Chat.sendMessage(player, "Tietosi tallennettiin automaattisesti!");
                 }
-                Autio.log("Saved the data of " + times_saved + " players!");
+                Sorsa.log("Saved the data of " + times_saved + " players!");
             } else {
-                Autio.warn("Server TPS too low, not updating players this time...");
+                Sorsa.warn("Server TPS too low, not updating players this time...");
             }
 
             // Fetch Balances...
@@ -224,35 +231,35 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
 
 
 
-        Autio.logColored(" §aStarting AutoBroadcaster...");
+        Sorsa.logColored(" §aStarting AutoBroadcaster...");
         AutoBroadcaster.start();
         Warps.loadWarps((value) -> {
             String output = (value) ? "Loaded warps from the Database!" : "Did not load warps from the database, did an error occur?";
             System.out.println(output);
         });
 
-        Autio.logColored(" §aStarting Managers...");
+        Sorsa.logColored(" §aStarting Managers...");
         Boosters.activateManager();
         Houkutin.activateManager();
         EndManager.startManager();
 
-        Autio.logColored(" §aInitializing ChatManager");
+        Sorsa.logColored(" §aInitializing ChatManager");
         Chat.init();
 
-        Autio.log(" §aLoading Custom Recipes...");
-        Recipe.load();
+        Sorsa.log(" §aLoading Custom Recipes...");
+        // Recipe.load(); There aren't in use anymore
 
-        Autio.log(" §aIntegrating custom economy into Vault...");
+        Sorsa.log(" §aIntegrating custom economy into Vault...");
         if(Bukkit.getServer().getPluginManager().getPlugin("Vault") != null) {
             Bukkit.getServer().getServicesManager().register(Economy.class, new CustomEconomy(), this, ServicePriority.Highest);
         } else {
-            Autio.log(" §cCould not find Vault! Disabling plugin...");
+            Sorsa.log(" §cCould not find Vault! Disabling plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        Autio.logColored("§a Enabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
+        Sorsa.logColored("§a Enabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
                 "ms / " + ((System.currentTimeMillis() - start) / 1000.0f) + "s)");
-        Autio.logColored("§a---------------------------");
+        Sorsa.logColored("§a---------------------------");
 
         started = System.currentTimeMillis();
 
@@ -261,43 +268,22 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
     @Override
     public void onDisable() {
 
-        Autio.logColored("§a---------------------------");
-        Autio.logColored(" §aDisabling SorsaSurvival....");
-
-        Autio.logColored(" ");
-        Autio.logColored(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
-        Autio.logColored(" ");
-
+        Sorsa.logColored("§a---------------------------");
+        Sorsa.logColored(" §aDisabling SorsaSurvival....");
+        Sorsa.logColored(" ");
+        Sorsa.logColored(" §6IF YOU DON'T WANT LOGS FROM THE PLUGIN, DISABLE IT FROM THE config.yml!");
+        Sorsa.logColored(" ");
         long start = System.currentTimeMillis();
-
-        Autio.logColored(" §aSaving configs...");
-
+        Sorsa.logColored(" §aSaving configs...");
         saveConfig();
         EndManager.saveEndConfig();
-
-        Autio.logColored(" §aClosing Database Connection...");
-
+        Sorsa.logColored(" §aClosing Database Connection...");
         SQL.source.close();
-
-        Autio.logColored("§a Disabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
+        Sorsa.logColored("§a Disabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
                 "ms / " + ((System.currentTimeMillis() - start) / 1000.0f) + "s)");
-
-        Autio.logColored("§a---------------------------");
-
+        Sorsa.logColored("§a---------------------------");
         started = 0L;
 
-    }
-
-    @Override
-    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if (!channel.equals("BungeeCord")) {
-            return;
-        }
-        ByteArrayDataInput in = ByteStreams.newDataInput(message);
-        String subchannel = in.readUTF();
-        if (subchannel.equals("")) {
-
-        }
     }
 
     @Override
@@ -363,7 +349,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            Autio.teleportToSpawn(player);
+                            Sorsa.teleportToSpawn(player);
                             cancel();
                         }
                     }.runTaskLater(Main.getInstance(), 20 * 5);
@@ -375,13 +361,13 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             Chat.sendMessage(player, "Pelaajaa ei löydetty");
                             return true;
                         }
-                        Autio.teleportToSpawn(target);
+                        Sorsa.teleportToSpawn(target);
                         Chat.sendMessage(player, "Pelaaja §a" + target.getName() + " §7vietiin spawnille!");
                     }
                 }
             } else if(command.getLabel().equalsIgnoreCase("setspawn")) {
                 if(player.isOp()) {
-                    Autio.setSpawn(player.getLocation());
+                    Sorsa.setSpawn(player.getLocation());
                     Chat.sendMessage(player, "Spawn asetettu sijaintiisi");
                 }
             } else if(command.getLabel().equalsIgnoreCase("level")) {
@@ -713,7 +699,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             String msg = (!current) ? "§apäällä" : "§cpois päältä";
                             Chat.sendMessage(player, "Tietojen tallentaminen lokiin " + msg);
                         } else if(args[0].equalsIgnoreCase("setdeathspawn")) {
-                            Autio.setDeathSpawn(player.getLocation());
+                            Sorsa.setDeathSpawn(player.getLocation());
                             Chat.sendMessage(player, "Kuolemansaaren spawni asetettu!");
                         }
                     }
@@ -740,10 +726,10 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                     } else {
                         if(args.length == 1) {
                             if(args[0].equalsIgnoreCase("mode")) {
-                                Autio.toggleDebugMode(player);
+                                Sorsa.toggleDebugMode(player);
                             } else if(args[0].equalsIgnoreCase("load")) {
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Tietojasi haetaan tietokannasta...");
-                                Autio.async(() ->
+                                Sorsa.async(() ->
                                     PlayerData.loadPlayer(player.getUniqueId(), (result) -> {
                                         if(result) Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
                                         else Chat.sendMessage(player, Chat.Prefix.DEBUG, "Tietoja ei ollut olemassa, ladattiin nollatiedot.");
@@ -754,7 +740,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                                 player.sendMessage("§7§m--------------------");
                                 player.sendMessage("§7Versio: §6" + Bukkit.getVersion());
                                 player.sendMessage("§7Bukkit versio: §6" + Bukkit.getBukkitVersion());
-                                player.sendMessage("§7Tämänhetkinen TPS: §6" + Autio.getCurrentTPS());
+                                player.sendMessage("§7Tämänhetkinen TPS: §6" + Sorsa.getCurrentTPS());
                                 player.sendMessage("§7IP: §6" + getServer().getIp() + ":" + getServer().getPort());
                                 player.sendMessage("§7Pelaajia: §6" + Bukkit.getOnlinePlayers().size());
                                 player.sendMessage("§7Plugineita: §6" + getServer().getPluginManager().getPlugins().length);
@@ -768,9 +754,9 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                                 Boosters.getActive().clear();
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Resetoitiin boosterit!");
                             } else if(args[0].equalsIgnoreCase("run")) {
-                                Autio.runDebug(player);
+                                Sorsa.runDebug(player);
                             } else if(args[0].equalsIgnoreCase("resetData")) {
-                                Autio.async(() -> {
+                                Sorsa.async(() -> {
                                     PlayerData.loadNull(player.getUniqueId(), true);
                                     PlayerData.savePlayer(player.getUniqueId());
                                     Chat.sendMessage(player, "Data tyhjennetty pelaajalta!");
@@ -780,14 +766,14 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
                             if(args[0].equalsIgnoreCase("load")) {
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Pelaajan §a" + target.getName() + " §7tietoja haetaan tietokannasta...");
-                                Autio.async(() ->
+                                Sorsa.async(() ->
                                     PlayerData.loadPlayer(target.getUniqueId(), (result) -> {
                                         if (result) Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
                                         else Chat.sendMessage(player, Chat.Prefix.DEBUG, "Tietoja ei ollut olemassa, ladattiin nollatiedot.");
                                     }));
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
                             } else if(args[0].equalsIgnoreCase("resetData")) {
-                                Autio.async(() -> {
+                                Sorsa.async(() -> {
                                     PlayerData.loadNull(target.getUniqueId(), true);
                                     PlayerData.savePlayer(target.getUniqueId());
                                     Chat.sendMessage(player, "Data tyhjennetty pelaajalta §a" + target.getName() + "§7!");
@@ -795,7 +781,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             }
                         }
                     }
-                } else Autio.runDebug(player);
+                } else Sorsa.runDebug(player);
             } else if(command.getLabel().equalsIgnoreCase("posti")) {
                 if(args.length < 1) {
                     Mail.panel(player);
@@ -826,8 +812,8 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
             } else if(command.getLabel().equalsIgnoreCase("arpa")) {
                 Lottery.lot(player);
             } else if(command.getLabel().equalsIgnoreCase("iteminfo")) {
-                if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR) {
-                    Chat.sendMessage(player, "Sinulla ei ole kädessä mitään!");
+                if(player.getInventory().getItemInMainHand().getType() == Material.AIR) {
+                    Chat.sendMessage(player, "Sinulla ei ole kädessäsi mitään!");
                     return true;
                 }
                 ItemStack item = player.getInventory().getItemInMainHand();
@@ -989,7 +975,7 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                     Inventory ec = player.getEnderChest();
                     player.openInventory(ec);
                 } else {
-                    Player target = Bukkit.getPlayer(args[1]);
+                    Player target = Bukkit.getPlayer(args[0]);
                     if(target == null) {
                         Chat.sendMessage(player, "En löytänyt tuota pelaajaa");
                         return true;
@@ -1023,10 +1009,14 @@ public final class Main extends JavaPlugin implements Listener, PluginMessageLis
                             sender.sendMessage("§cPelaajaa ei löydetty...");
                             return true;
                         }
-                        Autio.teleportToSpawn(target);
+                        Sorsa.teleportToSpawn(target);
                         sender.sendMessage("§7Pelaaja §a" + target.getName() + " §7vietiin spawnille!");
                     }
                 }
+            } else if(command.getLabel().equals("uptime")) {
+                long now = System.currentTimeMillis();
+                long uptime = now - started;
+                sender.sendMessage(String.format("§aPalvelin on ollut päällä §c%s", DurationFormatUtils.formatDurationWords(uptime, false, true)));
             }
         }
         return true;

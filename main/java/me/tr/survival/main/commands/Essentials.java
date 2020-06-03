@@ -1,14 +1,13 @@
 package me.tr.survival.main.commands;
 
-import me.tr.survival.main.Autio;
-import me.tr.survival.main.Chat;
+import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.other.Ranks;
-import me.tr.survival.main.other.Util;
+import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
-import me.tr.survival.main.util.staff.StaffManager;
+import me.tr.survival.main.managers.StaffManager;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,7 +19,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

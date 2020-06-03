@@ -1,6 +1,6 @@
 package me.tr.survival.main.other.recipes;
 
-import me.tr.survival.main.other.travel.TravelManager;
+import me.tr.survival.main.managers.travel.TravelManager;
 import me.tr.survival.main.util.ItemUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

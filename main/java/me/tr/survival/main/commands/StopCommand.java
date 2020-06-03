@@ -1,9 +1,9 @@
 package me.tr.survival.main.commands;
 
-import me.tr.survival.main.Autio;
-import me.tr.survival.main.Chat;
+import me.tr.survival.main.Sorsa;
+import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.Main;
-import me.tr.survival.main.other.Houkutin;
+import me.tr.survival.main.managers.features.Houkutin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,8 +25,8 @@ public class StopCommand implements CommandExecutor {
 
                 for(Player player : Bukkit.getOnlinePlayers()) {
                    // player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");
-                    Autio.sendBungeeMessage(player, "Connect", "lobby");
-                    Autio.sendBungeeMessage(player, "Message", player.getName(), Chat.getPrefix() + " Palvelin, jossa aikaisemmin olit suljettiin ja sinut vietiin aulaamme. Odotathan noin §aminuutin§7, jotta palvelin saadaan uudelleen toimintaan!");
+                    Sorsa.sendBungeeMessage(player, "Connect", "lobby");
+                    Sorsa.sendBungeeMessage(player, "Message", player.getName(), Chat.getPrefix() + " Palvelin, jossa aikaisemmin olit suljettiin ja sinut vietiin aulaamme. Odotathan noin §aminuutin§7, jotta palvelin saadaan uudelleen toimintaan!");
                 }
 
                 Houkutin.deactivate();
@@ -58,8 +58,8 @@ public class StopCommand implements CommandExecutor {
 
                     for(Player player : Bukkit.getOnlinePlayers()) {
                         //player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");
-                        Autio.sendBungeeMessage(player, "Connect", "lobby");
-                        Autio.sendBungeeMessage(player, "Message", player.getName(), Chat.getPrefix() + " Palvelin, jossa aikaisemmin olit suljettiin ja sinut vietiin aulaamme. Odotathan noin §aminuutin§7, jotta palvelin saadaan uudelleen toimintaan!");
+                        Sorsa.sendBungeeMessage(player, "Connect", "lobby");
+                        Sorsa.sendBungeeMessage(player, "Message", player.getName(), Chat.getPrefix() + " Palvelin, jossa aikaisemmin olit suljettiin ja sinut vietiin aulaamme. Odotathan noin §aminuutin§7, jotta palvelin saadaan uudelleen toimintaan!");
                     }
 
                     Bukkit.shutdown();

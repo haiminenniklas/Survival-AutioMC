@@ -3,7 +3,7 @@ package me.tr.survival.main.other;
 import java.util.HashMap;
 import java.util.UUID;
 
-import me.tr.survival.main.Chat;
+import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.Main;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 
+@Deprecated
 public class EnderpearlCooldown implements Listener {
 
     public static HashMap<UUID, Integer> cooldown = new HashMap<UUID, Integer>();

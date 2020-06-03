@@ -1,6 +1,6 @@
 package me.tr.survival.main.other;
 
-import me.tr.survival.main.util.data.Balance;
+import me.tr.survival.main.database.data.Balance;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -8,7 +8,6 @@ import org.bukkit.OfflinePlayer;
 
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.UUID;
 
 public class CustomEconomy implements Economy {
 

@@ -11,6 +11,7 @@ import org.bukkit.material.MaterialData;
 
 import java.util.Map;
 
+@Deprecated
 public abstract class Recipe {
 
     private ItemStack result;

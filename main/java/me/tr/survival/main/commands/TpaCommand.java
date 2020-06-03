@@ -1,20 +1,17 @@
 package me.tr.survival.main.commands;
 
-import me.tr.survival.main.Chat;
+import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.other.Ranks;
-import me.tr.survival.main.util.teleport.TeleportManager;
-import me.tr.survival.main.util.teleport.TeleportRequest;
+import me.tr.survival.main.managers.teleport.TeleportManager;
+import me.tr.survival.main.managers.teleport.TeleportRequest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class TpaCommand implements CommandExecutor, Listener {

@@ -1,11 +1,9 @@
 package me.tr.survival.main.other;
 
-import me.tr.survival.main.Autio;
-import me.tr.survival.main.database.PlayerData;
+import me.tr.survival.main.Sorsa;
 import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -14,11 +12,11 @@ public class Ranks {
 
     public static String getRank(UUID uuid) {
 
-        if(Autio.getLuckPerms() != null) {
-            if(Autio.getLuckPerms().getUserManager() != null) {
-                if(Autio.getLuckPerms().getUserManager().getUser(uuid) != null) {
-                    if(Autio.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup() != null) {
-                        return Autio.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup();
+        if(Sorsa.getLuckPerms() != null) {
+            if(Sorsa.getLuckPerms().getUserManager() != null) {
+                if(Sorsa.getLuckPerms().getUserManager().getUser(uuid) != null) {
+                    if(Sorsa.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup() != null) {
+                        return Sorsa.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup();
                     }
                 }
 
@@ -110,7 +108,7 @@ public class Ranks {
     }
 
     public static boolean hasRank(UUID uuid, String rank) {
-        User user = Autio.getLuckPerms().getUserManager().getUser(uuid);
+        User user = Sorsa.getLuckPerms().getUserManager().getUser(uuid);
         return (user.getPrimaryGroup().equalsIgnoreCase(rank));
     }
 

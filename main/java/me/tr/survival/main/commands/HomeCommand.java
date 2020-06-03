@@ -1,8 +1,8 @@
 package me.tr.survival.main.commands;
 
-import me.tr.survival.main.Chat;
+import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.database.PlayerData;
-import me.tr.survival.main.util.data.Homes;
+import me.tr.survival.main.database.data.Homes;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;

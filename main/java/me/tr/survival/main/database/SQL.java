@@ -1,8 +1,9 @@
 package me.tr.survival.main.database;
 
 import com.zaxxer.hikari.HikariDataSource;
-import me.tr.survival.main.Autio;
+import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.Main;
+import me.tr.survival.main.util.Result;
 import me.tr.survival.main.util.callback.QueryPromise;
 import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -84,7 +85,7 @@ public class SQL {
         for(String query : queries) {
             try {
                 if(!update(query)) {
-                    Autio.logColored("§cCould not execute query (" + query + ")");
+                    Sorsa.logColored("§cCould not execute query (" + query + ")");
                 }
             } catch(SQLException ex){
                 ex.printStackTrace();
@@ -141,7 +142,7 @@ public class SQL {
     }
 
     public static void query(final String sql, QueryPromise<ResultSet, Connection> cb) {
-        Autio.async(() -> {
+        Sorsa.async(() -> {
             try {
                 Connection c = getConnection();
                 ResultSet result = c.createStatement().executeQuery(sql);
@@ -153,7 +154,7 @@ public class SQL {
     }
 
     public static void update(String sql, TypedCallback<Boolean> cb) {
-        Autio.async(() -> {
+        Sorsa.async(() -> {
             try {
                 Boolean result = SQL.update(sql);
                 cb.execute(result);

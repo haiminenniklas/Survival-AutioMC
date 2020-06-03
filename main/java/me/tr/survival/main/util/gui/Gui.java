@@ -2,17 +2,14 @@ package me.tr.survival.main.util.gui;
 
 import java.util.*;
 
-import me.tr.survival.main.Autio;
+import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -223,7 +220,7 @@ public class Gui implements Listener {
 
     public void open(Player player){
 
-        Autio.async(() -> {
+        Sorsa.async(() -> {
             //final long start = System.currentTimeMillis();
             //System.out.println("[/Gui] Started opening a GUI...");
             //System.out.println("[/Gui] Checking for pages...");
@@ -255,7 +252,7 @@ public class Gui implements Listener {
             //System.out.println("[/Gui] Button adding took in total " + (System.currentTimeMillis() - buttonLoopStart) + "ms!");
             playerPages.put(player, 1);
             //System.out.println("[/Gui] Opening the Inventory...");
-            Autio.task(() -> player.openInventory(inv));
+            Sorsa.task(() -> player.openInventory(inv));
             //System.out.println("[/Gui] Gui opening took in total " + (System.currentTimeMillis() - start) + "ms!");
         });
 
@@ -377,7 +374,7 @@ public class Gui implements Listener {
     }
 
     public static void openGui(final Player player,final  String title, final int size, final TypedCallback<Gui> cb) {
-        Autio.async(() -> {
+        Sorsa.async(() -> {
             Gui gui = new Gui(title, size);
             cb.execute(gui);
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> gui.open(player), 2);

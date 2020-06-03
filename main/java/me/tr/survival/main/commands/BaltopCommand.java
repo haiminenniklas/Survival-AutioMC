@@ -1,14 +1,13 @@
 package me.tr.survival.main.commands;
 
-import me.tr.survival.main.Autio;
-import me.tr.survival.main.Chat;
+import me.tr.survival.main.Sorsa;
+import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.Main;
-import me.tr.survival.main.Profile;
-import me.tr.survival.main.other.Util;
+import me.tr.survival.main.managers.Profile;
+import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.callback.TypedCallback;
-import me.tr.survival.main.util.data.Balance;
-import me.tr.survival.main.util.data.Crystals;
+import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
@@ -24,7 +23,6 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class BaltopCommand implements CommandExecutor {
@@ -152,7 +150,7 @@ public class BaltopCommand implements CommandExecutor {
                     cb.execute(gui);
 
                 } else {
-                    Autio.task(() -> {
+                    Sorsa.task(() -> {
 
                         Gui gui = new Gui("TOP 10 - Rikkaimmat", 27);
                         gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§cEi tietoja", Arrays.asList(

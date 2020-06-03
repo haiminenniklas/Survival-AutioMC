@@ -1,7 +1,7 @@
 package me.tr.survival.main.database;
 
-import me.tr.survival.main.Autio;
-import me.tr.survival.main.other.Util;
+import me.tr.survival.main.Sorsa;
+import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -198,7 +198,7 @@ public class PlayerData {
 
                     player_data.put(uuid, data);
 
-                    Autio.log("Loaded player " + uuid + " (" + player.getName() + ") from Database");
+                    Sorsa.log("Loaded player " + uuid + " (" + player.getName() + ") from Database");
                     cb.execute(true);
                 } else {
                     loadNull(uuid, true);
@@ -298,9 +298,9 @@ public class PlayerData {
             for(int i = 0; i < updateQueries.length; i++) {
 
                 String update = updateQueries[i];
-                Autio.log("Executing Database update query: " + update);
+                Sorsa.log("Executing Database update query: " + update);
                 if(!SQL.update(update)) {
-                    Autio.log("Could not execute update query " + update + " trying to execute the equivalent save query: " + saveQueries[i]);
+                    Sorsa.log("Could not execute update query " + update + " trying to execute the equivalent save query: " + saveQueries[i]);
                     if(SQL.update(saveQueries[i])) {
                         successful += 1;
                     } else {
@@ -314,7 +314,7 @@ public class PlayerData {
             }
 
             if(successful >= 1) {
-                Autio.log("Updated or Saved " + successful + "/" + updateQueries.length + " tables for " + uuid +  " (" + player.getName() + ")!");
+                Sorsa.log("Updated or Saved " + successful + "/" + updateQueries.length + " tables for " + uuid +  " (" + player.getName() + ")!");
             }
 
         } catch(SQLException ex) {

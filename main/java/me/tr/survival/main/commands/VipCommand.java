@@ -1,10 +1,10 @@
 package me.tr.survival.main.commands;
 
-import me.tr.survival.main.Autio;
-import me.tr.survival.main.Mail;
+import me.tr.survival.main.Sorsa;
+import me.tr.survival.main.managers.Mail;
 import me.tr.survival.main.database.PlayerData;
-import me.tr.survival.main.util.data.Balance;
-import me.tr.survival.main.util.data.Crystals;
+import me.tr.survival.main.database.data.Balance;
+import me.tr.survival.main.database.data.Crystals;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -34,7 +34,7 @@ public class VipCommand implements CommandExecutor {
 
                 if(!PlayerData.isLoaded(target.getUniqueId())) {
 
-                    Autio.async(() -> {
+                    Sorsa.async(() -> {
                         PlayerData.loadPlayer(target.getUniqueId(), (res) -> {});
                         givePerks(target, rankRaw);
                     });

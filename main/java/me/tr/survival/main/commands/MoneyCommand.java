@@ -1,11 +1,10 @@
 package me.tr.survival.main.commands;
 
-import me.tr.survival.main.Chat;
-import me.tr.survival.main.Profile;
+import me.tr.survival.main.managers.Chat;
+import me.tr.survival.main.managers.Profile;
 import me.tr.survival.main.database.PlayerData;
-import me.tr.survival.main.other.Util;
-import me.tr.survival.main.util.data.Balance;
-import me.tr.survival.main.util.data.Crystals;
+import me.tr.survival.main.util.Util;
+import me.tr.survival.main.database.data.Balance;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -13,7 +12,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.text.DecimalFormat;
 import java.util.UUID;
 
 public class MoneyCommand implements CommandExecutor {
