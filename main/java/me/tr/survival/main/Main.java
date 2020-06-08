@@ -364,9 +364,9 @@ public final class Main extends JavaPlugin implements Listener {
                Chat.sendMessage(player, String.format("Palvelin on ollut päällä §c%s", DurationFormatUtils.formatDurationWords(uptime, false, true)));
            } else if(command.getLabel().equalsIgnoreCase("profile")) {
                 if(args.length == 0) Profile.openProfile(player, player.getUniqueId());
-                else if(args.length >= 1) {
+                else {
                     OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-                    Profile.openProfile(player, target.getUniqueId());
+                    Profile.openOther(player, target);
                 }
             } else if(command.getLabel().equalsIgnoreCase("vip")) Settings.vipPanel(player);
             else if(command.getLabel().equalsIgnoreCase("spawn")) {

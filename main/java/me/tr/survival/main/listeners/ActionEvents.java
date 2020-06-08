@@ -8,6 +8,8 @@ import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.Util;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -74,6 +76,13 @@ public class ActionEvents implements Listener {
     public void onMove(PlayerMoveEvent e) {
 
         Player player = e.getPlayer();
+        World world = e.getTo().getWorld();
+        if(world.getName().equalsIgnoreCase("world_nether") && e.getTo().getBlockY() >= 127) {
+            e.setCancelled(true);
+            Sorsa.teleportToNether(player);
+            Chat.sendMessage(player, "Netheriä voit tutkia vain Netherin sisällä! Soo soo!");
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+        }
 
         if(player.getAllowFlight()) {
             if(Util.getRegions(player).size() < 1) {

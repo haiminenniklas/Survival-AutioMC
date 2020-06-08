@@ -34,6 +34,8 @@ import java.util.*;
 
 public class Backpack implements CommandExecutor, Listener {
 
+    private boolean enabled = true;
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -43,13 +45,22 @@ public class Backpack implements CommandExecutor, Listener {
 
                 Player player = (Player) sender;
 
-                if(args.length < 1) {
-                    openBackpack(player);
-                } else {
+                if(args.length < 1) openBackpack(player);
+                else {
 
                    if(args[0].equalsIgnoreCase("päivitä") || args[0].equalsIgnoreCase("upgrade")) Main.getBackpack().upgradeConfirm(player);
-                   else if(args[0].equalsIgnoreCase("help"))
-                       if(Ranks.isStaff(player.getUniqueId())) Chat.sendMessage(player, "/backpack katso <pelaaja>");
+                   else if(args[0].equalsIgnoreCase("help"))  {
+                       if(Ranks.isStaff(player.getUniqueId())){
+                           Chat.sendMessage(player, "/backpack katso <pelaaja>");
+                           Chat.sendMessage(player, "/backpack (enable | disable)");
+                       }
+                   } else if(args[0].equalsIgnoreCase("enable") && player.isOp()) {
+                       enabled = true;
+                       Chat.sendMessage(player,"Reput ovat nyt päällä!");
+                   } else if(args[0].equalsIgnoreCase("disable") && player.isOp()) {
+                        enabled = false;
+                        Chat.sendMessage(player,"Reput ovat nyt pois päältä");
+                   }
 
                    if(args.length >= 2) {
 
@@ -89,21 +100,22 @@ public class Backpack implements CommandExecutor, Listener {
         }
 
         opener.openInventory(inv);
-
     }
 
     public void openBackpack(Player player) {
 
-        UUID uuid = player.getUniqueId();
+        if(!enabled) {
+            Chat.sendMessage(player, "Reput ovat tällä hetkellä pois päältä! Ei kuitenkaan hätää! Tavarasi eivät ole hävinneet!");
+            return;
+        }
 
+        UUID uuid = player.getUniqueId();
         Level level =  getLevel(player.getUniqueId());
 
         ItemStack[] items = getSavedInventory(uuid);
         Inventory inv = Bukkit.createInventory(null, level.size + 18, "Reppu (" + level.displayName + "§8)");
 
-        int[] firstGlassPanes = new int[] {
-          0,1,2,3,5,6,7,8
-        };
+        int[] firstGlassPanes = new int[] { 0,1,2,3,5,6,7,8 };
 
         for(int i = 0; i < firstGlassPanes.length; i++) {
             inv.setItem(firstGlassPanes[i], ItemUtil.makeItem(Material.PINK_STAINED_GLASS_PANE));
@@ -214,10 +226,9 @@ public class Backpack implements CommandExecutor, Listener {
                 // Remove the inaccessible rows from the calculations
                 if(i < 9) continue;
                 if(i >= inv.getSize() - 9 && i < inv.getSize()) continue;
-                correctInv.addItem(item);
+                correctInv.setItem(i, item);
             }
             saveInventory(player.getUniqueId(), correctInv.getContents());
-            //Chat.sendMessage(player, "Reppusi tallennettiin!");
 
         } else if(e.getView().getTitle().startsWith("Tarkastele reppua")) {
 
