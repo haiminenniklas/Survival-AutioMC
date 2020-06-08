@@ -89,6 +89,7 @@ public class BaltopCommand implements CommandExecutor {
                                 }));
 
                         } else {
+                            if(target.getName().equals("null")) continue;
                             ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §7" + target.getName(), Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Rahatilanne: §a" + Util.formatDecimals(balance) + "€",

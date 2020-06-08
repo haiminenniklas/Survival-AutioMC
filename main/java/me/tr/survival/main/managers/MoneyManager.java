@@ -106,7 +106,7 @@ public class MoneyManager implements CommandExecutor, Listener {
 
         Gui.openGui(player, "Finanssivalvonta", 27, (gui) -> {
 
-            gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER,1, "Shekki", Arrays.asList(
+            gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER,1, "§aShekki", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Haluatko pitää siirtää tai",
                     " §7säilyttää rahaa hieman",
@@ -114,12 +114,11 @@ public class MoneyManager implements CommandExecutor, Listener {
                     " §7Voit kirjoittaa shekkejä,",
                     " §7joihin voit tallettaa",
                     " §7haluamasi rahamäärän. Myöhemmin",
-                    " §7kun klikkaa tätä shekkiä,",
+                    " §7kun klikkaat tätä shekkiä,",
                     " §7saat kyseisen rahamäärän",
-                    " §atilillesi!",
+                    " §7tilillesi!",
                     " ",
-                    " §6Klikkaa kirjoittaaksesi",
-                    " §6shekkejä!",
+                    " §aKlikkaa kirjoittaaksesi",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
@@ -326,7 +325,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                 cheque.setAmount(cheque.getAmount() - 1);
                 if(cheque.getAmount() < 1) player.getInventory().remove(cheque);
                 player.updateInventory();
-                Chat.sendMessage(player, "Nostit shekin, joka sisälsi §a" + foundValue + "€§7! Shekkejä voit kirjoittaa komennolla §6/valuutta§7!");
+                Chat.sendMessage(player, "Nostit shekin, joka sisälsi §e" + foundValue + "€§7! Shekkejä voit kirjoittaa komennolla §a/valuutta§7!");
             }
         }
 

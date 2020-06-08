@@ -133,7 +133,7 @@ public class Ranks {
         if(Bukkit.getOfflinePlayer(uuid).isOp()) {
             return true;
         }
-        return hasRank(uuid, "admin") || hasRank(uuid, "mod") || hasRank(uuid, "builder"); }
+        return hasRank(uuid, "admin") || hasRank(uuid, "mod") || hasRank(uuid, "rakentaja") || hasRank(uuid, "harjoittelija"); }
 
     public static boolean hasRank(Player player, String rank) {
         return hasRank(player.getUniqueId(), rank);

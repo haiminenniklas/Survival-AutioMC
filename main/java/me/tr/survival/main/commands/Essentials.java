@@ -245,7 +245,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7Voit myös maksaa ja vastaanottaa",
                                     " §7rahaa muilta pelaajilta §7(§a/raha§7)!",
                                     " §7Aluksi kaikki pelaajat saavat",
-                                    " §a1 000€§7!",
+                                    " §a100€§7!",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
 

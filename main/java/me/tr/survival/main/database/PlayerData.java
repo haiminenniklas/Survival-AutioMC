@@ -23,7 +23,7 @@ public class PlayerData {
 
         // Basic User Data
         empty.put("player_name", player.getName());
-        empty.put("money", 1000d);
+        empty.put("money", 100d);
         empty.put("rank", "default");
         empty.put("joined", Util.getToday());
         empty.put("save", save);
