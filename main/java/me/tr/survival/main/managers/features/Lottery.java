@@ -7,6 +7,7 @@ import me.tr.survival.main.managers.Mail;
 import me.tr.survival.main.managers.MoneyManager;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -50,7 +51,10 @@ public class Lottery {
                                 !Ranks.hasRank(player.getUniqueId(), "premiumplus")
                                 && !Ranks.isPartner(player.getUniqueId())
                                 && !Ranks.hasRank(player.getUniqueId(), "sorsa")) {
-                            PlayerData.set(player.getUniqueId(), "rank", "premium");
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + player.getName() + " parent set premium");
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "givevip " + player.getName() + " premium");
+                        } else {
+                            Chat.sendMessage(player, "Sait parhaimman arvon, mutta");
                         }
                         break;
                     case FOOD:

@@ -31,9 +31,12 @@ public class ConnectionEvents implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onLogin(PlayerLoginEvent e) {
         Player player = e.getPlayer();
-        if(e.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
-            if(player.hasPermission("server.join.full")) e.allow();
-            else e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän, sinun täytyy omistaa vähintään §e§lPremium§7-arvo!");
+        if(!Bukkit.hasWhitelist()) {
+            int playerlimit = Main.getInstance().getConfig().getInt("player-limit");
+            if(e.getResult() == PlayerLoginEvent.Result.KICK_FULL && Bukkit.getOnlinePlayers().size() >= playerlimit) {
+                if(player.hasPermission("server.join.full")) e.allow();
+                else e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän, sinun täytyy omistaa vähintään §e§lPremium§7-arvo!");
+            }
         }
     }
 

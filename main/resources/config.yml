@@ -4,6 +4,8 @@ mysql:
   password: wVKACGjtoyWYYkIc
   address: 95.216.155.199
 
+whitelist: false
+player-limit: 100
 enderpearl-cooldown: 16
 
 vault-sizes:

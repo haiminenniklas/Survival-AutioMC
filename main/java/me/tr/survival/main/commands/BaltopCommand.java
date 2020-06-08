@@ -65,6 +65,7 @@ public class BaltopCommand implements CommandExecutor {
 
 
                     for (final Map.Entry<UUID, Double> e : balanceMap.entrySet()) {
+                        if (i >= 12) break;
                         if(e == null) continue;
                         if(e.getKey() == null) continue;
                         final OfflinePlayer target = Bukkit.getOfflinePlayer(e.getKey());
@@ -89,7 +90,7 @@ public class BaltopCommand implements CommandExecutor {
                                 }));
 
                         } else {
-                            if(target.getName().equals("null")) continue;
+                            if(target.getName() == null) continue;
                             ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §7" + target.getName(), Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                     " §7Rahatilanne: §a" + Util.formatDecimals(balance) + "€",
@@ -97,7 +98,6 @@ public class BaltopCommand implements CommandExecutor {
                             ), (item) -> gui.addItem(1, item, slot));
                         }
                         i += 1;
-                        if (i > 12) break;
                     }
                     //System.out.println("[/Baltop] Map Entry Loop took " + (System.currentTimeMillis() - loopStart) + "ms");
 

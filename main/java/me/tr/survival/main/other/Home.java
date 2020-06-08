@@ -70,7 +70,7 @@ public class Home {
             return;
         }
 
-        Sorsa.afterAsync(3, () -> {
+        Sorsa.after(3, () -> {
             Util.sendNotification(player, "§7Teleportataan...", true);
             player.teleport(this.getLocation());
         });

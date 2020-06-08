@@ -181,6 +181,7 @@ public final class Main extends JavaPlugin implements Listener {
 
         // Managers
         pm.registerEvents(new Chat(), this);
+        pm.registerEvents(new AntiCheat(), this);
 
         pm.registerEvents(staffManager, this);
         pm.registerEvents(essentials, this);
@@ -290,6 +291,8 @@ public final class Main extends JavaPlugin implements Listener {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
+        Bukkit.getServer().setWhitelist(getConfig().getBoolean("whitelist"));
+
         Sorsa.logColored("§a Enabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
                 "ms / " + ((System.currentTimeMillis() - start) / 1000.0f) + "s)");
         Sorsa.logColored("§a---------------------------");
@@ -309,6 +312,11 @@ public final class Main extends JavaPlugin implements Listener {
         long start = System.currentTimeMillis();
         Sorsa.logColored(" §aSaving configs...");
         saveConfig();
+
+        for(UUID uuid : PlayerData.getPlayerData().keySet()) {
+            PlayerData.savePlayer(uuid);
+        }
+
         Main.getEndManager().saveEndConfig();
         Sorsa.logColored(" §aClosing Database Connection...");
         SQL.source.close();
@@ -374,7 +382,9 @@ public final class Main extends JavaPlugin implements Listener {
                             Chat.sendMessage(player, Chat.Prefix.ERROR, "Pystyt lähtemään spawnille uudestaan §c" + secondsLeft + "s §7jälkeen.");
                             return true;
                         }
-                    } else if(!Main.getStaffManager().hasStaffMode(player)) {
+                    }
+
+                    if(!Main.getStaffManager().hasStaffMode(player)) {
                         spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));
                         Chat.sendMessage(player, "Sinut viedään spawnille §c5s §7päästä!");
                         new BukkitRunnable() {
@@ -384,10 +394,11 @@ public final class Main extends JavaPlugin implements Listener {
                                 cancel();
                             }
                         }.runTaskLater(Main.getInstance(), 20 * 5);
-                    } else {
-                        Chat.sendMessage(player, "Sinut viedään nyt spawnille!");
-                        Sorsa.teleportToSpawn(player);
+                        return true;
                     }
+
+                    Chat.sendMessage(player, "Sinut viedään nyt spawnille!");
+                    Sorsa.teleportToSpawn(player);
 
 
                 } else {

@@ -20,18 +20,18 @@ public class StopCommand implements CommandExecutor {
             if(sender.isOp()) stopServer();
         } else if(command.getLabel().equalsIgnoreCase("forcestop")) {
             if(sender.isOp()) {
+                Bukkit.getServer().setWhitelist(true);
                 for(Player player : Bukkit.getOnlinePlayers()) {
                    // player.kickPlayer("§cPalvelin sammui \n §7Palvelin käynnistyy uudelleen §anoin minuutin §7kuluttua! Nähdään taas pian!");
                     Sorsa.sendBungeeMessage(player, "Connect", "lobby");
                     Sorsa.sendBungeeMessage(player, "Message", player.getName(), Chat.getPrefix() + " Palvelin, jossa aikaisemmin olit suljettiin ja sinut vietiin aulaamme. Odotathan noin §aminuutin§7, jotta palvelin saadaan uudelleen toimintaan!");
                 }
                 Main.getHoukutin().deactivate();
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
+                Sorsa.every(1, () -> {
+                    if(Bukkit.getOnlinePlayers().size() < 1) {
                         Bukkit.shutdown();
                     }
-                }.runTaskLater(Main.getInstance(), 20 * 2);
+                });
             }
         }
 

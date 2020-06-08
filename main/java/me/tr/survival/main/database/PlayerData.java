@@ -16,6 +16,10 @@ public class PlayerData {
 
     private static final HashMap<UUID, HashMap<String, Object>> player_data = new HashMap<>();
 
+    public static HashMap<UUID, HashMap<String, Object>> getPlayerData() {
+        return player_data;
+    }
+
     public static void loadNull(UUID uuid, boolean save) {
         HashMap<String, Object> empty = new HashMap<>();
 
