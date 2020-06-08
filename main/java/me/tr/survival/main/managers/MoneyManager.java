@@ -22,6 +22,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.inventory.meta.tags.ItemTagType;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -87,7 +89,17 @@ public class MoneyManager implements CommandExecutor, Listener {
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        if(e.getItem() != null) if(e.getItem().hasItemMeta()) confirmChequeWithdrawal(player, e.getItem());
+        ItemStack item = e.getItem();
+        if (item != null) {
+
+            ItemMeta meta = item.getItemMeta();
+            if (item.getType() == Material.PAPER && item.hasItemMeta() && meta != null) {
+                if (meta.hasLore() && meta.hasDisplayName() && meta.hasLore()) {
+                    e.setCancelled(true);
+                    confirmChequeWithdrawal(player, item);
+                }
+            }
+        }
     }
 
     public void main(Player player) {
@@ -192,7 +204,6 @@ public class MoneyManager implements CommandExecutor, Listener {
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
                     writeCheque(clicker, 1000);
-
                 }
             });
 
@@ -293,28 +304,30 @@ public class MoneyManager implements CommandExecutor, Listener {
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
         ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.getCustomTagContainer().setCustomTag(key, ItemTagType.INTEGER, amount);
-        item.setItemMeta(itemMeta);
+        if(itemMeta != null) {
+            itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, amount);
+            item.setItemMeta(itemMeta);
 
-        HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(Util.makeEnchanted(item));
-        for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) { player.getWorld().dropItemNaturally(player.getLocation(), entry.getValue()); }
+            HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(Util.makeEnchanted(item));
+            for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) { player.getWorld().dropItemNaturally(player.getLocation(), entry.getValue()); }
+        }
     }
 
     private void withdrawCheque(Player player, ItemStack cheque) {
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
         ItemMeta itemMeta = cheque.getItemMeta();
-        CustomItemTagContainer tagContainer = itemMeta.getCustomTagContainer();
-
-        if(tagContainer.hasCustomTag(key , ItemTagType.INTEGER)) {
-            int foundValue = tagContainer.getCustomTag(key, ItemTagType.INTEGER);
-            Balance.add(player.getUniqueId(), foundValue);
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-            cheque.setAmount(cheque.getAmount() - 1);
-            if(cheque.getAmount() < 1) player.getInventory().remove(cheque);
-            player.updateInventory();
-            Chat.sendMessage(player, "Nostit shekin, joka sisälsi §a" + foundValue + "€§7! Shekkejä voit kirjoittaa komennolla §6/valuutta§7!");
-
+        if(itemMeta != null) {
+            PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+            if(container.has(key, PersistentDataType.INTEGER)) {
+                int foundValue = container.get(key, PersistentDataType.INTEGER);
+                Balance.add(player.getUniqueId(), foundValue);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                cheque.setAmount(cheque.getAmount() - 1);
+                if(cheque.getAmount() < 1) player.getInventory().remove(cheque);
+                player.updateInventory();
+                Chat.sendMessage(player, "Nostit shekin, joka sisälsi §a" + foundValue + "€§7! Shekkejä voit kirjoittaa komennolla §6/valuutta§7!");
+            }
         }
 
     }
@@ -323,13 +336,11 @@ public class MoneyManager implements CommandExecutor, Listener {
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
         ItemMeta itemMeta = cheque.getItemMeta();
-        CustomItemTagContainer tagContainer = itemMeta.getCustomTagContainer();
-
+        PersistentDataContainer container = itemMeta.getPersistentDataContainer();
         // Confirm that the item is an actual cheque
 
-
-        if (tagContainer.hasCustomTag(key, ItemTagType.INTEGER)) {
-            int foundValue = tagContainer.getCustomTag(key, ItemTagType.INTEGER);
+        if (container.has(key, PersistentDataType.INTEGER)) {
+            int foundValue = container.get(key, PersistentDataType.INTEGER);
 
             Gui.openGui(player, "Varmista Shekin nosto (" + foundValue + "€)", 27, (gui) -> {
 
@@ -344,8 +355,8 @@ public class MoneyManager implements CommandExecutor, Listener {
                 ))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
-                        withdrawCheque(player, cheque);
                         gui.close(player);
+                        withdrawCheque(player, cheque);
                     }
                 });
 
@@ -367,6 +378,18 @@ public class MoneyManager implements CommandExecutor, Listener {
                 });
             });
         }
+    }
+
+    public boolean isCheque(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if(meta != null && meta.hasLore() && meta.hasDisplayName()) {
+            if(item.getType() == Material.PAPER) {
+                NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
+                PersistentDataContainer container = meta.getPersistentDataContainer();
+                return container.has(key, PersistentDataType.INTEGER);
+            }
+        }
+        return false;
     }
 
     @Deprecated

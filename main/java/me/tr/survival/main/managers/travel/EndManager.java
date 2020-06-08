@@ -44,7 +44,7 @@ public class EndManager implements CommandExecutor {
             Player player = (Player) sender;
             if(args.length < 1) panel(player);
             else {
-                if(args[0].equalsIgnoreCase("kutsu") || args[0].equalsIgnoreCase("luota")  || args[0].equalsIgnoreCase("lisää")) {
+                if(args[0].equalsIgnoreCase("kutsu") || args[0].equalsIgnoreCase("luota")  || args[0].equalsIgnoreCase("lisää")  || args[0].equalsIgnoreCase("invite")) {
                     if(args.length == 2) {
 
                         Player target = Bukkit.getPlayer(args[1]);
@@ -287,7 +287,6 @@ public class EndManager implements CommandExecutor {
         }
 
         if(Balance.canRemove(player.getUniqueId(), price)) {
-
             allowedPlayers.clear();
 
             Balance.remove(player.getUniqueId(), price);
@@ -316,7 +315,7 @@ public class EndManager implements CommandExecutor {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv gamerule announceAdvancements false world_the_end");
 
             Chat.sendMessage(player, "§7Aktivoit §5Endin§7! Hienoa työtä! Jos haluat jakaa §5Endin §7salaisuudet ystäviesi kanssa, pystyt päästämään " +
-                    "heidät komennolla §a/ääri lisää <pelaaja>§7! Hienoja löytöretkiä ja onnea matkaan! Sinulla on §e2 tuntia §7aikaa!");
+                    "heidät komennolla §a/ääri lisää <pelaaja>§7! Hienoja löytöretkiä ja onnea matkaan! Sinulla on §e3 tuntia §7aikaa!");
 
             allowedPlayers.add(player.getUniqueId());
 

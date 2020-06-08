@@ -43,14 +43,10 @@ public class VipCommand implements CommandExecutor {
     private void givePerks(OfflinePlayer player, String rank) {
         UUID uuid = player.getUniqueId();
         if(rank.equalsIgnoreCase("premium")) {
-            Balance.add(uuid, 20000);
             Mail.addTickets(uuid, 10);
         } else if(rank.equalsIgnoreCase("premiumplus")) {
-            Balance.add(uuid, 30000);
             Mail.addTickets(uuid, 10);
         } else if(rank.equalsIgnoreCase("sorsa")) {
-            Crystals.add(uuid, 1000);
-            Balance.add(uuid, 100000);
             Mail.addTickets(uuid, 20);
         }
     }

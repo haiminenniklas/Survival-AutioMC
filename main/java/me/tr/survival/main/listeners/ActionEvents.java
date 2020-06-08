@@ -66,7 +66,7 @@ public class ActionEvents implements Listener {
     public void onItemPickUp(EntityPickupItemEvent e) {
         if(e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
-            if(Main.getStaffManager().hasStaffMode(player)) e.setCancelled(true);
+            if(Main.getStaffManager().hidden.contains(player.getUniqueId())) e.setCancelled(true);
         }
     }
 
@@ -89,6 +89,19 @@ public class ActionEvents implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent e) {
+
+        Player player = e.getPlayer();
+        if(e.getTo().getWorld().getName().equals("world_nether")) {
+            if(!Main.getStaffManager().hasStaffMode(player)) {
+                player.setFlying(false);
+                player.setAllowFlight(false);
+            }
+        }
+
     }
 
     @EventHandler
@@ -140,6 +153,7 @@ public class ActionEvents implements Listener {
                 if(item.getType() == Material.AIR) continue;
                 if(item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()) {
                     final int slot = i;
+                    if(Main.getMoneyManager().isCheque(item)) continue;
                     Sorsa.task(() -> player.getInventory().setItem(slot, new ItemStack(Material.AIR)));
                 }
             }

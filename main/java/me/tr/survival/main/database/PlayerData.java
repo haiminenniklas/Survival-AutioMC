@@ -60,7 +60,7 @@ public class PlayerData {
 
         empty.put("last_mail", System.currentTimeMillis() - 1000 * 60 * 60 * 24);
         empty.put("streak", 0);
-        empty.put("tickets", 0);
+        empty.put("tickets", 5);
 
         empty.put("backpack_level", "ONE");
 

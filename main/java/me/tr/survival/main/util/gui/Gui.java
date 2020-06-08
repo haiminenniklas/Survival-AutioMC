@@ -281,11 +281,9 @@ public class Gui implements Listener {
     }
 
     public static void openGui(final Player player,final  String title, final int size, final TypedCallback<Gui> cb) {
-        Sorsa.async(() -> {
-            Gui gui = new Gui(title, size);
-            cb.execute(gui);
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> gui.open(player), 2);
-        });
+        Gui gui = new Gui(title, size);
+        cb.execute(gui);
+        gui.open(player);
     }
 
 }

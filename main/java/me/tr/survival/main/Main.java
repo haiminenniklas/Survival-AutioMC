@@ -27,7 +27,6 @@ import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.callback.SpigotCallback;
 import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.database.data.Crystals;
-import me.tr.survival.main.database.data.Homes;
 import me.tr.survival.main.database.data.Level;
 import me.tr.survival.main.managers.StaffManager;
 import net.luckperms.api.LuckPerms;
@@ -375,16 +374,21 @@ public final class Main extends JavaPlugin implements Listener {
                             Chat.sendMessage(player, Chat.Prefix.ERROR, "Pystyt lähtemään spawnille uudestaan §c" + secondsLeft + "s §7jälkeen.");
                             return true;
                         }
-                    } else if(!Main.getStaffManager().hasStaffMode(player)) spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));
+                    } else if(!Main.getStaffManager().hasStaffMode(player)) {
+                        spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));
+                        Chat.sendMessage(player, "Sinut viedään spawnille §c5s §7päästä!");
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                Sorsa.teleportToSpawn(player);
+                                cancel();
+                            }
+                        }.runTaskLater(Main.getInstance(), 20 * 5);
+                    } else {
+                        Chat.sendMessage(player, "Sinut viedään nyt spawnille!");
+                        Sorsa.teleportToSpawn(player);
+                    }
 
-                    Chat.sendMessage(player, "Sinut viedään spawnille §c5s §7päästä!");
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            Sorsa.teleportToSpawn(player);
-                            cancel();
-                        }
-                    }.runTaskLater(Main.getInstance(), 20 * 5);
 
                 } else {
                     if(player.isOp()) {
@@ -445,6 +449,12 @@ public final class Main extends JavaPlugin implements Listener {
                             Chat.sendMessage(player, "Käytä numeroita");
                             return true;
                         }
+
+                        if(value < 0) {
+                            player.sendMessage("§6Nopeus min. 0");
+                            return true;
+                        }
+
                         if(value > 10) {
                             player.sendMessage("§6Nopeus max. 10");
                             return true;

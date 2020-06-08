@@ -1,5 +1,6 @@
-package me.tr.survival.main.database.data;
+package me.tr.survival.main.managers.features;
 
+import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.other.Home;
 import me.tr.survival.main.managers.Profile;
