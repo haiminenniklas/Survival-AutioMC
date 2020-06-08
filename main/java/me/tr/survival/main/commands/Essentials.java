@@ -439,6 +439,7 @@ public class Essentials implements CommandExecutor, Listener {
 
         Inventory inv = Bukkit.createInventory(target, InventoryType.PLAYER, "Tarkastele inventoryä (" + target.getName() + ")");
         for(ItemStack item : target.getInventory().getContents()) {
+            if(item == null) continue;
             inv.addItem(item);
         }
         opener.openInventory(inv);

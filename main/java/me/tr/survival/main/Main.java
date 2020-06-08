@@ -707,6 +707,9 @@ public final class Main extends JavaPlugin implements Listener {
                 } else Chat.sendMessage(player, "Täältä ei löydy sitä mitä etsit!");
             } else if(command.getLabel().equalsIgnoreCase("rtp")) {
                RTP.teleport(player);
+            } else if(command.getLabel().equalsIgnoreCase("sijainti")) {
+                Location loc = player.getLocation();
+                Chat.sendMessage(player, "Sinun sijaintisi: §a" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
             } else if(command.getLabel().equalsIgnoreCase("autio")) {
                 if(player.isOp()) {
                     if(args.length < 1) {

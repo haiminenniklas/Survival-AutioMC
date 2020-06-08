@@ -40,14 +40,6 @@ public class Events implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEntityDeath(EntityDeathEvent e) {
-        if(Boosters.isActive(Boosters.Booster.DOUBLE_XP) && e.getEntity().getKiller() != null) {
-            e.setDroppedExp(e.getDroppedExp() * 2);
-            if(e.getDroppedExp() >= 1) Util.sendNotification(e.getEntity().getKiller(), "§a§lTEHOSTUS §7Tupla XP!", false);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
     public void onTeleport(PlayerTeleportEvent e) {
         Player player = e.getPlayer();
         FileConfiguration config = Main.getInstance().getConfig();
@@ -73,8 +65,23 @@ public class Events implements Listener {
         else e.setCancelled(false);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityKill(EntityDeathEvent e) {
+
+
+        if(e.getEntity() instanceof Player) {
+            Player player = (Player) e.getEntity();
+            Location loc = player.getLocation();
+            Sorsa.logColored("§6[DeathLog] Player " + player.getName() + " (" + player.getUniqueId() + ")" +
+                    " at X: " + loc.getX() + " Y: " + loc.getY() + " Z: " + loc.getZ() + " in '" + loc.getWorld().getName() + "'! Last damage cause: " +
+                    (player.getLastDamageCause() != null ? player.getLastDamageCause().getCause() : "Not found"));
+        }
+
+        if(Boosters.isActive(Boosters.Booster.DOUBLE_XP) && e.getEntity().getKiller() != null) {
+            e.setDroppedExp(e.getDroppedExp() * 2);
+            if(e.getDroppedExp() >= 1) Util.sendNotification(e.getEntity().getKiller(), "§a§lTEHOSTUS §7Tupla XP!", false);
+        }
+
         if(e.getEntity() instanceof Villager) {
             Villager villager = (Villager) e.getEntity();
             if(villager.getKiller() != null) {
@@ -103,7 +110,6 @@ public class Events implements Listener {
                 Location deathSpawn = Sorsa.getDeathSpawn();
                 player.teleport(deathSpawn);
                 Util.heal(player);
-
                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 30, 999, true, false));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 30, 1, true, false));
                 player.playSound(player.getLocation(), Sound.MUSIC_DISC_13, 1, 1);

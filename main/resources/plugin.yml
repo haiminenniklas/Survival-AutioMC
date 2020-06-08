@@ -161,3 +161,6 @@ commands:
     aliases: [roskakori, trash]
   staffmode:
     description: Staffmode
+  sijainti:
+    description: Näe sijaintisi!
+    aliases: [location]
