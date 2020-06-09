@@ -191,11 +191,12 @@ public class TradeManager implements CommandExecutor, Listener {
                         } else if(args[0].equalsIgnoreCase("disable")) {
                             ENABLED = false;
                             Chat.sendMessage(player, "Trade on nyt §cpois päältä§7!");
+                            return true;
                         } else if(args[0].equalsIgnoreCase("enable")) {
                             ENABLED = true;
                             Chat.sendMessage(player, "Trade on nyt §apäällä§7!");
+                            return true;
                         }
-                        return true;
 
                     }
 

@@ -85,6 +85,23 @@ public class ActionEvents implements Listener {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
         }
 
+        // SHOP ELEVATOR
+        if(world.getName().equalsIgnoreCase("world")) {
+
+            Location downSpawn = new Location(world, -6.5, 46.5, -27.5, -178f, 0.0f);
+            Location upSpawn = new Location(world, -6.5, 56.5, -27.5, -180f, 0.0f);
+
+            Location current = player.getLocation();
+            if(current.getBlockX() == 7 &&  current.getBlockZ() == -24) {
+                if(current.getBlockY() == 46) {
+                    player.teleport(upSpawn);
+                } else if(current.getBlockY() == 56) {
+                    player.teleport(downSpawn);
+                }
+            }
+
+        }
+
         if(player.getAllowFlight()) {
             if(Util.getRegions(player).size() < 1) {
                 if(!Main.getStaffManager().hasStaffMode(player)) {
