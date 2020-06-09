@@ -57,18 +57,18 @@ public class StopCommand implements CommandExecutor {
                     return;
                 }
 
-                if(timer == 300) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l5 minuutin §7kuluttua");
-                else if(timer == 180) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l3 minuutin §7kuluttua");
-                else if(timer == 120) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l2 minuutin §7kuluttua");
-                else if(timer == 60) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l1 minuutin §7kuluttua");
-                else if(timer == 30) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l30 sekunnin §7kuluttua");
-                else if(timer == 10) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l10 sekunnin §7kuluttua");
-                else if(timer == 5) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l5...");
-                else if(timer == 4) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l4...");
-                else if(timer == 3) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l3...");
-                else if(timer == 2) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l2...");
-                else if(timer == 1) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu §c§l1...");
-                else if(timer == 0) Bukkit.broadcastMessage("§c§l! §7Palvelin sammuu nyt!");
+                if(timer == 300) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l5 minuutin §7kuluttua");
+                else if(timer == 180) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l3 minuutin §7kuluttua");
+                else if(timer == 120) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l2 minuutin §7kuluttua");
+                else if(timer == 60) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l1 minuutin §7kuluttua");
+                else if(timer == 30) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l30 sekunnin §7kuluttua");
+                else if(timer == 10) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l10 sekunnin §7kuluttua");
+                else if(timer == 5) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l5...");
+                else if(timer == 4) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l4...");
+                else if(timer == 3) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l3...");
+                else if(timer == 2) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l2...");
+                else if(timer == 1) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen §c§l1...");
+                else if(timer == 0) Bukkit.broadcastMessage("§c§l! §7Palvelin käynnistyy uudelleen nyt!");
                 timer -= 1;
             }
         }.runTaskTimer(Main.getInstance(), 0, 20);

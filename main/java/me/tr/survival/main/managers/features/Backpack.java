@@ -105,7 +105,7 @@ public class Backpack implements CommandExecutor, Listener {
 
     public void openBackpack(Player player) {
 
-        if(!enabled) {
+        if(!enabled && !player.isOp()) {
             Chat.sendMessage(player, "Reput ovat tällä hetkellä pois päältä! Ei kuitenkaan hätää! Tavarasi eivät ole hävinneet!");
             return;
         }
@@ -146,7 +146,7 @@ public class Backpack implements CommandExecutor, Listener {
             for(int i = 9; i < level.size + 9; i++) {
                 if(itemIndex >= items.length) break;
                 ItemStack item = items[itemIndex];
-                if(item == null) item = new ItemStack(Material.AIR);
+                if(item == null) continue;
                 inv.setItem(i, item);
                 itemIndex += 1;
             }
@@ -220,6 +220,7 @@ public class Backpack implements CommandExecutor, Listener {
                 if(itemIndex >= correctInv.getSize()) break;
             }
             saveInventory(player.getUniqueId(), correctInv.getContents());
+            opened.remove(player.getUniqueId());
             return;
         }
 

@@ -1,9 +1,13 @@
 package me.tr.survival.main.listeners;
 
+import com.vexsoftware.votifier.model.Vote;
+import com.vexsoftware.votifier.model.VoteListener;
+import com.vexsoftware.votifier.model.VotifierEvent;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.managers.Chat;
+import me.tr.survival.main.managers.Mail;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.managers.features.Boosters;
 import me.tr.survival.main.other.events.LevelUpEvent;
@@ -32,6 +36,16 @@ public class Events implements Listener {
     public final HashMap<UUID, Boolean> adminMode = new HashMap<>();
     public final HashMap<UUID, Location> lastLocation = new HashMap<>();
     final ArrayList<UUID> deathIsland = new ArrayList<>();
+
+    @EventHandler
+    public void onVote(VotifierEvent e) {
+
+        Vote vote = e.getVote();
+        String userName = vote.getUsername();
+        OfflinePlayer player = Bukkit.getOfflinePlayer(userName);
+        Mail.addTickets(player.getUniqueId(), 1);
+
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent e) {

@@ -11,6 +11,7 @@ import me.tr.survival.main.managers.features.Boosters;
 import me.tr.survival.main.managers.features.Houkutin;
 import me.tr.survival.main.managers.features.Lottery;
 import me.tr.survival.main.managers.other.AutoBroadcaster;
+import me.tr.survival.main.managers.other.WeatherVote;
 import me.tr.survival.main.managers.perks.Particles;
 import me.tr.survival.main.managers.perks.PlayerDeathMessageManager;
 import me.tr.survival.main.managers.perks.PlayerGlowManager;
@@ -111,6 +112,7 @@ public final class Main extends JavaPlugin implements Listener {
     private static StopCommand stopCommand;
     private static VipCommand vipCommand;
     private static AntiAFKFishing antiAFKFishing;
+    private static WeatherVote weatherVote;
 
     // Listener instances
     private static Events events;
@@ -153,6 +155,7 @@ public final class Main extends JavaPlugin implements Listener {
 
         // Other
         Main.antiAFKFishing = new AntiAFKFishing();
+        Main.weatherVote = new WeatherVote();
 
         new SpigotCallback(this);
 
@@ -195,8 +198,10 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(backpack, this);
         pm.registerEvents(playerDeathMessageManager, this);
         pm.registerEvents(particles, this);
+        pm.registerEvents(weatherVote, this);
 
         // Other
+        pm.registerEvents(antiAFKFishing, this);
 
         Sorsa.logColored(" §aRegistering messaging channels for BungeeCord...");
 
@@ -374,7 +379,9 @@ public final class Main extends JavaPlugin implements Listener {
                     OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                     Profile.openOther(player, target);
                 }
-            } else if(command.getLabel().equalsIgnoreCase("vip")) Settings.vipPanel(player);
+            }
+            else if(command.getLabel().equalsIgnoreCase("vote")) Chat.sendMessage(player, "Äänestä meitä: §ahttps://minecraft-mp.com/server-s259722 §7! Äänestämällä saat itsellesä §e1kpl arpoja§7!");
+            else if(command.getLabel().equalsIgnoreCase("vip")) Settings.vipPanel(player);
             else if(command.getLabel().equalsIgnoreCase("spawn")) {
                 if(args.length < 1) {
                     if(player.getWorld().getName().equals("world_nether")) {
@@ -761,8 +768,9 @@ public final class Main extends JavaPlugin implements Listener {
                         Chat.sendMessage(player, "/debug run");
                         Chat.sendMessage(player, "/debug autobroadcast");
                         Chat.sendMessage(player, "/debug resetData [player] §cOle varovainen tän kaa!");
+                        Chat.sendMessage(player, "/debug setSlots <amount>");
                     } else {
-                        if(args.length == 1) {
+                        if(args.length >= 1) {
                             if(args[0].equalsIgnoreCase("mode")) {
                                 Sorsa.toggleDebugMode(player);
                             } else if(args[0].equalsIgnoreCase("load")) {
@@ -799,6 +807,26 @@ public final class Main extends JavaPlugin implements Listener {
                                     PlayerData.savePlayer(player.getUniqueId());
                                     Chat.sendMessage(player, "Data tyhjennetty pelaajalta!");
                                 });
+                            } else if(args[0].equalsIgnoreCase("setSlots")) {
+
+                                if(args.length >= 2) {
+
+                                    int num;
+                                    try {
+                                        num = Integer.parseInt(args[1]);
+                                    } catch(NumberFormatException ex) {
+                                        Chat.sendMessage(player, "Käytä perhana oikeita numeroita!");
+                                        return true;
+                                    }
+                                    try {
+                                        Util.changeSlots(num);
+                                        Chat.sendMessage(player, "Pelaajamäärä muutettu §a" + num + "§7!");
+                                    } catch (ReflectiveOperationException e) {
+                                        getLogger().log(java.util.logging.Level.WARNING, "An error occurred while updating max players", e);
+                                    }
+
+                                }
+
                             }
                         } else if(args.length == 2) {
                             OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);

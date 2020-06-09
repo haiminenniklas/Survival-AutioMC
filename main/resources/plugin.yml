@@ -3,7 +3,7 @@ version: 1.0
 main: me.tr.survival.main.Main
 description: SorsaMC survival plugin
 api-version: 1.13
-depend: [UltimateTimber, LuckPerms, ProtocolLib, PlayerParticles, Vault, NametagEdit, WorldGuard]
+depend: [UltimateTimber, LuckPerms, ProtocolLib, PlayerParticles, Vault, NametagEdit, WorldGuard, Votifier]
 
 commands:
   bal:
@@ -164,3 +164,8 @@ commands:
   sijainti:
     description: Näe sijaintisi!
     aliases: [location]
+  sää-äänestys:
+    description: Sää-äänestys
+    aliases: [weathervote, säävote]
+  vote:
+    description: Äänestä palvelinta

@@ -269,7 +269,7 @@ public class Chat implements Listener {
             } else if((System.currentTimeMillis() - lastSent) / 1000 <= 3 && !Ranks.isVIP(uuid)) {
                 e.setCancelled(true);
                 Chat.sendMessage(player, "Voit lähettää viestejä vain §c3 sekunnin §7välein! Ohittaaksesi tämän rajan " +
-                        " tarvitset vähintään §a§lPremium§7-arvon! Lisätietoa §a/kauppa§7!");
+                        " tarvitset vähintään §e§lPremium§7-arvon! Lisätietoa §a/kauppa§7!");
                 return;
             }
         }

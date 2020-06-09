@@ -44,7 +44,6 @@ public class StaffManager implements Listener, CommandExecutor {
             if(blockData.containsKey(mat)) {
                 int minedTotal = blockData.get(mat);
                 long hoursPlayed = ((System.currentTimeMillis() - Util.getWhenLogged(uuid)) / 1000 / 60 / 60) + 1;
-                //System.out.println("BPH -> " + (System.currentTimeMillis() - Util.getWhenLogged(uuid)) + " / " + hoursPlayed + " / " + minedTotal);
                 return minedTotal / (int) hoursPlayed;
             }
         }

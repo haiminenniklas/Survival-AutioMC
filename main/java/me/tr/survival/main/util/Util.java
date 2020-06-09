@@ -40,17 +40,17 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.logging.Level;
 
 public class Util {
 
@@ -421,6 +421,42 @@ public class Util {
                 }
             }
         });
+    }
+
+    public static void changeSlots(int slots) throws ReflectiveOperationException {
+        Method serverGetHandle = Bukkit.getServer().getClass().getDeclaredMethod("getHandle");
+
+        Object playerList = serverGetHandle.invoke(Bukkit.getServer());
+        Field maxPlayersField = playerList.getClass().getSuperclass().getDeclaredField("maxPlayers");
+
+        maxPlayersField.setAccessible(true);
+        maxPlayersField.set(playerList, slots);
+    }
+
+    public static  void updateServerProperties() {
+        Properties properties = new Properties();
+        File propertiesFile = new File("server.properties");
+
+        try {
+            try (InputStream is = new FileInputStream(propertiesFile)) {
+                properties.load(is);
+            }
+
+            String maxPlayers = Integer.toString(Bukkit.getServer().getMaxPlayers());
+
+            if (properties.getProperty("max-players").equals(maxPlayers)) {
+                return;
+            }
+
+            Bukkit.getLogger().info("Saving max players to server.properties...");
+            properties.setProperty("max-players", maxPlayers);
+
+            try (OutputStream os = new FileOutputStream(propertiesFile)) {
+                properties.store(os, "Minecraft server properties");
+            }
+        } catch (IOException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while updating the server properties", e);
+        }
     }
 
     public static double getSystemCPULoad() {
