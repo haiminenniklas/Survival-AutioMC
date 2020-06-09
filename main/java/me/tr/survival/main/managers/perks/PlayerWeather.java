@@ -69,7 +69,7 @@ public class PlayerWeather {
             }
         });
 
-        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä")) {
+        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä", Arrays.asList("§7Palauta sää takaisin normaaliksi!"))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);

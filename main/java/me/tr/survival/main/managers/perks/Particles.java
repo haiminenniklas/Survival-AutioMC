@@ -215,7 +215,7 @@ public class Particles implements Listener, CommandExecutor {
                     }
                 });
 
-                gui.addButton(new Button(1, 35, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä")) {
+                gui.addButton(new Button(1, 35, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä", Arrays.asList("§7Tyhjennä nykyinen valintasi!"))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
@@ -308,7 +308,7 @@ public class Particles implements Listener, CommandExecutor {
                     }
                 });
 
-                gui.addButton(new Button(1, 44, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä")) {
+                gui.addButton(new Button(1, 44, ItemUtil.makeItem(Material.BARRIER, 1, "§cTyhjennä", Arrays.asList("§7Tyhjennä nykyinen valintasi!"))) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
