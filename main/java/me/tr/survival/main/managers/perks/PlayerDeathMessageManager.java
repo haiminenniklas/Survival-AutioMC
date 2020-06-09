@@ -73,7 +73,7 @@ public class PlayerDeathMessageManager implements Listener {
                 gui.addButton(new Button(1, index, item) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
-                        deathMessagePanel(clicker);
+                        gui.close(clicker);
                         if(!selected) {
                             clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
                             selectDeathMessage(clicker.getUniqueId(), deathMessage);

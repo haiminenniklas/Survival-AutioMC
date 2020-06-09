@@ -287,7 +287,7 @@ public class Profile {
                         if(result)
                             Sorsa.task(() -> {
                                 if(Settings.get(targetUUID, "privacy") && !Ranks.isStaff(opener.getUniqueId())) openPrivateDenyGui(opener);
-                                else openProfile(opener, targetUUID);
+                                else openOther(opener, target);
                             });
                         else {
                             Gui gui = new Gui("Ei löydetty", 27);
@@ -392,6 +392,8 @@ public class Profile {
             if (gui.getButton(i) != null) continue;
             gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
         }
+
+        gui.open(opener);
 
     }
 

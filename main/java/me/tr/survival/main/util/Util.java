@@ -7,6 +7,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sun.management.OperatingSystemMXBean;
+import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Settings;
 import me.tr.survival.main.other.Enchant;
@@ -405,6 +406,21 @@ public class Util {
         OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
         DecimalFormat df = new DecimalFormat("#.##");
         return Double.parseDouble(df.format(osBean.getProcessCpuLoad()*100));
+    }
+
+    public static void checkForIllegalItems(Player player) {
+        Sorsa.async(() -> {
+            for(int i = 0; i < player.getInventory().getSize(); i++) {
+                ItemStack item = player.getInventory().getItem(i);
+                if(item == null) continue;
+                if(item.getType() == Material.AIR) continue;
+                if(item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()) {
+                    final int slot = i;
+                    if(Main.getMoneyManager().isCheque(item)) continue;
+                    Sorsa.task(() -> player.getInventory().setItem(slot, new ItemStack(Material.AIR)));
+                }
+            }
+        });
     }
 
     public static double getSystemCPULoad() {

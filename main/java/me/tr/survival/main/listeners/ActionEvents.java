@@ -68,6 +68,7 @@ public class ActionEvents implements Listener {
     public void onItemPickUp(EntityPickupItemEvent e) {
         if(e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
+            Util.checkForIllegalItems(player);
             if(Main.getStaffManager().hidden.contains(player.getUniqueId())) e.setCancelled(true);
         }
     }
@@ -143,6 +144,12 @@ public class ActionEvents implements Listener {
     }
 
     @EventHandler
+    public void onInteract(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+        Util.checkForIllegalItems(player);
+    }
+
+    @EventHandler
     public void onTrade(InventoryOpenEvent e) {
 
         Player player = (Player) e.getPlayer();
@@ -153,22 +160,7 @@ public class ActionEvents implements Listener {
         }
 
         if(e.getInventory().getType() == InventoryType.MERCHANT) e.setCancelled(true);
-
-        Sorsa.async(() -> {
-
-            for(int i = 0; i < player.getInventory().getSize(); i++) {
-                ItemStack item = player.getInventory().getItem(i);
-                if(item == null) continue;
-                if(item.getType() == Material.AIR) continue;
-                if(item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()) {
-                    final int slot = i;
-                    if(Main.getMoneyManager().isCheque(item)) continue;
-                    Sorsa.task(() -> player.getInventory().setItem(slot, new ItemStack(Material.AIR)));
-                }
-            }
-
-        });
-
+        Util.checkForIllegalItems(player);
     }
 
 }

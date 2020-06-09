@@ -110,6 +110,7 @@ public final class Main extends JavaPlugin implements Listener {
     private static MoneyCommand moneyCommand;
     private static StopCommand stopCommand;
     private static VipCommand vipCommand;
+    private static AntiAFKFishing antiAFKFishing;
 
     // Listener instances
     private static Events events;
@@ -149,6 +150,9 @@ public final class Main extends JavaPlugin implements Listener {
         Main.actionEvents = new ActionEvents();
         Main.guiEvents = new GuiEvents();
         Main.connectionEvents = new ConnectionEvents();
+
+        // Other
+        Main.antiAFKFishing = new AntiAFKFishing();
 
         new SpigotCallback(this);
 
@@ -191,6 +195,8 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(backpack, this);
         pm.registerEvents(playerDeathMessageManager, this);
         pm.registerEvents(particles, this);
+
+        // Other
 
         Sorsa.logColored(" §aRegistering messaging channels for BungeeCord...");
 
@@ -363,7 +369,7 @@ public final class Main extends JavaPlugin implements Listener {
                long uptime = now - started;
                Chat.sendMessage(player, String.format("Palvelin on ollut päällä §c%s", DurationFormatUtils.formatDurationWords(uptime, false, true)));
            } else if(command.getLabel().equalsIgnoreCase("profile")) {
-                if(args.length == 0) Profile.openProfile(player, player.getUniqueId());
+                if(args.length < 1) Profile.openProfile(player, player.getUniqueId());
                 else {
                     OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                     Profile.openOther(player, target);

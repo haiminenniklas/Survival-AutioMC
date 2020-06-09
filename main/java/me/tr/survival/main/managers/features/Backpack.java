@@ -35,6 +35,7 @@ import java.util.*;
 public class Backpack implements CommandExecutor, Listener {
 
     private boolean enabled = true;
+    private final List<UUID> opened = new ArrayList<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -115,10 +116,9 @@ public class Backpack implements CommandExecutor, Listener {
         ItemStack[] items = getSavedInventory(uuid);
         Inventory inv = Bukkit.createInventory(null, level.size + 18, "Reppu (" + level.displayName + "§8)");
 
-        int[] firstGlassPanes = new int[] { 0,1,2,3,5,6,7,8 };
-
-        for(int i = 0; i < firstGlassPanes.length; i++) {
-            inv.setItem(firstGlassPanes[i], ItemUtil.makeItem(Material.PINK_STAINED_GLASS_PANE));
+        for(int i = 0; i < 9; i++) {
+            if(i == 4) continue;
+            inv.setItem(i, ItemUtil.makeItem(Material.PINK_STAINED_GLASS_PANE));
         }
 
         String upgradeText = (getLevel(uuid) == Level.THREE) ? "§cReppu on ylimmällä tasolla" : "§aKlikkaa päivittääksesi!";
@@ -144,26 +144,21 @@ public class Backpack implements CommandExecutor, Listener {
         int itemIndex = 0;
         if(items.length >= 1) {
             for(int i = 9; i < level.size + 9; i++) {
-
-                ItemStack item = items[itemIndex];
-                if(item == null) continue;
-                if(item.getType() == Material.AIR) continue;
-
-                inv.setItem(i, item);
-
-                itemIndex += 1;
                 if(itemIndex >= items.length) break;
-
+                ItemStack item = items[itemIndex];
+                if(item == null) item = new ItemStack(Material.AIR);
+                inv.setItem(i, item);
+                itemIndex += 1;
             }
         }
 
         for(int i = level.size + 9; i < level.size + 18; i++) {
-            if(i == 49) continue;
+            if(i == inv.getSize() - 5) continue;
             inv.setItem(i, ItemUtil.makeItem(Material.PINK_STAINED_GLASS_PANE));
         }
 
+        if(!opened.contains(player.getUniqueId())) opened.add(player.getUniqueId());
         player.openInventory(inv);
-
 
     }
 
@@ -173,8 +168,7 @@ public class Backpack implements CommandExecutor, Listener {
         Player player = (Player) e.getWhoClicked();
         UUID uuid = player.getUniqueId();
 
-        if(e.getView().getTitle().startsWith("Reppu")) {
-
+        if(opened.contains(uuid)) {
             if(e.getCurrentItem() != null && e.getClickedInventory() != null) {
 
                 ItemStack item = e.getCurrentItem();
@@ -185,7 +179,7 @@ public class Backpack implements CommandExecutor, Listener {
                     else if(index >= 0 && index <= 8) e.setCancelled(true);
 
                 } else if(item.getType() == Material.EXPERIENCE_BOTTLE && e.getSlot() == 4) {
-                    if(item.hasItemMeta()) {
+                    if(item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
                         if(item.getItemMeta().getDisplayName().equalsIgnoreCase("§eReppusi")) {
                             e.setCancelled(true);
                             if(getLevel(uuid) != Level.THREE) upgradeConfirm(player);
@@ -193,7 +187,6 @@ public class Backpack implements CommandExecutor, Listener {
                         }
                     }
                 } else if(item.getType() == Material.PLAYER_HEAD && item.hasItemMeta()) {
-
                     ItemMeta meta = item.getItemMeta();
                     if(meta != null && meta.hasDisplayName() && meta.hasLore()) {
                         if(meta.getDisplayName().equalsIgnoreCase("§aProfiili")) {
@@ -202,36 +195,35 @@ public class Backpack implements CommandExecutor, Listener {
                             Profile.openProfile(player, player.getUniqueId());
                         }
                     }
-
                 }
-
             }
-
         }
-
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInvClose(InventoryCloseEvent e) {
 
         Player player = (Player) e.getPlayer();
 
         Inventory inv = e.getInventory();
-        if(e.getView().getTitle().startsWith("Reppu")) {
-
+        if(opened.contains(player.getUniqueId())) {
             Inventory correctInv = Bukkit.createInventory(null, getLevel(player.getUniqueId()).size);
-            for(int i = 0; i < inv.getSize(); i++) {
+            int itemIndex = 0;
+            for(int i = 9; i < inv.getSize() - 9; i++) {
+
                 ItemStack item = inv.getItem(i);
-                if(item == null) item = new ItemStack(Material.AIR);
-                // Remove the inaccessible rows from the calculations
-                if(i < 9) continue;
-                if(i >= inv.getSize() - 9 && i < inv.getSize()) continue;
-                correctInv.setItem(i, item);
+                if(item == null) continue;
+                if(item.getType() == Material.AIR) continue;
+
+                correctInv.addItem(item);
+                itemIndex += 1;
+                if(itemIndex >= correctInv.getSize()) break;
             }
             saveInventory(player.getUniqueId(), correctInv.getContents());
+            return;
+        }
 
-        } else if(e.getView().getTitle().startsWith("Tarkastele reppua")) {
-
+        if(e.getView().getTitle().startsWith("Tarkastele reppua")) {
             String title = e.getView().getTitle();
             String playerName = title.substring(title.indexOf('('));
             playerName = playerName.replace(")", "");
@@ -314,6 +306,7 @@ public class Backpack implements CommandExecutor, Listener {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
+                    openBackpack(clicker);
                 }
             });
         });
@@ -339,6 +332,7 @@ public class Backpack implements CommandExecutor, Listener {
                 player.sendMessage(" ");
                 player.sendMessage(" §7Avaa reppu komennolla §a/reppu");
                 player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                openBackpack(player);
             } else {
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 Chat.sendMessage(player, Chat.Prefix.ERROR, "Reppusi on jo ylimmällä tasolla!");

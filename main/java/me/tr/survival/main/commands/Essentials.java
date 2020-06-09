@@ -54,6 +54,7 @@ public class Essentials implements CommandExecutor, Listener {
                     player.sendMessage(" §a...valuutta §7Miten raha toimii täällä?");
                     player.sendMessage(" §a...matkustaminen §7Miten toimii??");
                     player.sendMessage(" §a...reppu §7Kätevä tapa tallettaa tavarat");
+                    player.sendMessage(" §a...ääri §7Miten ja ketkä pääsevät sinne?");
                     player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                 } else {
@@ -303,7 +304,25 @@ public class Essentials implements CommandExecutor, Listener {
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
 
-                            int[] glass = new int[] { 11,12, 14,15  };
+                            gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.BOOK, 1, "§2Lue lisää", Arrays.asList(
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                    " §7Lue lisää tietääksesi",
+                                    " §7enemmän §5Endin §7toiminnasta",
+                                    " §7ja mm. miten sinne pääsee,",
+                                    " §7paljonko maksaa ja pääseekö",
+                                    " §ekaveritkin §7mukaan!",
+                                    " ",
+                                    " §aKlikkaa avataksesi!",
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                                    ))) {
+                                @Override
+                                public void onClick(Player clicker, ClickType clickType) {
+                                    gui.close(clicker);
+                                    Bukkit.dispatchCommand(clicker, "apua ääri");
+                                }
+                            });
+
+                            int[] glass = new int[] { 11,12, 14, 15 };
                             for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
 
                             for(int i = 0; i < 27; i++) {
@@ -314,6 +333,7 @@ public class Essentials implements CommandExecutor, Listener {
 
                         });
                     } else if(args[0].equalsIgnoreCase("reppu")) {
+
                         Gui.openGui(player, "Apua (Reppu)", 27, (gui) -> {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitkä ihmeen reput?", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -331,6 +351,51 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §a/reppu päivitä§7!",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            int[] glass = new int[] { 11,12, 14,15  };
+                            for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
+
+                            for(int i = 0; i < 27; i++) {
+                                if(gui.getItem(i) != null) continue;
+                                if(gui.getButton(i) != null) continue;
+                                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                            }
+
+                        });
+                    }else if(args[0].equalsIgnoreCase("ääri") || args[0].equalsIgnoreCase("end")) {
+                        Gui.openGui(player, "Apua (Ääri)", 27, (gui) -> {
+                            gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten Endi toimii?", Arrays.asList(
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                    " §5End §7on paikka missä moni",
+                                    " §7pystyy rikastumaan ja saamaan",
+                                    " §7himoitun §9Elytran§7! Sinne",
+                                    " §7pääsy maksaa, ja paljon. Huimat",
+                                    " §a§l250 000€§7! Mutta jotta matka",
+                                    " §7olisi edes jotenkin väärti, niin",
+                                    " §7on kuitenkin mahdollista kutsua",
+                                    " §a2 kaveria §7mukaan seikkailuun!",
+                                    " §7On silti huomioitavaa, että",
+                                    " §7Endissä on §cPVP §7päällä sekä",
+                                    " §7sen, että Endin vuokraus",
+                                    " §7kestää §c3h§7!",
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                            )), 13);
+
+                            gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.MAP, 1, "§eMatkustaminen", Arrays.asList(
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                    " §7Tästä klikkaamalla, pääset",
+                                    " §7matkustamaan eri §emaailmoihin§7!",
+                                    " ",
+                                    " §aKlikkaa avataksesi",
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                            ))) {
+                                @Override
+                                public void onClick(Player clicker, ClickType clickType) {
+                                    gui.close(clicker);
+                                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
+                                    Main.getTravelManager().gui(clicker);
+                                }
+                            });
 
                             int[] glass = new int[] { 11,12, 14,15  };
                             for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
@@ -377,13 +442,6 @@ public class Essentials implements CommandExecutor, Listener {
                         Util.clearInventory(target);
                         Chat.sendMessage(target, "Pelaajan §a" + target.getName() + " §7inventory tyhjennettiin!");
                     }
-                }
-
-            } else if(cmd.getLabel().equalsIgnoreCase("kordinaatit")) {
-
-                if(Ranks.isStaff(uuid)) {
-                    Location loc = player.getLocation();
-                    Chat.sendMessage(player, "Sijaintisi: §a" + loc.getX() + "§7, §a" + loc.getY() + "§7, §a" + loc.getZ() + " §7-> §a" + loc.getWorld().getName());
                 }
 
             } else if(cmd.getLabel().equalsIgnoreCase("world")) {

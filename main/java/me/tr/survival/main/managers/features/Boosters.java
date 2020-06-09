@@ -283,13 +283,13 @@ public class Boosters implements Listener {
 
         INSTANT_MINING(45, "§fVälittömät malmit",
                 "§7Kun tämä tehostus on päällä §fRauta §7ja §6Kulta §7-malmit sulavat heti, eikä niitä tarvitse erikseen kierrättää uunissa." +
-                        " §7Tehostus kestää §6§l45MIN§7!", 5000, () -> {
+                        " §7Tehostus kestää §6§l45MIN§7!", 1000, () -> {
         }, Material.IRON_NUGGET),
         MORE_ORES(30, "§bMineeralimyllerrys!",
-                "§7Kun tämä tehostus on päällä, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 20000, () -> {
+                "§7Kun tämä tehostus on päällä, niin §bTimantti§7, §aEmerald§7, §9Lapis §7-malmeista tippuu §a2x §7enemmän tavaraa millä tahansa työkalulla! Tehostus kestää §6§l30MIN§7!", 8500, () -> {
         }, Material.DIAMOND_ORE),
         EXTRA_HEARTS(60, "§cSote-uudistus",
-                "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 3500, () -> {
+                "§7Kun tämä tehostus on päällä, sinulla on §c2 lisäsydäntä§7! Tehostus kestää §6§l1H§7!", 750, () -> {
 
             for(Player player : Bukkit.getOnlinePlayers()) {
                 Util.heal(player);
@@ -299,7 +299,7 @@ public class Boosters implements Listener {
 
         }, Material.POTION),
         FIX_ITEMS(-1, "§fSepän armahdus",
-                "§7Tämä korjaa kaikki inventoryssasi olevat itemit.", 45000, () -> {
+                "§7Tämä korjaa kaikki inventoryssasi olevat itemit.", 22500, () -> {
 
             for(Player player : Bukkit.getOnlinePlayers()) {
                 for(ItemStack item : player.getInventory().getContents()) {
@@ -313,11 +313,11 @@ public class Boosters implements Listener {
 
         }, Material.CHAINMAIL_CHESTPLATE),
         NO_HUNGER(60, "§6Leipäjono",
-                "§7Tällä tehostuksella et koe nälkää! Tehostus kestää §6§l1H§7!", 3500, () -> {
+                "§7Tällä tehostuksella et koe nälkää! Tehostus kestää §6§l1H§7!", 2000, () -> {
         }, Material.COOKED_BEEF),
 
         DOUBLE_XP(45, "§eKokemuspisteiden kapina",
-                "§7Tällä tehostuksella saat jokaisesta tappamastasi mobista §a2x §7enemmän §eXP:§7tä! Tehostus kestää §6§l45MIN§7!", 7000, () -> {
+                "§7Tällä tehostuksella saat jokaisesta tappamastasi mobista §a2x §7enemmän §eXP:§7tä! Tehostus kestää §6§l45MIN§7!", 1750, () -> {
 
         }, Material.EXPERIENCE_BOTTLE);
 

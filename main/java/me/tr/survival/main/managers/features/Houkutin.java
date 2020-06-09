@@ -81,7 +81,7 @@ public class Houkutin implements CommandExecutor {
             lore.add(" §7eläintä.");
             lore.add(" ");
             lore.add(" §7Kesto: §e" + durationMinutes + "min");
-            lore.add(" §7Hinta: §ealk. 10 000€");
+            lore.add(" §7Hinta: §ealk. 2 500€");
             lore.add(" ");
 
             if(isActivated()) {
@@ -92,7 +92,7 @@ public class Houkutin implements CommandExecutor {
 
             } else {
                 if(ENABLED) {
-                    if(Balance.canRemove(player.getUniqueId(), 10000)) lore.add(" §a§lKlikkaa aktivoidaksesi");
+                    if(Balance.canRemove(player.getUniqueId(), 2500)) lore.add(" §a§lKlikkaa aktivoidaksesi");
                     else lore.add(" §cEi varaa...");
                 } else lore.add(" §cEi käytettävissä...");
             }
@@ -110,7 +110,7 @@ public class Houkutin implements CommandExecutor {
                     }
 
                     if(!isActivated()) {
-                        if(Balance.canRemove(clicker.getUniqueId(), 10000)) {
+                        if(Balance.canRemove(clicker.getUniqueId(), 2500)) {
                             gui.close(clicker);
                             clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                             selectGui(clicker);
@@ -171,9 +171,9 @@ public class Houkutin implements CommandExecutor {
                         gui.close(clicker);
                         if(!isActivated()) {
 
-                            if(Balance.canRemove(clicker.getUniqueId(), 10000)) {
+                            if(Balance.canRemove(clicker.getUniqueId(), 2500)) {
 
-                                Balance.remove(clicker.getUniqueId(), 10000);
+                                Balance.remove(clicker.getUniqueId(), 2500);
                                 activator = clicker.getUniqueId();
                                 started = System.currentTimeMillis();
                                 entityType = type;
@@ -278,17 +278,17 @@ public class Houkutin implements CommandExecutor {
     private double getPrice(EntityType type) {
         switch (type) {
             case COW:
-                return 10000;
+                return 2500;
             case PIG:
-                return 10000;
+                return 2500;
             case SHEEP:
-                return 10000;
+                return 2500;
             case CHICKEN:
-                return 10000;
+                return 2500;
             case MUSHROOM_COW:
-                return 10000;
+                return 2500;
         }
-        return 10000;
+        return 2500;
     }
 
     private EntityType[] allowedEntityTypes() {

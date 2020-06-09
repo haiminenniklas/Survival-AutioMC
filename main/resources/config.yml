@@ -8,6 +8,10 @@ whitelist: false
 player-limit: 100
 enderpearl-cooldown: 16
 
+anti-afk-fishing:
+  min-time-in-seconds: 120
+  min-blocks-to-move: 4
+
 vault-sizes:
   1: 9
   2: 27

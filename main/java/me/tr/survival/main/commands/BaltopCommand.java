@@ -54,7 +54,7 @@ public class BaltopCommand implements CommandExecutor {
             Util.sortByValue(rawBalanceMap, (balanceMap) -> {
                 if (balanceMap.size() >= 1) {
 
-                    final Gui gui = new Gui("TOP 10 - Rikkaimmat", 54);
+                    final Gui gui = new Gui("Palvelimen rikkaimmat", 54);
 
                     final int[] yellowGlassSlots = new int[]{20, 29, 38, 22, 31, 40, 24, 33, 42};
                     final int[] playerSlots = new int[]{19, 28, 37, 21, 30, 39, 23, 32, 41, 25, 34, 43};
@@ -148,7 +148,8 @@ public class BaltopCommand implements CommandExecutor {
                 } else {
                     Sorsa.task(() -> {
 
-                        Gui gui = new Gui("TOP 10 - Rikkaimmat", 27);
+                        Gui gui = new Gui("Palvelimen rikkaimmat" +
+                                "", 27);
                         gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§cEi tietoja", Arrays.asList(
                                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                                 " §7Pelaajien rahatietoja ei",
