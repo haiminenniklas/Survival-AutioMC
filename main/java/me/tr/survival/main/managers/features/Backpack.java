@@ -170,7 +170,7 @@ public class Backpack implements CommandExecutor, Listener {
         Player player = (Player) e.getWhoClicked();
         UUID uuid = player.getUniqueId();
 
-        if(opened.contains(uuid)) {
+        if(opened.contains(uuid) && e.getView().getTitle().contains("Reppu")) {
             if(e.getCurrentItem() != null && e.getClickedInventory() != null) {
 
                 ItemStack item = e.getCurrentItem();
@@ -207,22 +207,26 @@ public class Backpack implements CommandExecutor, Listener {
 
         Player player = (Player) e.getPlayer();
 
-        Inventory inv = e.getInventory();
-        if(opened.contains(player.getUniqueId())) {
+        Inventory inv = e.getView().getTopInventory();
+        if(opened.contains(player.getUniqueId()) && e.getView().getTitle().contains("Reppu")) {
             Inventory correctInv = Bukkit.createInventory(null, getLevel(player.getUniqueId()).size);
             int itemIndex = 0;
-            for(int i = 9; i < inv.getSize() - 9; i++) {
-                ItemStack item = inv.getContents()[i];
-                if(item.getType() == Material.AIR) continue;
-                correctInv.addItem(item);
+            for(int i = 0; i < inv.getStorageContents().length; i++) {
+                ItemStack item = inv.getStorageContents()[i];
+                if(item != null && item.getType() != Material.AIR) {
+                    if(i > 8 && i < (9 + getLevel(player.getUniqueId()).size)) {
+                        if(!Util.isIllegalItem(item)) {
+                            correctInv.addItem(item);
+                        }
+                    }
+                }
+                if(itemIndex >= inv.getStorageContents().length) break;
                 itemIndex += 1;
-                if(itemIndex >= correctInv.getSize()) break;
             }
-            saveInventory(player.getUniqueId(), correctInv.getContents());
+            saveInventory(player.getUniqueId(), correctInv.getStorageContents());
+            opened.remove(player.getUniqueId());
             return;
         }
-
-        opened.remove(player.getUniqueId());
 
         if(e.getView().getTitle().startsWith("Tarkastele reppua")) {
             String title = e.getView().getTitle();

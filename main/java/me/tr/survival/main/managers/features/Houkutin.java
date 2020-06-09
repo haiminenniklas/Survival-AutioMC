@@ -233,8 +233,8 @@ public class Houkutin implements CommandExecutor {
         CreatureSpawner spawner = (CreatureSpawner) state;
         spawner.setSpawnCount(4);
         spawner.setSpawnedType(entityType);
-        spawner.setDelay(20);
-        state.update();
+        spawner.setDelay(2);
+        spawner.update();
 
     }
 

@@ -1,5 +1,6 @@
 package me.tr.survival.main.managers.warps;
 
+import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Chat;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -33,8 +34,8 @@ public class Warp {
     }
 
     public void teleport(Player player) {
-        Chat.sendMessage(player, "Sinua viedään warpille §a" + this.displayName + "§7...");
-        player.teleport(new Location(this.world, this.x, this.y, this.z, this.yaw, this.pitch));
+        Chat.sendMessage(player, "Sinua viedään warpille §a" + this.displayName + "§7 §c3s §7päästä...");
+        Sorsa.after(3, () -> player.teleport(new Location(this.world, this.x, this.y, this.z, this.yaw, this.pitch)));
     }
 
     public String getName() {

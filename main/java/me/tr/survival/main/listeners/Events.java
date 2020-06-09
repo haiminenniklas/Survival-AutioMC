@@ -8,6 +8,7 @@ import me.tr.survival.main.Main;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.managers.Mail;
+import me.tr.survival.main.managers.StaffManager;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.managers.features.Boosters;
 import me.tr.survival.main.other.events.LevelUpEvent;
@@ -65,8 +66,10 @@ public class Events implements Listener {
         if(config.getBoolean("effects.teleport.enabled")) {
             if(e.getCause() == PlayerTeleportEvent.TeleportCause.UNKNOWN) return;
             if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) return;
-            player.getWorld().playSound(e.getFrom(),
-                    Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
+            if(!Main.getStaffManager().hasStaffMode(player)) {
+                player.getWorld().playSound(e.getFrom(),
+                        Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
+            }
         }
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
@@ -202,6 +205,16 @@ public class Events implements Listener {
 
             }
 
+        }
+
+        if(mat == Material.IRON_ORE) {
+            PlayerData.add(uuid, "iron", 1);
+        } else if(mat == Material.GOLD_ORE) {
+            PlayerData.add(uuid, "gold", 1);
+        } else if(mat == Material.COAL_ORE) {
+            PlayerData.add(uuid, "coal", 1);
+        } else if(mat == Material.DIAMOND_ORE) {
+            PlayerData.add(uuid, "diamond", 1);
         }
 
     }

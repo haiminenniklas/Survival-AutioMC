@@ -418,13 +418,28 @@ public class Util {
                 ItemStack item = player.getInventory().getItem(i);
                 if(item == null) continue;
                 if(item.getType() == Material.AIR) continue;
-                if(item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()) {
+                if(Util.isIllegalItem(item)) {
                     final int slot = i;
-                    if(Main.getMoneyManager().isCheque(item)) continue;
                     Sorsa.task(() -> player.getInventory().setItem(slot, new ItemStack(Material.AIR)));
                 }
             }
         });
+    }
+
+    public static boolean isIllegalItem(ItemStack item) {
+
+        if(item != null && item.getType() != Material.AIR) {
+            ItemMeta meta = item.getItemMeta();
+            if(meta != null && item.hasItemMeta()) {
+                if(meta.hasDisplayName() && meta.hasLore()) {
+                    if(!Main.getMoneyManager().isCheque(item)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     public static void changeSlots(int slots) throws ReflectiveOperationException {

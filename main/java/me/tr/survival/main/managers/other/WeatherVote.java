@@ -1,5 +1,6 @@
 package me.tr.survival.main.managers.other;
 
+import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.util.Util;
@@ -18,17 +19,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class WeatherVote implements Listener, CommandExecutor {
 
     private boolean voteEnabled = false;
-    private long voteStart = 0L;
     private final HashMap<WeatherType, Integer> votes = new HashMap<>();
+    private final List<UUID> voted = new ArrayList<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -52,6 +52,13 @@ public class WeatherVote implements Listener, CommandExecutor {
                     return true;
                 }
 
+                if(this.voted.contains(player.getUniqueId())) {
+                    Chat.sendMessage(player, "Olet jo antanut äänesi!");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    return true;
+                }
+
+                this.voted.add(player.getUniqueId());
                 this.vote(voted);
                 Chat.sendMessage(player, "Äänestyksesi rekisteröitiin! Ne käsitellään tuota pikaa!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
@@ -80,9 +87,6 @@ public class WeatherVote implements Listener, CommandExecutor {
         votes.put(type, current + 1);
     }
 
-    private WeatherType getMostVoted() {
-        return  Collections.max(votes.entrySet(), Map.Entry.comparingByValue()).getKey();
-    }
 
     @EventHandler
     public void onWeatherChange(WeatherChangeEvent e) {
@@ -108,8 +112,8 @@ public class WeatherVote implements Listener, CommandExecutor {
                 comp.addExtra(" §8| ");
 
                 TextComponent other = new TextComponent(TextComponent.fromLegacyText(" §9§lSATEINEN "));
-                comp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/säävote sateinen"));
-                comp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Äänestä §9sateista§7! (§a/säävote sateinen§7)")));
+                other.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/säävote sateinen"));
+                other.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Äänestä §9sateista§7! (§a/säävote sateinen§7)")));
 
                 comp.addExtra(other);
 
@@ -122,10 +126,13 @@ public class WeatherVote implements Listener, CommandExecutor {
             }
 
             this.voteEnabled = true;
-            this.voteStart = System.currentTimeMillis();
 
             Sorsa.after(30, () -> {
-                WeatherType most = getMostVoted();
+
+                WeatherType most;
+                if(getVotes(WeatherType.CLEAR) > getVotes(WeatherType.DOWNFALL)) most = WeatherType.CLEAR;
+                else most = WeatherType.DOWNFALL;
+
                 Util.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                 for(Player player : Bukkit.getOnlinePlayers()) {
                     player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -135,7 +142,7 @@ public class WeatherVote implements Listener, CommandExecutor {
                     player.sendMessage(" §5taikavoimamme §7kehiin! Eniten ääniä");
                     player.sendMessage(" §7sai säätila:");
                     player.sendMessage(" ");
-                    player.sendMessage(" " + (most == WeatherType.CLEAR ? "§eAurinkoinen" : "§9Sateinen") + " (" + Util.formatDecimals((Util.round((double) getVotes(most) / getAllVotes()) * 100))  + "%)");
+                    player.sendMessage(" " + (most == WeatherType.CLEAR ? "§eAurinkoinen" : "§9Sateinen") + " (" + Util.formatDecimals(((double) getVotes(most) / getAllVotes()) * 100)  + "%)");
                     player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                 }
 
@@ -149,10 +156,18 @@ public class WeatherVote implements Listener, CommandExecutor {
                     world.setStorm(true);
                 }
 
-                voteEnabled = false;
-                voteStart = 0L;
-
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        voteEnabled = false;
+                        votes.clear();
+                        voted.clear();
+                        cancel();
+                    }
+                }.runTaskLater(Main.getInstance(), 20 * 2);
             });
+
+
 
         }
 
