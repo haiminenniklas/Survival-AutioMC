@@ -120,6 +120,15 @@ public class Houkutin implements CommandExecutor {
                 }
             });
 
+            int[] glassSlots = { 12,14 };
+            for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.GREEN_STAINED_GLASS_PANE, 1), slot); }
+
+            for(int i = 0; i < 27; i++) {
+                if(gui.getItem(i) != null) continue;
+                if(gui.getButton(i) != null) continue;
+                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE, 1), i);
+            }
+
         });
 
     }
@@ -201,6 +210,15 @@ public class Houkutin implements CommandExecutor {
 
             }
 
+            int[] glassSlots = { 10,16 };
+            for(int s : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.GREEN_STAINED_GLASS_PANE, 1), s); }
+
+            for(int i = 0; i < 27; i++) {
+                if(gui.getItem(i) != null) continue;
+                if(gui.getButton(i) != null) continue;
+                gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE, 1), i);
+            }
+
         });
 
     }
@@ -215,6 +233,7 @@ public class Houkutin implements CommandExecutor {
         CreatureSpawner spawner = (CreatureSpawner) state;
         spawner.setSpawnCount(4);
         spawner.setSpawnedType(entityType);
+        spawner.setDelay(20);
         state.update();
 
     }

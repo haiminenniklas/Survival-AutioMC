@@ -370,6 +370,10 @@ public class Util {
         return 0;
     }
 
+    public static boolean isNumberInRange(int number, int min, int max) {
+        return number <= max && number >= min;
+    }
+
     public static String[] splitStringEvery(String s, int interval) {
         int arrayLength = (int) Math.ceil(((s.length() / (double)interval)));
         String[] result = new String[arrayLength];

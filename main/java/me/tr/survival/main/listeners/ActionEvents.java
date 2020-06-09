@@ -92,11 +92,13 @@ public class ActionEvents implements Listener {
             Location upSpawn = new Location(world, -6.5, 56.5, -27.5, -180f, 0.0f);
 
             Location current = player.getLocation();
-            if(current.getBlockX() == 7 &&  current.getBlockZ() == -24) {
-                if(current.getBlockY() == 46) {
+            if(Util.isNumberInRange(current.getBlockX(), -7, -8) && current.getBlockZ() == -24) {
+                if(Util.isNumberInRange(current.getBlockY(), 46, 48)) {
                     player.teleport(upSpawn);
-                } else if(current.getBlockY() == 56) {
+                    Util.sendNotification(player, "§a§lKAUPPA! §7Matkustit yläkertaan!");
+                } else if(Util.isNumberInRange(current.getBlockY(), 56, 58)) {
                     player.teleport(downSpawn);
+                    Util.sendNotification(player, "§a§lKAUPPA! §7Matkustit alakertaan!");
                 }
             }
 

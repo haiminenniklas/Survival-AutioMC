@@ -274,7 +274,7 @@ public class Homes {
                         " §6VIP§7§o-arvolla tai ostamalla sen!",
                         " §7§oLisätietoa VIP-arvoista §a/kauppa",
                         " ",
-                        " §7Hinta: §e80 000€",
+                        " §7Hinta: §e10 000€",
                         " ",
                         " §aKlikkaa avataksesi!",
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
@@ -308,7 +308,7 @@ public class Homes {
 
     private static void confirmHomePurchase(Player player, int homePos, Homes homeList) {
 
-        int price = 80000;
+        int price = 10000;
 
         Gui.openGui(player, "Vahvista kodin osto", 27, (gui) -> {
 

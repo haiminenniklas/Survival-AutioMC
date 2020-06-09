@@ -287,6 +287,8 @@ public class Chat implements Listener {
 
             if(msg.toLowerCase().contains(online.getName().toLowerCase())) {
 
+                if(Main.getStaffManager().hasStaffMode(online)) continue;
+
                 int startIndex = msg.toLowerCase().indexOf(online.getName().toLowerCase());
 
                 if(startIndex > 0 && msg.toLowerCase().charAt(startIndex - 1) == '@') msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a" + online.getName() + "§r");

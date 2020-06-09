@@ -34,11 +34,17 @@ public class MoneyCommand implements CommandExecutor {
                         else Profile.openOther(player, target);
                     } else {
 
-                        if(args.length == 1 && args[0].equalsIgnoreCase("help")) {
-                            Chat.sendMessage(player, "/bal add <player> <amount>");
-                            Chat.sendMessage(player, "/bal remove <player> <amount>");
-                            Chat.sendMessage(player, "/bal get <player>");
-                        } else if(args.length >= 2) {
+                        if(args.length == 1) {
+                            if(args[0].equalsIgnoreCase("help")) {
+                                Chat.sendMessage(player, "/bal add <player> <amount>");
+                                Chat.sendMessage(player, "/bal remove <player> <amount>");
+                                Chat.sendMessage(player, "/bal get <player>");
+                            } else {
+                                OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+                                if(player.getName().equals(target.getName())) Profile.openProfile(player, target.getUniqueId());
+                                else Profile.openOther(player, target);
+                            }
+                        } else {
 
                             OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
 

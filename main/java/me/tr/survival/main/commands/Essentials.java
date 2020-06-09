@@ -496,7 +496,7 @@ public class Essentials implements CommandExecutor, Listener {
     private void invsee(Player opener, Player target) {
 
         Inventory inv = Bukkit.createInventory(target, InventoryType.PLAYER, "Tarkastele inventoryä (" + target.getName() + ")");
-        for(ItemStack item : target.getInventory().getContents()) {
+        for(ItemStack item : target.getInventory().getStorageContents()) {
             if(item == null) continue;
             inv.addItem(item);
         }
@@ -522,7 +522,7 @@ public class Essentials implements CommandExecutor, Listener {
                 return;
             }
 
-            target.getInventory().setContents(e.getInventory().getContents());
+            target.getInventory().setStorageContents(e.getInventory().getStorageContents());
 
         }
 

@@ -157,7 +157,9 @@ public class Backpack implements CommandExecutor, Listener {
             inv.setItem(i, ItemUtil.makeItem(Material.PINK_STAINED_GLASS_PANE));
         }
 
-        if(!opened.contains(player.getUniqueId())) opened.add(player.getUniqueId());
+        opened.remove(player.getUniqueId());
+        opened.add(player.getUniqueId());
+
         player.openInventory(inv);
 
     }
@@ -210,19 +212,17 @@ public class Backpack implements CommandExecutor, Listener {
             Inventory correctInv = Bukkit.createInventory(null, getLevel(player.getUniqueId()).size);
             int itemIndex = 0;
             for(int i = 9; i < inv.getSize() - 9; i++) {
-
-                ItemStack item = inv.getItem(i);
-                if(item == null) continue;
+                ItemStack item = inv.getContents()[i];
                 if(item.getType() == Material.AIR) continue;
-
                 correctInv.addItem(item);
                 itemIndex += 1;
                 if(itemIndex >= correctInv.getSize()) break;
             }
             saveInventory(player.getUniqueId(), correctInv.getContents());
-            opened.remove(player.getUniqueId());
             return;
         }
+
+        opened.remove(player.getUniqueId());
 
         if(e.getView().getTitle().startsWith("Tarkastele reppua")) {
             String title = e.getView().getTitle();
@@ -281,15 +281,15 @@ public class Backpack implements CommandExecutor, Listener {
     private void upgradeConfirm(Player player) {
         UUID uuid = player.getUniqueId();
         Level current = getLevel(uuid);
-        int price = 30000;
-        if(current == Level.TWO) price = 45000;
+        int price = 10000;
+        if(current == Level.TWO) price = 20000;
         final int finalPrice = price;
         Gui.openGui(player, "Päivitä reppusi", 27, (gui) -> {
 
             gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Klikkaa vahvistaaksesi päivityksen!",
-                    " §7Päivitys maksaa: §e" + finalPrice + "€§7!",
+                    " §7Päivitys maksaa: §e" + Util.formatDecimals(finalPrice) + "€§7!",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
@@ -318,8 +318,8 @@ public class Backpack implements CommandExecutor, Listener {
         UUID uuid = player.getUniqueId();
         Level current = getLevel(uuid);
 
-        int price = 30000;
-        if(current == Level.TWO) price = 45000;
+        int price = 10000;
+        if(current == Level.TWO) price = 20000;
 
         if(Balance.canRemove(uuid, price)) {
             if(addLevel(uuid)) {

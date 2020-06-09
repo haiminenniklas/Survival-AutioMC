@@ -39,12 +39,13 @@ public class Events implements Listener {
 
     @EventHandler
     public void onVote(VotifierEvent e) {
-
         Vote vote = e.getVote();
         String userName = vote.getUsername();
         OfflinePlayer player = Bukkit.getOfflinePlayer(userName);
         Mail.addTickets(player.getUniqueId(), 1);
-
+        if(player.getPlayer() != null && player.isOnline()) {
+            Chat.sendMessage(player.getPlayer(), "Äänestit ja sait arvan!");
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

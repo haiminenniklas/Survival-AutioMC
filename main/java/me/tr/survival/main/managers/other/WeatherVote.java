@@ -135,7 +135,7 @@ public class WeatherVote implements Listener, CommandExecutor {
                     player.sendMessage(" §5taikavoimamme §7kehiin! Eniten ääniä");
                     player.sendMessage(" §7sai säätila:");
                     player.sendMessage(" ");
-                    player.sendMessage(" " + (most == WeatherType.CLEAR ? "§eAurinkoinen" : "§9Sateinen") + " (" + (Util.round((double) getVotes(most) / getAllVotes())));
+                    player.sendMessage(" " + (most == WeatherType.CLEAR ? "§eAurinkoinen" : "§9Sateinen") + " (" + Util.formatDecimals((Util.round((double) getVotes(most) / getAllVotes()) * 100))  + "%)");
                     player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                 }
 

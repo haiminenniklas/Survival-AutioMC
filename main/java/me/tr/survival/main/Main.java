@@ -239,6 +239,7 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("world").setExecutor(essentials);
         getCommand("clear").setExecutor(essentials);
         getCommand("invsee").setExecutor(essentials);
+        getCommand("sää-äänestys").setExecutor(weatherVote);
 
         getCommand("bal").setExecutor(moneyCommand);
         getCommand("pay").setExecutor(moneyCommand);
@@ -266,15 +267,14 @@ public final class Main extends JavaPlugin implements Listener {
 
         Sorsa.logColored(" §aStarting autosaving for players...");
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
-            if(Sorsa.getCurrentTPS() >= 18.5) {
-                Sorsa.log("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
-                int times_saved = 0;
-                for(Player player : Bukkit.getOnlinePlayers()) {
-                    times_saved += 1;
-                    PlayerData.savePlayer(player.getUniqueId());
-                }
-                Sorsa.log("Saved the data of " + times_saved + " players!");
-            } else Sorsa.warn("Server TPS too low, not updating players this time...");
+
+            Sorsa.log("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
+            int times_saved = 0;
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                times_saved += 1;
+                PlayerData.savePlayer(player.getUniqueId());
+            }
+            Sorsa.log("Saved the data of " + times_saved + " players!");
 
             // Fetch Balances...
             new Balance().fetchTopBalance();
