@@ -42,17 +42,18 @@ public class RTP {
         Sorsa.async(() -> {
             World world = Bukkit.getWorld("world");
             Location loc = randomLocation(player.getWorld());
-            if(world != null && loc != null){
-                Sorsa.afterAsync(1, () -> {
-                    double y = world.getHighestBlockYAt(loc.getBlockX(), loc.getBlockZ());
-                    final Location newLoc = new Location(world, loc.getX(), y + 1, loc.getZ());
+            if(world != null && loc != null) {
 
-                    Sorsa.task(() -> player.teleport(newLoc));
-                    Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
+                double y = world.getHighestBlockYAt(loc);
+                final Location newLoc = new Location(world, loc.getX(), y + 2, loc.getZ());
 
-                    if(!player.isOp() && !Main.getStaffManager().hasStaffMode(player)) cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));
+                Sorsa.task(() -> player.teleport(newLoc));
+                Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
 
-                });
+                Sorsa.logColored("§a[RTP] Sent player '" + player.getName() + "' (" + player.getUniqueId() + ") to a random location: " + Util.formatLocation(newLoc) + " in '" + newLoc.getWorld().getName() + "'!");
+
+                if(!player.isOp() && !Main.getStaffManager().hasStaffMode(player)) cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (3 * 60 * 1000));
+
             } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Teleporttaus epäonnistui, yritä pian uudestaan!");
         });
 
@@ -67,15 +68,20 @@ public class RTP {
         if(newX >= 14000) newX = 14000;
         else if(newX <= -14000) newX = -14000;
 
-
         if(newZ >= 14000) newZ = 14000;
         else if(newZ <= -14000) newZ = -14000;
 
         int newY = world.getHighestBlockYAt(newX, newZ);
-        Location loc = new Location(world, newX, newY, newZ);
+        Location loc = new Location(world, (double) newX + 0.5, newY, (double) newZ + 0.5);
 
         Block block = loc.clone().add(0d, -1d, 0d).getBlock();
         if(block.isLiquid()) return randomLocation(world);
+
+        /*Material[] applicableTypes = { Material.GRASS_BLOCK, Material.SAND, Material.RED_SAND, Material.SANDSTONE, Material.STONE, Material.GRAVEL, Material.GRASS_PATH };
+        block = loc.clone().add(0d,-1d, 0d).getBlock();
+        for(Material type : applicableTypes) {
+            if(block.getType() != type) return randomLocation(world);
+        } */
         return loc;
     }
 

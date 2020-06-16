@@ -33,6 +33,7 @@ public class VipCommand implements CommandExecutor {
                     Sorsa.async(() -> {
                         PlayerData.loadPlayer(target.getUniqueId(), (res) -> {});
                         givePerks(target, rankRaw);
+                        sender.sendMessage("§aPerks were given!");
                     });
                 } else givePerks(target, rankRaw);
             }
@@ -49,5 +50,6 @@ public class VipCommand implements CommandExecutor {
         } else if(rank.equalsIgnoreCase("sorsa")) {
             Mail.addTickets(uuid, 20);
         }
+        Sorsa.logColored("§6[VIP] Gave VIP-perks for rank '" + rank + "' to player " + player.getName() + " (" + player.getUniqueId() + ")");
     }
 }

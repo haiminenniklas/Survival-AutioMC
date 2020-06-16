@@ -412,6 +412,17 @@ public class Util {
         return Double.parseDouble(df.format(osBean.getProcessCpuLoad()*100));
     }
 
+    public static String formatLocation(Location loc, boolean blockLoc) {
+        String text;
+        if(blockLoc) text = loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ();
+        else text = loc.getX() + ", " + loc.getY() + ", " + loc.getZ();
+        return text;
+    }
+
+    public static String formatLocation(Location loc) {
+        return formatLocation(loc, true);
+    }
+
     public static void checkForIllegalItems(Player player) {
         Sorsa.async(() -> {
             for(int i = 0; i < player.getInventory().getSize(); i++) {

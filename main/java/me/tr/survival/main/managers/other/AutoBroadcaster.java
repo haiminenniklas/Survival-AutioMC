@@ -28,7 +28,6 @@ public class AutoBroadcaster {
         String messageRaw = getMessages().get(random);
         String[] splitted = messageRaw.split("<br>");
         for(int i = 0; i < splitted.length; i++) { Util.broadcast(ChatColor.translateAlternateColorCodes('&', splitted[i])); }
-        //Bukkit.broadcastMessage("§7§m-----------------------------");
         Util.broadcast("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
     }
 

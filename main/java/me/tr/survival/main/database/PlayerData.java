@@ -202,7 +202,7 @@ public class PlayerData {
 
                     player_data.put(uuid, data);
 
-                    Sorsa.log("Loaded player " + uuid + " (" + player.getName() + ") from Database");
+                    Sorsa.logColored("§a[Database] Loaded player " + uuid + " (" + player.getName() + ") from Database");
                     cb.execute(true);
                 } else {
                     loadNull(uuid, true);
@@ -302,13 +302,13 @@ public class PlayerData {
             for(int i = 0; i < updateQueries.length; i++) {
 
                 String update = updateQueries[i];
-                Sorsa.log("Executing Database update query: " + update);
+                Sorsa.log("[Database] Executing Database update query: " + update);
                 if(!SQL.update(update)) {
-                    Sorsa.log("Could not execute update query " + update + " trying to execute the equivalent save query: " + saveQueries[i]);
+                    Sorsa.log("[Database] Could not execute update query " + update + " trying to execute the equivalent save query: " + saveQueries[i]);
                     if(SQL.update(saveQueries[i])) {
                         successful += 1;
                     } else {
-                        System.err.println("Could not save or update the player " + uuid + " (" + player.getName() + ").. Maybe you should check it out?");
+                        Sorsa.logColored("§c[Database] Could not save or update the player " + uuid + " (" + player.getName() + ").. Maybe you should check it out?");
                     }
 
                 } else {
@@ -318,7 +318,7 @@ public class PlayerData {
             }
 
             if(successful >= 1) {
-                Sorsa.log("Updated or Saved " + successful + "/" + updateQueries.length + " tables for " + uuid +  " (" + player.getName() + ")!");
+                Sorsa.logColored("§a[Database] Updated or Saved " + successful + "/" + updateQueries.length + " tables for " + uuid +  " (" + player.getName() + ")!");
             }
 
         } catch(SQLException ex) {

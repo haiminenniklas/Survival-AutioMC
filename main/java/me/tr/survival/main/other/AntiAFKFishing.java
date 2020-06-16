@@ -39,7 +39,7 @@ public class AntiAFKFishing implements Listener {
                 final Location nowPos = player.getLocation();
 
                 // If hasn't moved enough
-                if(lastPos.distanceSquared(nowPos) <= (minBlocksToMove^2)) {
+                if(lastPos.distanceSquared(nowPos) <= (Math.pow(minBlocksToMove, 2))) {
                     e.setCancelled(true);
                     e.setExpToDrop(0);
                     Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinun pitää liikkua vähäsen kalastelun aikana!");

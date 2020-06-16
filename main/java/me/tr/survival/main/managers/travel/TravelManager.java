@@ -65,6 +65,8 @@ public class TravelManager implements CommandExecutor, Listener {
                     " §7satunnaiseen paikkaan",
                     " §2maailmassa§7!",
                     " ",
+                    " §7Toimii myös §a/rtp§7!",
+                    " ",
                     " §7Hinta: §a§lILMAINEN",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {

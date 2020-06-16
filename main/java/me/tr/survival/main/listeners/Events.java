@@ -9,6 +9,7 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.managers.Mail;
 import me.tr.survival.main.managers.StaffManager;
+import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.managers.features.Boosters;
 import me.tr.survival.main.other.events.LevelUpEvent;
@@ -42,10 +43,12 @@ public class Events implements Listener {
     public void onVote(VotifierEvent e) {
         Vote vote = e.getVote();
         String userName = vote.getUsername();
-        OfflinePlayer player = Bukkit.getOfflinePlayer(userName);
-        Mail.addTickets(player.getUniqueId(), 1);
-        if(player.getPlayer() != null && player.isOnline()) {
-            Chat.sendMessage(player.getPlayer(), "Äänestit ja sait arvan!");
+        OfflinePlayer op = Bukkit.getOfflinePlayer(userName);
+        Mail.addTickets(op.getUniqueId(), 1);
+        Player player = op.getPlayer();
+        if(player != null && op.isOnline()) {
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+            Chat.sendMessage(player, "Äänestit ja sait arvan! Lunasta arpa komennolla §a/posti§7!");
         }
     }
 
@@ -59,10 +62,24 @@ public class Events implements Listener {
     public void onTeleport(PlayerTeleportEvent e) {
         Player player = e.getPlayer();
         FileConfiguration config = Main.getInstance().getConfig();
+
         if(deathIsland.contains(player.getUniqueId())) {
             e.setCancelled(true);
             return;
         }
+
+        Location destination = e.getTo();
+        Chunk destChunk = destination.getChunk();
+        if(!destChunk.isLoaded()) {
+            e.setCancelled(true);
+            if(!destChunk.load(true)) {
+                Sorsa.logColored("§e[Teleport] Could not load the chunk at " + Util.formatLocation(destination) + " in '" + destChunk.getWorld().getName() + "'!");
+                Chat.sendMessage(player, Chat.Prefix.ERROR, "Jotain meni pieleen viedessä sinua kyseiseen sijaintiin! Yritä pian uudestaan!");
+            } else {
+                player.teleport(destination);
+            }
+        }
+
         if(config.getBoolean("effects.teleport.enabled")) {
             if(e.getCause() == PlayerTeleportEvent.TeleportCause.UNKNOWN) return;
             if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) return;
@@ -79,20 +96,50 @@ public class Events implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onFoodLevelChange(FoodLevelChangeEvent e) {
-        if(Boosters.isActive(Boosters.Booster.NO_HUNGER)) e.setCancelled(true);
-        else e.setCancelled(false);
+
+        if(e.getEntity() instanceof Player) {
+
+            Player player = (Player) e.getEntity();
+            int foodLevelToChange = e.getFoodLevel();
+            int currentFoodLevel = player.getFoodLevel();
+
+            // Food level is decreasing
+            if(foodLevelToChange < currentFoodLevel) {
+                if(Boosters.isActive(Boosters.Booster.NO_HUNGER)) {
+                    e.setCancelled(true);
+                }
+            }
+
+        }
+
+    }
+
+    @EventHandler
+    public void onGameModeChange(PlayerGameModeChangeEvent e) {
+
+        Player player = e.getPlayer();
+        if(!Ranks.isStaff(player.getUniqueId())) {
+            e.setCancelled(true);
+            return;
+        }
+
+        if(!Main.getStaffManager().hasStaffMode(player)) {
+            e.setCancelled(true);
+            Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
+            return;
+        }
+
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityKill(EntityDeathEvent e) {
 
-
         if(e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
             Location loc = player.getLocation();
             Sorsa.logColored("§6[DeathLog] Player " + player.getName() + " (" + player.getUniqueId() + ")" +
-                    " at X: " + loc.getX() + " Y: " + loc.getY() + " Z: " + loc.getZ() + " in '" + loc.getWorld().getName() + "'! Last damage cause: " +
-                    (player.getLastDamageCause() != null ? player.getLastDamageCause().getCause() : "Not found"));
+                    " at X: " + Util.formatLocation(loc) + " in '" + loc.getWorld().getName() + "'! Last damage cause: " +
+                    (player.getLastDamageCause() != null ? player.getLastDamageCause().getCause() : "Not determinable"));
         }
 
         if(Boosters.isActive(Boosters.Booster.DOUBLE_XP) && e.getEntity().getKiller() != null) {
@@ -172,39 +219,36 @@ public class Events implements Listener {
     public void onBlockBreak(BlockBreakEvent e) {
 
         Player player = e.getPlayer();
-        Block block = e.getBlock();
+        final Block block = e.getBlock();
         UUID uuid = player.getUniqueId();
         Material mat = block.getType();
 
         PlayerData.add(player.getUniqueId(), "total", 1);
 
         if(Boosters.isActive(Boosters.Booster.MORE_ORES)) {
-            Collection<ItemStack> drops = block.getDrops();
+            final Collection<ItemStack> drops = block.getDrops();
             if(mat == Material.EMERALD_ORE || mat == Material.DIAMOND_ORE || mat == Material.LAPIS_ORE) {
                 // Add one of every drop (2x)
-                for(ItemStack item : drops) {
-                    e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation(), item.clone());
-                }
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        for(ItemStack item : drops) {
+                            if(item.getType() == Material.AIR) continue;
+                            block.getLocation().getWorld().dropItem(e.getBlock().getLocation(), item.clone());
+                        }
+                    }
+                }.runTaskLater(Main.getInstance(), 1);
                 Util.sendNotification(player, "§a§lTEHOSTUS §72x oret!");
             }
         }
         if(Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
 
             if(mat == Material.IRON_ORE || mat == Material.GOLD_ORE) {
-                block.setType(Material.AIR);
-                ItemStack item;
-                if(mat == Material.IRON_ORE) {
-                    item = new ItemStack(Material.IRON_INGOT);
-                    PlayerData.add(uuid, "iron", 1);
-                } else {
-                    item = new ItemStack(Material.GOLD_INGOT);
-                    PlayerData.add(uuid, "gold", 1);
-                }
                 Util.sendNotification(player, "§a§lTEHOSTUS §7Välittömät oret!");
-                e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation(), item.clone());
-
+                if(mat == Material.IRON_ORE) player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, 1));
+                else  player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, 1));
+                block.setType(Material.AIR);
             }
-
         }
 
         if(mat == Material.IRON_ORE) {

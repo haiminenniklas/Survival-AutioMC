@@ -178,7 +178,11 @@ public class ActionEvents implements Listener {
             return;
         }
 
-        if(e.getInventory().getType() == InventoryType.MERCHANT) e.setCancelled(true);
+        if(e.getInventory().getType() == InventoryType.MERCHANT) {
+            e.setCancelled(true);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+            Chat.sendMessage(player, Chat.Prefix.ERROR, "Kyläläisten kanssa ei voi toistaiseksi tehdä vaihtokauppaa. Toiminto todennäköisesti tulossa myöhemmin käyttöön. Lisätietoa §9/discord§7!");
+        }
         Util.checkForIllegalItems(player);
     }
 

@@ -21,6 +21,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.inventory.meta.tags.ItemTagType;
@@ -45,16 +46,16 @@ public class Essentials implements CommandExecutor, Listener {
                     player.sendMessage(" §2§lApua-valikko");
                     player.sendMessage( "§7§oKirjoita §a§o/apua <...>");
                     player.sendMessage(" ");
-                    player.sendMessage(" §a...komennot §7Hyödylliset komennot");
-                    player.sendMessage(" §a...vaihto §7Tietoa vaihtokaupasta");
-                    player.sendMessage(" §a...arvot §7Palvelimen VIP-arvot");
-                    player.sendMessage(" §a...aloitus §7Vinkit survivalin aloitukseen");
-                    player.sendMessage(" §a...tehostukset §7Mitä tehostukset ovat?");
-                    player.sendMessage(" §a...asetukset §7Mitkä asetukset?");
-                    player.sendMessage(" §a...valuutta §7Miten raha toimii täällä?");
-                    player.sendMessage(" §a...matkustaminen §7Miten toimii??");
-                    player.sendMessage(" §a...reppu §7Kätevä tapa tallettaa tavarat");
-                    player.sendMessage(" §a...ääri §7Miten ja ketkä pääsevät sinne?");
+                    Util.sendClickableText(player, " §a...komennot §7Hyödylliset komennot", "/apua komennot", "§7Klikkaa §aavataksesi§7 (§a/apua komennot§7)!");
+                    Util.sendClickableText(player, " §a...vaihto §7Tietoa vaihtokaupasta", "/apua vaihto", "§7Klikkaa §aavataksesi§7! (§a/apua vaihto§7)!");
+                    Util.sendClickableText(player, " §a...arvot §7Palvelimen VIP-arvot", "/apua arvot", "§7Klikkaa §aavataksesi§7! (§a/apua arvot§7)!");
+                    Util.sendClickableText(player, " §a...aloitus §7Vinkit survivalin aloitukseen", "/apua aloitus", "§7Klikkaa §aavataksesi§7! (§a/apua aloitus§7)!");
+                    Util.sendClickableText(player, " §a...tehostukset §7Mitä tehostukset ovat?", "/apua tehostukset", "§7Klikkaa §aavataksesi§7! (§a/apua tehostukset§7)!");
+                    Util.sendClickableText(player, " §a...asetukset §7Mitkä asetukset?", "/apua asetukset", "§7Klikkaa §aavataksesi§7! (§a/apua asetukset§7)!");
+                    Util.sendClickableText(player, " §a...valuutta §7Miten raha toimii täällä?", "/apua valuutta", "§7Klikkaa §aavataksesi§7! (§a/apua valuutta§7)!");
+                    Util.sendClickableText(player, " §a...matkustaminen §7Miten toimii??", "/apua matkustaminen", "§7Klikkaa §aavataksesi§7! (§a/apua matkustaminen§7)! ");
+                    Util.sendClickableText(player, " §a...reppu §7Kätevä tapa tallettaa tavarat", "/apua reppu", "§7Klikkaa §aavataksesi§7! (§a/apua reppu§7)!");
+                    Util.sendClickableText(player, " §a...ääri §7Miten ja ketkä pääsevät sinne?", "/apua ääri", "§7Klikkaa §aavataksesi§7! (§a/apua ääri§7)!");
                     player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                 } else {
@@ -160,7 +161,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7Saat aluksi hieman tavaraa, millä",
                                     " §7päästä alkuun ja tehtävänäsi on",
                                     " §aselviytyä mahdollisimman pitkään!",
-                                    " §7Saat §e1 000€ §7aloitusrahaksi, jonka",
+                                    " §7Saat §e100€ §7aloitusrahaksi, jonka",
                                     " §7voit käyttää palvelimen kauppaan. ",
                                     " §aRahaa §7tienaat myymällä esineitäsi!",
                                     " ",
@@ -197,6 +198,21 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7komennolla §a/tehostus",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eMatkustaminen", Arrays.asList(
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                    " §7Lue lisää matkustamisesta",
+                                    " §7palvelimellamme!",
+                                    " ",
+                                    " §aKlikkaa tästä!",
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                            ))) {
+                                @Override
+                                public void onClick(Player clicker, ClickType clickType) {
+                                    gui.close(clicker);
+                                    BaltopCommand.openGui(clicker);
+                                }
+                            });
 
                             int[] glass = new int[] { 11,12, 14,15  };
                             for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
@@ -296,13 +312,29 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7Netheriin matkustaminen on ilmaista,",
                                     " §7mutta Endiin se on §amaksullista§7.",
                                     " §7Endiin matkustamiseen vaaditaan ",
-                                    " §e250 000€ §7rahaa ja voit kutsua",
+                                    " §e175 000€ §7rahaa ja voit kutsua",
                                     " §a2 kaveriasi §7mukaan samalla!",
                                     " ",
                                     " §7Lisätietoa matkustamisesta: §a/matkustaminen",
                                     " §7Discord: §9/discord",
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                             )), 13);
+
+                            gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.MAP, 1, "§eMatkustaminen", Arrays.asList(
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                    " §7Tästä klikkaamalla, pääset",
+                                    " §7matkustamaan eri §emaailmoihin§7!",
+                                    " ",
+                                    " §aKlikkaa avataksesi",
+                                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                            ))) {
+                                @Override
+                                public void onClick(Player clicker, ClickType clickType) {
+                                    gui.close(clicker);
+                                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
+                                    Main.getTravelManager().gui(clicker);
+                                }
+                            });
 
                             gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.BOOK, 1, "§2Lue lisää", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -362,7 +394,7 @@ public class Essentials implements CommandExecutor, Listener {
                             }
 
                         });
-                    }else if(args[0].equalsIgnoreCase("ääri") || args[0].equalsIgnoreCase("end")) {
+                    } else if(args[0].equalsIgnoreCase("ääri") || args[0].equalsIgnoreCase("end")) {
                         Gui.openGui(player, "Apua (Ääri)", 27, (gui) -> {
                             gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten Endi toimii?", Arrays.asList(
                                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -370,7 +402,7 @@ public class Essentials implements CommandExecutor, Listener {
                                     " §7pystyy rikastumaan ja saamaan",
                                     " §7himoitun §9Elytran§7! Sinne",
                                     " §7pääsy maksaa, ja paljon. Huimat",
-                                    " §a§l250 000€§7! Mutta jotta matka",
+                                    " §a§l175 000€§7! Mutta jotta matka",
                                     " §7olisi edes jotenkin väärti, niin",
                                     " §7on kuitenkin mahdollista kutsua",
                                     " §a2 kaveria §7mukaan seikkailuun!",
@@ -407,6 +439,15 @@ public class Essentials implements CommandExecutor, Listener {
                             }
 
                         });
+                    } else if(args[0].equalsIgnoreCase("suojaus")) {
+
+                        player.sendMessage(" ");
+                        player.sendMessage(" §7Linkki ohjeisiin siitä, miten suojata talo:");
+                        player.sendMessage(" §ahttps://www.youtube.com/watch?v=Ju4B3UlaMNk");
+                        player.sendMessage(" ");
+
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+
                     }
                 }
 
@@ -496,18 +537,18 @@ public class Essentials implements CommandExecutor, Listener {
     private void invsee(Player opener, Player target) {
 
         Inventory inv = Bukkit.createInventory(target, 36, "Tarkastele inventoryä (" + target.getName() + ")");
-        for(ItemStack item : target.getInventory().getStorageContents()) {
-            if(item == null) continue;
-            inv.addItem(item);
+        for(int i = 0; i < inv.getSize(); i++) {
+            ItemStack item = inv.getItem(i);
+            if(item == null) item = new ItemStack(Material.AIR);
+            inv.setItem(i, item);
         }
         opener.openInventory(inv);
-
     }
 
     @EventHandler
     public void onInvClose(InventoryCloseEvent e) {
 
-        Player player = (Player) e.getPlayer();
+        final Player player = (Player) e.getPlayer();
 
         if(e.getView().getTitle().startsWith("Tarkastele inventoryä")) {
             String title = e.getView().getTitle();
@@ -522,11 +563,17 @@ public class Essentials implements CommandExecutor, Listener {
                 return;
             }
 
-            target.getInventory().setStorageContents(e.getInventory().getStorageContents());
+            final Inventory inv = e.getInventory();
+            final PlayerInventory targetInv = target.getInventory();
 
+            for(int i = 0; i < inv.getSize(); i++) {
+                ItemStack item = inv.getItem(i);
+                if(item == null) item = new ItemStack(Material.AIR);
+                targetInv.setItem(i, item);
+            }
+
+            target.updateInventory();
         }
-
-
     }
 
     @Deprecated

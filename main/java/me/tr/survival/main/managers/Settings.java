@@ -97,7 +97,6 @@ public class Settings {
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1,1 );
-                panel(clicker);
             }
         });
 

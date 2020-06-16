@@ -49,6 +49,7 @@ public class Balance {
     }
 
     public void fetchTopBalance() {
+        Sorsa.logColored("§a[BalanceTop] Fetching top balance from Database...");
         Sorsa.async(() -> {
             SQL.query("SELECT * FROM `players`;", (result, conn) -> {
                 try {

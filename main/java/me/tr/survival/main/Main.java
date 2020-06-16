@@ -37,6 +37,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -268,13 +269,13 @@ public final class Main extends JavaPlugin implements Listener {
         Sorsa.logColored(" §aStarting autosaving for players...");
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
 
-            Sorsa.log("Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
+            Sorsa.logColored("§a[Database] Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
             int times_saved = 0;
             for(Player player : Bukkit.getOnlinePlayers()) {
                 times_saved += 1;
                 PlayerData.savePlayer(player.getUniqueId());
             }
-            Sorsa.log("Saved the data of " + times_saved + " players!");
+            Sorsa.logColored("§a[Database] Saved the data of " + times_saved + " players!");
 
             // Fetch Balances...
             new Balance().fetchTopBalance();
@@ -302,6 +303,9 @@ public final class Main extends JavaPlugin implements Listener {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
+        Warps.loadWarps((r) -> {
+
+        });
         Bukkit.getServer().setWhitelist(getConfig().getBoolean("whitelist"));
 
         Sorsa.logColored("§a Enabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
@@ -656,7 +660,7 @@ public final class Main extends JavaPlugin implements Listener {
                     else Settings.toggleFlight(player);
                 }
             } else if(command.getLabel().equalsIgnoreCase("roskis")) {
-               if(!Ranks.isStaff(player.getUniqueId()) && !Ranks.hasRank(player, "premium")) {
+               if(Ranks.isVIP(player.getUniqueId())) {
                    Chat.sendMessage(player, "Tähän toimintoon tarvitaan §e§lPremium§7-arvon! Lisätietoa §a/kauppa§7!");
                    return true;
                }
@@ -994,17 +998,16 @@ public final class Main extends JavaPlugin implements Listener {
                                 Chat.sendMessage(player, "/tehostus (enable | disable)");
                             }
                         } else {
-                            Boosters.Booster booster = Boosters.getBoosterByName(args[1]);
+                            Boosters.Booster booster = Boosters.Booster.valueOf(args[0].toUpperCase());
                             if(booster == null) {
-                                Chat.sendMessage(player, "Tuota tehostussa ei ole olemassa!");
+                                Chat.sendMessage(player, "Tuota tehostussa ei ole olemassa! Käytettävissä olevat Tehostukset: §a" + StringUtils.join(Boosters.Booster.values(), ", "));
                                 return true;
                             }
+
                             if(Boosters.isActive(booster)) {
                                 Boosters.deactivate(booster);
                                 Chat.sendMessage(player, "Tehostus " + booster.getDisplayName() + " §7lopetettu!");
-                            } else {
-                                Chat.sendMessage(player, "Tuo tehostus ei ole aktiivinen..");
-                            }
+                            } else Chat.sendMessage(player, "Tuo tehostus ei ole aktiivinen..");
                         }
                     } else {
                         Boosters.panel(player);

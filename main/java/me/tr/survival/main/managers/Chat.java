@@ -299,7 +299,13 @@ public class Chat implements Listener {
         }
 
         e.setMessage(msg);
-        e.setFormat((ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + player.getName()).trim() + "§r: %2$s"));
+
+        String name = player.getName();
+        if(name.equalsIgnoreCase("Elitizm") || name.equalsIgnoreCase("KettuBoy_") || name.equalsIgnoreCase("_Vivy")) {
+            name = " §5⚠ §7" + player.getName();
+        }
+
+        e.setFormat((ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + name).trim() + "§r: %2$s"));
 
     }
 

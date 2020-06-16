@@ -20,6 +20,16 @@ public class TeleportManager {
         }
         return list;
     }
+    public static List<TeleportRequest> getRequestsSentByPlayer(UUID uuid) {
+        List<TeleportRequest> list = new ArrayList<>();
+        for(TeleportRequest request : getActiveRequests().values()) {
+            Player recipient = request.getRequestor();
+            if(recipient == null) continue;
+            if(recipient.getUniqueId().equals(uuid)) list.add(request);
+        }
+        return list;
+    }
+
 
     public enum Teleport { REQUEST, FORCE }
 

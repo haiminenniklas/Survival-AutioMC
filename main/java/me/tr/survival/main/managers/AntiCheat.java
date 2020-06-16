@@ -44,7 +44,7 @@ public class AntiCheat implements Listener {
             double currentY = e.getPlayer().getLocation().getY();
             double newLocZ = e.getPlayer().getLocation().getZ() - 250;
             e.getPlayer().teleport(new Location(Bukkit.getWorld("world"), newLocX, currentY, newLocZ));
-            e.getPlayer().sendMessage("§cVAROITUS §7Lohkot lataavat hitaasti, sinua on siirretty taaksepäin!");
+            e.getPlayer().sendMessage("§c§lVAROITUS §7» Lohkot lataavat hitaasti, sinua on siirretty taaksepäin!");
         }
 
         float threshold = e.getPlayer().isOnGround() ? 0.41f : 0.65f;
@@ -73,7 +73,7 @@ public class AntiCheat implements Listener {
             PreVL.replace(e.getPlayer(), current + 1);
             if(PreVL.get(e.getPlayer()) > 2) {
                 PreVL.replace(e.getPlayer(), 0);
-                e.getPlayer().sendMessage("§c§lVAROITUS §7Liikut liian nopeasti!");
+                e.getPlayer().sendMessage("§c§lVAROITUS §7» Liikut liian nopeasti!");
                 e.setCancelled(true);
                 double increase = Math.round(((deltaXZ - threshold) / threshold) * 100);
 

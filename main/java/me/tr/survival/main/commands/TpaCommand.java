@@ -1,11 +1,13 @@
 package me.tr.survival.main.commands;
 
 import me.tr.survival.main.managers.Chat;
+import me.tr.survival.main.managers.Settings;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.managers.teleport.TeleportManager;
 import me.tr.survival.main.managers.teleport.TeleportRequest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,6 +39,19 @@ public class TpaCommand implements CommandExecutor, Listener {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty!");
                         return true;
                     }
+
+                    if(Settings.get(target.getUniqueId(), "privacy")) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajalla §e" + target.getName() + " §7on yksityinen tila päällä!");
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                        return true;
+                    }
+
+                    if(TeleportManager.getRequestsSentByPlayer(target.getUniqueId()).size() >= 1) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "§7Rauhoituthan noiden pyyntöjen kanssa! Pystyt lähettämään vain §ayhden §7teleport-pyynnön kerrallaan!");
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                        return true;
+                    }
+
                     TeleportRequest request = new TeleportRequest(player, target, TeleportManager.Teleport.REQUEST);
                     request.ask();
                 }

@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.Arrays;
+import java.util.Random;
 import java.util.UUID;
 
 public class Mail {
@@ -34,9 +35,13 @@ public class Mail {
         if(!canOpenDaily(player)) dailyMat = Material.MINECART;
 
         String multiplierText = (getMultiplier(player) > 1) ? "§7(§b§l" + getMultiplier(player) + "x§7)" : "";
-        int multiplier = getMultiplier(player);
+        final int multiplier = getMultiplier(player);
 
         if(timeFromLastMail(player.getUniqueId()) > (1000 * 60 * 60 * 24 * 2)) Mail.setStreak(player, 1);
+
+        final int moneyToReceive = (150 * multiplier);
+        final int ironToReceive = (16 * multiplier);
+        final int foodToReceive = (16 * multiplier);
 
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(dailyMat, 1, "§aPäivittäinen", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -46,9 +51,9 @@ public class Mail {
                 "§7 Putki: §6" + getStreak(player) + " " + multiplierText,
                 "",
                 "§7 Sinua odottaa:",
-                "§7 - §a+" + (50 * multiplier) + "€",
-                "§7 - §f+" + (3 * multiplier) + " rautaa",
-                "§7 - §c+" +  + (10 * multiplier) + " pihviä",
+                "§7 - §a+" + moneyToReceive + "€",
+                "§7 - §f+" + ironToReceive + "kpl rautaa",
+                "§7 - §c+" + foodToReceive + " pihviä",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -63,28 +68,36 @@ public class Mail {
 
                     int multiplier = getMultiplier(clicker);
 
-                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
                     clicker.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                     if(multiplier > 1) clicker.sendMessage("§7Kerroin §b§l" + multiplier + "x§7!");
 
-                    Balance.add(clicker.getUniqueId(), 50*multiplier);
-                    clicker.sendMessage("§a§l+ " + (50*multiplier) + "€");
+                    Balance.add(clicker.getUniqueId(), moneyToReceive);
+                    clicker.sendMessage("§a§l+ " + moneyToReceive + "€");
 
                     if(Mail.getStreak(clicker) >= 14 && Mail.getStreak(clicker) <= 21) {
-                        Balance.add(clicker.getUniqueId(), 150);
-                        clicker.sendMessage("§e§l+ 150€ §7(Streak)");
+                        Balance.add(clicker.getUniqueId(), 275);
+                        clicker.sendMessage("§e§l+ 275€ §7§o(Streak)");
                     }
 
-                    if(Math.random() < .20) {
+                    double chance = new Random().nextDouble();
+                    if(chance < .20) {
                         Mail.addTickets(player.getUniqueId(), 1);
                         clicker.sendMessage("§6§l+1 Arpa!!!");
+                        if(chance < .05) {
+                            clicker.sendMessage("§b§l+5kpl timanttia!!!");
+                            clicker.getInventory().addItem(ItemUtil.makeItem(Material.DIAMOND, 5));
+                        }
+                        clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                    } else {
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
                     }
 
-                    clicker.getInventory().addItem(ItemUtil.makeItem(Material.IRON_INGOT, 3 * multiplier));
-                    clicker.sendMessage("§f§l+" + (3 * multiplier) + " rautaa");
-                    clicker.getInventory().addItem(ItemUtil.makeItem(Material.COOKED_BEEF, 10 * multiplier));
-                    clicker.sendMessage("§c§l+" + (10 * multiplier) + " pihviä");
+
+                    clicker.getInventory().addItem(ItemUtil.makeItem(Material.IRON_INGOT, ironToReceive));
+                    clicker.sendMessage("§f§l+" + ironToReceive + "kpl rautaa");
+                    clicker.getInventory().addItem(ItemUtil.makeItem(Material.COOKED_BEEF, foodToReceive));
+                    clicker.sendMessage("§c§l+" + foodToReceive + " pihviä");
                     clicker.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                     Mail.setLastMail(clicker.getUniqueId());
                 }
@@ -118,17 +131,17 @@ public class Mail {
             }
         });
 
-        gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Kertoimet", Arrays.asList(
+        gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Bonukset", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 "",
                 "§7Mitä pitempään käyt putkeen",
                 "§7hakemassa palvelimen §apäivittäisen",
-                "§7postitoimituksen, niin toimituksen",
-                "§7ns. §ekerroin §7nousee. Kertoimet:",
+                "§7postitoimituksen, niin toimitukseen",
+                "§7ns. §ebonuksia§7! Tässä bonukset: ",
                 "",
-                "§7- §a§l+7pv §7-> §b§l2x",
-                "§7- §e§l+14pv §7-> §b§l+150€",
-                "§7- §c§l+21pv §7-> §b§l3x",
+                "§7- §a+7pv §7» §b2x kerroin",
+                "§7- §e+14pv §7» §b+275€",
+                "§7- §c+21pv §7» §b3x kerroin",
                 "",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )), 26);

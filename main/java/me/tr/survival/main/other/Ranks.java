@@ -109,6 +109,9 @@ public class Ranks {
 
     public static boolean hasRank(UUID uuid, String rank) {
         User user = Sorsa.getLuckPerms().getUserManager().getUser(uuid);
+        if(user == null) {
+            return false;
+        }
         return (user.getPrimaryGroup().equalsIgnoreCase(rank));
     }
 

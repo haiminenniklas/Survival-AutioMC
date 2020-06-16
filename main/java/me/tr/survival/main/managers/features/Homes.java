@@ -7,6 +7,7 @@ import me.tr.survival.main.managers.Profile;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Location;
@@ -121,12 +122,11 @@ public class Homes {
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-
                 gui.close(player);
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
                 deleteHomeReal(position);
                 Chat.sendMessage(player, "Koti poistettiin!");
                 panel(clicker, clicker);
-
             }
         });
 
@@ -144,7 +144,6 @@ public class Homes {
 
             }
         });
-
 
         gui.open(player);
 
@@ -236,6 +235,7 @@ public class Homes {
                         @Override
                         public void onClick(Player clicker, ClickType clickType) {
                             gui.close(clicker);
+                            clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                             Chat.sendMessage(clicker, "Loit kodin §a#" + homePos + " §7sijaintiisi!");
                             homeList.createHome(clicker, getHomeString(homePos), clicker.getLocation());
                             panel(clicker, clicker);
@@ -254,6 +254,7 @@ public class Homes {
                         @Override
                         public void onClick(Player clicker, ClickType clickType) {
                             if(clickType == ClickType.LEFT) {
+                                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
                                 Chat.sendMessage(clicker, "Sinua viedään kotiin §a#" + homePos + "§7... Odota §a3 sekuntia§7...");
                                 home.teleport(clicker, (res) -> { });
                                 gui.close(clicker);
@@ -310,41 +311,43 @@ public class Homes {
 
         int price = 10000;
 
-        Gui.openGui(player, "Vahvista kodin osto", 27, (gui) -> {
+        Gui gui = new Gui("Oston varmistus", 27);
 
-            gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Klikkaa vahvistaaksesi oston!",
-                    " §7Kodin avaus maksaa: §e" + price + "€§7!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            ))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(player);
-                    if(Balance.canRemove(player.getUniqueId(), price)) {
-                        Balance.remove(player.getUniqueId(), price);
-                        homeList.createHome(clicker, getHomeString(homePos), clicker.getLocation());
-                        Chat.sendMessage(clicker, "Ostit, sekä loit kodin §a#" + homePos + " §7sijaintiisi!");
-                    } else {
-                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                        Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Kodin osto maksaa §e80 000€§7!");
-                    }
-
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa vahvistaaksesi oston!",
+                " §7Kodin avaus maksaa: §e" + Util.formatDecimals(price) + "€§7!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(player);
+                if(Balance.canRemove(player.getUniqueId(), price)) {
+                    clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                    Balance.remove(player.getUniqueId(), price);
+                    homeList.createHome(clicker, getHomeString(homePos), clicker.getLocation());
+                    Chat.sendMessage(clicker, "Ostit, sekä loit kodin §a#" + homePos + " §7sijaintiisi!");
+                } else {
+                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Kodin osto maksaa §e10 000€§7!");
                 }
-            });
 
-            gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    "§7 Klikkaa peruuttaaksesi oston!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            ))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
-                }
-            });
-
+            }
         });
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                "§7 Klikkaa peruuttaaksesi oston!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                panel(clicker, clicker);
+            }
+        });
+
+        gui.open(player);
     }
 
 }

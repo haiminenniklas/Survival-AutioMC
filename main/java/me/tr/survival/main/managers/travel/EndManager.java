@@ -166,7 +166,7 @@ public class EndManager implements CommandExecutor {
     //SETTINGS
     private final long durationMillis = 1000 * 60 * 60 * 3;
     private final long durationMinutes = durationMillis / 1000 / 60;
-    private final int price = 250000;
+    private final int price = 175000;
 
     private List<UUID> allowedPlayers = new ArrayList<>();
     private UUID holder = null;
@@ -213,6 +213,7 @@ public class EndManager implements CommandExecutor {
             } else {
                 lore.add(" §7Tila: §a§lVAPAA");
                 lore.add(" §7Hinta: §a§l" + Util.formatDecimals(price) + "€");
+                lore.add(" §7Kesto: §a§l3h");
                 lore.add(" ");
                 if(Balance.canRemove(player.getUniqueId(), price)) lore.add(" §aKlikkaa aktivoidaksesi!");
                 else lore.add(" §cSinulla ei ole varaa");

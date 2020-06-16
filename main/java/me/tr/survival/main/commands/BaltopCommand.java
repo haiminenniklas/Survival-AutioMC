@@ -4,6 +4,7 @@ import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.managers.Profile;
+import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.callback.TypedCallback;
@@ -72,6 +73,9 @@ public class BaltopCommand implements CommandExecutor {
                         double balance = e.getValue();
                         int placement = i + 1;
                         int slot = playerSlots[i];
+
+                        if(Ranks.isStaff(target.getUniqueId())) continue;
+
                         if (player.getUniqueId().equals(target.getUniqueId())) {
 
                             ItemUtil.makeSkullItem(target, 1, "§e#" + placement + " §6§lSinä", Arrays.asList(
