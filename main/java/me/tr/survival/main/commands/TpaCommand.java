@@ -70,7 +70,8 @@ public class TpaCommand implements CommandExecutor, Listener {
                 }
 
                 if(Util.isInRegion(player, "pvp-kuoppa")) {
-
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Tämä ei toimi PvP-alueella!");
+                    return true;
                 }
 
                 if(args.length < 1) {
