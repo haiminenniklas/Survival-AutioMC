@@ -117,9 +117,9 @@ public class Ranks {
 
     public static boolean hasRank(UUID uuid, String... ranks) {
         for(String rank : ranks) {
-            if(!hasRank(uuid, rank)) return false;
+            if(hasRank(uuid, rank)) return true;
         }
-        return true;
+        return false;
     }
 
     public static boolean isVIP(UUID uuid) {

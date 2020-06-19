@@ -1,5 +1,6 @@
 package me.tr.survival.main.managers.features;
 
+import me.tr.survival.main.Main;
 import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.other.Home;
@@ -10,10 +11,7 @@ import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -283,7 +281,8 @@ public class Homes {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
-                        confirmHomePurchase(clicker, homePos, homeList);
+                        // Try to open with a bit latency, to make the confirmation gui work
+                        Bukkit.getScheduler().runTaskLater(Main.getInstance(), r -> confirmHomePurchase(opener, homePos, homeList), 5);
                     }
                 });
 
@@ -307,11 +306,11 @@ public class Homes {
 
     }
 
-    private static void confirmHomePurchase(Player player, int homePos, Homes homeList) {
+    private static void confirmHomePurchase(final Player player, int homePos, Homes homeList) {
 
-        int price = 10000;
+        final int price = 10000;
 
-        Gui gui = new Gui("Oston varmistus", 27);
+        final Gui gui = new Gui("Kodin osto", 27);
 
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -327,10 +326,12 @@ public class Homes {
                     Balance.remove(player.getUniqueId(), price);
                     homeList.createHome(clicker, getHomeString(homePos), clicker.getLocation());
                     Chat.sendMessage(clicker, "Ostit, sekä loit kodin §a#" + homePos + " §7sijaintiisi!");
+                    panel(clicker, clicker);
                 } else {
                     clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Kodin osto maksaa §e10 000€§7!");
                 }
+
 
             }
         });

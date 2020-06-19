@@ -8,6 +8,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,7 +56,13 @@ public class AntiCheat implements Listener {
             threshold+= 2.9f;
         }
 
-        if(e.getPlayer().isRiptiding() || e.getPlayer().isGliding()) return;
+        if(e.getPlayer().isRiptiding()) return;
+        if(e.getPlayer().isGliding()) return;
+
+        if(e.getPlayer().getVehicle() != null) {
+            final Entity vehicle = e.getPlayer().getVehicle();
+            if(vehicle instanceof Boat) return;
+        }
 
         if (e.getPlayer().isFlying()) {
             threshold+= e.getPlayer().getFlySpeed() > 0.1 ? e.getPlayer().getFlySpeed() * 10 : e.getPlayer().getFlySpeed() * 1;

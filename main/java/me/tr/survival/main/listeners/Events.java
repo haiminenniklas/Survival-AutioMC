@@ -91,6 +91,11 @@ public class Events implements Listener {
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
         }
+
+        // Add resistance effect so the player would not take that much
+        // damage from possible suffocation
+        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 10, 1));
+
         lastLocation.put(player.getUniqueId(), e.getFrom());
     }
 
@@ -175,8 +180,8 @@ public class Events implements Listener {
                 Location deathSpawn = Sorsa.getDeathSpawn();
                 player.teleport(deathSpawn);
                 Util.heal(player);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 30, 999, true, false));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 30, 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) Sorsa.getCurrentTPS() * 30, 999, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) Sorsa.getCurrentTPS() * 30, 1, true, false));
                 player.playSound(player.getLocation(), Sound.MUSIC_DISC_13, 1, 1);
                 deathIsland.add(player.getUniqueId());
             });

@@ -71,7 +71,6 @@ public final class Main extends JavaPlugin implements Listener {
         return particlesAPI;
     }
     private static Map<UUID, Long> spawnCommandDelay = new HashMap<>();
-    //public static final HashMap<Player, Player> messages = new HashMap<>();
 
     private long started = 0L;
 

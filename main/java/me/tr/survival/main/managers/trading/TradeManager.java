@@ -47,8 +47,16 @@ public class TradeManager implements CommandExecutor, Listener {
         return null;
     }
 
-    private boolean isInTrade(Player player) {
+    public boolean isInTrade(Player player) {
         return getCurrentTrade(player) != null;
+    }
+
+    private boolean hasAsked(Player sender) {
+        boolean hasAsked = false;
+        for(Trade trade : getOngoingTrades()) {
+            if(trade.getSender().getUniqueId().equals(sender.getUniqueId())) hasAsked = true;
+        }
+        return hasAsked;
     }
 
     private boolean hasAsked(Player sender, Player target) {
@@ -221,6 +229,12 @@ public class TradeManager implements CommandExecutor, Listener {
                         Chat.sendMessage(player, Chat.Prefix.ERROR, "Olet jo lähettänyt tälle pelaajalle vaihtokauppapyynnön. Odota kunnes nykyinen pyyntö umpeutuu!");
                         return true;
                     }
+
+                    if(hasAsked(player)) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Olet jo lähettänyt pyynnön toiselle pelaajalle!");
+                        return true;
+                    }
+
                     // If the given target has already asked our player for a trade, accept it
                     if(hasAsked(target, player)) Bukkit.dispatchCommand(player, "trade accept " + target.getName());
                     else {

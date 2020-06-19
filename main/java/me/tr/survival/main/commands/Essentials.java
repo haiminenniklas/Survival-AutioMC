@@ -535,45 +535,7 @@ public class Essentials implements CommandExecutor, Listener {
     }
 
     private void invsee(Player opener, Player target) {
-
-        Inventory inv = Bukkit.createInventory(target, 36, "Tarkastele inventoryä (" + target.getName() + ")");
-        for(int i = 0; i < inv.getSize(); i++) {
-            ItemStack item = inv.getItem(i);
-            if(item == null) item = new ItemStack(Material.AIR);
-            inv.setItem(i, item);
-        }
-        opener.openInventory(inv);
-    }
-
-    @EventHandler
-    public void onInvClose(InventoryCloseEvent e) {
-
-        final Player player = (Player) e.getPlayer();
-
-        if(e.getView().getTitle().startsWith("Tarkastele inventoryä")) {
-            String title = e.getView().getTitle();
-
-            String playerName = title.substring(title.indexOf('('));
-            playerName = playerName.replace(")", "");
-            playerName = playerName.replace("(", "");
-
-            Player target = Bukkit.getPlayer(playerName);
-            if(target == null) {
-                Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty!");
-                return;
-            }
-
-            final Inventory inv = e.getInventory();
-            final PlayerInventory targetInv = target.getInventory();
-
-            for(int i = 0; i < inv.getSize(); i++) {
-                ItemStack item = inv.getItem(i);
-                if(item == null) item = new ItemStack(Material.AIR);
-                targetInv.setItem(i, item);
-            }
-
-            target.updateInventory();
-        }
+        opener.openInventory(target.getInventory());
     }
 
     @Deprecated

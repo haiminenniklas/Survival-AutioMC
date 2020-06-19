@@ -1,12 +1,14 @@
 package me.tr.survival.main.managers;
 
 import me.tr.survival.main.Main;
+import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.database.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -25,9 +27,11 @@ import org.bukkit.inventory.meta.tags.ItemTagType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class MoneyManager implements CommandExecutor, Listener {
 
@@ -292,20 +296,27 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     public void forceWriteCheque(Player player, int amount) {
 
+        final String today = Util.getToday();
         ItemStack item = ItemUtil.makeItem(Material.PAPER, 1, "§a§lShekki", Arrays.asList(
                 " §7Tämä shekki sisältää ",
                 " §a" + amount + "€§7!",
                 " §7Kun klikkaat tätä itemiä",
                 " §7saat pankkitilillesi rahat!",
                 " §7Voit antaa tämän myös kaverillesi",
-                " §7pienenä §dlahjoituksena§7!"
+                " §7pienenä §dlahjoituksena§7!",
+                " ",
+                " §7Shekki kirjoitettu: §e" + today
         ));
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
+        final long now = System.currentTimeMillis();
         ItemMeta itemMeta = item.getItemMeta();
         if(itemMeta != null) {
             itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, amount);
+            itemMeta.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "write-time"), PersistentDataType.LONG, now);
             item.setItemMeta(itemMeta);
+
+            Sorsa.logColored(" §6[Cheques] Player '" + player.getName() + "' (" + player.getUniqueId() + ") wrote or was given by the plugin a cheque worth of " + Util.formatDecimals(amount) + "! Date: " + today);
 
             HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(Util.makeEnchanted(item));
             for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) { player.getWorld().dropItemNaturally(player.getLocation(), entry.getValue()); }
@@ -326,6 +337,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                 if(cheque.getAmount() < 1) player.getInventory().remove(cheque);
                 player.updateInventory();
                 Chat.sendMessage(player, "Nostit shekin, joka sisälsi §e" + foundValue + "€§7! Shekkejä voit kirjoittaa komennolla §a/valuutta§7!");
+                Sorsa.logColored(" §6[Cheques] Player '" + player.getName() + "' (" + player.getUniqueId() + ") withdrew a cheque worth " + Util.formatDecimals(foundValue) + "! Date: " + Util.getToday());
             }
         }
 

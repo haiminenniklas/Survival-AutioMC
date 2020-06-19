@@ -5,6 +5,7 @@ import me.tr.survival.main.managers.Settings;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.managers.teleport.TeleportManager;
 import me.tr.survival.main.managers.teleport.TeleportRequest;
+import me.tr.survival.main.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -66,6 +67,10 @@ public class TpaCommand implements CommandExecutor, Listener {
                 if(TeleportManager.getRequestsFromRecipient(player.getUniqueId()).isEmpty()) {
                     Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole aktiivisia §eTeleport§7-pyyntöjä tällä hetkellä!");
                     return true;
+                }
+
+                if(Util.isInRegion(player, "pvp-kuoppa")) {
+
                 }
 
                 if(args.length < 1) {

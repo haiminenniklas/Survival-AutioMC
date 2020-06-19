@@ -93,7 +93,7 @@ public class ConnectionEvents implements Listener {
         // Setup backpacks
         Backpack.Level bLvl = Main.getBackpack().getLevel(player.getUniqueId());
         if(Ranks.hasRank(player, "premiumplus")) if(bLvl == Backpack.Level.ONE) Main.getBackpack().setLevel(player.getUniqueId(), Backpack.Level.TWO);
-        else if(Ranks.hasRank(player, "sorsa")) if(bLvl != Backpack.Level.THREE) Main.getBackpack().setLevel(player.getUniqueId(), Backpack.Level.THREE);
+        if(Ranks.hasRank(player, "sorsa")) if(bLvl != Backpack.Level.THREE) Main.getBackpack().setLevel(player.getUniqueId(), Backpack.Level.THREE);
 
         e.setJoinMessage(null);
         if(Main.getStaffManager().hidden.contains(player.getUniqueId())) Chat.sendMessage(player, "Olet piilossa pelaajilta!");
