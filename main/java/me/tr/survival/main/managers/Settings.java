@@ -54,7 +54,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1,1 );
                 Settings.toggle(uuid, "scoreboard");
                 Settings.scoreboard(clicker);
                 panel(clicker);
@@ -76,7 +76,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1,1 );
                 Settings.toggle(uuid, "privacy");
                 panel(clicker);
             }
@@ -84,19 +84,23 @@ public class Settings {
 
         gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.PAPER, 1, "§2Chat", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                "§7Tila: " + settingText(Settings.get(uuid, "chat")),
+                "§7Tila: " + (Settings.get(uuid, "chat") ? "§a§lGlobaali" : "§e§lPaikallinen"),
                 " ",
-                "§7§oKun tämä asetus on pois päältä,",
-                "§7§oet näe enää chat-viestejä"  ,
-                "§7§omuilta pelaajilta",
+                "§7§oPalvelimella on käytössä",
+                "§aGlobaali §7§oja §ePaikallinen §7§ochat",
+                "§7§oja pystyt vaihtelemaan näiden välillä!",
                 "",
-                "§cPois käytöstä!!",
+                " §7Lisätietoa: §a/apua chat",
+                "",
+                "§aKlikkaa vaihtaaksesi",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1,1 );
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1,1 );
+                Settings.toggle(uuid, "chat");
+                panel(clicker);
             }
         });
 
@@ -115,7 +119,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1,1 );
                 UltimateTimber.getInstance().getChoppingManager().togglePlayer(clicker);
                 panel(clicker);
             }
@@ -135,7 +139,7 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
+                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1,1 );
                 Settings.toggle(uuid, "chat_mentions");
                 panel(clicker);
             }
@@ -238,7 +242,7 @@ public class Settings {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
+                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1,1 );
                     Main.getPlayerGlowManager().toggle(player);
                     vipPanel(clicker);
                 }
@@ -296,7 +300,7 @@ public class Settings {
                     if(!Ranks.hasRank(uuid, "sorsa") && !Ranks.isStaff(uuid)) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     else {
                         gui.close(clicker);
-                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1,1 );
                         toggleFlight(clicker);
                         vipPanel(clicker);
                     }

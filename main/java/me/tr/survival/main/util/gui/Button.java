@@ -7,10 +7,10 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class Button {
 
-    public int pos;
+    public final int pos;
     @Deprecated public Inventory inv;
-    public ItemStack item;
-    private int page;
+    public final ItemStack item;
+    @Deprecated private int page;
 
     @Deprecated
     public Button(Inventory inv, int pos, ItemStack item){

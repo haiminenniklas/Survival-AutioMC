@@ -167,7 +167,7 @@ public class PlayerData {
                         data.put("tickets", 0);
                     }
 
-                    ResultSet backpackResult = s.executeQuery("SELECT * from `backpacks` WHERE `uuid` = '" + uuid + "';");
+                    ResultSet backpackResult = s.executeQuery("SELECT * FROM `backpacks` WHERE `uuid` = '" + uuid + "';");
                     if(backpackResult.next()) {
 
                         data.put("backpack_level", backpackResult.getString("level"));

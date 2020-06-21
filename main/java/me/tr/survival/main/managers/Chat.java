@@ -12,16 +12,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Chat implements Listener {
 
@@ -219,18 +217,6 @@ public class Chat implements Listener {
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        if(!Settings.get(player.getUniqueId(), "chat")) {
-            Chat.sendMessage(player, "Sinulla on chat poissa päältä!");
-            e.setCancelled(true);
-            return;
-        }
-
-        Set<Player> recipients = e.getRecipients();
-
-        for(Player r : recipients) {
-            if(!Settings.get(r.getUniqueId(), "chat") && !r.getName().equalsIgnoreCase(player.getName())) e.getRecipients().remove(r);
-        }
-
         if((boolean) Chat.settings.get("mute")) {
             if(!Ranks.isStaff(uuid)) {
                 e.setCancelled(true);
@@ -301,13 +287,49 @@ public class Chat implements Listener {
         e.setMessage(msg);
 
         String name = player.getName();
-        if(name.equalsIgnoreCase("Elitizm") || name.equalsIgnoreCase("KettuBoy_") || name.equalsIgnoreCase("_Vivy")) {
-            name = " §5⚠ §7" + player.getName();
+
+        if(msg.startsWith("!") || Settings.get(uuid, "chat"))
+            // Global chat
+            e.setFormat((ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + name).trim()) + "§r: %2$s");
+        else {
+            // Local chat
+            e.setCancelled(true);
+            final int square = 200 * 200;
+            final List<UUID> localPlayers = new ArrayList<>();
+
+            for(Player other : player.getWorld().getPlayers()) {
+                // Ignore self
+                if(other.getName().equals(player.getName())) continue;
+                // Check if player is nearby enough
+                if(other.getLocation().clone().distanceSquared(player.getLocation().clone()) <= square) localPlayers.add(other.getUniqueId());
+            }
+
+            if(localPlayers.size() < 1) {
+                Util.sendClickableText(player, Chat.getPrefix() + " Lähelläsi ei ole pelaajia! Laita viestin eteen '§a!§7' tai vaihda Chat-tilaasi kirjoittaaksesi globaalisti!","/asetukset", "§7Vaihda Chat-tilaasi!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                return;
+            }
+
+            // Add player to local, just to make our life easier
+            localPlayers.add(player.getUniqueId());
+
+            final String format = " §e[L] " +(ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + name).trim()) + "§r: " + msg;
+            Sorsa.logColored("§6[CHAT] " + format);
+            for(Player online : Bukkit.getOnlinePlayers()) {
+                if(Main.getStaffManager().hasStaffMode(online)) {
+                    online.sendMessage("§c§lSPY §7» §e[L] §7" + Ranks.getRankColor(Ranks.getRank(uuid)) + name + "§r: " + msg);
+                } else {
+                    if(localPlayers.contains(online.getUniqueId())) {
+                        // Send the message to the nearby players
+                        online.sendMessage(format);
+                    }
+                }
+
+            }
         }
 
-        e.setFormat((ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + name).trim() + "§r: %2$s"));
-
     }
+
 
 
 }

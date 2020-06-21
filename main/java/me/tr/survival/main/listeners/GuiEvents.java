@@ -8,26 +8,35 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 
 public class GuiEvents implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInvClick(InventoryClickEvent e) {
         if(e.getClickedInventory() == null) return;
-        if(e.getCurrentItem() == null) return;
-        Player player = (Player) e.getWhoClicked();
-        Gui gui = Gui.getGui(player);
+
+        final Player player = (Player) e.getWhoClicked();
+        final Gui gui = Gui.getGui(player);
+        final InventoryView view = e.getView();
+
         if(gui != null) {
-            if(e.getView().getTitle().contains("§r")) {
-                if(gui.isPartiallyTouchable()) {
-                    // If user didn't do the allowed procedures with a partially touchable inventory
-                    if(!e.getView().getBottomInventory().contains(e.getCurrentItem()) && !gui.clickedAllowedSlot(e.getSlot())) e.setCancelled(true);
-                } else e.setCancelled(true);
-            }
-            if(e.getCurrentItem() != null) {
-                for(Button b : gui.getButtons()) {
-                    if(b.item.isSimilar(e.getCurrentItem()))
-                        b.onClick(player, e.getClick());
+            if(view.getTitle().contains("§r")) {
+
+                final ItemStack item = e.getCurrentItem();
+                final int slot = e.getRawSlot();
+
+                if(item != null) {
+                    if(gui.isPartiallyTouchable()) {
+                        // If user didn't do the allowed procedures with a partially touchable inventory
+                        if(!view.getBottomInventory().contains(item) && !gui.clickedAllowedSlot(slot)) e.setCancelled(true);
+                    } else e.setCancelled(true);
+
+                    for(final Button b : gui.getButtons()) {
+                        // Check for slot, don't compare items
+                        if(slot == b.pos) b.onClick(player, e.getClick());
+                    }
                 }
             }
         }
@@ -35,8 +44,10 @@ public class GuiEvents implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInvClose(InventoryCloseEvent e) {
-        Player player = (Player) e.getPlayer();
-        if(e.getView().getTitle().contains("§r") && Gui.getGui(player) != null) Gui.getGui(player).close(player);
+        final Player player = (Player) e.getPlayer();
+        if(e.getView().getTitle().contains("§r")) {
+            final Gui gui = Gui.getGui(player);
+            if(gui != null) gui.close(player);
+        }
     }
-
 }

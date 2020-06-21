@@ -67,7 +67,7 @@ public class ActionEvents implements Listener {
     @EventHandler
     public void onItemPickUp(EntityPickupItemEvent e) {
         if(e.getEntity() instanceof Player) {
-            Player player = (Player) e.getEntity();
+            final Player player = (Player) e.getEntity();
             Util.checkForIllegalItems(player);
             if(Main.getStaffManager().hidden.contains(player.getUniqueId())) e.setCancelled(true);
         }
@@ -76,8 +76,8 @@ public class ActionEvents implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
 
-        Player player = e.getPlayer();
-        World world = e.getTo().getWorld();
+        final Player player = e.getPlayer();
+        final World world = e.getTo().getWorld();
         if(world.getName().equalsIgnoreCase("world_nether") && e.getTo().getBlockY() >= 127) {
             e.setCancelled(true);
             Sorsa.teleportToNether(player);
@@ -105,7 +105,7 @@ public class ActionEvents implements Listener {
         }
 
         if(player.getAllowFlight()) {
-            if(Util.getRegions(player).size() < 1) {
+            if(Util.getRegions(player).size() < 1 || Util.isInRegion(player, "pvp-kuoppa")) {
                 if(!Main.getStaffManager().hasStaffMode(player)) {
                     if(player.isFlying()) {
                         player.teleport(e.getFrom());

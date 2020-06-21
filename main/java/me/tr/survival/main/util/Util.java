@@ -73,7 +73,7 @@ public class Util {
     public static void broadcastStaff(String message) {
 
         for(Player online : Bukkit.getOnlinePlayers()) {
-            if(Ranks.isStaff(online.getUniqueId()) && Settings.get(online.getUniqueId(), "chat")) {
+            if(Ranks.isStaff(online.getUniqueId())) {
                 online.sendMessage(message);
             }
         }
@@ -783,11 +783,18 @@ public class Util {
 
     public static Set<ProtectedRegion> getRegions(final Player player) { return getRegions(player.getLocation()); }
 
+    public static boolean isInRegion(final Location loc, final String id) {
+        for(ProtectedRegion rg : getRegions(loc)) {
+            if(rg.getId().equalsIgnoreCase(id)) return true;
+        }
+        return false;
+    }
+
     public static boolean isInRegion(final Player player, String id) {
         for(ProtectedRegion rg : getRegions(player)) {
             if(rg.getId().equalsIgnoreCase(id)) return true;
         }
-        return true;
+        return false;
     }
 
 }

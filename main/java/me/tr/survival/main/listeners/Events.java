@@ -60,7 +60,7 @@ public class Events implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onTeleport(PlayerTeleportEvent e) {
-        Player player = e.getPlayer();
+        final Player player = e.getPlayer();
         FileConfiguration config = Main.getInstance().getConfig();
 
         if(deathIsland.contains(player.getUniqueId())) {
@@ -68,7 +68,7 @@ public class Events implements Listener {
             return;
         }
 
-        Location destination = e.getTo();
+        final Location destination = e.getTo();
         Chunk destChunk = destination.getChunk();
         if(!destChunk.isLoaded()) {
             e.setCancelled(true);
@@ -88,13 +88,20 @@ public class Events implements Listener {
                         Sound.valueOf(config.getString("effects.teleport.sound")), 1, 1);
             }
         }
-        if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
+        if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
+
+        // Fix so that player's cannot teleport each others to the PVP-zone
+        if(Util.isInRegion(destination, "pvp-kuoppa")) {
+            e.setCancelled(true);
+            Chat.sendMessage(player, "§7Sinua yritettiin viedä §cPvP-alueelle§7, mutta me estimme sen tapahtumasta. PvP-alue löytyy §eSpawnin §7lähettyviltä.");
+            player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
+            player.teleport(e.getFrom());
+            return;
         }
 
         // Add resistance effect so the player would not take that much
         // damage from possible suffocation
-        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 10, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) Sorsa.getCurrentTPS() * 10, 1));
 
         lastLocation.put(player.getUniqueId(), e.getFrom());
     }

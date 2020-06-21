@@ -30,7 +30,7 @@ public class ConnectionEvents implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onLogin(PlayerLoginEvent e) {
-        Player player = e.getPlayer();
+        final Player player = e.getPlayer();
         if(!Bukkit.hasWhitelist()) {
             int playerlimit = Main.getInstance().getConfig().getInt("player-limit");
             if(e.getResult() == PlayerLoginEvent.Result.KICK_FULL && Bukkit.getOnlinePlayers().size() >= playerlimit) {
@@ -42,14 +42,15 @@ public class ConnectionEvents implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
-        UUID uuid = e.getUniqueId();
-        if(e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) PlayerData.loadPlayer(uuid, (r) -> {});
+        final UUID uuid = e.getUniqueId();
+        if(e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) PlayerData.loadPlayer(uuid, r -> {});
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(PlayerJoinEvent e) {
 
-        Player player = e.getPlayer();
+        final Player player = e.getPlayer();
+
         player.sendMessage("   ");
         player.sendMessage("   ");
         player.sendMessage("   ");
@@ -78,7 +79,7 @@ public class ConnectionEvents implements Listener {
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
 
         // Fix vanish
-        for(UUID vanished : Main.getStaffManager().hidden) {
+        for(final UUID vanished : Main.getStaffManager().hidden) {
             Player v = Bukkit.getPlayer(vanished);
             if(v == null) continue;
             else player.hidePlayer(Main.getInstance(), v);
@@ -90,10 +91,6 @@ public class ConnectionEvents implements Listener {
 
         }
 
-        // Setup backpacks
-        Backpack.Level bLvl = Main.getBackpack().getLevel(player.getUniqueId());
-        if(Ranks.hasRank(player, "premiumplus")) if(bLvl == Backpack.Level.ONE) Main.getBackpack().setLevel(player.getUniqueId(), Backpack.Level.TWO);
-        if(Ranks.hasRank(player, "sorsa")) if(bLvl != Backpack.Level.THREE) Main.getBackpack().setLevel(player.getUniqueId(), Backpack.Level.THREE);
 
         e.setJoinMessage(null);
         if(Main.getStaffManager().hidden.contains(player.getUniqueId())) Chat.sendMessage(player, "Olet piilossa pelaajilta!");
@@ -111,15 +108,31 @@ public class ConnectionEvents implements Listener {
             player.getInventory().addItem(firstKit);
             Sorsa.teleportToSpawn(e.getPlayer());
         }
+
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
 
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), (r) -> {
             Settings.scoreboard(player);
             if(Ranks.isStaff(player.getUniqueId()) && !Main.getStaffManager().hasStaffMode(player)) Main.getStaffManager().enableStaffMode(player);
             r.cancel();
+
+            // Setup backpacks
+            Backpack.Level bLvl = Main.getBackpack().getLevel(player.getUniqueId());
+            if(Ranks.hasRank(player, "premiumplus")) {
+                if(bLvl == Backpack.Level.ONE) {
+                    Main.getBackpack().setLevel(player.getUniqueId(), Backpack.Level.TWO);
+                }
+            }
+            if(Ranks.hasRank(player, "sorsa")) {
+                if(bLvl != Backpack.Level.THREE) {
+                    Main.getBackpack().setLevel(player.getUniqueId(), Backpack.Level.THREE);
+                }
+            }
+
+            Sorsa.everyAsync(3, () -> Sorsa.sendTablist(player));
+
         }, 5);
 
-        Sorsa.everyAsync(3, () -> Sorsa.sendTablist(player));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

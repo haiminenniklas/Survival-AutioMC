@@ -52,6 +52,7 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -223,7 +224,7 @@ public final class Main extends JavaPlugin implements Listener {
         for(World world : Bukkit.getWorlds()) { world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false); }
 
         // Commands
-        Sorsa.logColored(" §aRegistering plugin commands....");
+        Sorsa.logColored(" §aRegistering commands....");
 
         getCommand("tpa").setExecutor(tpaCommand);
         getCommand("tpaccept").setExecutor(tpaCommand);
@@ -234,7 +235,6 @@ public final class Main extends JavaPlugin implements Listener {
 
         getCommand("reppu").setExecutor(backpack);
 
-        getCommand("apua").setExecutor(essentials);
         getCommand("broadcast").setExecutor(essentials);
         getCommand("world").setExecutor(essentials);
         getCommand("clear").setExecutor(essentials);
@@ -261,7 +261,7 @@ public final class Main extends JavaPlugin implements Listener {
 
         getCommand("home").setExecutor(new HomeCommand());
         getCommand("baltop").setExecutor(new BaltopCommand());
-
+        getCommand("apua").setExecutor(new HelpCommand());
 
         // Autosave code...
 
@@ -280,6 +280,19 @@ public final class Main extends JavaPlugin implements Listener {
             new Balance().fetchTopBalance();
 
         }, 20, (20*60) * 5);
+
+
+        getServer().getScheduler().runTaskTimer(Main.getInstance(), (task -> {
+
+            // This runnable is responsible for restarting the server every morning
+            Calendar rightNow = Calendar.getInstance();
+            int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+            // Check if it's atleast 5 o'clok (in the morning). This runnable should
+            // check the time every minute, so it should start the restart at least
+            // a minute after 5 o'clock
+            if(hour == 5) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+
+        }), 20, (long) 20 * 60);
 
 
         Sorsa.logColored(" §aStarting AutoBroadcaster...");
@@ -302,8 +315,9 @@ public final class Main extends JavaPlugin implements Listener {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        Warps.loadWarps((r) -> {
-
+        Warps.loadWarps(r -> {
+            if(r) Sorsa.logColored("§a[Warps] All warps loaded successfully!");
+            else Sorsa.logColored("§c[Warps] Warps were loaded unsuccessfully! Did an error occur?");
         });
         Bukkit.getServer().setWhitelist(getConfig().getBoolean("whitelist"));
 

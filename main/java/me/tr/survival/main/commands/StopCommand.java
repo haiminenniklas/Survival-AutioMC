@@ -13,6 +13,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class StopCommand implements CommandExecutor {
 
+    private static boolean isShuttingDown = false;
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -38,7 +40,13 @@ public class StopCommand implements CommandExecutor {
         return true;
     }
 
-    private void stopServer() {
+    private synchronized void stopServer() {
+
+        // If shutdown process is already running, don't do anything!
+        if(isShuttingDown) return;
+
+        isShuttingDown = true;
+
         new BukkitRunnable() {
             int timer = 300;
 

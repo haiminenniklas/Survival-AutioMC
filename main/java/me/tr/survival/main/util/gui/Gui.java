@@ -16,13 +16,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class Gui implements Listener {
 
-    private HashMap<Integer, Inventory> pages;
-    private HashMap<Integer, HashMap<Integer, ItemStack>> items;
+    private final HashMap<Integer, Inventory> pages;
+    private final HashMap<Integer, HashMap<Integer, ItemStack>> items;
     private static final List<Gui> guis = new ArrayList<>();
     private HashMap<Player, Integer> playerPages = new HashMap<>();
     private final Set<Button> buttons;
-    private String title;
-    private int size;
+    private final String title;
+    private final int size;
 
     private Inventory inv;
 
@@ -43,7 +43,7 @@ public class Gui implements Listener {
 
         this.inv = null;
 
-        init();
+        this.init();
     }
 
     public boolean isPartiallyTouchable() { return this.partiallyTouchable; }
@@ -281,7 +281,7 @@ public class Gui implements Listener {
     }
 
     public static void openGui(final Player player,final  String title, final int size, final TypedCallback<Gui> cb) {
-        Gui gui = new Gui(title, size);
+        final Gui gui = new Gui(title, size);
         cb.execute(gui);
         gui.open(player);
     }
