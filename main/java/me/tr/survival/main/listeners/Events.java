@@ -182,8 +182,7 @@ public class Events implements Listener {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
 
         if(!player.hasPermission("deathisland.bypass") && !deathIsland.contains(player.getUniqueId())) {
-
-            Sorsa.after(1, () -> {
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), (task -> {
                 Location deathSpawn = Sorsa.getDeathSpawn();
                 player.teleport(deathSpawn);
                 Util.heal(player);
@@ -191,7 +190,7 @@ public class Events implements Listener {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) Sorsa.getCurrentTPS() * 30, 1, true, false));
                 player.playSound(player.getLocation(), Sound.MUSIC_DISC_13, 1, 1);
                 deathIsland.add(player.getUniqueId());
-            });
+            }), 5);
 
             new BukkitRunnable() {
 
@@ -204,76 +203,84 @@ public class Events implements Listener {
                         return;
                     }
 
-                    if(timer > 0) {
+                    if(timer >= 0) {
                         player.sendTitle("§c§lKUOLIT", "§7Pääset §c" + timer + "s §7päästä takaisin!", 15, 20, 15);
-                        timer--;
-                    } else {
+                        timer -= 1;
+                    }
 
-                        Sorsa.task(() -> {
+                    if(timer <= 0) {
+                        Bukkit.getScheduler().runTaskLater(Main.getInstance(), (task -> {
                             Util.heal(player);
                             player.sendTitle("§a§lTAKAISIN", "§7Olet taas elossa!", 15, 20, 15);
                             deathIsland.remove(player.getUniqueId());
                             player.stopSound(Sound.MUSIC_DISC_13);
                             Sorsa.teleportToSpawn(player);
-                        });
+                            task.cancel();
+                        }), 5);
                         cancel();
                     }
+
                 }
             }.runTaskTimerAsynchronously(Main.getInstance(), 25, 20);
 
-        } else {
-            Sorsa.teleportToSpawn(player);
-        }
+        } else Sorsa.teleportToSpawn(player);
 
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
 
-        Player player = e.getPlayer();
+        final Player player = e.getPlayer();
         final Block block = e.getBlock();
-        UUID uuid = player.getUniqueId();
-        Material mat = block.getType();
+        final UUID uuid = player.getUniqueId();
+        final Material mat = block.getType();
+        final ItemStack tool = player.getInventory().getItemInMainHand();
 
         PlayerData.add(player.getUniqueId(), "total", 1);
 
-        if(Boosters.isActive(Boosters.Booster.MORE_ORES)) {
-            final Collection<ItemStack> drops = block.getDrops();
-            if(mat == Material.EMERALD_ORE || mat == Material.DIAMOND_ORE || mat == Material.LAPIS_ORE) {
-                // Add one of every drop (2x)
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        for(ItemStack item : drops) {
+        if(!Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
+            if(Boosters.isActive(Boosters.Booster.MORE_ORES)) {
+
+                if(mat == Material.EMERALD_ORE || mat == Material.DIAMOND_ORE || mat == Material.LAPIS_ORE) {
+                    // Add one of every drop (2x)
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), (task -> {
+                        for(final ItemStack item : block.getDrops(tool, player)) {
+                            if(item == null) continue;
                             if(item.getType() == Material.AIR) continue;
-                            block.getLocation().getWorld().dropItem(e.getBlock().getLocation(), item.clone());
+                            block.getWorld().dropItem(block.getLocation(), item.clone());
                         }
-                    }
-                }.runTaskLater(Main.getInstance(), 1);
-                Util.sendNotification(player, "§a§lTEHOSTUS §72x oret!");
+                        task.cancel();
+                    }), 2);
+                    Util.sendNotification(player, "§a§lTEHOSTUS §72x oret!");
+                }
             }
-        }
-        if(Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
+        } else if(Boosters.isActive(Boosters.Booster.INSTANT_MINING)) {
+
+            int dropAmount = 1;
+            if(tool != null && tool.getType() != Material.AIR) dropAmount = block.getDrops(tool, player).size();
 
             if(mat == Material.IRON_ORE || mat == Material.GOLD_ORE) {
+
                 Util.sendNotification(player, "§a§lTEHOSTUS §7Välittömät oret!");
-                if(mat == Material.IRON_ORE) player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, 1));
-                else  player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, 1));
+                if(Boosters.isActive(Boosters.Booster.MORE_ORES)) dropAmount = dropAmount * 2;
+
+                ItemStack item;
+                if(mat == Material.IRON_ORE) item = new ItemStack(Material.IRON_INGOT, dropAmount);
+                else item = new ItemStack(Material.GOLD_INGOT, dropAmount);
+
+                player.getInventory().addItem(item);
+                player.updateInventory();
+
                 block.setType(Material.AIR);
+
             }
         }
 
-        if(mat == Material.IRON_ORE) {
-            PlayerData.add(uuid, "iron", 1);
-        } else if(mat == Material.GOLD_ORE) {
-            PlayerData.add(uuid, "gold", 1);
-        } else if(mat == Material.COAL_ORE) {
-            PlayerData.add(uuid, "coal", 1);
-        } else if(mat == Material.DIAMOND_ORE) {
-            PlayerData.add(uuid, "diamond", 1);
-        }
+        // Add data to block breaks
+        if(mat == Material.IRON_ORE) PlayerData.add(uuid, "iron", 1);
+        else if(mat == Material.GOLD_ORE) PlayerData.add(uuid, "gold", 1);
+        else if(mat == Material.COAL_ORE) PlayerData.add(uuid, "coal", 1);
+        else if(mat == Material.DIAMOND_ORE) PlayerData.add(uuid, "diamond", 1);
 
     }
-
-
 }

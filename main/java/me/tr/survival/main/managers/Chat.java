@@ -217,21 +217,21 @@ public class Chat implements Listener {
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        if((boolean) Chat.settings.get("mute")) {
-            if(!Ranks.isStaff(uuid)) {
+        if ((boolean) Chat.settings.get("mute")) {
+            if (!Ranks.isStaff(uuid)) {
                 e.setCancelled(true);
                 Chat.sendMessage(player, Prefix.ERROR, "Chat on hiljennetty!");
                 return;
             }
         }
 
-        if(lastMessage.containsKey(uuid)) {
+        if (lastMessage.containsKey(uuid)) {
 
             String last = lastMessage.get(uuid);
-            if(!last.equalsIgnoreCase(e.getMessage())) {
+            if (!last.equalsIgnoreCase(e.getMessage())) {
 
                 double similiarity = Util.similarity(e.getMessage(), last);
-                if(similiarity >= 0.75 && !Ranks.isStaff(uuid)) {
+                if (similiarity >= 0.75 && !Ranks.isStaff(uuid)) {
                     e.setCancelled(true);
                     Chat.sendMessage(player, Prefix.ERROR, "Viestisi muistuttaa liikaa vanhaa viestiäsi!");
                     return;
@@ -244,15 +244,15 @@ public class Chat implements Listener {
             }
 
         }
-        if(sentMessages.containsKey(uuid)) {
+        if (sentMessages.containsKey(uuid)) {
             long lastSent = sentMessages.get(uuid);
-            if((System.currentTimeMillis() - lastSent) / 1000 <= 30 && (boolean) Chat.settings.get("slow")) {
-                if(!Ranks.isStaff(uuid)) {
+            if ((System.currentTimeMillis() - lastSent) / 1000 <= 30 && (boolean) Chat.settings.get("slow")) {
+                if (!Ranks.isStaff(uuid)) {
                     e.setCancelled(true);
                     Chat.sendMessage(player, "Chat on hidastetussa tilassa! Voit lähettää viestejä §c30 sekunnin §7välein!");
                     return;
                 }
-            } else if((System.currentTimeMillis() - lastSent) / 1000 <= 3 && !Ranks.isVIP(uuid)) {
+            } else if ((System.currentTimeMillis() - lastSent) / 1000 <= 3 && !Ranks.isVIP(uuid)) {
                 e.setCancelled(true);
                 Chat.sendMessage(player, "Voit lähettää viestejä vain §c3 sekunnin §7välein! Ohittaaksesi tämän rajan " +
                         " tarvitset vähintään §e§lPremium§7-arvon! Lisätietoa §a/kauppa§7!");
@@ -267,17 +267,19 @@ public class Chat implements Listener {
 
         String msg = e.getMessage();
 
-        for(Player online : Bukkit.getOnlinePlayers()) {
+        for (Player online : Bukkit.getOnlinePlayers()) {
 
-            if(online.getName().equals(player.getName())) continue;
+            if (online.getName().equals(player.getName())) continue;
 
-            if(msg.toLowerCase().contains(online.getName().toLowerCase())) {
+            if (msg.toLowerCase().contains(online.getName().toLowerCase())) {
 
-                if(Main.getStaffManager().hasStaffMode(online)) continue;
+                if (Main.getStaffManager().hasStaffMode(online)) continue;
                 int startIndex = msg.toLowerCase().indexOf(online.getName().toLowerCase());
 
-                if(startIndex > 0 && msg.toLowerCase().charAt(startIndex - 1) == '@') msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a" + online.getName() + "§r");
-                else msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a@" + online.getName() + "§r");
+                if (startIndex > 0 && msg.toLowerCase().charAt(startIndex - 1) == '@')
+                    msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a" + online.getName() + "§r");
+                else
+                    msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a@" + online.getName() + "§r");
 
                 Util.sendNotification(online, "§a" + player.getName() + " §7mainitsi sinut Chatissa!", !Settings.get(online.getUniqueId(), "chat_mentions"));
 
@@ -288,10 +290,14 @@ public class Chat implements Listener {
 
         String name = player.getName();
 
-        if(msg.startsWith("!") || Settings.get(uuid, "chat"))
+        if (msg.startsWith("!") || Settings.get(uuid, "chat")) {
             // Global chat
+            if(msg.startsWith("!")) {
+                msg = msg.substring(1);
+                e.setMessage(msg);
+            }
             e.setFormat((ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + name).trim()) + "§r: %2$s");
-        else {
+        } else {
             // Local chat
             e.setCancelled(true);
             final int square = 200 * 200;
@@ -316,13 +322,12 @@ public class Chat implements Listener {
             final String format = " §e[L] " +(ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + name).trim()) + "§r: " + msg;
             Sorsa.logColored("§6[CHAT] " + format);
             for(Player online : Bukkit.getOnlinePlayers()) {
-                if(Main.getStaffManager().hasStaffMode(online)) {
+                if(Main.getStaffManager().hasStaffMode(online) && !online.getName().equals(player.getName()))
                     online.sendMessage("§c§lSPY §7» §e[L] §7" + Ranks.getRankColor(Ranks.getRank(uuid)) + name + "§r: " + msg);
-                } else {
-                    if(localPlayers.contains(online.getUniqueId())) {
+                else {
+                    if(localPlayers.contains(online.getUniqueId()))
                         // Send the message to the nearby players
                         online.sendMessage(format);
-                    }
                 }
 
             }

@@ -323,6 +323,21 @@ public class MoneyManager implements CommandExecutor, Listener {
         }
     }
 
+    public boolean isLegacyCheque(final ItemStack item) {
+
+        if(isCheque(item)) {
+
+            NamespacedKey writeTimeKey = new NamespacedKey(Main.getInstance(), "write-time");
+            ItemMeta meta = item.getItemMeta();
+            if(meta != null && meta.hasLore()) {
+                if(!meta.getPersistentDataContainer().has(writeTimeKey, PersistentDataType.LONG)) return true;
+            }
+
+        }
+
+        return false;
+    }
+
     private void withdrawCheque(Player player, ItemStack cheque) {
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
@@ -330,6 +345,13 @@ public class MoneyManager implements CommandExecutor, Listener {
         if(itemMeta != null) {
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
             if(container.has(key, PersistentDataType.INTEGER)) {
+
+                if(isLegacyCheque(cheque)) {
+                    Chat.sendMessage(player, "Valitettavasti tuo shekki ei ole enää kelpoinen nostettavaksi!");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    return;
+                }
+
                 int foundValue = container.get(key, PersistentDataType.INTEGER);
                 Balance.add(player.getUniqueId(), foundValue);
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
