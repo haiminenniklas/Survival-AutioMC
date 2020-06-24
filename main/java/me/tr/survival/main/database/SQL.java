@@ -58,7 +58,7 @@ public class SQL {
         source = new HikariDataSource();
         source.setJdbcUrl("jdbc:mysql://localhost:3306/autiomc");
         source.setMaximumPoolSize(10);
-        source.addDataSourceProperty("user", "sorsa");
+        source.addDataSourceProperty("user", "survival");
         source.addDataSourceProperty("password", "uu4L3Ks3EhBMfP8u");
     }
 
