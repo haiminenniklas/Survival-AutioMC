@@ -41,40 +41,52 @@ public class Homes {
         if(data.get("first_home") != null && !data.get("first_home").equals("null")) {
             this.homes.add((String) data.get("first_home"));
         } else {
-            this.homes.add(null);
+            this.homes.add("owned-null");
         }
 
         if(data.get("second_home") != null && !data.get("second_home").equals("null")) {
             this.homes.add((String) data.get("second_home"));
         } else {
-            this.homes.add(null);
+            this.homes.add("owned-null");
         }
 
         if(data.get("third_home") != null && !data.get("third_home").equals("null")) {
             this.homes.add((String) data.get("third_home"));
         } else {
-            this.homes.add(null);
+            this.homes.add("owned-null");
         }
 
 
         if(data.get("fourth_home") != null && !data.get("fourth_home").equals("null")) {
             this.homes.add((String) data.get("fourth_home"));
         } else {
-            this.homes.add(null);
+            if(Ranks.isVIP(player.getUniqueId())) {
+                this.homes.add("owned-null");
+            } else {
+                this.homes.add(null);
+            }
         }
 
 
         if(data.get("fifth_home") != null && !data.get("fifth_home").equals("null")) {
             this.homes.add((String) data.get("fifth_home"));
         } else {
-            this.homes.add(null);
+            if(Ranks.isVIP(player.getUniqueId())) {
+                this.homes.add("owned-null");
+            } else {
+                this.homes.add(null);
+            }
         }
 
 
         if(data.get("sixth_home") != null && !data.get("sixth_home").equals("null")) {
             this.homes.add((String) data.get("sixth_home"));
         } else {
-            this.homes.add(null);
+            if(Ranks.isVIP(player.getUniqueId())) {
+                this.homes.add("owned-null");
+            } else {
+                this.homes.add(null);
+            }
         }
 
 
@@ -208,8 +220,8 @@ public class Homes {
         final UUID uuid = target.getUniqueId();
         Homes homeList = new Homes(target);
         final ArrayList<String> homes = homeList.get();
-
         final Gui gui = new Gui("Kodit", 36);
+
 
         int[] positions = new int[] { 12,13,14, 21,22,23 };
 
@@ -224,12 +236,12 @@ public class Homes {
 
         for(int i = 0; i < homes.size(); i++) {
 
-            int homePos = i + 1;
-            int itemPos = positions[i];
+            final int homePos = i + 1;
+            final int itemPos = positions[i];
 
             if(homes.get(i) != null) {
                 final Home home = parse(target.getUniqueId(), homes.get(i));
-                if(home == null) {
+                if(home == null && homes.get(i).equals("owned-null") ) {
                     gui.addButton(new Button(1, itemPos, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #" + homePos, Arrays.asList(
                             "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                             "§aKlikkaa luodaksesi uuden kodin sijaintiisi!",
@@ -278,7 +290,7 @@ public class Homes {
                         " §6VIP§7§o-arvolla tai ostamalla sen!",
                         " §7§oLisätietoa VIP-arvoista §a/kauppa",
                         " ",
-                        " §7Hinta: §ealk. 10 000€",
+                        " §7Hinta: §e" + getHomePrice(homePos) + "€",
                         " ",
                         " §aKlikkaa avataksesi!",
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
@@ -332,7 +344,7 @@ public class Homes {
                     panel(clicker, clicker);
                 } else {
                     clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                    Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Kodin osto maksaa §e" + Util.formatDecimals(price) + "§7!");
+                    Chat.sendMessage(clicker, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän! Kodin osto maksaa §e" + Util.formatDecimals(price) + " €§7!");
                 }
 
             }
