@@ -153,6 +153,8 @@ public class Homes {
 
     private static Home parse(UUID owner, String text) {
 
+        if(text == null) return null;
+
         if(text.equalsIgnoreCase("null") || text.equalsIgnoreCase("owned-null")) {
             return null;
         }
@@ -222,11 +224,11 @@ public class Homes {
 
         for(int i = 0; i < homes.size(); i++) {
 
-            final Home home = parse(target.getUniqueId(), homes.get(i));
             int homePos = i + 1;
             int itemPos = positions[i];
 
             if(homes.get(i) != null) {
+                final Home home = parse(target.getUniqueId(), homes.get(i));
                 if(home == null) {
                     gui.addButton(new Button(1, itemPos, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Luo koti #" + homePos, Arrays.asList(
                             "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -288,9 +290,7 @@ public class Homes {
                         Bukkit.getScheduler().runTaskLater(Main.getInstance(), r -> confirmHomePurchase(opener, homePos, homeList), 5);
                     }
                 });
-
             }
-
         }
 
         for(int glassPos : glassPositions) { gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1), glassPos); }
