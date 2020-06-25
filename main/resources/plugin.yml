@@ -169,3 +169,5 @@ commands:
     aliases: [weathervote, säävote]
   vote:
     description: Äänestä palvelinta
+  afk:
+    description: Ole AFK

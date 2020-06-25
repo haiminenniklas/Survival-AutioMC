@@ -106,6 +106,9 @@ public final class Main extends JavaPlugin implements Listener {
     private static Houkutin houkutin;
     public static Houkutin getHoukutin() { return houkutin; }
 
+    private static AFKManager afkmanager;
+    public static AFKManager getAFKManager() { return afkmanager; }
+
     // Other instances
     private static TpaCommand tpaCommand;
     private static Essentials essentials;
@@ -140,6 +143,7 @@ public final class Main extends JavaPlugin implements Listener {
         Main.playerDeathMessageManager = new PlayerDeathMessageManager();
         Main.particles = new Particles();
         Main.houkutin = new Houkutin();
+        Main.afkmanager = new AFKManager();
 
         // Commands
         Main.tpaCommand = new TpaCommand();
@@ -200,6 +204,7 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(playerDeathMessageManager, this);
         pm.registerEvents(particles, this);
         pm.registerEvents(weatherVote, this);
+        pm.registerEvents(afkmanager, this);
 
         // Other
         pm.registerEvents(antiAFKFishing, this);
@@ -234,6 +239,8 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("tpdeny").setExecutor(tpaCommand);
 
         getCommand("reppu").setExecutor(backpack);
+
+        getCommand("afk").setExecutor(afkmanager);
 
         getCommand("broadcast").setExecutor(essentials);
         getCommand("world").setExecutor(essentials);
@@ -302,6 +309,7 @@ public final class Main extends JavaPlugin implements Listener {
         Boosters.activateManager();
         Main.getHoukutin().activateManager();
         Main.getEndManager().startManager();
+        Main.getAFKManager().enableChecker();
 
         Sorsa.logColored(" §aInitializing ChatManager");
         Chat.init();

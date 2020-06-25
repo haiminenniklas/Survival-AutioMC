@@ -27,7 +27,7 @@ public class PlayerWeather {
                 " §c§lHUOM! §7Tämä on vain näkyvä",
                 " §7ominaisuus!",
                 " ",
-                (!Ranks.hasRank(player.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(player.getUniqueId()) ? "§cVaatii §6§lPremium§f+§7!" : "§aKlikkaa vaihtaaksesi!"),
+                (!Ranks.hasRank(player, "sorsa") && !Ranks.hasRank(player, "premiumplus") && !Ranks.isStaff(player.getUniqueId()) ? "§cVaatii §6§lPremium§f+§7!" : "§aKlikkaa vaihtaaksesi!"),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -50,7 +50,7 @@ public class PlayerWeather {
                 " §c§lHUOM! §7Tämä on vain näkyvä",
                 " §7ominaisuus!",
                 " ",
-                (!Ranks.hasRank(player.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(player.getUniqueId()) ? "§cVaatii §6§lPremium§f+§7!" : "§aKlikkaa vaihtaaksesi!"),
+                (!Ranks.hasRank(player, "sorsa") && !Ranks.hasRank(player, "premiumplus") && !Ranks.isStaff(player.getUniqueId()) ? "§cVaatii §6§lPremium§f+§7!" : "§aKlikkaa vaihtaaksesi!"),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override

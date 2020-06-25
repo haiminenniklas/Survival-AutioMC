@@ -29,7 +29,7 @@ public class PlayerDeathMessageManager implements Listener {
 
     public void deathMessagePanel(Player player) {
 
-        if(!Ranks.hasRank(player.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(player.getUniqueId())) {
+        if(!Ranks.hasRank(player, "sorsa") && !Ranks.hasRank(player, "premiumplus") && !Ranks.isStaff(player.getUniqueId())) {
             Chat.sendMessage(player, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§f+§7-arvon!");
             return;
         }
@@ -116,11 +116,11 @@ public class PlayerDeathMessageManager implements Listener {
 
     public void killMessagePanel(Player player) {
 
-        if(!Ranks.hasRank(player.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(player.getUniqueId())) {
+        if(!Ranks.hasRank(player, "sorsa") && !Ranks.hasRank(player, "premiumplus") && !Ranks.isStaff(player.getUniqueId())) {
             Chat.sendMessage(player, "§7Tähän toimintoon tarvitset vähintään §6§lPremium§f+§7-arvon!");
             return;
         }
-
+        
         UUID uuid = player.getUniqueId();
 
         Gui.openGui(player, "Tappoviestit", 27, (gui) -> {
