@@ -136,6 +136,7 @@ public class ActionEvents implements Listener {
     @EventHandler
     public void onKick(PlayerKickEvent e) {
         if (e.getReason().equalsIgnoreCase("disconnect.spam")) e.setCancelled(true);
+
     }
 
 

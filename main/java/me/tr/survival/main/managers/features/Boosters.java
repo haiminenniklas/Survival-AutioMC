@@ -244,6 +244,7 @@ public class Boosters implements Listener {
         map.put(uuid, time);
         Boosters.getActive().put(booster.getDisplayName(), map);
 
+        Sorsa.logColored("§6[Boosters] The booster " + booster.getDisplayName() + " was activated! Duration: " + booster.getDuration() + "min!");
 
         Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         Bukkit.broadcastMessage(" ");

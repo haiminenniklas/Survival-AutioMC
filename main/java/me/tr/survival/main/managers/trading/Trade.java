@@ -1,5 +1,6 @@
 package me.tr.survival.main.managers.trading;
 
+import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.util.Util;
@@ -245,6 +246,9 @@ public class Trade {
             // Open the gui, nothing else, I think...?
             this.sender.openInventory(this.inv);
             this.target.openInventory(this.inv);
+
+            Sorsa.logColored("§6[TradeManager] A trade was started for players " + this.sender + " and " + this.target + "!");
+
         }
     }
 

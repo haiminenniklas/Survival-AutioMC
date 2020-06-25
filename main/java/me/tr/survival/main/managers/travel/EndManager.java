@@ -295,6 +295,8 @@ public class EndManager implements CommandExecutor {
             started = System.currentTimeMillis();
             holder = player.getUniqueId();
 
+            Sorsa.logColored("§6[EndManager] End was activated by " + player.getName() + " (" + player.getUniqueId() + ")!");
+
             // Create World
 
             Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -355,6 +357,8 @@ public class EndManager implements CommandExecutor {
             Chat.sendMessage(invitor, "Pelaaja §a" + target.getName() + " §7on nyt sallittu kulkemaan §5Endiin§7! Voit poistaa pääsyn komennolla §a/ääri poista " + target.getName() + "§7!");
             Chat.sendMessage(target, "Pääset nyt kulkemaan §5Endiin§7! Pääsyn myönsi pelaaja §a" + invitor.getName() + "§7!");
 
+            Sorsa.logColored("§6[EndManager] Player " + invitor.getName() + " (" + invitor.getUniqueId() + ") invited the player " + target.getName() + " (" + target.getUniqueId() + ") to visit the End!");
+
         } else Chat.sendMessage(invitor, Chat.Prefix.ERROR, "End ei ole aktivoitu");
 
     }
@@ -396,6 +400,7 @@ public class EndManager implements CommandExecutor {
         }
 
         Chat.sendMessage(player, "Sinut viedään §5Endiin §c3s §7kuluttua...");
+        Sorsa.logColored("§6[EndManager] The player " + player.getName() + " (" + player.getUniqueId() + ") teleported to the end!");
         Sorsa.after(3, () -> player.teleport(Bukkit.getWorld("world_the_end").getSpawnLocation()));
 
     }
@@ -450,6 +455,7 @@ public class EndManager implements CommandExecutor {
         Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
         Util.broadcastSound(Sound.ENTITY_BLAZE_DEATH);
+        Sorsa.logColored("§6[EndManager] The end was deactivated!");
 
         for(UUID uuid : allowedPlayers) {
             if(Bukkit.getPlayer(uuid) != null) {

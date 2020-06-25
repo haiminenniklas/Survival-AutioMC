@@ -1,6 +1,7 @@
 package me.tr.survival.main.managers.features;
 
 import me.tr.survival.main.Main;
+import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.managers.Mail;
@@ -30,6 +31,8 @@ public class Lottery {
         }
 
         Mail.addTickets(player.getUniqueId(), -1);
+
+        Sorsa.logColored("§6[Lottery] Player " + player.getName() + " (" + player.getUniqueId() + ") opened a lottery ticket!");
 
         for(int i = 0; i < 6; i++) {
             Prize prize = findPrize();

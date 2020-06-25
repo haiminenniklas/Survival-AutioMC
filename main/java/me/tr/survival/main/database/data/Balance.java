@@ -33,6 +33,7 @@ public class Balance {
 
     public static void set(UUID player, double value) {
         PlayerData.set(player, "money", value);
+        Sorsa.logColored("§a[Balance] The balance of " + player + " (" + Bukkit.getOfflinePlayer(player).getName() + ") was set to " + value + "!");
     }
 
     public static boolean canRemove(UUID player, double value) {

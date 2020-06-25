@@ -1,6 +1,7 @@
 package me.tr.survival.main.managers.features;
 
 import me.tr.survival.main.Main;
+import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.ItemUtil;
@@ -226,6 +227,8 @@ public class Houkutin implements CommandExecutor {
     private void activate() {
 
         if(!ENABLED) return;
+
+        Sorsa.logColored("§6[Houkutin] Houkutin was activated! Entity: " + this.entityType);
 
         Block block = Bukkit.getWorld("world").getBlockAt(-16, 59, -33);
         block.setType(Material.SPAWNER);

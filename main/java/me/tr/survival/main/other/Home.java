@@ -50,7 +50,7 @@ public class Home {
     public boolean teleport() {
         Player player = Bukkit.getPlayer(this.ownerUUID);
         if(player != null && player.isOnline()) {
-            player.teleport(this.getLocation());
+            this.teleport(player, r -> {});
             return true;
         }
         return false;
@@ -63,8 +63,10 @@ public class Home {
             return;
         }
 
-        if(this.getLocation().getWorld().getName().equalsIgnoreCase("world_the_end") ||
-                this.getLocation().getWorld().getName().equalsIgnoreCase("world_nether")) {
+        final Location loc = this.getLocation();
+
+        if(loc.getWorld().getName().equalsIgnoreCase("world_the_end") ||
+                loc.getWorld().getName().equalsIgnoreCase("world_nether")) {
             Chat.sendMessage(player, "Kodin sijainti ei ole tavallisessa maailmassa, joten sinne ei pysty teleporttaamaan. Ole hyvä ja poista tämä koti.");
             result.execute(false);
             return;
@@ -72,7 +74,8 @@ public class Home {
 
         Sorsa.after(3, () -> {
             Util.sendNotification(player, "§7Teleportataan...", true);
-            player.teleport(this.getLocation());
+            Sorsa.logColored("§6[Homes] Player " + player.getName() + " (" + player.getUniqueId() + ") teleported to their home at " + Util.formatLocation(loc) + "!");
+            player.teleport(loc);
         });
     }
 

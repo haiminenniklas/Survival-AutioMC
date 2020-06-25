@@ -1,5 +1,6 @@
 package me.tr.survival.main.managers;
 
+import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.managers.features.Lottery;
 import me.tr.survival.main.util.ItemUtil;
@@ -99,6 +100,7 @@ public class Mail {
                     clicker.getInventory().addItem(ItemUtil.makeItem(Material.COOKED_BEEF, foodToReceive));
                     clicker.sendMessage("§c§l+" + foodToReceive + " pihviä");
                     clicker.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                    Sorsa.logColored("§6[Mail] The player " + clicker.getName() + " (" + clicker.getUniqueId() + ") opened their Daily package!");
                     Mail.setLastMail(clicker.getUniqueId());
                 }
 

@@ -44,6 +44,7 @@ public class Events implements Listener {
         Vote vote = e.getVote();
         String userName = vote.getUsername();
         OfflinePlayer op = Bukkit.getOfflinePlayer(userName);
+        Sorsa.logColored("§a[Vote] The vote of " + userName + " was registered!");
         Mail.addTickets(op.getUniqueId(), 1);
         Player player = op.getPlayer();
         if(player != null && op.isOnline()) {
