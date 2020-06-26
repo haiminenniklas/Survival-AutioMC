@@ -292,12 +292,13 @@ public final class Main extends JavaPlugin implements Listener {
         getServer().getScheduler().runTaskTimer(Main.getInstance(), (task -> {
 
             // This runnable is responsible for restarting the server every morning
-            Calendar rightNow = Calendar.getInstance();
-            int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+            final Calendar rightNow = Calendar.getInstance();
+            final int hour = rightNow.get(Calendar.HOUR_OF_DAY);
             // Check if it's atleast 5 o'clok (in the morning). This runnable should
             // check the time every minute, so it should start the restart at least
             // a minute after 5 o'clock
-            if(hour == 5) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
+            final int minute = rightNow.get(Calendar.MINUTE);
+            if(hour == 5 && minute <= 5) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 
         }), 20, (long) 20 * 60);
 
