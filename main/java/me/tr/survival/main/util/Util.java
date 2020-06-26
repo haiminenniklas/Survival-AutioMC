@@ -35,6 +35,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
+
 import org.bukkit.util.Vector;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -54,7 +55,7 @@ import java.util.logging.Level;
 
 public class Util {
 
-    public static HashMap<UUID, Long> joined = new HashMap<>();
+    public static final HashMap<UUID, Long> joined = new HashMap<>();
 
     public static long getWhenLogged(UUID player) {
         if (joined.containsKey(player)) {
