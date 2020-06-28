@@ -212,7 +212,7 @@ public class Trade {
                 } else {
                     sender.playSound(sender.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL,1,1);
                     target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL,1,1);
-                    inv.setItem(49, ItemUtil.makeItem(Material.BARRIER, 1, "§cLopeta", Arrays.asList(
+                    inv.setItem(49, ItemUtil.makeItem(Material.BARRIER, counter, "§cLopeta", Arrays.asList(
                             " §7Mikäli nykyiset tavarat, eivät",
                             " §7ole niitä niinkuin olette",
                             " §7sopineet, pystyt vielä kieltäytymään.",

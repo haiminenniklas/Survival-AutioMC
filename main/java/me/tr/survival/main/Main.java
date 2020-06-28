@@ -17,6 +17,7 @@ import me.tr.survival.main.managers.perks.PlayerDeathMessageManager;
 import me.tr.survival.main.managers.perks.PlayerGlowManager;
 import me.tr.survival.main.managers.travel.EndManager;
 import me.tr.survival.main.managers.travel.TravelManager;
+import me.tr.survival.main.managers.villages.VillageManager;
 import me.tr.survival.main.other.*;
 import me.tr.survival.main.managers.warps.Warp;
 import me.tr.survival.main.managers.warps.Warps;
@@ -109,6 +110,9 @@ public final class Main extends JavaPlugin implements Listener {
     private static AFKManager afkmanager;
     public static AFKManager getAFKManager() { return afkmanager; }
 
+    private static VillageManager villageManager;
+    public static VillageManager getVillageManager() { return villageManager; }
+
     // Other instances
     private static TpaCommand tpaCommand;
     private static Essentials essentials;
@@ -144,6 +148,7 @@ public final class Main extends JavaPlugin implements Listener {
         Main.particles = new Particles();
         Main.houkutin = new Houkutin();
         Main.afkmanager = new AFKManager();
+        Main.villageManager = new VillageManager();
 
         // Commands
         Main.tpaCommand = new TpaCommand();
@@ -177,6 +182,8 @@ public final class Main extends JavaPlugin implements Listener {
         saveDefaultConfig();
         endManager.createEndConfig();
         endManager.loadPreviousData();
+        villageManager.createVillageConfig();
+        villageManager.loadVillagesFromFile();
         SQL.setup();
 
         Sorsa.logColored(" §aRegistering plugin event listeners...");
@@ -205,6 +212,7 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(particles, this);
         pm.registerEvents(weatherVote, this);
         pm.registerEvents(afkmanager, this);
+        pm.registerEvents(villageManager, this);
 
         // Other
         pm.registerEvents(antiAFKFishing, this);
@@ -241,6 +249,8 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("reppu").setExecutor(backpack);
 
         getCommand("afk").setExecutor(afkmanager);
+
+        getCommand("village").setExecutor(villageManager);
 
         getCommand("broadcast").setExecutor(essentials);
         getCommand("world").setExecutor(essentials);
@@ -293,11 +303,11 @@ public final class Main extends JavaPlugin implements Listener {
 
             // This runnable is responsible for restarting the server every morning
             final Calendar rightNow = Calendar.getInstance();
-            final int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+            int hour = rightNow.get(Calendar.HOUR_OF_DAY);
             // Check if it's atleast 5 o'clok (in the morning). This runnable should
             // check the time every minute, so it should start the restart at least
             // a minute after 5 o'clock
-            final int minute = rightNow.get(Calendar.MINUTE);
+            int minute = rightNow.get(Calendar.MINUTE);
             if(hour == 5 && minute <= 5) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 
         }), 20, (long) 20 * 60);
@@ -682,7 +692,7 @@ public final class Main extends JavaPlugin implements Listener {
                     else Settings.toggleFlight(player);
                 }
             } else if(command.getLabel().equalsIgnoreCase("roskis")) {
-               if(Ranks.isVIP(player.getUniqueId())) {
+               if(!Ranks.isVIP(player.getUniqueId())) {
                    Chat.sendMessage(player, "Tähän toimintoon tarvitaan §e§lPremium§7-arvon! Lisätietoa §a/kauppa§7!");
                    return true;
                }

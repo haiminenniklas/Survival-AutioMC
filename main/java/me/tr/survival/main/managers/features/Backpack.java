@@ -263,6 +263,9 @@ public class Backpack implements CommandExecutor, Listener {
     private void saveInventory(UUID uuid, ItemStack[] inv) {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
         String raw = Util.itemStackArrayToBase64(inv);
+
+        Sorsa.logColored("§6[Backpacks] The backpack of " + Bukkit.getOfflinePlayer(uuid).getName() + " (" + uuid + ") was saved!");
+
         setRawSavedInventory(uuid, raw);
     }
 

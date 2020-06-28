@@ -171,3 +171,6 @@ commands:
     description: Äänestä palvelinta
   afk:
     description: Ole AFK
+  village:
+    description: Pelaajakylät
+    aliases: [kylä]
