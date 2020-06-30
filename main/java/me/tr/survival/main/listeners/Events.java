@@ -62,7 +62,7 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onTeleport(PlayerTeleportEvent e) {
         final Player player = e.getPlayer();
-        FileConfiguration config = Main.getInstance().getConfig();
+        final FileConfiguration config = Main.getInstance().getConfig();
 
         if(deathIsland.contains(player.getUniqueId())) {
             e.setCancelled(true);
@@ -70,7 +70,7 @@ public class Events implements Listener {
         }
 
         final Location destination = e.getTo();
-        Chunk destChunk = destination.getChunk();
+        final Chunk destChunk = destination.getChunk();
         if(!destChunk.isLoaded()) {
             e.setCancelled(true);
             if(!destChunk.load(true)) {

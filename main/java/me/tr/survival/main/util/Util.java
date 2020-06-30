@@ -741,6 +741,46 @@ public class Util {
         }
     }
 
+    public static String locationToText(Location loc) {
+
+        double x = loc.getX();
+        double y = loc.getY();
+        double z = loc.getZ();
+
+        float yaw = loc.getYaw();
+        float pitch = loc.getPitch();
+
+        World world = loc.getWorld();
+
+        return world.getName() + ";" + x + ";" + y + ";" + z + ";" + yaw + ";" + pitch;
+
+    }
+
+    public static Location textToLocation(String text) {
+
+        String[] values = text.split(";");
+
+        double x = Double.parseDouble(values[1]);
+        double y = Double.parseDouble(values[2]);
+        double z = Double.parseDouble(values[3]);
+
+        float yaw = Float.parseFloat(values[4]);
+        float pitch = Float.parseFloat(values[5]);
+
+        World world = Bukkit.getWorld(values[0]);
+
+        return new Location(world, x, y, z, yaw, pitch);
+
+    }
+
+    public static List<String> toStringList(List<?> list) {
+        List<String> newList = new ArrayList<>();
+        for(Object obj : list) {
+            newList.add(obj.toString());
+        }
+        return newList;
+    }
+
     public static String translateChatColor(ChatColor color) {
         switch(color) {
             case GREEN:

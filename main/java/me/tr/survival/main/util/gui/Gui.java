@@ -21,8 +21,8 @@ public class Gui implements Listener {
     private static final List<Gui> guis = new ArrayList<>();
     private HashMap<Player, Integer> playerPages = new HashMap<>();
     private final Set<Button> buttons;
-    private final String title;
-    private final int size;
+    private String title;
+    private int size;
 
     private Inventory inv;
 
@@ -68,6 +68,10 @@ public class Gui implements Listener {
     private String getTitle() { return title; }
 
     public int getSize() { return size; }
+
+    public void setSize(int size) { this.size = size; }
+
+    public void setTitle(String title) { this.title = title; }
 
     private void init(){ createPage(false); }
 

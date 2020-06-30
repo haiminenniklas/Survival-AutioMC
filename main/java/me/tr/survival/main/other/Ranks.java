@@ -108,6 +108,7 @@ public class Ranks {
     }
 
     public static boolean hasRank(UUID uuid, String rank) {
+        if(Bukkit.getOfflinePlayer(uuid).isOp()) return true;
         User user = Sorsa.getLuckPerms().getUserManager().getUser(uuid);
         if(user == null) {
             return false;
@@ -133,12 +134,10 @@ public class Ranks {
     }
 
     public static boolean isStaff(UUID uuid) {
-        if(Bukkit.getOfflinePlayer(uuid).isOp()) {
-            return true;
-        }
         return hasRank(uuid, "admin") || hasRank(uuid, "mod") || hasRank(uuid, "rakentaja") || hasRank(uuid, "harjoittelija"); }
 
     public static boolean hasRank(Player player, String rank) {
+        if(player.isOp()) return true;
         return hasRank(player.getUniqueId(), rank);
     }
 

@@ -26,7 +26,7 @@ public abstract class Button {
         this.item = item;
     }
 
-    public abstract void onClick(Player clicker, ClickType clickType);
+    public abstract void onClick(final Player clicker, ClickType clickType);
 
 }
 

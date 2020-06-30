@@ -19,18 +19,51 @@ public class PlayerVillage {
 
     private Location spawn;
 
-    public PlayerVillage(UUID uuid, String title, UUID leader, List<UUID> coLeaders, List<UUID> citizens, int taxRate, Location spawn) {
+    public PlayerVillage(UUID uuid, String title, UUID leader, List<UUID> coLeaders, List<UUID> citizens, int taxRate, Location spawn, int maxPlayers) {
 
         this.uuid = uuid;
         this.title = title;
         this.leader = leader;
         this.coLeaders = coLeaders;
+        this.citizens = citizens;
 
         this.spawn = spawn;
 
         this.taxRate = taxRate;
-        this.maxPlayers = 8;
+        this.maxPlayers = maxPlayers;
 
+    }
+
+    public UUID getUniqueId() {
+        return uuid;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getTaxRate() {
+        return taxRate;
+    }
+
+    public List<UUID> getCitizens() {
+        return citizens;
+    }
+
+    public List<UUID> getCoLeaders() {
+        return coLeaders;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public UUID getLeader() {
+        return leader;
+    }
+
+    public Location getSpawn() {
+        return spawn;
     }
 
 }

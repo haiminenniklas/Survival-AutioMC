@@ -1,6 +1,7 @@
 package me.tr.survival.main;
 
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
+import io.papermc.lib.PaperLib;
 import me.tr.survival.main.commands.*;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
@@ -179,7 +180,7 @@ public final class Main extends JavaPlugin implements Listener {
         Sorsa.logColored(" ");
         Sorsa.logColored(" §aSetupping configs and database...");
 
-        saveDefaultConfig();
+        this.saveDefaultConfig();
         endManager.createEndConfig();
         endManager.loadPreviousData();
         villageManager.createVillageConfig();
@@ -283,7 +284,7 @@ public final class Main extends JavaPlugin implements Listener {
         // Autosave code...
 
         Sorsa.logColored(" §aStarting autosaving for players...");
-        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+        getServer().getScheduler().runTaskTimerAsynchronously(this, (t) -> {
 
             Sorsa.logColored("§a[Database] Trying to save the data of " + Bukkit.getOnlinePlayers().size() + " players...");
             int times_saved = 0;
@@ -299,7 +300,7 @@ public final class Main extends JavaPlugin implements Listener {
         }, 20, (20*60) * 5);
 
 
-        getServer().getScheduler().runTaskTimer(Main.getInstance(), (task -> {
+        getServer().getScheduler().runTaskTimer(Main.getInstance(), () -> {
 
             // This runnable is responsible for restarting the server every morning
             final Calendar rightNow = Calendar.getInstance();
@@ -310,7 +311,7 @@ public final class Main extends JavaPlugin implements Listener {
             int minute = rightNow.get(Calendar.MINUTE);
             if(hour == 5 && minute <= 5) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stop");
 
-        }), 20, (long) 20 * 60);
+        }, 20, (long) 20 * 60);
 
 
         Sorsa.logColored(" §aStarting AutoBroadcaster...");
@@ -365,6 +366,7 @@ public final class Main extends JavaPlugin implements Listener {
         }
 
         Main.getEndManager().saveEndConfig();
+        Main.getVillageManager().savePlayerVillages();
         Sorsa.logColored(" §aClosing Database Connection...");
         SQL.source.close();
         Sorsa.logColored("§a Disabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
@@ -378,8 +380,8 @@ public final class Main extends JavaPlugin implements Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if(sender instanceof Player) {
-            Player player = (Player) sender;
-            UUID uuid = player.getUniqueId();
+            final Player player = (Player) sender;
+            final UUID uuid = player.getUniqueId();
            if(command.getLabel().equalsIgnoreCase("save")) {
                 if(player.isOp()) {
                     if(args.length == 0) {
@@ -389,7 +391,7 @@ public final class Main extends JavaPlugin implements Listener {
                         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                         if(!PlayerData.isLoaded(target.getUniqueId())) {
                             Chat.sendMessage(player, "Pelaajan " + target.getName() + " tietoja ei ole ladattu, joten ne tallennetaan tyhjänä");
-                            TextComponent message = new TextComponent( "§a§lHaluatko jatkaa?" );
+                            final TextComponent message = new TextComponent( "§a§lHaluatko jatkaa?" );
                             message.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/save " + target.getName() + " yes" ) );
                             message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder( "Haluatko varmasti jatkaa?" ).create()));
                             player.spigot().sendMessage(message);
@@ -416,7 +418,7 @@ public final class Main extends JavaPlugin implements Listener {
                     Profile.openOther(player, target);
                 }
             }
-            else if(command.getLabel().equalsIgnoreCase("vote")) Chat.sendMessage(player, "Äänestä meitä: §ahttps://minecraft-mp.com/server-s259722 §7! Äänestämällä saat itsellesä §e1kpl arpoja§7!");
+            else if(command.getLabel().equalsIgnoreCase("vote")) Chat.sendMessage(player, "Äänestä meitä: §ahttps://minecraft-mp.com/server/259722/vote/ §7! Äänestämällä saat itsellesä §e1kpl arpoja§7!");
             else if(command.getLabel().equalsIgnoreCase("vip")) Settings.vipPanel(player);
             else if(command.getLabel().equalsIgnoreCase("spawn")) {
                 if(args.length < 1) {

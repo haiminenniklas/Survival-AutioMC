@@ -31,12 +31,9 @@ public class ConnectionEvents implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onLogin(PlayerLoginEvent e) {
         final Player player = e.getPlayer();
-        if(!Bukkit.hasWhitelist()) {
-            int playerlimit = Main.getInstance().getConfig().getInt("player-limit");
-            if(e.getResult() == PlayerLoginEvent.Result.KICK_FULL && Bukkit.getOnlinePlayers().size() >= playerlimit) {
-                if(player.hasPermission("server.join.full")) e.allow();
-                else e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän, sinun täytyy omistaa vähintään §e§lPremium§7-arvo!");
-            }
+        if(e.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
+            if(player.hasPermission("server.join.full")) e.allow();
+            else e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän, sinun täytyy omistaa vähintään §e§lPremium§7-arvo!");
         }
     }
 
@@ -78,22 +75,7 @@ public class ConnectionEvents implements Listener {
 
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
 
-        // Fix vanish
-        for(final UUID vanished : Main.getStaffManager().hidden) {
-            Player v = Bukkit.getPlayer(vanished);
-            if(v == null) continue;
-            else player.hidePlayer(Main.getInstance(), v);
-
-            if(Ranks.isStaff(player.getUniqueId())) {
-                v.showPlayer(Main.getInstance(), player);
-                player.showPlayer(Main.getInstance(), v);
-            }
-
-        }
-
-
         e.setJoinMessage(null);
-        if(Main.getStaffManager().hidden.contains(player.getUniqueId())) Chat.sendMessage(player, "Olet piilossa pelaajilta!");
 
         if(!player.hasPlayedBefore()) {
             ItemStack[] firstKit = new ItemStack[] {
@@ -109,12 +91,24 @@ public class ConnectionEvents implements Listener {
             Sorsa.teleportToSpawn(e.getPlayer());
         }
 
+        // Fix vanish
+        for(final UUID vanished : Main.getStaffManager().hidden) {
+            Player v = Bukkit.getPlayer(vanished);
+            if(v == null) continue;
+            else player.hidePlayer(Main.getInstance(), v);
+
+            if(Ranks.isStaff(player.getUniqueId())) {
+                v.showPlayer(Main.getInstance(), player);
+                player.showPlayer(Main.getInstance(), v);
+            }
+
+        }
+
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
 
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), (r) -> {
             Settings.scoreboard(player);
-            if(Ranks.isStaff(player.getUniqueId()) && !Main.getStaffManager().hasStaffMode(player)) Main.getStaffManager().enableStaffMode(player);
-            r.cancel();
+            if(Ranks.isStaff(player.getUniqueId())) Main.getStaffManager().enableStaffMode(player);
 
             // Setup backpacks
             Backpack.Level bLvl = Main.getBackpack().getLevel(player.getUniqueId());
@@ -130,15 +124,17 @@ public class ConnectionEvents implements Listener {
             }
 
             Sorsa.everyAsync(3, () -> Sorsa.sendTablist(player));
+            r.cancel();
 
         }, 5);
+
 
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
         e.setQuitMessage(null);
-        Player player = e.getPlayer();
+        final Player player = e.getPlayer();
         if(Settings.scoreboardRunnables.containsKey(player.getUniqueId())) {
             Settings.scoreboardRunnables.get(player.getUniqueId()).cancel();
             Settings.scoreboardRunnables.remove(player.getUniqueId());

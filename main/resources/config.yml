@@ -1,8 +1,6 @@
 mysql:
   enabled: true
-  user: root
-  password: wVKACGjtoyWYYkIc
-  address: 95.216.155.199
+  database: autiomc
 
 whitelist: false
 player-limit: 100

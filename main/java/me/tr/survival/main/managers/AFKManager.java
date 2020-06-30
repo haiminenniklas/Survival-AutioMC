@@ -14,8 +14,6 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -54,12 +52,8 @@ public class AFKManager implements CommandExecutor, Listener {
             final Player player = (Player) sender;
             final UUID uuid = player.getUniqueId();
 
-            if(toggleAFK(uuid)) {
-                Chat.sendMessage(player, "Olet nyt AFK!");
-            } else {
-                Chat.sendMessage(player, "Et ole enää AFK!");
-            }
-
+            if(toggleAFK(uuid)) Chat.sendMessage(player, "Olet nyt AFK!");
+            else Chat.sendMessage(player, "Et ole enää AFK!");
 
         }
 

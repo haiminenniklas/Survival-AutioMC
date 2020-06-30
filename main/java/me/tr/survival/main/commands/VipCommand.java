@@ -23,33 +23,34 @@ public class VipCommand implements CommandExecutor {
                 sender.sendMessage("§c/givevip <player> <rank>");
                 return true;
             } else {
-                OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-                String rankRaw = args[1];
+                final OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+                final String rankRaw = args[1];
                 if(!rankRaw.equalsIgnoreCase("premium") && !rankRaw.equalsIgnoreCase("premiumplus") && !rankRaw.equalsIgnoreCase("sorsa")) {
                     sender.sendMessage("§cVain 'premium', 'premiumplus' tai 'sorsa'!");
                     return true;
                 }
-                if(PlayerData.isLoaded(target.getUniqueId())) {
+                if(!PlayerData.isLoaded(target.getUniqueId())) {
                     Sorsa.async(() -> {
-                        PlayerData.loadPlayer(target.getUniqueId(), (res) -> {});
-                        givePerks(target, rankRaw);
-                        sender.sendMessage("§aPerks were given!");
+                        PlayerData.loadPlayer(target.getUniqueId(), (res) -> {
+                            givePerks(target, rankRaw);
+                            sender.sendMessage("§a[Vips] Perks of '" + rankRaw.toLowerCase() + "' to " + target.getName());
+                        });
+
                     });
-                } else givePerks(target, rankRaw);
+                } else {
+                    givePerks(target, rankRaw);
+                    sender.sendMessage("§a[Vips] Perks of '" + rankRaw.toLowerCase() + "' to " + target.getName());
+                }
             }
         }
         return true;
     }
 
-    private void givePerks(OfflinePlayer player, String rank) {
-        UUID uuid = player.getUniqueId();
-        if(rank.equalsIgnoreCase("premium")) {
-            Mail.addTickets(uuid, 10);
-        } else if(rank.equalsIgnoreCase("premiumplus")) {
-            Mail.addTickets(uuid, 10);
-        } else if(rank.equalsIgnoreCase("sorsa")) {
-            Mail.addTickets(uuid, 20);
-        }
+    private void givePerks(final OfflinePlayer player, String rank) {
+        final UUID uuid = player.getUniqueId();
+        if(rank.equalsIgnoreCase("premium")) Mail.addTickets(uuid, 10);
+        else if(rank.equalsIgnoreCase("premiumplus")) Mail.addTickets(uuid, 10);
+        else if(rank.equalsIgnoreCase("sorsa")) Mail.addTickets(uuid, 20);
         Sorsa.logColored("§6[VIP] Gave VIP-perks for rank '" + rank + "' to player " + player.getName() + " (" + player.getUniqueId() + ")");
     }
 }

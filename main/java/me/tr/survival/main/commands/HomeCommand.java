@@ -4,6 +4,7 @@ import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.managers.features.Homes;
+import me.tr.survival.main.other.Ranks;
 import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -21,7 +22,7 @@ public class HomeCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            if(!player.isOp()) Homes.panel(player, player);
+            if(!Ranks.isStaff(player.getUniqueId())) Homes.panel(player, player);
             else {
                 if(args.length >= 1) {
                     OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);

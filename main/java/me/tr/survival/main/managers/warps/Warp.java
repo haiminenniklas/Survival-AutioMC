@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-@Deprecated
 public class Warp {
 
     private String name, displayName, description;
@@ -35,7 +34,7 @@ public class Warp {
 
     public void teleport(Player player) {
         Chat.sendMessage(player, "Sinua viedään warpille §a" + this.displayName + "§7 §c3s §7päästä...");
-        Sorsa.after(3, () -> player.teleport(new Location(this.world, this.x, this.y, this.z, this.yaw, this.pitch)));
+        Sorsa.after(3, () -> player.teleport(new Location(this.world, this.x, this.y + 1, this.z, this.yaw, this.pitch)));
     }
 
     public String getName() {

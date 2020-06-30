@@ -53,10 +53,8 @@ public class Warps {
                     continue;
                 List<String> lore = new ArrayList<>();
                 lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
-                String[] text = Util.splitStringEvery(warp.getDescription(), 23);
-                for(int j = 0; j < text.length; j++) {
-                    lore.add(" §7" + ChatColor.translateAlternateColorCodes('&', text[j]));
-                }
+                String[] text = Util.splitPreservingWords(warp.getDescription(), 30);
+                for(int j = 0; j < text.length; j++) { lore.add(" §7" + ChatColor.translateAlternateColorCodes('&', text[j])); }
                 lore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
                 gui.addButton(new Button(1, i, ItemUtil.makeItem(Material.OAK_SIGN, 1,
