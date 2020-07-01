@@ -104,6 +104,7 @@ public class Events implements Listener {
         // damage from possible suffocation
         player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) Sorsa.getCurrentTPS() * 10, 1));
 
+        Sorsa.logColored("§a[Teleport] The player " + player.getName() + " (" + player.getUniqueId() + ") was sent from '" + Util.formatLocation(e.getFrom()) + "' to '" + Util.formatLocation(e.getTo()) + "'!");
         lastLocation.put(player.getUniqueId(), e.getFrom());
     }
 
@@ -191,6 +192,7 @@ public class Events implements Listener {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) Sorsa.getCurrentTPS() * 30, 1, true, false));
                 player.playSound(player.getLocation(), Sound.MUSIC_DISC_13, 1, 1);
                 deathIsland.add(player.getUniqueId());
+                Sorsa.logColored("§6[DeathIsland] The player " + player.getUniqueId() + " was sent to the Death Island!");
             }), 5);
 
             new BukkitRunnable() {
@@ -216,6 +218,7 @@ public class Events implements Listener {
                             deathIsland.remove(player.getUniqueId());
                             player.stopSound(Sound.MUSIC_DISC_13);
                             Sorsa.teleportToSpawn(player);
+                            Sorsa.logColored("§6[DeathIsland] The player " + player.getUniqueId() + " got away from the Death Island was teleported to the spawn!");
                             task.cancel();
                         }), 5);
                         cancel();

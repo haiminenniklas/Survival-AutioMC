@@ -356,10 +356,12 @@ public class Backpack implements CommandExecutor, Listener {
         if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
 
         Level current = getLevel(uuid);
-        Level newLevel = null;
+        Level newLevel;
         if(current == Level.ONE) newLevel = Level.TWO;
         else if(current == Level.TWO) newLevel = Level.THREE;
         else return false;
+
+        Sorsa.logColored("§6[Backpacks] Player " + Bukkit.getOfflinePlayer(uuid).getName() + " (" + uuid + ") upgraded their backpack to " + (newLevel == Level.THREE ? "THREE 3" : "TWO 2") + "!");
 
         setLevel(uuid, newLevel);
         return true;

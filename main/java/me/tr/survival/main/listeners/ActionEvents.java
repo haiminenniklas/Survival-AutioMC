@@ -149,8 +149,10 @@ public class ActionEvents implements Listener {
     public void onPortalEnter(PlayerPortalEvent e) {
         if(e.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL || e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
             e.setCancelled(true);
-            e.getPlayer().teleport(e.getFrom());
+            final Player player = e.getPlayer();
+            player.teleport(e.getFrom());
             Chat.sendMessage(e.getPlayer(), Chat.Prefix.ERROR, "Portaalit eivät valitettavasti toimi. Pääset kuitenkin toisiin maailmoihin komennolla §a/matkusta§7!");
+            Sorsa.logColored("§6[TravelManager] The player " + player.getName() + " was tried to enter a portal, but was prohibited!");
         }
     }
 
@@ -160,6 +162,7 @@ public class ActionEvents implements Listener {
             Player player = (Player) e.getEntity();
             e.setCancelled(true);
             Chat.sendMessage(player, Chat.Prefix.ERROR, "Portaalit eivät valitettavasti toimi. Pääset kuitenkin toisiin maailmoihin komennolla §a/matkusta§7!");
+            Sorsa.logColored("§6[TravelManager] The player " + player.getName() + " was tried to create a new portal, but was stopped!");
         }
     }
 

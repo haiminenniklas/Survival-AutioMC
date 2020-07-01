@@ -89,6 +89,7 @@ public class ConnectionEvents implements Listener {
             };
             player.getInventory().addItem(firstKit);
             Sorsa.teleportToSpawn(e.getPlayer());
+            Sorsa.logColored("§b[PlayerManager] The player " + player.getName() + " (" + player.getUniqueId() + ") joined for the first time!");
         }
 
         // Fix vanish

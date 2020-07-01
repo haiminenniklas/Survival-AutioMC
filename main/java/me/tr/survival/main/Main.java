@@ -1114,6 +1114,7 @@ public final class Main extends JavaPlugin implements Listener {
                         }
                         Sorsa.teleportToSpawn(target);
                         sender.sendMessage("§7Pelaaja §a" + target.getName() + " §7vietiin spawnille!");
+                        Sorsa.logColored("§6[TeleportManager] The player " + target.getName() + " was manually taken to the spawn!");
                     }
                 }
             } else if(command.getLabel().equals("uptime")) {

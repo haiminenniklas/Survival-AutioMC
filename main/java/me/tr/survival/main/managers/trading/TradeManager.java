@@ -412,6 +412,8 @@ public class TradeManager implements CommandExecutor, Listener {
         Player sender = e.getSender();
         Player target = e.getTarget();
 
+        Sorsa.logColored("§6[TradeManager] Trade request was sent from " + sender.getName() + " to " + target.getName() + "!");
+
         if(!Settings.get(target.getUniqueId(), "chat_mentions")) Util.sendNotification(target, "§a§lILMOITUS! Sait uuden vaihtokauppapyynnön!", true);
 
         target.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");

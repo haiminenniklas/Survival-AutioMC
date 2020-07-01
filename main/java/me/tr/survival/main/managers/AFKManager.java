@@ -1,8 +1,10 @@
 package me.tr.survival.main.managers;
 
 import me.tr.survival.main.Main;
+import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.other.Ranks;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -73,8 +75,9 @@ public class AFKManager implements CommandExecutor, Listener {
 
     private void enableAFK(UUID uuid) {
         afk.add(uuid);
-        final Player player = Bukkit.getPlayer(uuid);
-        if(player != null) changeTabName(player);
+        final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if(player.getPlayer() != null) changeTabName(player.getPlayer());
+        Sorsa.logColored("§6[AFKManager] The player " + player.getName() + " (" + player.getUniqueId() + ") is now AFK!");
     }
 
     private void disableAFK(UUID uuid)  {

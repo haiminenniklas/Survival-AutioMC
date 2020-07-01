@@ -390,7 +390,7 @@ public class Util {
 
     public static String formatDecimals(double amount) {
         DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(new Locale("fi", "FI"));
-        return formatter.format(amount);
+        return formatter.format(amount).replaceAll("\u00a0", " ");
     }
 
     public static double getFreeMemory() {
@@ -693,29 +693,8 @@ public class Util {
     }
 
     public static Location getGroundLocation(Location loc) {
-
         double y = loc.getWorld().getHighestBlockYAt(loc.getBlockX(), loc.getBlockZ());
         return new Location(loc.getWorld(), loc.getX(), y + 1, loc.getZ());
-
-    }
-
-    public static List<Advancement> getDoneAdvancements(Player player) {
-        List<Advancement> advancements = new ArrayList<>();
-        for(Advancement advancement : getAllAdvancements()) {
-            if(player.getAdvancementProgress(advancement).isDone()) {
-                advancements.add(advancement);
-            }
-        }
-        return advancements;
-    }
-
-    public static List<Advancement> getAllAdvancements() {
-        List<Advancement> advancements = new ArrayList<>();
-        Iterator<Advancement> iterator = Bukkit.advancementIterator();
-        while(iterator.hasNext()) {
-            advancements.add(iterator.next());
-        }
-        return advancements;
     }
 
     public static Material ChatColorToDye(ChatColor color) {

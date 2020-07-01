@@ -1,6 +1,7 @@
 package me.tr.survival.main.other;
 
 import me.tr.survival.main.Main;
+import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Chat;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -43,6 +44,7 @@ public class AntiAFKFishing implements Listener {
                     e.setCancelled(true);
                     e.setExpToDrop(0);
                     Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinun pitää liikkua vähäsen kalastelun aikana!");
+                    Sorsa.logColored("§6[AntiAFKFishing] Player " + player.getName() + " is filed to be AFK-Fishing!");
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 }
 

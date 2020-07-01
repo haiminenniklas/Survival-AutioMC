@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class TeleportRequest {
 
-    private Player one, two;
+    private final Player one, two;
     private TeleportManager.Teleport teleport;
     private boolean accepted;
     private boolean denied;
@@ -88,6 +88,8 @@ public class TeleportRequest {
                     " Pyyntö umpeutuu automaattisesti §e60 sekunnin §7kuluttua...");
 
             this.requestTime = System.currentTimeMillis();
+
+            Sorsa.logColored("§6[TeleportManager] A TeleportRequest was sent from " + this.one.getName() + " to " + this.two.getName() + "! (Tpahere: " + here + ")");
 
             // Set the request as expired after 60 seconds
             Sorsa.afterAsync(60, () -> {

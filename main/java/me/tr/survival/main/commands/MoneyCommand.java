@@ -68,18 +68,18 @@ public class MoneyCommand implements CommandExecutor {
 
                                 if(args[0].equalsIgnoreCase("add")) {
                                     Balance.add(target.getUniqueId(), value);
-                                    Chat.sendMessage(player, "Pelaajalle §a" + target.getName() + " §7annettu §a" + value + "€§7! Hänen rahatilanteensa: §a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
+                                    Chat.sendMessage(player, "Pelaajalle §a" + target.getName() + " §7annettu §a" + value + "€§7! Hänen rahatilanteensa: §a" + Util.formatDecimals(Balance.get(target.getUniqueId())) + "€");
                                 } else if(args[0].equalsIgnoreCase("remove")) {
                                     Balance.remove(target.getUniqueId(), value);
-                                    Chat.sendMessage(player, "Pelaajalta §a" + target.getName() + " §7 poistettu §a" + value + "€! §7Hänen rahatilanteensa: §a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
+                                    Chat.sendMessage(player, "Pelaajalta §a" + target.getName() + " §7 poistettu §a" + value + "€! §7Hänen rahatilanteensa: §a" + Util.formatDecimals(Balance.get(target.getUniqueId())) + "€");
                                 } else if(args[0].equalsIgnoreCase("set")) {
                                     Balance.set(target.getUniqueId(), value);
-                                    Chat.sendMessage(player, "Pelaajan §a" + target.getName() + " §7nykyinen rahatilanne on nyt: §a" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
+                                    Chat.sendMessage(player, "Pelaajan §a" + target.getName() + " §7nykyinen rahatilanne on nyt: §a" + Util.formatDecimals(Balance.get(target.getUniqueId())) + "€");
                                 }
 
                                 Chat.sendMessage(player, "Tallenna pelaajan tiedot komennolla §a/save " + target.getName());
 
-                            } else if(args[0].equalsIgnoreCase("get")) Chat.sendMessage(player, "Pelaajan §a" + target.getName() + " rahatilanne: " + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€");
+                            } else if(args[0].equalsIgnoreCase("get")) Chat.sendMessage(player, "Pelaajan §a" + target.getName() + " rahatilanne: " + Util.formatDecimals(Balance.get(target.getUniqueId())) + "€");
                         }
 
                     }

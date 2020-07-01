@@ -42,12 +42,18 @@ public class VillageManager implements Listener, CommandExecutor {
         final ConfigurationSection villagesSection = config.getConfigurationSection("villages");
         if(villagesSection == null) return;
 
+        Sorsa.logColored("§a[PlayerVillages] Loading PlayerVillages...");
+
+        int loaded = 0;
+
         for(final String rawUuid : villagesSection.getKeys(false)) {
             final PlayerVillage village = findVillage(rawUuid);
             if(village != null) {
                 villages.add(village);
+                loaded += 1;
             }
         }
+        Sorsa.logColored("§a[PlayerVillages] Loaded " + loaded + " PlayerVillages!");
     }
 
 

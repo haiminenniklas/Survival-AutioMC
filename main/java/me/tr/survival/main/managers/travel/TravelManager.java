@@ -112,7 +112,10 @@ public class TravelManager implements CommandExecutor, Listener {
 
     private void nether(Player player) {
 
-        if(Sorsa.getNetherWorld() != null) Sorsa.teleportToNether(player);
+        if(Sorsa.getNetherWorld() != null) {
+            Sorsa.teleportToNether(player);
+            Sorsa.logColored("§6[TravelManager] The player '" + player.getName() + "' was teleported to the Nether!");
+        }
         else Chat.sendMessage(player, Chat.Prefix.ERROR, "Matkustaminen epäonnistui...");
     }
 

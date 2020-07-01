@@ -358,6 +358,7 @@ public class Particles implements Listener, CommandExecutor {
         if(!isUsingDefaultParticle(player)) Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentParticle(player).getId());
         Sorsa.getParticlesAPI().addActivePlayerParticle(player, particle);
         PlayerData.set(player.getUniqueId(), "particle", String.valueOf(particle.getId()));
+        Sorsa.logColored("§6[ParticleManager] The player " + player.getName() + " enabled the particle effect: " + particle.getId() + "!");
     }
 
     private boolean isUsingDefaultParticle(Player player) {
@@ -380,6 +381,7 @@ public class Particles implements Listener, CommandExecutor {
         Sorsa.getParticlesAPI().addActivePlayerParticle(player, particle);
         PlayerData.set(player.getUniqueId(), "arrowtrail", String.valueOf(particle.getId()));
         PlayerParticles.getInstance().reload();
+        Sorsa.logColored("§6[ParticleManager] The player " + player.getName() + " enabled the arrow trail: " + particle.getId() + "!");
     }
 
     private boolean isUsingDefaultArrowTrail(Player player) {
@@ -390,12 +392,14 @@ public class Particles implements Listener, CommandExecutor {
         if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
         if(!isUsingDefaultParticle(player)) Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentParticle(player).getId());
         PlayerData.set(player.getUniqueId(), "particle", "default");
+        Sorsa.logColored("§6[ParticleManager] The player " + player.getName() + " deactivated their particle effect!");
     }
 
     public void removeCurrentArrowTrail(Player player) {
         if(!PlayerData.isLoaded(player.getUniqueId())) PlayerData.loadNull(player.getUniqueId(), false);
         if(!isUsingDefaultArrowTrail(player)) Sorsa.getParticlesAPI().removeActivePlayerParticle(player, getCurrentArrowTrail(player).getId());
         PlayerData.set(player.getUniqueId(), "arrowtrail", "default");
+        Sorsa.logColored("§6[ParticleManager] The player " + player.getName() + " deactivated their arrow trail!");
     }
 
     private boolean isAllowedForParticle(Player player, ParticlePair particle) {
@@ -407,11 +411,11 @@ public class Particles implements Listener, CommandExecutor {
     }
 
     private List<ParticlePair> getParticlesForPlayer(Player player) {
+        if(Ranks.isStaff(player.getUniqueId())) return getAllParticles();
+        if(Ranks.hasRank(player, "sorsa")) return getKuningasParticles();
+        if(Ranks.hasRank(player, "premiumplus")) return getPremiumPlusParticles();
         if(Ranks.hasRank(player, "premium")) return getPremiumPlusParticles();
-        else if(Ranks.hasRank(player, "premiumplus")) return getPremiumPlusParticles();
-        else if(Ranks.hasRank(player, "sorsa")) return getKuningasParticles();
-        else if(Ranks.isStaff(player.getUniqueId())) return getAllParticles();
-        else return new ArrayList<>();
+        return new ArrayList<>();
     }
 
     private List<ParticlePair> getPremiumParticles() {
@@ -612,11 +616,11 @@ public class Particles implements Listener, CommandExecutor {
     }
 
     private List<ParticlePair> getArrowTrailsForPlayer(Player player) {
+        if(Ranks.isStaff(player.getUniqueId())) return getAllArrowTrails();
+        if(Ranks.hasRank(player, "sorsa")) return getKuningasArrowtrails();
+        if(Ranks.hasRank(player, "premiumplus")) return getPremiumPlusArrowTrails();
         if(Ranks.hasRank(player, "premium")) return getPremiumArrowTrails();
-        else if(Ranks.hasRank(player, "premiumplus")) return getPremiumPlusArrowTrails();
-        else if(Ranks.hasRank(player, "sorsa")) return getKuningasArrowtrails();
-        else if(Ranks.isStaff(player.getUniqueId())) return getAllArrowTrails();
-        else return new ArrayList<>();
+        return new ArrayList<>();
     }
 
     private List<ParticlePair> getPremiumArrowTrails() {

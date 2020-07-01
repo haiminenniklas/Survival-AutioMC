@@ -339,6 +339,7 @@ public class Trade {
 
     private void end() {
         this.setState(TradeState.OVER);
+        Sorsa.logColored("§6[TradeManager] The trade was stopped for players: " + this.sender + ", " + this.target + "!");
         Main.getTradeManager().getOngoingTrades().remove(this);
         if(this.sender != null) this.sender.closeInventory();
         if(this.target != null) this.target.closeInventory();
