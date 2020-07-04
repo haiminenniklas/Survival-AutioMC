@@ -376,10 +376,15 @@ public class StaffManager implements Listener, CommandExecutor {
                 map.put(block.getType(), 1);
                 blocksPerHour.put(uuid, map);
             } else {
-                if(block.getType() == Material.DIAMOND_ORE || block.getType() == Material.EMERALD_ORE) {
+                if(block.getType() == Material.DIAMOND_ORE || block.getType() == Material.EMERALD_ORE || block.getType() == Material.ANCIENT_DEBRIS) {
                     for(Player staff : Bukkit.getOnlinePlayers()) {
                         if(hasStaffMode(staff)) {
-                            String blockName = (block.getType() == Material.DIAMOND_ORE) ? "timanttia" : "emeraldia";
+
+                            String blockName = "";
+                            if(block.getType() == Material.DIAMOND_ORE) blockName = "timanttia";
+                            else if(block.getType() == Material.EMERALD_ORE) blockName = "emeraldia";
+                            else if(block.getType() == Material.ANCIENT_DEBRIS) blockName = "netheriittiä";
+
                             if(Settings.get(staff.getUniqueId(), "chat")) {
                                 TextComponent msg = new TextComponent(TextComponent.fromLegacyText("§8[§e§l⚡§8] §fPelaaja §e" + player.getName() + " §flöysi §e" + blockName + "§f! "));
                                 TextComponent tpMsg = new TextComponent();
@@ -398,10 +403,13 @@ public class StaffManager implements Listener, CommandExecutor {
                     int current = map.get(block.getType());
                     map.put(block.getType(), current + 1);
                     int minedPerHour = getBlockMinedPerHour(uuid, block.getType());
-                    if(block.getType() == Material.DIAMOND_ORE)
+                    if(block.getType() == Material.DIAMOND_ORE) {
                         if(minedPerHour >= 15 && minedPerHour % 5 == 0) Util.broadcastStaff("§8[§e§l⚡!§8] §fPelaajan §e" + player.getName() + " §fBPH §o(blockit per tunti) §etimanteille §fon §e" + minedPerHour + "§f!");
-                    else if(block.getType() == Material.EMERALD_ORE)
+                    } else if(block.getType() == Material.EMERALD_ORE) {
                         if(minedPerHour >= 5 && minedPerHour % 5 == 0) Util.broadcastStaff("§8[§e§l⚡§8] §fPelaajan §e" + player.getName() + " §fBPH §o(blockit per tunti) §eemeraldeille §fon §e" + minedPerHour + "§e!");
+                    } else if(block.getType() == Material.ANCIENT_DEBRIS) {
+                        if(minedPerHour >= 5 && minedPerHour % 5 == 0) Util.broadcastStaff("§8[§e§l⚡§8] §fPelaajan §e" + player.getName() + " §fBPH §o(blockit per tunti) §enetheriitille §fon §e" + minedPerHour + "§e!");
+                    }
 
                 } else map.put(block.getType(), 1);
             }

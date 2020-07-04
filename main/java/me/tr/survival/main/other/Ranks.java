@@ -82,27 +82,27 @@ public class Ranks {
     public static ChatColor getRankColor(String rank) {
         switch(rank) {
             case "default":
-                return ChatColor.GRAY;
+                return ChatColor.WHITE;
             case "premium":
-                return ChatColor.GREEN;
+                return ChatColor.YELLOW;
             case "premiumplus":
-                return ChatColor.GREEN;
+                return ChatColor.GOLD;
             case "sorsa":
-                return ChatColor.DARK_GREEN;
+                return ChatColor.GREEN;
             case "youtube":
                 return ChatColor.DARK_RED;
             case "twitch":
                 return ChatColor.DARK_PURPLE;
             case "mod":
-                return ChatColor.DARK_AQUA;
+                return ChatColor.AQUA;
             case "builder":
-                return ChatColor.DARK_GREEN;
+                return ChatColor.YELLOW;
             case "admin":
                 return ChatColor.RED;
             case "omistaja":
                 return ChatColor.LIGHT_PURPLE;
             default:
-                return ChatColor.GRAY;
+                return ChatColor.WHITE;
 
         }
     }

@@ -162,7 +162,6 @@ public class Settings {
                     return;
                 } else {
                     gui.close(clicker);
-                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                     vipPanel(clicker);
                 }
             }
@@ -172,7 +171,6 @@ public class Settings {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Profile.openProfile(clicker, clicker.getUniqueId());
             }
         });
@@ -260,7 +258,6 @@ public class Settings {
                     if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(clicker.getUniqueId())) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     else {
                         gui.close(clicker);
-                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         Main.getPlayerDeathMessageManager().deathMessagePanel(clicker);
                     }
                 }
@@ -279,7 +276,6 @@ public class Settings {
                     if(!Ranks.hasRank(clicker.getUniqueId(), "premiumplus", "sorsa") && !Ranks.isStaff(clicker.getUniqueId())) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     else {
                         gui.close(clicker);
-                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         Main.getPlayerDeathMessageManager().killMessagePanel(clicker);
                     }
                 }
@@ -327,7 +323,6 @@ public class Settings {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                     Settings.panel(clicker);
                 }
             });

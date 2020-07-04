@@ -193,7 +193,6 @@ public class Backpack implements CommandExecutor, Listener {
                     if(meta != null && meta.hasDisplayName() && meta.hasLore()) {
                         if(meta.getDisplayName().equalsIgnoreCase("§aProfiili")) {
                             e.setCancelled(true);
-                            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                             Profile.openProfile(player, player.getUniqueId());
                         }
                     }

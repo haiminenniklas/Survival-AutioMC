@@ -64,7 +64,6 @@ public class Profile {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 BaltopCommand.openGui(clicker);
             }
         });
@@ -104,7 +103,8 @@ public class Profile {
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                gui.close(clicker);
+                Main.getVillageManager().mainGui(clicker);
             }
         });
 
@@ -122,7 +122,6 @@ public class Profile {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Homes.panel(clicker, clicker);
             }
         });
@@ -151,7 +150,6 @@ public class Profile {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Settings.panel(clicker);
             }
         });
@@ -170,7 +168,6 @@ public class Profile {
             public void onClick(Player clicker, ClickType clickType) {
 
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Main.getBackpack().openBackpack(clicker);
 
             }
@@ -189,7 +186,6 @@ public class Profile {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Boosters.panel(clicker);
             }
         });
@@ -219,7 +215,6 @@ public class Profile {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Main.getTravelManager().gui(clicker);
             }
         });
@@ -236,7 +231,6 @@ public class Profile {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 Mail.panel(clicker);
             }
         });
@@ -257,7 +251,6 @@ public class Profile {
                 if(!Ranks.isVIP(clicker.getUniqueId())) clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 else {
                     gui.close(clicker);
-                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                     Main.getParticles().openMainGui(clicker);
                 }
             }
@@ -343,7 +336,6 @@ public class Profile {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                 openProfile(clicker, clicker.getUniqueId());
             }
         });
@@ -378,7 +370,6 @@ public class Profile {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                     Bukkit.dispatchCommand(opener, "staff " + target.getName());
                 }
             });
@@ -420,7 +411,6 @@ public class Profile {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                     openProfile(clicker, clicker.getUniqueId());
                 }
             });

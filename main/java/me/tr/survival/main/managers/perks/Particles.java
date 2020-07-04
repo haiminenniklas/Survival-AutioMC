@@ -95,7 +95,6 @@ public class Particles implements Listener, CommandExecutor {
                     public void onClick(Player clicker, ClickType clickType) {
 
                         gui.close(player);
-                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         openParticlesGui(player);
 
                     }
@@ -114,7 +113,6 @@ public class Particles implements Listener, CommandExecutor {
                     public void onClick(Player clicker, ClickType clickType) {
 
                         gui.close(player);
-                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         openArrowTrailGui(player);
 
                     }
@@ -124,7 +122,6 @@ public class Particles implements Listener, CommandExecutor {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(player);
-                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                         Profile.openProfile(player, clicker.getUniqueId());
                     }
                 });

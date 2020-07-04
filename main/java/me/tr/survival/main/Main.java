@@ -114,6 +114,9 @@ public final class Main extends JavaPlugin implements Listener {
     private static VillageManager villageManager;
     public static VillageManager getVillageManager() { return villageManager; }
 
+    private static ClaimBlockCoupons claimBlockCouponsManager;
+    public static ClaimBlockCoupons getClaimBlockCouponsManager() { return claimBlockCouponsManager; }
+
     // Other instances
     private static TpaCommand tpaCommand;
     private static Essentials essentials;
@@ -150,6 +153,7 @@ public final class Main extends JavaPlugin implements Listener {
         Main.houkutin = new Houkutin();
         Main.afkmanager = new AFKManager();
         Main.villageManager = new VillageManager();
+        Main.claimBlockCouponsManager = new ClaimBlockCoupons();
 
         // Commands
         Main.tpaCommand = new TpaCommand();
@@ -198,10 +202,12 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(actionEvents, this);
         pm.registerEvents(guiEvents, this);
         pm.registerEvents(connectionEvents, this);
+        pm.registerEvents(claimBlockCouponsManager, this);
 
         // Managers
         pm.registerEvents(new Chat(), this);
         pm.registerEvents(new AntiCheat(), this);
+        pm.registerEvents(new ChairEvents(), this);
 
         pm.registerEvents(staffManager, this);
         pm.registerEvents(essentials, this);

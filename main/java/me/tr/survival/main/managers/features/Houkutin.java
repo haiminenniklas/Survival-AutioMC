@@ -113,7 +113,6 @@ public class Houkutin implements CommandExecutor {
                     if(!isActivated()) {
                         if(Balance.canRemove(clicker.getUniqueId(), 2500)) {
                             gui.close(clicker);
-                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                             selectGui(clicker);
 
                         } else clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);

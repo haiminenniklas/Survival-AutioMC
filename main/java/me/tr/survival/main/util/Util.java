@@ -720,6 +720,8 @@ public class Util {
         }
     }
 
+    public static boolean isBlockStair(Block block) { return block.getType().name().contains("_STAIRS"); }
+
     public static String locationToText(Location loc) {
 
         double x = loc.getX();

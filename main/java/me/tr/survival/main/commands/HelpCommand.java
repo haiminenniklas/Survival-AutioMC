@@ -43,6 +43,7 @@ public class HelpCommand implements CommandExecutor {
                 Util.sendClickableText(player, " §a...reppu §7Kätevä tapa tallettaa tavarat", "/apua reppu", "§7Klikkaa avataksesi! (§a/apua reppu§7)!");
                 Util.sendClickableText(player, " §a...ääri §7Miten ja ketkä pääsevät sinne?", "/apua ääri", "§7Klikkaa avataksesi! (§a/apua ääri§7)!");
                 Util.sendClickableText(player, " §a...chat §7Miten lähetän kaikille viestin?", "/apua chat", "§7Klikkaa avataksesi! (§a/apua chat§7)!");
+                Util.sendClickableText(player, " §a...kylät §7Pelaajakylät? Whaaat?", "/apua kylät", "§7Klikkaa avataksesi! (§a/apua kylät§7)!");
                 player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
             } else {
@@ -318,7 +319,6 @@ public class HelpCommand implements CommandExecutor {
                             @Override
                             public void onClick(Player clicker, ClickType clickType) {
                                 gui.close(clicker);
-                                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                                 Main.getTravelManager().gui(clicker);
                             }
                         });
@@ -420,6 +420,33 @@ public class HelpCommand implements CommandExecutor {
                         }
 
                     });
+                } else if(args[0].equalsIgnoreCase("kylät")) {
+
+                    Gui.openGui(player, "Apua (Pelaajakylät)", 27, (gui) -> {
+                        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitkä kylät?", Arrays.asList(
+                                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                " §7",
+                                " ",
+                                " §7Lisätietoa §a/kylä§7!",
+                                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                        ))) {
+                            @Override
+                            public void onClick(Player clicker, ClickType clickType) {
+                                gui.close(clicker);
+                                Main.getVillageManager().mainGui(clicker);
+                            }
+                        });
+
+                        int[] glass = new int[] { 11,12, 14,15  };
+                        for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
+
+                        for(int i = 0; i < 27; i++) {
+                            if(gui.getItem(i) != null) continue;
+                            if(gui.getButton(i) != null) continue;
+                            gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+                        }
+
+                    });
                 } else if(args[0].equalsIgnoreCase("ääri") || args[0].equalsIgnoreCase("end")) {
                     Gui.openGui(player, "Apua (Ääri)", 27, (gui) -> {
                         gui.addItem(1, ItemUtil.makeItem(Material.BOOK, 1, "§2Miten Endi toimii?", Arrays.asList(
@@ -450,7 +477,6 @@ public class HelpCommand implements CommandExecutor {
                             @Override
                             public void onClick(Player clicker, ClickType clickType) {
                                 gui.close(clicker);
-                                clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                                 Main.getTravelManager().gui(clicker);
                             }
                         });

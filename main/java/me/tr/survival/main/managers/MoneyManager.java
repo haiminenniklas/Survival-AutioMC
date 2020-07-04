@@ -128,7 +128,6 @@ public class MoneyManager implements CommandExecutor, Listener {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1,1 );
                     cheques(clicker);
                 }
             });
