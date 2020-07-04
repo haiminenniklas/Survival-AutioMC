@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -60,6 +61,8 @@ public class AntiCheat implements Listener {
         if(player.isRiptiding()) return;
         if(player.isGliding()) return;
         if(player.isInsideVehicle()) return;
+
+        if(player.hasPotionEffect(PotionEffectType.DOLPHINS_GRACE)) return;
 
         if (player.isFlying()) {
             threshold+= player.getFlySpeed() > 0.1 ? player.getFlySpeed() * 10 : player.getFlySpeed() * 1;

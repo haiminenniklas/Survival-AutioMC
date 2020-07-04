@@ -42,6 +42,7 @@ public class Sorsa {
     public static void teleportToSpawn(Player player) {
         Location loc = getSpawn();
         player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        Sorsa.logColored("§e[TeleportManager] Player " + player.getName() + " teleported to spawn!");
         if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24d);
             player.setHealth(24d);

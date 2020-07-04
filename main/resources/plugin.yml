@@ -121,7 +121,7 @@ commands:
     aliases: [invclear, clearinventory]
   matkusta:
     description: Matkustaminen
-    aliases: [travel, matkustaminen]
+    aliases: [travel, matkustaminen, nether]
   valuutta:
     description: Valuutta-asiat
   shekki:
