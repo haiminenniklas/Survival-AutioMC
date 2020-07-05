@@ -24,12 +24,12 @@ public class ChairEvents implements Listener {
 
                 final Action action = e.getAction();
                 if(action == Action.RIGHT_CLICK_BLOCK && player.isSneaking()) {
+                    e.setCancelled(true);
                     final Location loc = block.getLocation();
-                    ArmorStand seat = (ArmorStand) loc.getWorld().spawnEntity(loc.clone().subtract(-0.5d, 1.7d, -0.5d), EntityType.ARMOR_STAND);
+                    ArmorStand seat = (ArmorStand) loc.getWorld().spawnEntity(loc.clone().add(0.5, -2,0.5), EntityType.ARMOR_STAND);
                     seat.setInvulnerable(true);
                     seat.setGravity(false);
                     seat.setVisible(false);
-                    player.setSneaking(false);
                     seat.addPassenger(player);
                 }
             }
