@@ -65,7 +65,6 @@ public class Boosters implements Listener {
                             lore.add("§7 ");
                         } else getActive().remove(booster.getDisplayName());
                     }
-
                 }
 
                 String[] text = Util.splitPreservingWords(booster.getDescription(), 30);
@@ -139,16 +138,13 @@ public class Boosters implements Listener {
                 });
                 continue;
             }
-
             gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
-
         }
-
         gui.open(player);
 
     }
 
-    public static void debug() {
+    public static synchronized void debug() {
         for(Map.Entry<String, Long> entry : getInCooldown().entrySet()) {
             Booster booster = Boosters.getBoosterByName(entry.getKey());
             if(getTimeForNextUsage(booster) <= 0) getInCooldown().remove(entry.getKey());
@@ -190,7 +186,7 @@ public class Boosters implements Listener {
 
     }
 
-    public static void activateManager() {
+    public static synchronized void activateManager() {
 
         Sorsa.every(60, () -> {
             if(getActive().size() < 1) return;
@@ -203,7 +199,7 @@ public class Boosters implements Listener {
 
     }
 
-    public static void deactivate(Booster booster) {
+    public static synchronized void deactivate(Booster booster) {
         Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §c§lTEHOSTUS LOPPUI §7(" + booster.getDisplayName() + "§7)");
@@ -236,7 +232,7 @@ public class Boosters implements Listener {
         return 0L;
     }
 
-    private static void activate(Booster booster, UUID uuid) {
+    private static synchronized void activate(Booster booster, UUID uuid) {
 
         long time = System.currentTimeMillis();
 
@@ -276,7 +272,7 @@ public class Boosters implements Listener {
         return null;
     }
 
-    public static boolean isActive(Booster booster) { return getActive().containsKey(booster.getDisplayName()); }
+    public static synchronized boolean isActive(Booster booster) { return getActive().containsKey(booster.getDisplayName()); }
 
     public static HashMap<String, HashMap<UUID, Long>> getActive() { return Boosters.active; }
 

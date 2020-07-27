@@ -35,7 +35,7 @@ public class Lottery {
         Sorsa.logColored("§6[Lottery] Player " + player.getName() + " (" + player.getUniqueId() + ") opened a lottery ticket!");
 
         for(int i = 0; i < 6; i++) {
-            Prize prize = findPrize();
+            final Prize prize = findPrize();
             if(prize != null) {
 
                 player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -72,6 +72,9 @@ public class Lottery {
                     case MONEY:
                         Main.getMoneyManager().forceWriteCheque(player, 500);
                         break;
+                    case CLAIMBLOCKS:
+                        Main.getClaimBlockCouponsManager().generateCoupon(player);
+                        break;
                 }
 
                 return prize;
@@ -91,6 +94,7 @@ public class Lottery {
 
         FOOD(50, "§c§lRuokaa"),
         DIAMONDS(10, "§b§lTimantteja"),
+        CLAIMBLOCKS(15, "§9§lClaim Blockeja"),
         MONEY(20, "§e§lRahaa"),
         VIP(0.01, "§6§lPremium");
 

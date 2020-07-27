@@ -3,7 +3,7 @@ version: 1.0
 main: me.tr.survival.main.Main
 description: SorsaMC survival plugin
 api-version: 1.13
-depend: [UltimateTimber, LuckPerms, ProtocolLib, PlayerParticles, Vault, NametagEdit, WorldGuard, Votifier]
+depend: [UltimateTimber, LuckPerms, ProtocolLib, PlayerParticles, Vault, NametagEdit, WorldGuard, Votifier, GriefPrevention]
 
 commands:
   bal:
@@ -126,12 +126,12 @@ commands:
     description: Valuutta-asiat
   shekki:
     description: Kirjoita shekkejä
-  stop:
-    description: Stop the server
-    aliases: [shutdown, restart]
-  forcestop:
-    description: Force Stop
-    aliases: [forcerestart, forceshutdown]
+#  stop:
+#    description: Stop the server
+#    aliases: [shutdown, restart]
+#  forcestop:
+#    description: Force Stop
+#    aliases: [forcerestart, forceshutdown]
   reppu:
     description: Talleta tavaroita turvallisesti
     aliases: [backpack, vault]
@@ -174,3 +174,5 @@ commands:
   village:
     description: Pelaajakylät
     aliases: [kylä]
+  cbc:
+    description: Claimblock kupongit

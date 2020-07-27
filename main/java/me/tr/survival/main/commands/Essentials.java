@@ -46,7 +46,8 @@ public class Essentials implements CommandExecutor, Listener {
                         for(int i = 0; i < args.length; i++) {
                             sb.append(args[i] + " ");
                         }
-                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "➤ &2&lILMOITUS " + sb.toString()));
+                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "➤ &2&lILMOITUS §7" + sb.toString()));
+                        Util.broadcastSound(Sound.BLOCK_NOTE_BLOCK_PLING);
                     } else Chat.sendMessage(player, "Täytyyhän sinun hyvä ihminen kirjoittaakin jotain! Käytä §a/broadcast <viesti>§7!");
                 }
             } else if(cmd.getLabel().equalsIgnoreCase("clear")) {

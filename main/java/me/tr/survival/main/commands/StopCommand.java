@@ -11,6 +11,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+@Deprecated
+// Moved to another plugin
 public class StopCommand implements CommandExecutor {
 
     private static boolean isShuttingDown = false;

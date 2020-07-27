@@ -444,7 +444,7 @@ public class Util {
             ItemMeta meta = item.getItemMeta();
             if(meta != null && item.hasItemMeta()) {
                 if(meta.hasDisplayName() && meta.hasLore()) {
-                    if(!Main.getMoneyManager().isCheque(item)) {
+                    if(!Main.getMoneyManager().isCheque(item) && !Main.getClaimBlockCouponsManager().isCoupon(item)) {
                         return true;
                     }
                 }

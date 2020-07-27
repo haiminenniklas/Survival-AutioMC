@@ -18,6 +18,7 @@ import me.tr.survival.main.managers.perks.PlayerDeathMessageManager;
 import me.tr.survival.main.managers.perks.PlayerGlowManager;
 import me.tr.survival.main.managers.travel.EndManager;
 import me.tr.survival.main.managers.travel.TravelManager;
+import me.tr.survival.main.managers.villages.PlayerVillageCreator;
 import me.tr.survival.main.managers.villages.VillageManager;
 import me.tr.survival.main.other.*;
 import me.tr.survival.main.managers.warps.Warp;
@@ -117,6 +118,9 @@ public final class Main extends JavaPlugin implements Listener {
     private static ClaimBlockCoupons claimBlockCouponsManager;
     public static ClaimBlockCoupons getClaimBlockCouponsManager() { return claimBlockCouponsManager; }
 
+    private static PlayerVillageCreator playerVillageCreator;
+    public static PlayerVillageCreator getPlayerVillageCreator() { return playerVillageCreator; }
+
     // Other instances
     private static TpaCommand tpaCommand;
     private static Essentials essentials;
@@ -154,6 +158,7 @@ public final class Main extends JavaPlugin implements Listener {
         Main.afkmanager = new AFKManager();
         Main.villageManager = new VillageManager();
         Main.claimBlockCouponsManager = new ClaimBlockCoupons();
+        Main.playerVillageCreator = new PlayerVillageCreator();
 
         // Commands
         Main.tpaCommand = new TpaCommand();
@@ -207,7 +212,7 @@ public final class Main extends JavaPlugin implements Listener {
         // Managers
         pm.registerEvents(new Chat(), this);
         pm.registerEvents(new AntiCheat(), this);
-        pm.registerEvents(new ChairEvents(), this);
+       // pm.registerEvents(new ChairEvents(), this);
 
         pm.registerEvents(staffManager, this);
         pm.registerEvents(essentials, this);
@@ -220,6 +225,8 @@ public final class Main extends JavaPlugin implements Listener {
         pm.registerEvents(weatherVote, this);
         pm.registerEvents(afkmanager, this);
         pm.registerEvents(villageManager, this);
+        pm.registerEvents(claimBlockCouponsManager, this);
+        pm.registerEvents(playerVillageCreator, this);
 
         // Other
         pm.registerEvents(antiAFKFishing, this);
@@ -254,16 +261,16 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("tpdeny").setExecutor(tpaCommand);
 
         getCommand("reppu").setExecutor(backpack);
-
         getCommand("afk").setExecutor(afkmanager);
-
         getCommand("village").setExecutor(villageManager);
+        getCommand("cbc").setExecutor(claimBlockCouponsManager);
+        getCommand("sää-äänestys").setExecutor(weatherVote);
 
         getCommand("broadcast").setExecutor(essentials);
         getCommand("world").setExecutor(essentials);
         getCommand("clear").setExecutor(essentials);
         getCommand("invsee").setExecutor(essentials);
-        getCommand("sää-äänestys").setExecutor(weatherVote);
+
 
         getCommand("bal").setExecutor(moneyCommand);
         getCommand("pay").setExecutor(moneyCommand);
@@ -271,8 +278,8 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("valuutta").setExecutor(moneyManager);
         getCommand("shekki").setExecutor(moneyManager);
 
-        getCommand("stop").setExecutor(stopCommand);
-        getCommand("forcestop").setExecutor(stopCommand);
+      //  getCommand("stop").setExecutor(stopCommand);
+     //   getCommand("forcestop").setExecutor(stopCommand);
 
         getCommand("trade").setExecutor(tradeManager);
         getCommand("staff").setExecutor(staffManager);

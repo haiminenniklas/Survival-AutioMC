@@ -8,6 +8,7 @@ import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -254,15 +255,11 @@ public class VillageManager implements Listener, CommandExecutor {
     private void searchForVillage(final Player player, String[] args) {
         String searchQuery = "";
         for(int i = 0; i < args.length; i++) { searchQuery = searchQuery.concat(args[i] + " "); }
-
         OfflinePlayer searchedLeader = Bukkit.getOfflinePlayer(searchQuery);
         PlayerVillage foundVillage = this.findVillageByLeader(searchedLeader.getUniqueId());
-
         // First, we try to check if the user wrote
         if(foundVillage == null) {
-
             boolean found = false;
-
             for(final PlayerVillage village : villages) {
                 if(village == null) continue;
                 if(village.getTitle().toLowerCase().trim().equalsIgnoreCase(searchQuery.toLowerCase().trim())) {
@@ -271,7 +268,6 @@ public class VillageManager implements Listener, CommandExecutor {
                     break;
                 }
             }
-
             if(!found) Chat.sendMessage(player, Chat.Prefix.ERROR, "Emme löytäneet yhtään kylää hakusanalla: §c" + searchQuery.toLowerCase() + "§7... Yritäthän pian uudestaan uudella hakutermillä!");
 
         } else openVillageView(player, foundVillage, true);
@@ -310,7 +306,11 @@ public class VillageManager implements Listener, CommandExecutor {
         }
         villageLore.add(" ");
         villageLore.add(" §7Jäsenet: §a" + village.getCitizens().size() + "/" + village.getMaxPlayers());
-        if(!village.isClosed() && !village.isFull()) {
+
+        villageLore.add(" ");
+        villageLore.add(" §7Tägit: §a" + StringUtils.join(village.getTags(), "§7, §a"));
+
+        if(!village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
             villageLore.add(" ");
             villageLore.add(" §aKlikkaa liittyäksesi!");
         }
@@ -348,7 +348,6 @@ public class VillageManager implements Listener, CommandExecutor {
         });
 
         if(this.hasJoinedVillage(player.getUniqueId())) {
-
             gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.SPRUCE_DOOR, 1, "§2Sinun kyläsi", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Klikkaa päästäksesi katsomaan",
@@ -363,7 +362,6 @@ public class VillageManager implements Listener, CommandExecutor {
                     mainGui(clicker);
                 }
             });
-
         }
 
         final int[] glassSlots = { 11,13,15 };
@@ -402,6 +400,10 @@ public class VillageManager implements Listener, CommandExecutor {
                 villageLore.add("§7  - §a§o" + coLeader.getName());
             }
         }
+
+        villageLore.add(" ");
+        villageLore.add(" §7Tägit: §a" + StringUtils.join(village.getTags(), "§7, §a"));
+
         villageLore.add(" ");
         villageLore.add(" §7Jäsenet: §a" + village.getCitizens().size() + "/" + village.getMaxPlayers());
         villageLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -467,8 +469,6 @@ public class VillageManager implements Listener, CommandExecutor {
 
         int size = 27;
         final Gui gui = new Gui("Hallitse kylää", size);
-
-
 
         final int[] glassSlots = { 10,16 };
         for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE, 1), slot); }
@@ -547,5 +547,7 @@ public class VillageManager implements Listener, CommandExecutor {
         }
 
     }
+
+
 
 }

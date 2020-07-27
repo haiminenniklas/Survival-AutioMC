@@ -19,9 +19,7 @@ public class Ranks {
                         return Sorsa.getLuckPerms().getUserManager().getUser(uuid).getPrimaryGroup();
                     }
                 }
-
             }
-
         }
         return "default";
     }
@@ -65,6 +63,8 @@ public class Ranks {
                 return "§cYOUTUBE";
             case "twitch":
                 return "§5TWITCH";
+            case "harjoittelija":
+                return "§aHarjoittelija";
             case "mod":
                 return "§3Moderaattori";
             case "rakentaja":
@@ -88,13 +88,15 @@ public class Ranks {
             case "premiumplus":
                 return ChatColor.GOLD;
             case "sorsa":
-                return ChatColor.GREEN;
+                return ChatColor.DARK_GREEN;
             case "youtube":
                 return ChatColor.DARK_RED;
             case "twitch":
                 return ChatColor.DARK_PURPLE;
             case "mod":
                 return ChatColor.AQUA;
+            case "harjoittelija":
+                return ChatColor.GREEN;
             case "builder":
                 return ChatColor.YELLOW;
             case "admin":
