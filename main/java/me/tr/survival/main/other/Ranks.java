@@ -136,7 +136,7 @@ public class Ranks {
     }
 
     public static boolean isStaff(UUID uuid) {
-        return hasRank(uuid, "admin") || hasRank(uuid, "mod") || hasRank(uuid, "rakentaja") || hasRank(uuid, "harjoittelija"); }
+        return hasRank(uuid, "admin") || hasRank(uuid, "mod") /*|| hasRank(uuid, "rakentaja")*/ || hasRank(uuid, "harjoittelija"); }
 
     public static boolean hasRank(Player player, String rank) {
         if(player.isOp()) return true;
