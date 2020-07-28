@@ -2,6 +2,7 @@ package me.tr.survival.main.managers;
 
 import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
+import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.database.data.Balance;
@@ -9,6 +10,7 @@ import me.tr.survival.main.database.data.Crystals;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.apache.commons.lang.time.DurationFormatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -28,14 +30,13 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MoneyManager implements CommandExecutor, Listener {
 
     private static boolean ENABLED = true;
+    private final List<UUID> inChequeConfirmal = new ArrayList<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -291,6 +292,14 @@ public class MoneyManager implements CommandExecutor, Listener {
         forceWriteCheque(player, amount);
         Chat.sendMessage(player, "Kirjoitit shekin, joka sisältää §a" + amount + "€§7!");
 
+        if(amount >= 10000) {
+            for(Player online : Bukkit.getOnlinePlayers()) {
+                if(Main.getStaffManager().hasStaffMode(online)) {
+                    Util.sendClickableText(online, "§8[§e§l⚡§8] §fPelaaja §e" + player.getUniqueId() + " §fkirjoitti shekin!", "", "§7Määrä: §a" + amount + "€§7");
+                }
+            }
+        }
+
     }
 
     public void forceWriteCheque(Player player, int amount) {
@@ -346,7 +355,22 @@ public class MoneyManager implements CommandExecutor, Listener {
             if(container.has(key, PersistentDataType.INTEGER)) {
 
                 if(isLegacyCheque(cheque)) {
-                    Chat.sendMessage(player, "Valitettavasti tuo shekki ei ole enää kelpoinen nostettavaksi!");
+                    Chat.sendMessage(player, "Valitettavasti tuo shekki ei ole enää kelpoinen nostettavaksi! " +
+                            "Mikäli shekin rahan määrä on huomattava, voit olla ylläpitoon yhteydessä rahan takaisin saamiseksi!");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    return;
+                }
+
+                if(player.getInventory().getItemInMainHand().getType() != Material.PAPER) {
+                    Chat.sendMessage(player, "Näyttäisi siltä, että shekki on jotenkin kadonnut kädestäsi..." +
+                            " Shekin täytyy olla kädessäsi, jotta nostaminen onnistuu! Otathan huomioon myös sen, että" +
+                            " shekin täytyy olla sinun oikeassa kädessä, kun sitä nostat!");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    return;
+                }
+
+                if(!inChequeConfirmal.contains(player.getUniqueId())) {
+                    Chat.sendMessage(player, "Jokin meni nyt hassusti... Yritäppä uudelleen.");
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     return;
                 }
@@ -359,6 +383,14 @@ public class MoneyManager implements CommandExecutor, Listener {
                 player.updateInventory();
                 Chat.sendMessage(player, "Nostit shekin, joka sisälsi §e" + foundValue + "€§7! Shekkejä voit kirjoittaa komennolla §a/valuutta§7!");
                 Sorsa.logColored(" §6[Cheques] Player '" + player.getName() + "' (" + player.getUniqueId() + ") withdrew a cheque worth " + Util.formatDecimals(foundValue) + "! Date: " + Util.getToday());
+                if(foundValue >= 10000) {
+                    for(Player online : Bukkit.getOnlinePlayers()) {
+                        if(Main.getStaffManager().hasStaffMode(online)) {
+                            Util.sendClickableText(online, "§8[§e§l⚡§8] §fPelaaja §e" + player.getUniqueId() + " §fnosti shekin!", "", "§7Määrä: §a" + foundValue + "€§7");
+                        }
+                    }
+                }
+                inChequeConfirmal.remove(player.getUniqueId());
             }
         }
 
@@ -373,6 +405,15 @@ public class MoneyManager implements CommandExecutor, Listener {
 
         if (container.has(key, PersistentDataType.INTEGER)) {
             int foundValue = container.get(key, PersistentDataType.INTEGER);
+
+            if(inChequeConfirmal.contains(player.getUniqueId())) {
+                inChequeConfirmal.remove(player.getUniqueId());
+                Chat.sendMessage(player, "Jokin meni nyt hassusti... Yritäppä uudelleen. ");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                return;
+            }
+
+            inChequeConfirmal.add(player.getUniqueId());
 
             Gui.openGui(player, "Varmista Shekin nosto (" + foundValue + "€)", 27, (gui) -> {
 
@@ -406,6 +447,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
                         Chat.sendMessage(clicker, "Shekin nostaminen peruutettiin");
+                        inChequeConfirmal.remove(player.getUniqueId());
                     }
                 });
             });

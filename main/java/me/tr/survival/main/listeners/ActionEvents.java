@@ -142,7 +142,7 @@ public class ActionEvents implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        if (event.getEntity().getType().equals(EntityType.PHANTOM)) event.setCancelled(true);
+        // if (event.getEntity().getType().equals(EntityType.PHANTOM)) event.setCancelled(true);
     }
 
     @EventHandler

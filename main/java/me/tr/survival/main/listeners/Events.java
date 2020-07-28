@@ -102,7 +102,7 @@ public class Events implements Listener {
 
         // Add resistance effect so the player would not take that much
         // damage from possible suffocation
-        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) Sorsa.getCurrentTPS() * 10, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) Sorsa.getCurrentTPS() * 15, 1));
 
         Sorsa.logColored("§a[Teleport] The player " + player.getName() + " (" + player.getUniqueId() + ") was sent from '" + Util.formatLocation(e.getFrom()) + "' to '" + Util.formatLocation(e.getTo()) + "'!");
         lastLocation.put(player.getUniqueId(), e.getFrom());

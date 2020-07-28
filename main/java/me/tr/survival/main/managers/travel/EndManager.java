@@ -381,6 +381,10 @@ public class EndManager implements CommandExecutor {
             Chat.sendMessage(invitor, "Pelaajalta §a" + target.getName() + " §7on nyt evätty pääsy kulkemaan §5Endiin§7! Voit antaa pääsyn uudelleen komennolla §a/ääri luota " + target.getName() + "§7!");
             Chat.sendMessage(target, "Pääsysi §5Endiin §7on evätty! Pääsyn poisti pelaaja §a" + invitor.getName() + "§7!");
 
+            if(target.getWorld().getName().equalsIgnoreCase("world_the_end")) {
+                Sorsa.teleportToSpawn(target);
+            }
+
         } else Chat.sendMessage(invitor, Chat.Prefix.ERROR, "End ei ole aktivoitu");
 
     }

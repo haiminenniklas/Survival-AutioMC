@@ -5,6 +5,8 @@ import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.Util;
+import me.tr.survival.main.util.gui.Button;
+import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -16,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -140,7 +143,7 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
                 coupon.setAmount(coupon.getAmount() - 1);
                 if(coupon.getAmount() < 1) player.getInventory().remove(coupon);
                 player.updateInventory();
-                Chat.sendMessage(player, "");
+                Chat.sendMessage(player, "Sait §3" + foundValue + " claim blockia §7lisää! Nyt vaan laajentamaan kotia!");
                 Sorsa.logColored(" §6[ClaimBlockCoupons] Player '" + player.getName() + "' (" + player.getUniqueId() + ") withdrew a claim-block-coupon worth " + Util.formatDecimals(foundValue) + " blocks! Date: " + Util.getToday());
 
             }
@@ -149,15 +152,68 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
 
     public boolean isCoupon(ItemStack item) {
 
+        if(item == null) return false;
+
         final ItemMeta meta = item.getItemMeta();
         if(meta != null && item.hasItemMeta() && item.getType() == Material.MAP) {
             if(meta.hasLore() && meta.hasDisplayName()) {
                 final PersistentDataContainer container = meta.getPersistentDataContainer();
-                NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
+                NamespacedKey key = new NamespacedKey(Main.getInstance(), "claim-amount");
                 if(container.has(key, PersistentDataType.INTEGER)) return true;
             }
         }
         return false;
+    }
+
+    public void confirmWithdrawal(Player player, ItemStack coupon) {
+        ItemMeta meta = coupon.getItemMeta();
+        NamespacedKey key = new NamespacedKey(Main.getInstance(), "claim-amount");
+
+        if(meta != null) {
+
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+            if (container.has(key, PersistentDataType.INTEGER)) {
+                int foundValue = container.get(key, PersistentDataType.INTEGER);
+
+                Gui.openGui(player, "Varmista nosto", 27, (gui) -> {
+
+                    gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                            " §7Kuponki katoaa inventorystäsi",
+                            " §7ja saat käyttöösi §b" + foundValue,
+                            " §7suojauspalikkaa!",
+                            " ",
+                            " §aKlikkaa nostaaksesi!",
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                    ))) {
+                        @Override
+                        public void onClick(Player clicker, ClickType clickType) {
+                            gui.close(player);
+                            withdrawCoupon(player, coupon);
+                        }
+                    });
+
+                    gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                            " §7Kuponki jää inventoryysi",
+                            " §7ja mitään ei tapahdu. Pystyt",
+                            " §7silti nostamaan palikat myöhemmin",
+                            " §7uudelleen!",
+                            " ",
+                            " §cKlikkaa peruuttaaksesi!",
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                    ))) {
+                        @Override
+                        public void onClick(Player clicker, ClickType clickType) {
+                            gui.close(clicker);
+                            Chat.sendMessage(clicker, "Shekin nostaminen peruutettiin");
+                        }
+                    });
+
+                });
+
+            }
+        }
     }
 
     @EventHandler
@@ -168,9 +224,11 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
 
         if(action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
             final ItemStack item = e.getItem();
-            if(item != null && item.hasItemMeta() && isCoupon(item)) {
-                e.setCancelled(true);
-                withdrawCoupon(player, item);
+            if(item != null) {
+                if(this.isCoupon(item)) {
+                    e.setCancelled(true);
+                    confirmWithdrawal(player, item);
+                }
             }
         }
     }

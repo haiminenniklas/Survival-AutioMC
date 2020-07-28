@@ -438,6 +438,23 @@ public class Util {
         });
     }
 
+    public static Material[] getMusicDiscs() {
+        return new Material[] {
+                Material.MUSIC_DISC_13,
+                Material.MUSIC_DISC_11,
+                Material.MUSIC_DISC_BLOCKS,
+                Material.MUSIC_DISC_CAT,
+                Material.MUSIC_DISC_CHIRP,
+                Material.MUSIC_DISC_FAR,
+                Material.MUSIC_DISC_MALL,
+                Material.MUSIC_DISC_MELLOHI,
+                Material.MUSIC_DISC_PIGSTEP,
+                Material.MUSIC_DISC_STAL,
+                Material.MUSIC_DISC_WARD,
+                Material.MUSIC_DISC_WAIT
+        };
+    }
+
     public static boolean isIllegalItem(ItemStack item) {
 
         if(item != null && item.getType() != Material.AIR) {

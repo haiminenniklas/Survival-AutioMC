@@ -108,7 +108,10 @@ public class ConnectionEvents implements Listener {
         Util.joined.put(player.getUniqueId(), System.currentTimeMillis());
 
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), (r) -> {
+            Sorsa.everyAsync(3, () -> Sorsa.sendTablist(player));
+
             Settings.scoreboard(player);
+
             if(Ranks.isStaff(player.getUniqueId())) Main.getStaffManager().enableStaffMode(player);
 
             // Setup backpacks
@@ -123,9 +126,6 @@ public class ConnectionEvents implements Listener {
                     Main.getBackpack().setLevel(player.getUniqueId(), Backpack.Level.THREE);
                 }
             }
-
-            Sorsa.everyAsync(3, () -> Sorsa.sendTablist(player));
-            r.cancel();
 
         }, 5);
 

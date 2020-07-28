@@ -90,7 +90,13 @@ public class AFKManager implements CommandExecutor, Listener {
         if(afk.contains(player.getUniqueId())) {
             String tabDisplayName = Ranks.getRankColor(Ranks.getRank(player.getUniqueId())) + player.getName();
             player.setPlayerListName(tabDisplayName + " §8[AFK]");
-        } else player.setPlayerListName(player.getName());
+        } else {
+            if(Main.getStaffManager().hidden.contains(player.getUniqueId())) {
+                player.setPlayerListName("§7" + player.getName() + " §8[PIILOSSA]");
+            } else {
+                player.setPlayerListName(player.getName());
+            }
+        }
     }
 
     @EventHandler

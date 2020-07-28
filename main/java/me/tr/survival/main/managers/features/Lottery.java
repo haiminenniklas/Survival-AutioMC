@@ -8,6 +8,7 @@ import me.tr.survival.main.managers.Mail;
 import me.tr.survival.main.managers.MoneyManager;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
+import me.tr.survival.main.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -75,6 +76,19 @@ public class Lottery {
                     case CLAIMBLOCKS:
                         Main.getClaimBlockCouponsManager().generateCoupon(player);
                         break;
+                    case NOTCH_APPLES:
+                        player.getInventory().addItem(ItemUtil.makeItem(Material.ENCHANTED_GOLDEN_APPLE, 1));
+                        break;
+                    case WITHER_SKULL:
+                        player.getInventory().addItem(ItemUtil.makeItem(Material.WITHER_SKELETON_SKULL, 1));
+                        break;
+                    case NETHER_INGOT:
+                        player.getInventory().addItem(ItemUtil.makeItem(Material.NETHERITE_INGOT, 5));
+                        break;
+                    case MUSIC_DISC:
+                        int random = new Random().nextInt(Util.getMusicDiscs().length);
+                        player.getInventory().addItem(ItemUtil.makeItem(Util.getMusicDiscs()[random], 1));
+                        break;
                 }
 
                 return prize;
@@ -96,7 +110,12 @@ public class Lottery {
         DIAMONDS(10, "§b§lTimantteja"),
         CLAIMBLOCKS(15, "§9§lClaim Blockeja"),
         MONEY(20, "§e§lRahaa"),
-        VIP(0.01, "§6§lPremium");
+        VIP(0.01, "§6§lPremium"),
+        NOTCH_APPLES(3, "§d§lKULTA OMENAT"),
+        WITHER_SKULL(0.5, "§8§lWITHER-KALLO"),
+        NETHER_INGOT(2, "§7§lNetherite-harkko"),
+        MUSIC_DISC(1, "§e§lMusiikkilevy")
+        ;
 
         private double chance;
         private String displayName;
