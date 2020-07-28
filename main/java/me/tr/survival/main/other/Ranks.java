@@ -68,7 +68,7 @@ public class Ranks {
             case "mod":
                 return "§3Moderaattori";
             case "rakentaja":
-                return "§2Rakentaja";
+                return "§5Rakentaja";
             case "admin":
                 return "§cYlläpitäjä";
             case "omistaja":
@@ -98,7 +98,7 @@ public class Ranks {
             case "harjoittelija":
                 return ChatColor.GREEN;
             case "builder":
-                return ChatColor.YELLOW;
+                return ChatColor.DARK_PURPLE;
             case "admin":
                 return ChatColor.RED;
             case "omistaja":

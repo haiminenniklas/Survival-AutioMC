@@ -83,7 +83,7 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
 
     private ItemStack registerCoupon(int claimBlocks) {
 
-        ItemStack item = ItemUtil.makeItem(Material.MAP, 1, "§bSuojauskuponki", Arrays.asList(
+        ItemStack item = ItemUtil.makeItem(Material.PAPER, 1, "§bSuojauskuponki", Arrays.asList(
                 "§7Tällä kupongilla pystyt lisäämään",
                 "§7itsellesi suojausblockeja!",
                 "§7Sinun pitää vain klikata tätä",
@@ -155,7 +155,7 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
         if(item == null) return false;
 
         final ItemMeta meta = item.getItemMeta();
-        if(meta != null && item.hasItemMeta() && item.getType() == Material.MAP) {
+        if(meta != null && item.hasItemMeta() && item.getType() == Material.PAPER) {
             if(meta.hasLore() && meta.hasDisplayName()) {
                 final PersistentDataContainer container = meta.getPersistentDataContainer();
                 NamespacedKey key = new NamespacedKey(Main.getInstance(), "claim-amount");

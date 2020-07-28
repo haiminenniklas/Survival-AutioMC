@@ -17,11 +17,15 @@ import java.util.Random;
 
 public class Lottery {
 
-    private static Prize findPrize() {
-        double random = new Random().nextDouble();
+    private static Prize findPrize(int givenTries) {
+        double random = Math.random();
         Prize randomPrize = Prize.values()[new Random().nextInt(Prize.values().length)];
         if(random <= randomPrize.getPercentage()) return randomPrize;
-        return null;
+        else {
+            if(givenTries < 10) {
+                return findPrize(givenTries + 1);
+            } else return null;
+        }
     }
 
     public static Prize lot(Player player) {
@@ -36,7 +40,7 @@ public class Lottery {
         Sorsa.logColored("§6[Lottery] Player " + player.getName() + " (" + player.getUniqueId() + ") opened a lottery ticket!");
 
         for(int i = 0; i < 6; i++) {
-            final Prize prize = findPrize();
+            final Prize prize = findPrize(0);
             if(prize != null) {
 
                 player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -64,8 +68,7 @@ public class Lottery {
                     case FOOD:
                         player.getInventory().addItem(
                                 ItemUtil.makeItem(Material.COOKED_BEEF, 16),
-                                ItemUtil.makeItem(Material.COOKED_PORKCHOP, 16),
-                                ItemUtil.makeItem(Material.COOKED_CHICKEN, 16));
+                                ItemUtil.makeItem(Material.COOKED_PORKCHOP, 16));
                         break;
                     case DIAMONDS:
                         player.getInventory().addItem(ItemUtil.makeItem(Material.DIAMOND, 3));
@@ -89,6 +92,19 @@ public class Lottery {
                         int random = new Random().nextInt(Util.getMusicDiscs().length);
                         player.getInventory().addItem(ItemUtil.makeItem(Util.getMusicDiscs()[random], 1));
                         break;
+                    case CHICKEN:
+                        player.getInventory().addItem(
+                                ItemUtil.makeItem(Material.COOKED_CHICKEN, 16));
+                        break;
+                    case MILK:
+                        player.getInventory().addItem(
+                                ItemUtil.makeItem(Material.MILK_BUCKET, 1));
+                        break;
+                    case WOOD:
+                        player.getInventory().addItem(
+                                ItemUtil.makeItem(Material.OAK_LOG, 32));
+                        break;
+
                 }
 
                 return prize;
@@ -106,15 +122,18 @@ public class Lottery {
 
     public enum Prize {
 
-        FOOD(50, "§c§lRuokaa"),
+        FOOD(33, "§c§lRuokaa"),
+        CHICKEN(20, "§6§lKANAA"),
+        MONEY(20, "§e§lRahaa"),
+        MILK(10, "§f§lMaitoa"),
+        WOOD(10, "§6§lPUUTA"),
         DIAMONDS(10, "§b§lTimantteja"),
         CLAIMBLOCKS(15, "§9§lClaim Blockeja"),
-        MONEY(20, "§e§lRahaa"),
-        VIP(0.01, "§6§lPremium"),
         NOTCH_APPLES(3, "§d§lKULTA OMENAT"),
-        WITHER_SKULL(0.5, "§8§lWITHER-KALLO"),
         NETHER_INGOT(2, "§7§lNetherite-harkko"),
-        MUSIC_DISC(1, "§e§lMusiikkilevy")
+        MUSIC_DISC(1, "§e§lMusiikkilevy"),
+        WITHER_SKULL(0.5, "§8§lWITHER-KALLO"),
+        VIP(0.01, "§6§lPremium"),
         ;
 
         private double chance;
