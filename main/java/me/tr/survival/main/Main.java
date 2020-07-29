@@ -546,6 +546,7 @@ public final class Main extends JavaPlugin implements Listener {
                 }
             }
             else if(command.getLabel().equalsIgnoreCase("Settings")) Settings.panel(player);
+            else if(command.getLabel().equalsIgnoreCase("dummy")) return true;
             else if(command.getLabel().equalsIgnoreCase("gamemode")) {
                 if(Ranks.isStaff(player.getUniqueId())) {
                     if(!Main.getStaffManager().hasStaffMode(player)) {

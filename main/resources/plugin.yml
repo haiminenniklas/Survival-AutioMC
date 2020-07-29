@@ -176,3 +176,5 @@ commands:
     aliases: [kylä]
   cbc:
     description: Claimblock kupongit
+  dummy:
+    description: Lorem ipsum

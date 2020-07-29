@@ -295,7 +295,7 @@ public class MoneyManager implements CommandExecutor, Listener {
         if(amount >= 10000) {
             for(Player online : Bukkit.getOnlinePlayers()) {
                 if(Main.getStaffManager().hasStaffMode(online)) {
-                    Util.sendClickableText(online, "§8[§e§l⚡§8] §fPelaaja §e" + player.getUniqueId() + " §fkirjoitti shekin!", "", "§7Määrä: §a" + amount + "€§7");
+                    Util.sendClickableText(online, "§8[§e§l⚡§8] §fPelaaja §e" + player.getName() + " §fkirjoitti shekin!", "/dummy", "§7Määrä: §a" + amount + "€§7");
                 }
             }
         }
@@ -322,9 +322,11 @@ public class MoneyManager implements CommandExecutor, Listener {
         if(itemMeta != null) {
             itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, amount);
             itemMeta.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "write-time"), PersistentDataType.LONG, now);
+            UUID createdUUID = UUID.randomUUID();
+            itemMeta.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "uuid"), PersistentDataType.STRING, createdUUID.toString());
             item.setItemMeta(itemMeta);
 
-            Sorsa.logColored(" §6[Cheques] Player '" + player.getName() + "' (" + player.getUniqueId() + ") wrote or was given by the plugin a cheque worth of " + Util.formatDecimals(amount) + "! Date: " + today);
+            Sorsa.logColored(" §6[Cheques] Player '" + player.getName() + "' (" + player.getUniqueId() + ") wrote or was given by the plugin a cheque worth of " + Util.formatDecimals(amount) + "! Date: " + today + " UUID: " + createdUUID);
 
             HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(Util.makeEnchanted(item));
             for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) { player.getWorld().dropItemNaturally(player.getLocation(), entry.getValue()); }
@@ -346,9 +348,25 @@ public class MoneyManager implements CommandExecutor, Listener {
         return false;
     }
 
-    private void withdrawCheque(Player player, ItemStack cheque) {
+    private boolean containsUUID(final ItemStack item) {
+
+        if(isCheque(item)) {
+
+            NamespacedKey uuidKey = new NamespacedKey(Main.getInstance(), "uuid");
+            ItemMeta meta = item.getItemMeta();
+            if(meta != null && item.hasItemMeta()) {
+                return meta.getPersistentDataContainer().has(uuidKey, PersistentDataType.STRING);
+            }
+
+        }
+
+        return false;
+    }
+
+    private void withdrawCheque(Player player, ItemStack cheque, UUID givenUUID) {
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
+        NamespacedKey uuidKey = new NamespacedKey(Main.getInstance(), "uuid");
         ItemMeta itemMeta = cheque.getItemMeta();
         if(itemMeta != null) {
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
@@ -375,6 +393,15 @@ public class MoneyManager implements CommandExecutor, Listener {
                     return;
                 }
 
+                UUID foundUUID = UUID.fromString(container.get(uuidKey, PersistentDataType.STRING));
+
+                if(!foundUUID.equals(givenUUID)) {
+                    Chat.sendMessage(player, "En tiedä mitä yrität, mutta se miten yrität nyt nostaa shekkejä" +
+                            " ei ihan toimi. Pidä nostettava shekki aina kädessäsi, kun sitä yrität nostaa...");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    return;
+                }
+
                 int foundValue = container.get(key, PersistentDataType.INTEGER);
                 Balance.add(player.getUniqueId(), foundValue);
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
@@ -386,7 +413,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                 if(foundValue >= 10000) {
                     for(Player online : Bukkit.getOnlinePlayers()) {
                         if(Main.getStaffManager().hasStaffMode(online)) {
-                            Util.sendClickableText(online, "§8[§e§l⚡§8] §fPelaaja §e" + player.getUniqueId() + " §fnosti shekin!", "", "§7Määrä: §a" + foundValue + "€§7");
+                            Util.sendClickableText(online, "§8[§e§l⚡§8] §fPelaaja §e" + player.getName() + " §fnosti shekin!", "/dummy", "§7Määrä: §a" + foundValue + "€§7");
                         }
                     }
                 }
@@ -405,6 +432,15 @@ public class MoneyManager implements CommandExecutor, Listener {
 
         if (container.has(key, PersistentDataType.INTEGER)) {
             int foundValue = container.get(key, PersistentDataType.INTEGER);
+
+            if(!containsUUID(cheque)) {
+                Chat.sendMessage(player, "Shekissäsi oli ongelma, joka piti korjata. Yritä uudelleen shekin nostamista!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, UUID.randomUUID().toString());
+                cheque.setItemMeta(itemMeta);
+                player.updateInventory();
+                return;
+            }
 
             if(inChequeConfirmal.contains(player.getUniqueId())) {
                 inChequeConfirmal.remove(player.getUniqueId());
@@ -429,7 +465,8 @@ public class MoneyManager implements CommandExecutor, Listener {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(player);
-                        withdrawCheque(player, cheque);
+                        UUID foundUUID = UUID.fromString(container.get(new NamespacedKey(Main.getInstance(), "uuid"), PersistentDataType.STRING));
+                        withdrawCheque(player, cheque, foundUUID);
                     }
                 });
 

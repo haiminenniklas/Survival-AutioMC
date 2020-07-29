@@ -99,7 +99,7 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "claim-amount");
         meta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, claimBlocks);
         meta.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "write-time"), PersistentDataType.LONG, System.currentTimeMillis());
-
+        item.setItemMeta(meta);
         return item;
 
     }
