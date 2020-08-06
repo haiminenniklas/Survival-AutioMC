@@ -205,6 +205,10 @@ public class VillageManager implements Listener, CommandExecutor {
         return villageConfig;
     }
 
+    public void addVillageToList(PlayerVillage village) {
+        villages.add(village);
+    }
+
     // EVENTS
 
 
@@ -511,6 +515,7 @@ public class VillageManager implements Listener, CommandExecutor {
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
+                    Main.getPlayerVillageCreator().startCreatingProcess(clicker);
                     gui.close(clicker);
                 }
             });

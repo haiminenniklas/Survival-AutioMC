@@ -940,6 +940,11 @@ public final class Main extends JavaPlugin implements Listener {
                 player.sendMessage(" §7Määrä: §6" + item.getAmount());
                 player.sendMessage(" §7Nimi (Minecraft): §6" + item.getType().getKey());
                 player.sendMessage("§7§m--------------------");
+            } else if(command.getLabel().equalsIgnoreCase("report")) {
+                player.sendMessage(" ");
+                player.sendMessage(" §7Pystyt ilmoittamaan pelaajien sääntörikkomuksista meidän §9Discord§7palvelimellamme!");
+                Util.sendClickableText(player, "§a§lPaina minua!", "/discord", "§7Hae §9Discord§7-linkki (§a/discord§7)");
+                player.sendMessage(" ");
             } else if(command.getLabel().equalsIgnoreCase("warp")) {
                 if(args.length < 1) {
                     Warps.panel(player);

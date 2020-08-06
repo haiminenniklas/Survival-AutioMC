@@ -455,6 +455,14 @@ public class Util {
         };
     }
 
+    public static int getLoadedChunksAmount() {
+        int total = 0;
+        for(World w : Bukkit.getWorlds()) {
+            total += w.getLoadedChunks().length;
+        }
+        return total;
+    }
+
     public static boolean isIllegalItem(ItemStack item) {
 
         if(item != null && item.getType() != Material.AIR) {
@@ -777,6 +785,14 @@ public class Util {
             newList.add(obj.toString());
         }
         return newList;
+    }
+
+    public static int getEntityCount() {
+        int total = 0;
+        for(World w : Bukkit.getWorlds()) {
+            total += w.getEntities().size();
+        }
+        return total;
     }
 
     public static String translateChatColor(ChatColor color) {

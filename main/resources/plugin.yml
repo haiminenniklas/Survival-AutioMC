@@ -178,3 +178,6 @@ commands:
     description: Claimblock kupongit
   dummy:
     description: Lorem ipsum
+  report:
+    description: Report ohjeet
+    aliases: [ilmoita, grieffaus]

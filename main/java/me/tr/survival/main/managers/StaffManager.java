@@ -1,5 +1,6 @@
 package me.tr.survival.main.managers;
 
+import io.papermc.lib.PaperLib;
 import me.tr.survival.main.*;
 import me.tr.survival.main.listeners.Events;
 import me.tr.survival.main.managers.perks.Particles;
@@ -276,7 +277,12 @@ public class StaffManager implements Listener, CommandExecutor {
             public void run() {
                 if(staffMode.getOrDefault(player.getUniqueId(), false))
                     if(!Main.getEventsListener().adminMode.getOrDefault(player.getUniqueId(), false))
-                        Util.sendNotification(player, "§7Piiloutuminen: " + (hidden.contains(player.getUniqueId()) ? "§a§lPÄÄLLÄ" : "§c§lPOIS PÄÄLTÄ") + " §8| §7TPS: §a" + Util.round(Sorsa.getCurrentTPS()), false);
+                        Util.sendNotification(player,
+                                "§7Piiloutuminen: " + (hidden.contains(player.getUniqueId()) ? "§a§l✓" : "§c§l✕") +
+                                        " §8| §7TPS: §a" + Util.formatDecimals(Sorsa.getCurrentTPS()) +
+                                         " §8| §7ENT: §e" + Util.getEntityCount() +
+                                        " §8| §7CHKS: §b" + Util.getLoadedChunksAmount(),
+                                false);
                 else cancel();
             }
         }.runTaskTimerAsynchronously(Main.getInstance(), 20, 20 * 2);
@@ -286,7 +292,7 @@ public class StaffManager implements Listener, CommandExecutor {
     public void disableStaffMode(Player player) {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
         Chat.sendMessage(player, "Ylläpito-tila §c§lPOIS PÄÄLTÄ§7!");
-        if(lastLocation.containsKey(player.getUniqueId())) player.teleport(lastLocation.get(player.getUniqueId()));
+        //if(lastLocation.containsKey(player.getUniqueId())) player.teleport(lastLocation.get(player.getUniqueId()));
         show(player);
         staffMode.put(player.getUniqueId(), false);
         player.setGameMode(GameMode.SURVIVAL);

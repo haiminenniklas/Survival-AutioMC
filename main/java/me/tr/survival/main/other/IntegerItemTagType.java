@@ -1,8 +1,8 @@
 package me.tr.survival.main.other;
 
-import com.sun.istack.internal.NotNull;
 import org.bukkit.inventory.meta.tags.ItemTagAdapterContext;
 import org.bukkit.inventory.meta.tags.ItemTagType;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 

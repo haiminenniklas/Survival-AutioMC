@@ -1,6 +1,5 @@
 package me.tr.survival.main.managers;
 
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.util.ItemUtil;

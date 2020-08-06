@@ -123,7 +123,7 @@ public class Sorsa {
         Main.getInstance().saveConfig();
     }
 
-    private static Location getSpawn() {
+    public static Location getSpawn() {
         FileConfiguration config = Main.getInstance().getConfig();
         double x = config.getDouble("spawn.x");
         double y = config.getDouble("spawn.y");

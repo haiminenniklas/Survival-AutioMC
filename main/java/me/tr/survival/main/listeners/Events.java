@@ -32,7 +32,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
-
 public class Events implements Listener {
 
     public final HashMap<UUID, Boolean> adminMode = new HashMap<>();
