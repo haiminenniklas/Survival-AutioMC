@@ -79,6 +79,7 @@ public class Ranks {
         }
     }
 
+
     public static ChatColor getRankColor(String rank) {
         switch(rank) {
             case "default":
@@ -97,7 +98,7 @@ public class Ranks {
                 return ChatColor.AQUA;
             case "harjoittelija":
                 return ChatColor.GREEN;
-            case "builder":
+            case "rakentaja":
                 return ChatColor.DARK_PURPLE;
             case "admin":
                 return ChatColor.RED;
@@ -111,6 +112,9 @@ public class Ranks {
 
     public static boolean hasRank(UUID uuid, String rank) {
         if(Bukkit.getOfflinePlayer(uuid).isOp()) return true;
+        if(rank.equalsIgnoreCase("sorsa")) {
+            if(hasRank(uuid, "rakentaja")) return true;
+        }
         User user = Sorsa.getLuckPerms().getUserManager().getUser(uuid);
         if(user == null) {
             return false;

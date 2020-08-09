@@ -15,6 +15,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
@@ -23,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -126,7 +128,7 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
         giveCoupon(player, amount);
     }
 
-    public void withdrawCoupon(Player player, ItemStack coupon) {
+    private void withdrawCoupon(Player player, ItemStack coupon) {
 
         ItemMeta meta = coupon.getItemMeta();
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "claim-amount");
@@ -164,7 +166,7 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
         return false;
     }
 
-    public void confirmWithdrawal(Player player, ItemStack coupon) {
+    private void confirmWithdrawal(Player player, ItemStack coupon) {
         ItemMeta meta = coupon.getItemMeta();
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "claim-amount");
 
@@ -174,7 +176,7 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
             if (container.has(key, PersistentDataType.INTEGER)) {
                 int foundValue = container.get(key, PersistentDataType.INTEGER);
 
-                Gui.openGui(player, "Varmista nosto", 27, (gui) -> {
+                Gui.openGui(player, "Vahvista nosto", 27, (gui) -> {
 
                     gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
                             "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -187,8 +189,8 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
                     ))) {
                         @Override
                         public void onClick(Player clicker, ClickType clickType) {
-                            gui.close(player);
-                            withdrawCoupon(player, coupon);
+                            gui.close(clicker);
+                            withdrawCoupon(clicker, coupon);
                         }
                     });
 
@@ -205,7 +207,7 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
                         @Override
                         public void onClick(Player clicker, ClickType clickType) {
                             gui.close(clicker);
-                            Chat.sendMessage(clicker, "Shekin nostaminen peruutettiin");
+                            Chat.sendMessage(clicker, "Kupongin nostaminen peruutettiin");
                         }
                     });
 
@@ -215,10 +217,10 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onInteract(PlayerInteractEvent e) {
 
-        final Player player = e.getPlayer();
+        Player player = e.getPlayer();
         final Action action = e.getAction();
 
         if(action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {

@@ -130,8 +130,10 @@ public class WeatherVote implements Listener, CommandExecutor {
             Sorsa.after(30, () -> {
 
                 WeatherType most;
-                if(getVotes(WeatherType.CLEAR) > getVotes(WeatherType.DOWNFALL)) most = WeatherType.CLEAR;
-                else most = WeatherType.DOWNFALL;
+                if(getAllVotes() >= 1) {
+                    if(getVotes(WeatherType.CLEAR) > getVotes(WeatherType.DOWNFALL)) most = WeatherType.CLEAR;
+                    else most = WeatherType.DOWNFALL;
+                } else most = WeatherType.CLEAR;
 
                 Util.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                 for(Player player : Bukkit.getOnlinePlayers()) {
@@ -142,7 +144,10 @@ public class WeatherVote implements Listener, CommandExecutor {
                     player.sendMessage(" §5taikavoimamme §7kehiin! Eniten ääniä");
                     player.sendMessage(" §7sai säätila:");
                     player.sendMessage(" ");
-                    player.sendMessage(" " + (most == WeatherType.CLEAR ? "§eAurinkoinen" : "§9Sateinen") + " (" + Util.formatDecimals(((double) getVotes(most) / getAllVotes()) * 100)  + "%)");
+                    if(getAllVotes() >= 1)
+                        player.sendMessage(" " + (most == WeatherType.CLEAR ? "§eAurinkoinen" : "§9Sateinen") + " §7(" + Util.formatDecimals(((double) getVotes(most) / getAllVotes()) * 100)  + "%)");
+                    else
+                        player.sendMessage(" §eAurinkoinen §7(0%)");
                     player.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                 }
 

@@ -466,6 +466,7 @@ public class Util {
     public static boolean isIllegalItem(ItemStack item) {
 
         if(item != null && item.getType() != Material.AIR) {
+            if(item.getType() == Material.BARRIER) return true;
             ItemMeta meta = item.getItemMeta();
             if(meta != null && item.hasItemMeta()) {
                 if(meta.hasDisplayName() && meta.hasLore()) {

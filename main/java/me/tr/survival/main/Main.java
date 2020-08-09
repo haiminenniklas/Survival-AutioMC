@@ -296,6 +296,14 @@ public final class Main extends JavaPlugin implements Listener {
 
         // Autosave code...
 
+        /*
+        PlayerData.loadAllToCache((result) -> {
+
+            if(!result)
+                Sorsa.logColored(" §cCould not load all players to cache, see error!");
+        }); */
+
+
         Sorsa.logColored(" §aStarting autosaving for players...");
         getServer().getScheduler().runTaskTimerAsynchronously(this, (t) -> {
 
@@ -311,7 +319,6 @@ public final class Main extends JavaPlugin implements Listener {
             new Balance().fetchTopBalance();
 
         }, 20, (20*60) * 5);
-
 
         getServer().getScheduler().runTaskTimer(Main.getInstance(), () -> {
 

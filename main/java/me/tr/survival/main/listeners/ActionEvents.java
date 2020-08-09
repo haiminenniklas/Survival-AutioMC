@@ -10,12 +10,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
@@ -140,19 +143,32 @@ public class ActionEvents implements Listener {
     }
 
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         // if (event.getEntity().getType().equals(EntityType.PHANTOM)) event.setCancelled(true);
+        final Entity entity = event.getEntity();
+        if(event.getEntityType() != EntityType.PLAYER) {
+
+            double tps = Sorsa.getCurrentTPS();
+            if(tps < 12) event.setCancelled(true);
+
+        }
+
     }
 
     @EventHandler
     public void onPortalEnter(PlayerPortalEvent e) {
-        if(e.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL || e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
+        final Player player = e.getPlayer();
+        if(e.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL) {
             e.setCancelled(true);
-            final Player player = e.getPlayer();
             player.teleport(e.getFrom());
             Chat.sendMessage(e.getPlayer(), Chat.Prefix.ERROR, "Portaalit eivät valitettavasti toimi. Pääset kuitenkin toisiin maailmoihin komennolla §a/matkusta§7!");
             Sorsa.logColored("§6[TravelManager] The player " + player.getName() + " was tried to enter a portal, but was prohibited!");
+        } else {
+            e.setCancelled(true);
+            Sorsa.teleportToNether(player);
+            Chat.sendMessage(player, "Suosittelemme, että käytät §a/matkusta §7komentoa matkustaaksesi §cNetheriin§7!");
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
         }
     }
 
@@ -160,9 +176,19 @@ public class ActionEvents implements Listener {
     public void onPortalCreate(PortalCreateEvent e) {
         if(e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
-            e.setCancelled(true);
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Portaalit eivät valitettavasti toimi. Pääset kuitenkin toisiin maailmoihin komennolla §a/matkusta§7!");
-            Sorsa.logColored("§6[TravelManager] The player " + player.getName() + " was tried to create a new portal, but was stopped!");
+            if(e.getReason() != PortalCreateEvent.CreateReason.FIRE) {
+                e.setCancelled(true);
+                Chat.sendMessage(player, Chat.Prefix.ERROR, "Portaalit eivät valitettavasti toimi. Pääset kuitenkin toisiin maailmoihin komennolla §a/matkusta§7!");
+                Sorsa.logColored("§6[TravelManager] The player " + player.getName() + " was tried to create a new portal, but was stopped!");
+            } else {
+                if(player.getWorld().getEnvironment() != World.Environment.NORMAL) {
+                    e.setCancelled(true);
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Nether portaalin luonti, toimii vain " +
+                            "tavallisessa maailmassa. Suosittelemme muutenkin, että käytät komentoa §a/matkusta§7, päästäksesi muihin maailmoihin!");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+                    Sorsa.logColored("§6[TravelManager] The player " + player.getName() + " was tried to create a new portal, but was stopped!");
+                }
+            }
         }
     }
 

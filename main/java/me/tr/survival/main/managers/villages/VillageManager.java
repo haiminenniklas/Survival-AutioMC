@@ -412,9 +412,9 @@ public class VillageManager implements Listener, CommandExecutor {
         villageLore.add(" §7Jäsenet: §a" + village.getCitizens().size() + "/" + village.getMaxPlayers());
         villageLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-        gui.addItem(1, ItemUtil.makeItem(Material.IRON_DOOR, 1, "§2" + village.getTitle(), villageLore), 12);
+        gui.addItem(1, ItemUtil.makeItem(Material.IRON_DOOR, 1, "§2" + village.getTitle(), villageLore), 11);
 
-        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.MAP, 1, "§2Vieraile", Arrays.asList(
+        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.MAP, 1, "§2Vieraile", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Teleporttaa sinun kylääsi",
                 " §7klikkaamalla minua!",
@@ -433,12 +433,12 @@ public class VillageManager implements Listener, CommandExecutor {
             }
         });
 
-        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.COMPARATOR, 1, "§2Asetukset", Arrays.asList(
+        gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.COMPARATOR, 1, "§2Asetukset", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Muokkaa kylääsi ja sen",
                 " §7asetuksia painamalla minua!",
                 " ",
-                " " + (village.canModify(player.getUniqueId()) ? "§cEi oikeuksia!" : "§aKlikkaa avataksesi!"),
+                " " + (village.canModify(player.getUniqueId()) ? "§aKlikkaa avataksesi!" : "§cEi oikeuksia!"),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override

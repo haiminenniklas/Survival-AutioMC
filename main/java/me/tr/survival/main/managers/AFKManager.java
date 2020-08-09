@@ -74,10 +74,12 @@ public class AFKManager implements CommandExecutor, Listener {
     }
 
     private void enableAFK(UUID uuid) {
-        afk.add(uuid);
         final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-        if(player.getPlayer() != null) changeTabName(player.getPlayer());
-        Sorsa.logColored("§6[AFKManager] The player " + player.getName() + " (" + player.getUniqueId() + ") is now AFK!");
+        if(player.getPlayer() != null) {
+            afk.add(uuid);
+            changeTabName(player.getPlayer());
+            Sorsa.logColored("§6[AFKManager] The player " + player.getName() + " (" + player.getUniqueId() + ") is now AFK!");
+        }
     }
 
     private void disableAFK(UUID uuid)  {

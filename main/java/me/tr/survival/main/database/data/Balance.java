@@ -17,12 +17,17 @@ public class Balance {
     private static Map<UUID, Double> topBalance = new HashMap<>();
 
     public static double get(UUID player) {
+
+        if(!PlayerData.isLoaded(player)) {
+            Sorsa.async(() -> PlayerData.loadPlayer(player, (r) -> {}));
+        }
+
         return (double) PlayerData.getValue(player, "money");
     }
 
     public static void add(UUID player, double value) {
-        double current = get(player);
-        PlayerData.set(player, "money", current + value);
+            double current = get(player);
+            PlayerData.set(player, "money", current + value);
     }
 
     public static void remove(UUID player, double value) {
@@ -32,8 +37,15 @@ public class Balance {
     }
 
     public static void set(UUID player, double value) {
-        PlayerData.set(player, "money", value);
-        Sorsa.logColored("§a[Balance] The balance of " + player + " (" + Bukkit.getOfflinePlayer(player).getName() + ") was set to " + value + "!");
+        if(!PlayerData.isLoaded(player)) {
+            Sorsa.async(() ->
+                PlayerData.loadPlayer(player, (result) -> {
+                    if(result) set(player, value);
+                }));
+        } else {
+            PlayerData.set(player, "money", value);
+            Sorsa.logColored("§a[Balance] The balance of " + player + " (" + Bukkit.getOfflinePlayer(player).getName() + ") was set to " + value + "!");
+        }
     }
 
     public static boolean canRemove(UUID player, double value) {

@@ -124,27 +124,28 @@ public class PlayerVillageCreator implements Listener {
 
         if(step < 0) this.cancelCreation(uuid);
         else if(step > 2) this.finishCreation(uuid);
+        else {
+            player.sendMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+            player.sendMessage(" ");
+            Chat.sendCenteredMessage(player, " §a§lPelaajakylän luominen");
+            player.sendMessage(" ");
+            Chat.sendCenteredMessage(player, " §7Pystyt luomaan oman yhteisösi, kerätä veroja, tienata rahaa ");
+            Chat.sendCenteredMessage(player, " §7tehdä yhteistyötä, kauppaa ja vaikka mitä pelaajakylien avulla!");
+            player.sendMessage(" ");
 
-        Chat.sendMessage(player, "§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
-        Chat.sendMessage(player, " ");
-        Chat.sendCenteredMessage(player, " §a§lPelaajakylän luominen");
-        Chat.sendMessage(player, " ");
-        Chat.sendCenteredMessage(player, " §7Pystyt luomaan oman yhteisösi, kerätä veroja, tienata rahaa ");
-        Chat.sendCenteredMessage(player, " §7tehdä yhteistyötä, kauppaa ja vaikka mitä pelaajakylien avulla!");
-        Chat.sendMessage(player, " ");
+            if(step == 1) {
+                Chat.sendCenteredMessage(player, " §7Aseta kyläsi joko §cyksityiseksi §7tai §ajulkiseksi§7. ");
+                Chat.sendCenteredMessage(player, " §7Kirjoita §akyllä §7tai §aei§7, mikäli haluat kyläsi julkiseksi!");
+                Chat.sendCenteredMessage(player, " §7Jatka seuraavaan steppiin kirjoittamalla §ajatka§7!");
+            } else if(step == 2) {
+                Chat.sendCenteredMessage(player, " §7Aseta kyläsi tägit!");
+                Chat.sendCenteredMessage(player, " §7Kirjoita tägit alle, pilkulla erotettuna ja kun olet valmis kirjoita §ajatka§7!");
+            }
 
-        if(step == 1) {
-            Chat.sendCenteredMessage(player, " §7Aseta kyläsi joko §cyksityiseksi §7tai §ajulkiseksi§7. ");
-            Chat.sendCenteredMessage(player, " §7Kirjoita §akyllä §7tai §aei§7, mikäli haluat kyläsi julkiseksi!");
-            Chat.sendCenteredMessage(player, " §7Jatka seuraavaan steppiin kirjoittamalla §ajatka§7!");
-        } else if(step == 2) {
-            Chat.sendCenteredMessage(player, " §7Aseta kyläsi tägit!");
-            Chat.sendCenteredMessage(player, " §7Kirjoita tägit alle, pilkulla erotettuna ja kun olet valmis kirjoita §ajatka§7!");
+            player.sendMessage(" ");
+            Chat.sendCenteredMessage(player, " §7Lopeta luominen kirjoittamalla §alopeta §7chattiin!");
+            player.sendMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
         }
-
-        Chat.sendMessage(player, " ");
-        Chat.sendCenteredMessage(player, " §7Lopeta luominen kirjoittamalla §alopeta §7chattiin!");
-        Chat.sendMessage(player, "§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
 
     }
 
@@ -193,13 +194,13 @@ public class PlayerVillageCreator implements Listener {
 
                 Main.getVillageManager().addVillageToList(village);
 
-                Chat.sendMessage(player, "§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
-                Chat.sendMessage(player, " ");
+                player.sendMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+                player.sendMessage(" ");
                 Chat.sendCenteredMessage(player, " §a§lPelaajakylän luominen");
-                Chat.sendMessage(player, " ");
+                player.sendMessage(" ");
                 Chat.sendCenteredMessage(player, " §7Kyläsi on nyt luotu! Pääset tarkastelemaan sitä §a/kylä§7!");
-                Chat.sendMessage(player, " ");
-                Chat.sendMessage(player, "§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+                player.sendMessage(" ");
+                player.sendMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
 
             } else Chat.sendMessage(player, "Sinun täytyy laittaa joitain arvoja, jotta voit luoda kylän!");
 

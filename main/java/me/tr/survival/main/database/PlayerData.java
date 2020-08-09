@@ -331,6 +331,35 @@ public class PlayerData {
         return player_data.containsKey(uuid);
     }
 
+    public static void loadAllToCache(TypedCallback<Boolean> cb) {
+
+        SQL.query("SELECT uuid FROM players;", ((result, connection) -> {
+
+            try {
+                while(result.next()) {
+                    UUID uuid = UUID.fromString(result.getString("uuid"));
+                    PlayerData.loadPlayer(uuid, (r1) -> {});
+                }
+
+                cb.execute(true);
+
+            } catch(SQLException ex) {
+                cb.execute(false);
+                ex.printStackTrace();
+            } finally {
+                if(connection != null) {
+                    try {
+                        connection.close();
+                    } catch(SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+
+        }));
+
+    }
+
     public static Object getValue(UUID uuid, String key) {
 
         if(!isLoaded(uuid)) {

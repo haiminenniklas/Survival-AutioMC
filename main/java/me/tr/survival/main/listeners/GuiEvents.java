@@ -23,7 +23,6 @@ public class GuiEvents implements Listener {
         final Player player = (Player) e.getWhoClicked();
         final Gui gui = Gui.getGui(player);
         final InventoryView view = e.getView();
-
         if(gui != null) {
             if(view.getTitle().contains("§r")) {
 
