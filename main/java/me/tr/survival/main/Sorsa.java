@@ -76,7 +76,7 @@ public class Sorsa {
     public static void async(Runnable task) { Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), task); }
 
     public static void teleportToNether(Player player) {
-        player.teleport(new Location(Bukkit.getWorld("world_nether"), -2.5, 55, 15.5, 179, -2));
+        player.teleport(new Location(Bukkit.getWorld("world_nether3"), -2.5, 55, 15.5, 179, -2));
     }
 
     public static void every(int seconds, Runnable task, boolean async) {
@@ -189,7 +189,7 @@ public class Sorsa {
     }
 
     public static World getNetherWorld() {
-        return Bukkit.getWorld("world_nether");
+        return Bukkit.getWorld("world_nether3");
     }
 
     private static ProtocolManager getProtocolManager(){

@@ -37,6 +37,7 @@ public class Events implements Listener {
     public final HashMap<UUID, Boolean> adminMode = new HashMap<>();
     public final HashMap<UUID, Location> lastLocation = new HashMap<>();
     final ArrayList<UUID> deathIsland = new ArrayList<>();
+    public final HashMap<UUID, Location> deathLocation = new HashMap<>();
 
     @EventHandler
     public void onVote(VotifierEvent e) {
@@ -56,6 +57,7 @@ public class Events implements Listener {
     public void onDeath(PlayerDeathEvent e) {
         Player player = e.getEntity();
         lastLocation.put(player.getUniqueId(), player.getLocation());
+        deathLocation.put(player.getUniqueId(), player.getLocation());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

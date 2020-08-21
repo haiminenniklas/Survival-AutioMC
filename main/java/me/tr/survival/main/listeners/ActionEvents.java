@@ -81,7 +81,7 @@ public class ActionEvents implements Listener {
 
         final Player player = e.getPlayer();
         final World world = e.getTo().getWorld();
-        if(world.getName().equalsIgnoreCase("world_nether") && e.getTo().getBlockY() >= 127) {
+        if(world.getEnvironment() == World.Environment.NETHER && e.getTo().getBlockY() >= 127) {
             e.setCancelled(true);
             Sorsa.teleportToNether(player);
             Chat.sendMessage(player, "Netheriä voit tutkia vain Netherin sisällä! Soo soo!");
@@ -127,7 +127,7 @@ public class ActionEvents implements Listener {
     public void onTeleport(PlayerTeleportEvent e) {
 
         Player player = e.getPlayer();
-        if(e.getTo().getWorld().getName().equals("world_nether")) {
+        if(e.getTo().getWorld().getEnvironment() == World.Environment.NETHER) {
             if(!Main.getStaffManager().hasStaffMode(player)) {
                 player.setFlying(false);
                 player.setAllowFlight(false);

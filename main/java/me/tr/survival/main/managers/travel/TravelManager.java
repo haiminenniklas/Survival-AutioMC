@@ -11,6 +11,7 @@ import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,7 +36,7 @@ public class TravelManager implements CommandExecutor, Listener {
 
     public void gui(Player player) {
 
-        if(player.getWorld().getName().equals("world_nether")) {
+        if(player.getWorld().getEnvironment() == World.Environment.NETHER) {
             Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
             return;
         }

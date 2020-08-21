@@ -57,7 +57,7 @@ public class Home {
     }
 
     public void teleport(Player player, TypedCallback<Boolean> result) {
-        if(player.getWorld().getName().equals("world_nether")) {
+        if(player.getWorld().getEnvironment() == World.Environment.NETHER) {
             Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
             result.execute(false);
             return;
@@ -65,8 +65,8 @@ public class Home {
 
         final Location loc = this.getLocation();
 
-        if(loc.getWorld().getName().equalsIgnoreCase("world_the_end") ||
-                loc.getWorld().getName().equalsIgnoreCase("world_nether")) {
+        if(loc.getWorld().getEnvironment() == World.Environment.THE_END ||
+                loc.getWorld().getEnvironment() == World.Environment.NETHER) {
             Chat.sendMessage(player, "Kodin sijainti ei ole tavallisessa maailmassa, joten sinne ei pysty teleporttaamaan. Ole hyvä ja poista tämä koti.");
             result.execute(false);
             return;

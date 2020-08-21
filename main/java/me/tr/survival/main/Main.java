@@ -437,12 +437,39 @@ public final class Main extends JavaPlugin implements Listener {
                     OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                     Profile.openOther(player, target);
                 }
-            }
-            else if(command.getLabel().equalsIgnoreCase("vote")) Chat.sendMessage(player, "Äänestä meitä: §ahttps://minecraft-mp.com/server/259722/vote/ §7! Äänestämällä saat itsellesä §e1kpl arpoja§7!");
-            else if(command.getLabel().equalsIgnoreCase("vip")) Settings.vipPanel(player);
-            else if(command.getLabel().equalsIgnoreCase("spawn")) {
+           }
+           else if(command.getLabel().equalsIgnoreCase("vote")) Chat.sendMessage(player, "Äänestä meitä: §ahttps://minecraft-mp.com/server/259722/vote/ §7! Äänestämällä saat itsellesä §e1kpl arpoja§7!");
+           else if(command.getLabel().equalsIgnoreCase("vip")) Settings.vipPanel(player);
+           else if(command.getLabel().equalsIgnoreCase("lipuke")) {
+                player.sendMessage(" ");
+                Chat.sendCenteredMessage(player, "§ahttps://www.youtube.com/watch?v=bzsHuWOcrE0");
+                player.sendMessage(" ");
+           }
+           else if(command.getLabel().equalsIgnoreCase("kuolemasijainti")) {
+
+                if(Main.getEventsListener().deathLocation.containsKey(uuid)) {
+
+                    final Location deathLoc = Main.getEventsListener().deathLocation.get(uuid);
+                    final World deathWorld = deathLoc.getWorld();
+
+                    String deathWorldName;
+
+                    if(deathWorld.getEnvironment() == World.Environment.NETHER) deathWorldName = "§cNether§7";
+                    else if(deathWorld.getEnvironment() == World.Environment.THE_END) deathWorldName = "§5End§7";
+                    else deathWorldName = "§aMaailma§7";
+
+                    player.sendMessage(" ");
+                    Chat.sendMessage(player, " Viimeisein kuolinsijaintisi: §a" + deathLoc.getBlockX() + "§7, " +
+                                            "§a" + deathLoc.getBlockY() + "§7, §a" + deathLoc.getBlockZ() + "§7, maailmassa " +
+                                            deathWorldName);
+                    player.sendMessage(" ");
+
+                } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Et ole vielä kuollut tämän peli-istunnon aikana...");
+
+
+           } else if(command.getLabel().equalsIgnoreCase("spawn")) {
                 if(args.length < 1) {
-                    if(player.getWorld().getName().equals("world_nether")) {
+                    if(player.getWorld().getEnvironment() == World.Environment.NETHER && !Main.getStaffManager().hasStaffMode(player)) {
                         Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
                         return true;
                     }
@@ -454,6 +481,8 @@ public final class Main extends JavaPlugin implements Listener {
                             return true;
                         }
                     }
+
+                    NBTItem
 
                     if(!Main.getStaffManager().hasStaffMode(player)) {
                         spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));

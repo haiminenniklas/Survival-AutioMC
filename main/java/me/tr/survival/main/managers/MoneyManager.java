@@ -37,6 +37,7 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     private static boolean ENABLED = true;
     private final List<UUID> inChequeConfirmal = new ArrayList<>();
+    private final HashMap<UUID, Long> lastChequeWithdrawal = new HashMap<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -365,6 +366,37 @@ public class MoneyManager implements CommandExecutor, Listener {
 
     private void withdrawCheque(Player player, ItemStack cheque, UUID givenUUID) {
 
+        if(!player.isOp() && !ENABLED) {
+            Chat.sendMessage(player, "Tämä toiminto on toistaiseksi poissa käytöstä. Yritähän myöhemmin uudelleen.");
+            return;
+        }
+
+        if(this.lastChequeWithdrawal.containsKey(player.getUniqueId())) {
+
+            final long lastWithdrawal = this.lastChequeWithdrawal.get(player.getUniqueId());
+            final long now = System.currentTimeMillis();
+
+            long timePassed = now - lastWithdrawal;
+
+            // Less than 5 minutes ago
+            if(timePassed < 1000 * 60 * 60 * 5) {
+                if(!Main.getStaffManager().hasStaffMode(player)) {
+                    long whenCanWithdraw = lastWithdrawal + (1000 * 60 * 60 * 5);
+                    long timeLeftRaw = (whenCanWithdraw - now) / 1000;
+
+                    long minutes = (int) timeLeftRaw / 60;
+                    long seconds = timeLeftRaw - (60 * minutes);
+
+                    String timeLeft = Util.formatTime((int) minutes, (int) seconds, true);
+
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "§7Voit nostaa shekkejä §c5 minuutin§7 välein! " +
+                            "Odotathan vielä siis §c" + timeLeft + "§7!");
+                    return;
+                }
+            }
+
+        }
+
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
         NamespacedKey uuidKey = new NamespacedKey(Main.getInstance(), "uuid");
         ItemMeta itemMeta = cheque.getItemMeta();
@@ -403,6 +435,14 @@ public class MoneyManager implements CommandExecutor, Listener {
                 }
 
                 int foundValue = container.get(key, PersistentDataType.INTEGER);
+
+                if(foundValue > 50000) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    Chat.sendMessage(player, "Et yksin pysty nostamaan yli §a50 000€ §7shekkejä... Sinun " +
+                            "täytyy pyytää ylläpidoltamme apua tämän nostamiseen!");
+                    return;
+                }
+
                 Balance.add(player.getUniqueId(), foundValue);
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                 cheque.setAmount(cheque.getAmount() - 1);
@@ -410,6 +450,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                 player.updateInventory();
                 Chat.sendMessage(player, "Nostit shekin, joka sisälsi §e" + foundValue + "€§7! Shekkejä voit kirjoittaa komennolla §a/valuutta§7!");
                 Sorsa.logColored(" §6[Cheques] Player '" + player.getName() + "' (" + player.getUniqueId() + ") withdrew a cheque worth " + Util.formatDecimals(foundValue) + "! Date: " + Util.getToday());
+                this.lastChequeWithdrawal.put(player.getUniqueId(), System.currentTimeMillis());
                 if(foundValue >= 10000) {
                     for(Player online : Bukkit.getOnlinePlayers()) {
                         if(Main.getStaffManager().hasStaffMode(online)) {

@@ -181,3 +181,9 @@ commands:
   report:
     description: Report ohjeet
     aliases: [ilmoita, grieffaus]
+  lipuke:
+    description: Lipuke
+    aliases: [apulipuke, ticket]
+  kuolemasijainti:
+    description: Sijainti jossa kuolit
+    aliases: [lastdeath]
