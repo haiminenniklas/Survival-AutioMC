@@ -166,9 +166,11 @@ public class ActionEvents implements Listener {
             Sorsa.logColored("§6[TravelManager] The player " + player.getName() + " was tried to enter a portal, but was prohibited!");
         } else {
             e.setCancelled(true);
-            Sorsa.teleportToNether(player);
-            Chat.sendMessage(player, "Suosittelemme, että käytät §a/matkusta §7komentoa matkustaaksesi §cNetheriin§7!");
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+            if(e.getFrom().getWorld().getEnvironment() == World.Environment.NORMAL) {
+                Sorsa.teleportToNether(player);
+                Chat.sendMessage(player, "Suosittelemme, että käytät §a/matkusta §7komentoa matkustaaksesi §cNetheriin§7!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+            }
         }
     }
 
@@ -176,18 +178,21 @@ public class ActionEvents implements Listener {
     public void onPortalCreate(PortalCreateEvent e) {
         if(e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
+            e.setCancelled(true);
             if(e.getReason() != PortalCreateEvent.CreateReason.FIRE) {
-                e.setCancelled(true);
                 Chat.sendMessage(player, Chat.Prefix.ERROR, "Portaalit eivät valitettavasti toimi. Pääset kuitenkin toisiin maailmoihin komennolla §a/matkusta§7!");
                 Sorsa.logColored("§6[TravelManager] The player " + player.getName() + " was tried to create a new portal, but was stopped!");
+                return;
+            }
+            if(player.getWorld().getEnvironment() != World.Environment.NORMAL) {
+                e.setCancelled(true);
+                Chat.sendMessage(player, Chat.Prefix.ERROR, "Nether portaalin luonti, toimii vain " +
+                        "tavallisessa maailmassa. Suosittelemme muutenkin, että käytät komentoa §a/matkusta§7, päästäksesi muihin maailmoihin!");
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+                Sorsa.logColored("§6[TravelManager] The player " + player.getName() + " was tried to create a new portal, but was stopped!");
+                return;
             } else {
-                if(player.getWorld().getEnvironment() != World.Environment.NORMAL) {
-                    e.setCancelled(true);
-                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Nether portaalin luonti, toimii vain " +
-                            "tavallisessa maailmassa. Suosittelemme muutenkin, että käytät komentoa §a/matkusta§7, päästäksesi muihin maailmoihin!");
-                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-                    Sorsa.logColored("§6[TravelManager] The player " + player.getName() + " was tried to create a new portal, but was stopped!");
-                }
+                e.setCancelled(false);
             }
         }
     }

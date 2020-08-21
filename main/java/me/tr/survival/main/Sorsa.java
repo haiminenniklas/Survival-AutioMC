@@ -105,12 +105,12 @@ public class Sorsa {
             Method getServer = craftServer.getMethod ( "getServer" );
             Object nmsServer = getServer.invoke ( Bukkit.getServer ( ) );
             double[] recentTps = (double[]) nmsServer.getClass().getField("recentTps").get(nmsServer);
-            average = (recentTps[0] + recentTps[1] + recentTps[2]) / 3;
+            average = recentTps[0];
         } catch (Exception ex) {
             ex.printStackTrace();
             return 0.0d;
         }
-        return Util.round(average);
+        return Math.min(average + 1.0, 20.0);
     }
 
     static void setSpawn(Location loc) {

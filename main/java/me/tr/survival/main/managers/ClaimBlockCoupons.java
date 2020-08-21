@@ -170,7 +170,7 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
             if(container.has(key, PersistentDataType.INTEGER)) {
 
                 int foundValue = container.get(key, PersistentDataType.INTEGER);
-                
+
                 if(player.getInventory().getItemInMainHand().getType() != Material.PAPER) {
                     Chat.sendMessage(player, "Näyttäisi siltä, että kuponki on jotenkin kadonnut kädestäsi..." +
                             " Kupongin täytyy olla kädessäsi, jotta nostaminen onnistuu! Otathan huomioon myös sen, että" +

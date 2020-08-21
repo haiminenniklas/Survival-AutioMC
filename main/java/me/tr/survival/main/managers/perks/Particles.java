@@ -55,7 +55,7 @@ public class Particles implements Listener, CommandExecutor {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        Sorsa.getParticlesAPI().resetActivePlayerParticles(player);
+      //  Sorsa.getParticlesAPI().resetActivePlayerParticles(player);
     }
 
     private void loadParticles(Player player) {

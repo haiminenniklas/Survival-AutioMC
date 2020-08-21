@@ -12,6 +12,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -40,7 +41,11 @@ public class ConnectionEvents implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
         final UUID uuid = e.getUniqueId();
-        if(e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) PlayerData.loadPlayer(uuid, r -> {});
+        if(e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+            if(!PlayerData.isLoaded(uuid)) {
+                PlayerData.loadPlayer(uuid, r -> {});
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -74,6 +79,11 @@ public class ConnectionEvents implements Listener {
         player.sendMessage(" ");
 
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
+
+        Location loc = player.getLocation();
+        if(Util.isInRegion(loc, "spawn")) {
+            Sorsa.teleportToSpawn(player);
+        }
 
         e.setJoinMessage(null);
 
