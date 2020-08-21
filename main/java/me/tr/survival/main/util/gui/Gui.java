@@ -188,9 +188,13 @@ public class Gui implements Listener {
                 }
             }
             //System.out.println("[/Gui] Button adding took in total " + (System.currentTimeMillis() - buttonLoopStart) + "ms!");
-            playerPages.put(player, 1);
             //System.out.println("[/Gui] Opening the Inventory...");
-            Sorsa.task(() -> player.openInventory(inv));
+            Sorsa.task(() -> {
+
+                playerPages.put(player, 1);
+                player.openInventory(inv);
+
+            });
             //System.out.println("[/Gui] Gui opening took in total " + (System.currentTimeMillis() - start) + "ms!");
         });
 

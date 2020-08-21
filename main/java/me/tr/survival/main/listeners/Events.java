@@ -185,7 +185,8 @@ public class Events implements Listener {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
 
         if(!player.hasPermission("deathisland.bypass") && !deathIsland.contains(player.getUniqueId())) {
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), (task -> {
+            Sorsa.teleportToSpawn(player);
+           /*Bukkit.getScheduler().runTaskLater(Main.getInstance(), (task -> {
                 Location deathSpawn = Sorsa.getDeathSpawn();
                 player.teleport(deathSpawn);
                 Util.heal(player);
@@ -226,7 +227,7 @@ public class Events implements Listener {
                     }
 
                 }
-            }.runTaskTimerAsynchronously(Main.getInstance(), 25, 20);
+            }.runTaskTimerAsynchronously(Main.getInstance(), 25, 20); */
 
         } else Sorsa.teleportToSpawn(player);
 

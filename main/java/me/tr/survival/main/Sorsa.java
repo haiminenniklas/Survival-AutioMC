@@ -9,8 +9,9 @@ import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.sk89q.worldguard.WorldGuard;
+import de.tr7zw.changeme.nbtapi.data.NBTData;
+import de.tr7zw.changeme.nbtapi.data.PlayerData;
 import dev.esophose.playerparticles.api.PlayerParticlesAPI;
-import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.listeners.Events;
 import me.tr.survival.main.managers.*;
 import me.tr.survival.main.managers.features.Boosters;
@@ -155,6 +156,10 @@ public class Sorsa {
         float pitch = Float.parseFloat(config.getString("deathspawn.pitch"));
         World world = Bukkit.getWorld(config.getString("deathspawn.world"));
         return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    public static de.tr7zw.changeme.nbtapi.data.PlayerData getNBTPlayerData(UUID uuid) {
+        return NBTData.getOfflinePlayerData(uuid);
     }
 
     public static FileConfiguration getConfig() {

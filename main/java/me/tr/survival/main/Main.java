@@ -482,8 +482,6 @@ public final class Main extends JavaPlugin implements Listener {
                         }
                     }
 
-                    NBTItem
-
                     if(!Main.getStaffManager().hasStaffMode(player)) {
                         spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));
                         Chat.sendMessage(player, "Sinut viedään spawnille §c5s §7päästä!");

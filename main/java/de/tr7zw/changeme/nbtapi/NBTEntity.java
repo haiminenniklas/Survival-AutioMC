@@ -2,7 +2,6 @@ package de.tr7zw.changeme.nbtapi;
 
 import org.bukkit.entity.Entity;
 
-import de.tr7zw.annotations.FAUtil;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import de.tr7zw.changeme.nbtapi.utils.annotations.AvaliableSince;
 import de.tr7zw.changeme.nbtapi.utils.annotations.CheckUtil;
@@ -48,7 +47,7 @@ public class NBTEntity extends NBTCompound {
 	 */
 	@AvaliableSince(version = MinecraftVersion.MC1_14_R1)
 	public NBTCompound getPersistentDataContainer() {
-		FAUtil.check(this::getPersistentDataContainer, CheckUtil::isAvaliable);
+		//FAUtil.check(this::getPersistentDataContainer, CheckUtil::isAvaliable);
 		if (hasKey("BukkitValues")) {
 			return getCompound("BukkitValues");
 		} else {

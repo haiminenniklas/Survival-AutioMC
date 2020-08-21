@@ -176,42 +176,42 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
             if (container.has(key, PersistentDataType.INTEGER)) {
                 int foundValue = container.get(key, PersistentDataType.INTEGER);
 
-                Gui.openGui(player, "Vahvista nosto", 27, (gui) -> {
+                Gui gui = new Gui("Vahvista nosto", 27);
 
-                    gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
-                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                            " §7Kuponki katoaa inventorystäsi",
-                            " §7ja saat käyttöösi §b" + foundValue,
-                            " §7suojauspalikkaa!",
-                            " ",
-                            " §aKlikkaa nostaaksesi!",
-                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                    ))) {
-                        @Override
-                        public void onClick(Player clicker, ClickType clickType) {
-                            gui.close(clicker);
-                            withdrawCoupon(clicker, coupon);
-                        }
-                    });
-
-                    gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
-                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                            " §7Kuponki jää inventoryysi",
-                            " §7ja mitään ei tapahdu. Pystyt",
-                            " §7silti nostamaan palikat myöhemmin",
-                            " §7uudelleen!",
-                            " ",
-                            " §cKlikkaa peruuttaaksesi!",
-                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-                    ))) {
-                        @Override
-                        public void onClick(Player clicker, ClickType clickType) {
-                            gui.close(clicker);
-                            Chat.sendMessage(clicker, "Kupongin nostaminen peruutettiin");
-                        }
-                    });
-
+                gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                        " §7Kuponki katoaa inventorystäsi",
+                        " §7ja saat käyttöösi §b" + foundValue,
+                        " §7suojauspalikkaa!",
+                        " ",
+                        " §aKlikkaa nostaaksesi!",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                ))) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(clicker);
+                        withdrawCoupon(clicker, coupon);
+                    }
                 });
+
+                gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                        " §7Kuponki jää inventoryysi",
+                        " §7ja mitään ei tapahdu. Pystyt",
+                        " §7silti nostamaan palikat myöhemmin",
+                        " §7uudelleen!",
+                        " ",
+                        " §cKlikkaa peruuttaaksesi!",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                ))) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(clicker);
+                        Chat.sendMessage(clicker, "Kupongin nostaminen peruutettiin");
+                    }
+                });
+
+                gui.open(player);
 
             }
         }

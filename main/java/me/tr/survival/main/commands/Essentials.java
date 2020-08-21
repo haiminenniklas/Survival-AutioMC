@@ -1,6 +1,9 @@
 package me.tr.survival.main.commands;
 
-import com.songoda.ultimatetimber.core.nms.v1_8_R1.nbt.NBTItemImpl;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTCompoundList;
+import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.data.NBTData;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.Main;
@@ -23,6 +26,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,6 +37,8 @@ import java.io.File;
 import java.util.*;
 
 public class Essentials implements CommandExecutor, Listener {
+
+    private Map<UUID, UUID> inInvsee = new HashMap<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -111,7 +117,7 @@ public class Essentials implements CommandExecutor, Listener {
 
                     if(args.length < 1) Chat.sendMessage(player, "Käytä §a/invsee <pelaaja>");
                     else {
-                        Player target = Bukkit.getPlayer(args[0]);
+                        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
                         if(target == null) {
                             Chat.sendMessage(player, Chat.Prefix.ERROR, "Pelaajaa ei löydetty!");
                             return true;
@@ -126,11 +132,68 @@ public class Essentials implements CommandExecutor, Listener {
         return true;
     }
 
-    private void invsee(Player opener, Player target) {
+    private void invsee(Player opener, OfflinePlayer target) {
+
+        if(target.isOnline()) {
+            opener.openInventory(target.getPlayer().getInventory());
+        } else {
+
+            de.tr7zw.changeme.nbtapi.data.PlayerData playerNBTData = NBTData.getOfflinePlayerData(target.getUniqueId());
+            NBTCompoundList Inv = playerNBTData.getCompound().getCompoundList("Inventory");
+
+            final Inventory inv = Bukkit.createInventory(null, 27, "Inventory " + target.getName() + " (offline)");
+
+            for(NBTCompound nbtCompound : Inv) {
+                int count = nbtCompound.getInteger("Count");
+                int slot = nbtCompound.getInteger("Slot");
+                Material mat = Material.matchMaterial(nbtCompound.getString("id"));
+                if(mat != null) {
+                    ItemStack item = new ItemStack(mat, count);
+                    inv.setItem(slot, item);
+                }
+            }
+
+        }
+
+        this.inInvsee.put(opener.getUniqueId(), target.getUniqueId());
+
+    }
+
+    @EventHandler
+    public void onInvClose(InventoryCloseEvent e) {
+
+        Player player = (Player) e.getPlayer();
+        Inventory inv = e.getInventory();
+
+        if(this.inInvsee.containsKey(player.getUniqueId())) {
+
+            OfflinePlayer target = Bukkit.getOfflinePlayer(this.inInvsee.get(player.getUniqueId()));
+            if(!target.isOnline()) {
+
+                de.tr7zw.changeme.nbtapi.data.PlayerData playerNBTData = NBTData.getOfflinePlayerData(target.getUniqueId());
+                NBTCompoundList Inv = playerNBTData.getCompound().getCompoundList("Inventory");
+
+                Collection<NBTCompound> items = Collections.emptySet();
+                for(ItemStack itemstack : inv.getContents()) {
+                    if(itemstack != null) {
+                        items.add(NBTItem.convertItemtoNBT(new ItemStack(Material.AIR)));
+                    } else items.add(NBTItem.convertItemtoNBT(itemstack));
+                }
+
+                Inv.clear();
+                for(NBTCompound com : items) {
+                    Inv.addCompound(com);
+                }
+
+                playerNBTData.saveChanges();
+
+            }
 
 
+        }
 
-        opener.openInventory(target.getInventory());
+        this.inInvsee.remove(player.getUniqueId());
+
     }
 
     @Deprecated
