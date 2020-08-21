@@ -375,9 +375,14 @@ public class PlayerData {
 
     }
 
-    public static void set(UUID uuid, String key, Object value) {
+    public static void set(final UUID uuid, final String key, final Object value) {
         if(!isLoaded(uuid)) {
-            loadNull(uuid, false);
+            Sorsa.async(() ->
+                    PlayerData.loadPlayer(uuid, (result) -> {
+                        if(result) set(uuid, key, value);
+                        savePlayer(uuid);
+                    }));
+            return;
         }
 
         HashMap<String, Object> data = player_data.get(uuid);
@@ -392,7 +397,14 @@ public class PlayerData {
 
     public static void add(UUID uuid, String key, int value) {
         if(!isLoaded(uuid)) {
-            loadNull(uuid, false);
+            if(!isLoaded(uuid)) {
+                Sorsa.async(() ->
+                        PlayerData.loadPlayer(uuid, (result) -> {
+                            if(result) add(uuid, key, value);
+                            savePlayer(uuid);
+                        }));
+                return;
+            }
         }
 
         // Try to prevent some nasty things
@@ -419,7 +431,14 @@ public class PlayerData {
 
     public static void add(UUID uuid, String key, double value) {
         if(!isLoaded(uuid)) {
-            loadNull(uuid, false);
+            if(!isLoaded(uuid)) {
+                Sorsa.async(() ->
+                        PlayerData.loadPlayer(uuid, (result) -> {
+                            if(result) add(uuid, key, value);
+                            savePlayer(uuid);
+                        }));
+                return;
+            }
         }
 
         HashMap<String, Object> data = player_data.get(uuid);

@@ -20,6 +20,7 @@ public class Balance {
 
         if(!PlayerData.isLoaded(player)) {
             Sorsa.async(() -> PlayerData.loadPlayer(player, (r) -> {}));
+            return 0.0;
         }
 
         return (double) PlayerData.getValue(player, "money");
@@ -37,15 +38,8 @@ public class Balance {
     }
 
     public static void set(UUID player, double value) {
-        if(!PlayerData.isLoaded(player)) {
-            Sorsa.async(() ->
-                PlayerData.loadPlayer(player, (result) -> {
-                    if(result) set(player, value);
-                }));
-        } else {
-            PlayerData.set(player, "money", value);
-            Sorsa.logColored("§a[Balance] The balance of " + player + " (" + Bukkit.getOfflinePlayer(player).getName() + ") was set to " + value + "!");
-        }
+        PlayerData.set(player, "money", value);
+        Sorsa.logColored("§a[Balance] The balance of " + player + " (" + Bukkit.getOfflinePlayer(player).getName() + ") was set to " + value + "!");
     }
 
     public static boolean canRemove(UUID player, double value) {

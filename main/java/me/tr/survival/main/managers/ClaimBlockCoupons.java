@@ -27,15 +27,14 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 //TODO: Finish this
 public class ClaimBlockCoupons implements CommandExecutor, Listener {
 
     private boolean ENABLED = true;
+    private final List<UUID> inChequeConfirmal = new ArrayList<>();
+    private final HashMap<UUID, Long> lastChequeWithdrawal = new HashMap<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull  String[] args) {
@@ -128,10 +127,42 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
         giveCoupon(player, amount);
     }
 
-    private void withdrawCoupon(Player player, ItemStack coupon) {
+    private void withdrawCoupon(Player player, ItemStack coupon, UUID givenUUID) {
+
+        if(!player.isOp() && !ENABLED) {
+            Chat.sendMessage(player, "Tämä toiminto on toistaiseksi poissa käytöstä. Yritähän myöhemmin uudelleen.");
+            return;
+        }
+
+        if(this.lastChequeWithdrawal.containsKey(player.getUniqueId())) {
+
+            final long lastWithdrawal = this.lastChequeWithdrawal.get(player.getUniqueId());
+            final long now = System.currentTimeMillis();
+
+            long timePassed = now - lastWithdrawal;
+
+            // Less than 5 minutes ago
+            if(timePassed < 1000 * 60 * 60 * 5) {
+                if(!Main.getStaffManager().hasStaffMode(player)) {
+                    long whenCanWithdraw = lastWithdrawal + (1000 * 60 * 60 * 5);
+                    long timeLeftRaw = (whenCanWithdraw - now) / 1000;
+
+                    long minutes = (int) timeLeftRaw / 60;
+                    long seconds = timeLeftRaw - (60 * minutes);
+
+                    String timeLeft = Util.formatTime((int) minutes, (int) seconds, true);
+
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "§7Voit nostaa kuponkeja §c5 minuutin§7 välein! " +
+                            "Odotathan vielä siis §c" + timeLeft + "§7!");
+                    return;
+                }
+            }
+
+        }
 
         ItemMeta meta = coupon.getItemMeta();
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "claim-amount");
+        NamespacedKey uuidKey = new NamespacedKey(Main.getInstance(), "uuid");
 
         if(meta != null) {
 
@@ -139,6 +170,31 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
             if(container.has(key, PersistentDataType.INTEGER)) {
 
                 int foundValue = container.get(key, PersistentDataType.INTEGER);
+                
+                if(player.getInventory().getItemInMainHand().getType() != Material.PAPER) {
+                    Chat.sendMessage(player, "Näyttäisi siltä, että kuponki on jotenkin kadonnut kädestäsi..." +
+                            " Kupongin täytyy olla kädessäsi, jotta nostaminen onnistuu! Otathan huomioon myös sen, että" +
+                            " kupoingin täytyy olla sinun oikeassa kädessä, kun sitä nostat!");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    return;
+                }
+
+                if(!inChequeConfirmal.contains(player.getUniqueId())) {
+                    Chat.sendMessage(player, "Jokin meni nyt hassusti... Yritäppä uudelleen.");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    return;
+                }
+
+                UUID foundUUID = UUID.fromString(container.get(uuidKey, PersistentDataType.STRING));
+
+                if(!foundUUID.equals(givenUUID)) {
+                    Chat.sendMessage(player, "En tiedä mitä yrität, mutta se miten yrität nyt nostaa kuponkeja" +
+                            " ei ihan toimi. Pidä nostettava kuponki aina kädessäsi, kun sitä yrität nostaa...");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    return;
+                }
+
+
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "acb " + player.getName() + " " + foundValue);
                 coupon.setAmount(coupon.getAmount() - 1);
@@ -166,15 +222,48 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
         return false;
     }
 
+    private boolean containsUUID(final ItemStack item) {
+
+        if(isCoupon(item)) {
+
+            NamespacedKey uuidKey = new NamespacedKey(Main.getInstance(), "uuid");
+            ItemMeta meta = item.getItemMeta();
+            if(meta != null && item.hasItemMeta()) {
+                return meta.getPersistentDataContainer().has(uuidKey, PersistentDataType.STRING);
+            }
+
+        }
+
+        return false;
+    }
+
     private void confirmWithdrawal(Player player, ItemStack coupon) {
         ItemMeta meta = coupon.getItemMeta();
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "claim-amount");
+        NamespacedKey uuidKey = new NamespacedKey(Main.getInstance(), "uuid");
 
         if(meta != null) {
 
             PersistentDataContainer container = meta.getPersistentDataContainer();
             if (container.has(key, PersistentDataType.INTEGER)) {
                 int foundValue = container.get(key, PersistentDataType.INTEGER);
+
+                if(!containsUUID(coupon)) {
+                    Chat.sendMessage(player, "Kupongissasi oli ongelma, joka piti korjata. Yritä uudelleen kupongin nostamista!");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    meta.getPersistentDataContainer().set(uuidKey, PersistentDataType.STRING, UUID.randomUUID().toString());
+                    coupon.setItemMeta(meta);
+                    player.updateInventory();
+                    return;
+                }
+
+                if(inChequeConfirmal.contains(player.getUniqueId())) {
+                    inChequeConfirmal.remove(player.getUniqueId());
+                    Chat.sendMessage(player, "Jokin meni nyt hassusti... Yritäppä uudelleen. ");
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    return;
+                }
+                inChequeConfirmal.add(player.getUniqueId());
 
                 Gui gui = new Gui("Vahvista nosto", 27);
 
@@ -190,7 +279,8 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
-                        withdrawCoupon(clicker, coupon);
+                        UUID foundUUID = UUID.fromString(container.get(new NamespacedKey(Main.getInstance(), "uuid"), PersistentDataType.STRING));
+                        withdrawCoupon(clicker, coupon, foundUUID);
                     }
                 });
 
