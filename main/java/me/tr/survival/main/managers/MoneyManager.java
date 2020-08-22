@@ -381,7 +381,7 @@ public class MoneyManager implements CommandExecutor, Listener {
             // Less than 5 minutes ago
             if(timePassed < 1000 * 60 * 60 * 5) {
                 if(!Main.getStaffManager().hasStaffMode(player)) {
-                    long whenCanWithdraw = lastWithdrawal + (1000 * 60 * 60 * 5);
+                    long whenCanWithdraw = lastWithdrawal + (1000 * 60 * 5);
                     long timeLeftRaw = (whenCanWithdraw - now) / 1000;
 
                     long minutes = (int) timeLeftRaw / 60;
