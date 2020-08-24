@@ -64,6 +64,12 @@ public class PlayerVillageCreator implements Listener {
                     final Map<Integer, String> currentValues = createValues.getOrDefault(uuid, new HashMap<>());
 
                     if(step == 0) {
+
+                        if(!Main.getVillageManager().checkForVillageAvailability(givenValue)) {
+                            Chat.sendMessage(player, "Valitettavasti nimi §a" + givenValue + " §7on jo käytössä... Yritä jotain toista nimeä!");
+                            return;
+                        }
+
                         currentValues.put(0, givenValue);
                         Chat.sendMessage(player, "Kyläsi nimi on nyt: §a" + givenValue + "§7! Jos olet tästä varma, kirjoita §ajatka§7!");
                     } else if(step == 1) {

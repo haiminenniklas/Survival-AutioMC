@@ -13,16 +13,19 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.event.world.PortalCreateEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -81,11 +84,12 @@ public class ActionEvents implements Listener {
 
         final Player player = e.getPlayer();
         final World world = e.getTo().getWorld();
-        if(world.getEnvironment() == World.Environment.NETHER && e.getTo().getBlockY() >= 127) {
+        if(world.getEnvironment() == World.Environment.NETHER && e.getTo().getBlockY() > 130) {
             e.setCancelled(true);
-            Sorsa.teleportToNether(player);
+           // Sorsa.teleportToNether(player);
             Chat.sendMessage(player, "Netheriä voit tutkia vain Netherin sisällä! Soo soo!");
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+            return;
         }
 
         // SHOP ELEVATOR
@@ -104,7 +108,6 @@ public class ActionEvents implements Listener {
                     Util.sendNotification(player, "§a§lKAUPPA! §7Matkustit alakertaan!");
                 }
             }
-
         }
 
         if(player.getAllowFlight()) {
@@ -133,27 +136,46 @@ public class ActionEvents implements Listener {
                 player.setAllowFlight(false);
             }
         }
-
     }
 
     @EventHandler
     public void onKick(PlayerKickEvent e) {
         if (e.getReason().equalsIgnoreCase("disconnect.spam")) e.setCancelled(true);
-
     }
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onCreatureSpawn(CreatureSpawnEvent event) {
+    public void onCreatureSpawn(final CreatureSpawnEvent event) {
         // if (event.getEntity().getType().equals(EntityType.PHANTOM)) event.setCancelled(true);
-        final Entity entity = event.getEntity();
-        if(event.getEntityType() != EntityType.PLAYER) {
 
-            double tps = Sorsa.getCurrentTPS();
-            if(tps < 12) event.setCancelled(true);
+        final CreatureSpawnEvent.SpawnReason spawnReason = event.getSpawnReason();
 
+        if(spawnReason == CreatureSpawnEvent.SpawnReason.DEFAULT || spawnReason == CreatureSpawnEvent.SpawnReason.SPAWNER) {
+
+            final EntityType spawnedEntityType = event.getEntityType();
+            final Entity spawnedEntity = event.getEntity();
+
+            final EntityType[] whitelist = new EntityType[] {
+                    EntityType.IRON_GOLEM,
+                    EntityType.VILLAGER,
+                    EntityType.PLAYER,
+                    EntityType.ARMOR_STAND
+            };
+
+            boolean cannotSpawn = true;
+
+            for(EntityType whitelisted : whitelist) {
+                if(spawnedEntityType == whitelisted) cannotSpawn = false;
+            }
+
+            if(cannotSpawn) {
+                double tps = Sorsa.getCurrentTPS();
+                if(tps < 12) {
+                    event.setCancelled(true);
+                    spawnedEntity.remove();
+                }
+            }
         }
-
     }
 
     @EventHandler
@@ -193,6 +215,28 @@ public class ActionEvents implements Listener {
                 return;
             } else {
                 e.setCancelled(false);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(final InventoryClickEvent event) {
+
+      //  final Player player = (Player) event.getWhoClicked();
+        final Inventory inv = event.getClickedInventory();
+        if(inv != null) {
+
+            final ItemStack item = event.getCurrentItem();
+            if(item != null && item.hasItemMeta()) {
+
+               if(Main.getClaimBlockCouponsManager().isCoupon(item) || Main.getMoneyManager().isCheque(item)) {
+
+                    final InventoryType invType = inv.getType();
+                    if(invType == InventoryType.ANVIL || invType == InventoryType.GRINDSTONE || invType == InventoryType.WORKBENCH) {
+                        event.setCancelled(true);
+                        event.setResult(Event.Result.DENY);
+                    }
+               }
             }
         }
     }

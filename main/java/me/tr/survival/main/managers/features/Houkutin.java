@@ -29,6 +29,13 @@ public class Houkutin implements CommandExecutor {
 
     // Command
 
+    private final double[][] spawnCoordinates = {
+            {-18.0, 60.0, -27.0},
+            {-18.0, 60.0, -37.0},
+            {-18.0, 60.0, -37.0},
+            {-12.0, 60.0, -27.0}
+    };
+
     private static boolean ENABLED = true;
 
     @Override
@@ -226,25 +233,34 @@ public class Houkutin implements CommandExecutor {
     private void activate() {
 
         if(!ENABLED) return;
-
         Sorsa.logColored("§6[Houkutin] Houkutin was activated! Entity: " + this.entityType);
-
-        Block block = Bukkit.getWorld("world").getBlockAt(-16, 59, -33);
-        block.setType(Material.SPAWNER);
-        BlockState state = block.getState();
-        CreatureSpawner spawner = (CreatureSpawner) state;
-        spawner.setSpawnCount(4);
-        spawner.setSpawnedType(entityType);
-        spawner.setDelay(2);
-        spawner.update();
-
+        final World world = Bukkit.getWorld("world");
+        if(world != null) {
+            for(final double[] coordinates : this.spawnCoordinates) {
+                final Block block = world.getBlockAt((int) coordinates[0], (int) coordinates[1], (int) coordinates[2]);
+                block.setType(Material.SPAWNER);
+                final BlockState state = block.getState();
+                final CreatureSpawner spawner = (CreatureSpawner) state;
+                spawner.setSpawnCount(4);
+                spawner.setSpawnedType(entityType);
+                spawner.setDelay(2);
+                spawner.update();
+            }
+        }
     }
 
     public void deactivate() {
+        final World world = Bukkit.getWorld("world");
+        Sorsa.logColored("§6[Houkutin] Houkutin was deactivated! Entity: " + this.entityType);
         activator = null;
         entityType = null;
-        Block block = Bukkit.getWorld("world").getBlockAt(-16, 59, -33);
-        block.setType(Material.EMERALD_BLOCK);
+
+        if(world != null) {
+            for(final double[] coordinates : this.spawnCoordinates) {
+                final Block block = world.getBlockAt((int) coordinates[0], (int) coordinates[1], (int) coordinates[2]);
+                block.setType(Material.AIR);
+            }
+        }
     }
 
     public void activateManager() {

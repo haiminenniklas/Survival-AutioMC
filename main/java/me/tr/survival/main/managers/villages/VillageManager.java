@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.io.IOException;
@@ -256,14 +257,14 @@ public class VillageManager implements Listener, CommandExecutor {
         return true;
     }
 
-    private void searchForVillage(final Player player, String[] args) {
+    private boolean searchForVillage(final Player player, String[] args) {
         String searchQuery = "";
         for(int i = 0; i < args.length; i++) { searchQuery = searchQuery.concat(args[i] + " "); }
         OfflinePlayer searchedLeader = Bukkit.getOfflinePlayer(searchQuery);
         PlayerVillage foundVillage = this.findVillageByLeader(searchedLeader.getUniqueId());
+        boolean found = false;
         // First, we try to check if the user wrote
         if(foundVillage == null) {
-            boolean found = false;
             for(final PlayerVillage village : villages) {
                 if(village == null) continue;
                 if(village.getTitle().toLowerCase().trim().equalsIgnoreCase(searchQuery.toLowerCase().trim())) {
@@ -275,9 +276,24 @@ public class VillageManager implements Listener, CommandExecutor {
             if(!found) Chat.sendMessage(player, Chat.Prefix.ERROR, "Emme löytäneet yhtään kylää hakusanalla: §c" + searchQuery.toLowerCase() + "§7... Yritäthän pian uudestaan uudella hakutermillä!");
 
         } else openVillageView(player, foundVillage, true);
+
+        return found;
+
     }
 
-    private void searchForVillage(final Player player, String searchQuery) { this.searchForVillage(player, searchQuery.split(" ")); }
+    private boolean searchForVillage(final Player player, String searchQuery) { return this.searchForVillage(player, searchQuery.split(" ")); }
+
+    public boolean checkForVillageAvailability(String query) {
+        boolean found = false;
+        for(final PlayerVillage village : villages) {
+            if(village == null) continue;
+            if(village.getTitle().toLowerCase().trim().equalsIgnoreCase(query.toLowerCase().trim())) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
 
     // OTHER
 
@@ -471,8 +487,66 @@ public class VillageManager implements Listener, CommandExecutor {
             return;
         }
 
-        int size = 27;
+        int size = 26;
         final Gui gui = new Gui("Hallitse kylää", size);
+
+        // 11,12,13,14,15
+
+        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.PAPER, 1, "§2Yksityisyys", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Muokkaa kyläsi yksityisyyttä.",
+                " §7Jos kylä on yksityinen, muut pelaajat",
+                " §7eivät voi liittyä tänne.",
+                " ",
+                " §7Nykyinen tila: " + (village.isClosed() ? "§cYksityinen" : "§aJulkinen"),
+                " ",
+                " §aKlikkaa vaihtaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                village.setClosed(!village.isClosed());
+                openVillageSettings(player, village);
+            }
+        });
+
+        final Location spawnLoc = village.getSpawn();
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.RED_BED, 1, "§2Kylän koti", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Aseta kyläsi koti, painamalla minua!",
+                " §7Tämä on se sijainti, missä muut pelaajat",
+                " §7ja kyläsi jäsenet voivat vierailla. Tämä",
+                " §7on kyläsi sijainti.",
+                " ",
+                " §7Nykyinen sijainti: §e" + spawnLoc.getBlockX() + "§7,§e" + spawnLoc.getBlockY() + "§7,§e" + spawnLoc.getBlockZ(),
+                " ",
+                " §aKlikkaa vaihtaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                openSpawnSetConfirmalMenu(clicker, village);
+            }
+        });
+
+        gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.BARRIER, 1, "§cPoista kylä", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §aKlikkaa minua§7, jos haluat poistaa",
+                " §7kyläsi!",
+                " ",
+                " §cPäätös on lopullinen!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                openVillageRemovalConifrmationMenu(clicker, village);
+            }
+        });
+
 
         final int[] glassSlots = { 10,16 };
         for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE, 1), slot); }
@@ -486,6 +560,7 @@ public class VillageManager implements Listener, CommandExecutor {
         gui.open(player);
 
     }
+
 
     public void mainGui(final Player player) {
 
@@ -553,6 +628,78 @@ public class VillageManager implements Listener, CommandExecutor {
 
     }
 
+    private void openVillageRemovalConifrmationMenu(Player player, final PlayerVillage village) {
+
+        final Gui gui = new Gui("Kylän poiston varmistus", 27);
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa vahvistaaksei kyläsi",
+                " §cpoiston§7! Muista, että tämä",
+                " §7toiminto on §c§llopullinen§7!",
+                " §7eikä sitä voida peruuttaa!",
+                " ",
+                " §aKlikkaa poistaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+
+            }
+        });
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa peruuttaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                openVillageSettings(player, village);
+            }
+        });
+
+        gui.open(player);
+
+    }
+
+    private void openSpawnSetConfirmalMenu(Player player, PlayerVillage village) {
+        final Gui gui = new Gui("Kylän kodin vahvistus", 27);
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa vahvistaaksesi",
+                " §7kyläsi uuden kodin sijainnin",
+                " §7asettamisesi! Muista, että tätä",
+                " §7toimintoa ei voi peruuttaa!",
+                " ",
+                " §aKlikkaa asettaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                village.setSpawn(clicker.getLocation());
+                openVillageSettings(player, village);
+            }
+        });
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa peruuttaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                openVillageSettings(player, village);
+            }
+        });
+
+        gui.open(player);
+    }
 
 
 }

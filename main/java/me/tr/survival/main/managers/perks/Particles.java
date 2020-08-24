@@ -58,14 +58,26 @@ public class Particles implements Listener, CommandExecutor {
       //  Sorsa.getParticlesAPI().resetActivePlayerParticles(player);
     }
 
-    private void loadParticles(Player player) {
+    private void loadParticles(final Player player) {
         UUID uuid = player.getUniqueId();
-        if(!PlayerData.isLoaded(uuid)) PlayerData.loadNull(uuid, false);
+        if(!PlayerData.isLoaded(uuid)) {
+            Sorsa.async(() -> {
+                PlayerData.loadPlayer(uuid, r -> {});
+                if(player != null) Sorsa.task(() ->  loadParticles(player));
+            });
+            return;
+        }
         Sorsa.getParticlesAPI().resetActivePlayerParticles(player);
         String rawParticleID = String.valueOf(PlayerData.getValue(uuid, "particle"));
         String rawArrowTrailID = String.valueOf(PlayerData.getValue(uuid, "arrowtrail"));
-        if(!rawArrowTrailID.equalsIgnoreCase("default") && !rawArrowTrailID.equalsIgnoreCase("null")) Sorsa.getParticlesAPI().addActivePlayerParticle(player, findArrowTrail(Integer.parseInt(rawArrowTrailID)));
-        if(!rawParticleID.equalsIgnoreCase("default") && !rawParticleID.equalsIgnoreCase("null")) Sorsa.getParticlesAPI().addActivePlayerParticle(player, findParticle(Integer.parseInt(rawParticleID)));
+        if(!rawArrowTrailID.equalsIgnoreCase("default") && !rawArrowTrailID.equalsIgnoreCase("null")) {
+            ParticlePair arrowTrail = findArrowTrail(Integer.parseInt(rawArrowTrailID));
+            setCurrentArrowTrail(player, arrowTrail);
+        }
+        if(!rawParticleID.equalsIgnoreCase("default") && !rawParticleID.equalsIgnoreCase("null")) {
+            ParticlePair particle = findParticle(Integer.parseInt(rawParticleID));
+            setCurrentParticle(player, particle);
+        }
         PlayerParticles.getInstance().reload();
     }
 
