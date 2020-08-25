@@ -30,10 +30,10 @@ public class Houkutin implements CommandExecutor {
     // Command
 
     private final double[][] spawnCoordinates = {
-            {-18.0, 60.0, -27.0},
-            {-18.0, 60.0, -37.0},
-            {-18.0, 60.0, -37.0},
-            {-12.0, 60.0, -27.0}
+            {-19.0, 60.0, -28.0},
+            {-13.0, 60.0, -28.0},
+            {-13.0, 60.0, -38.0},
+            {-19.0, 60.0, -38.0}
     };
 
     private static boolean ENABLED = true;

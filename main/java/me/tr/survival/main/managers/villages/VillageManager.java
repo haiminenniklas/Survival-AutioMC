@@ -208,11 +208,10 @@ public class VillageManager implements Listener, CommandExecutor {
 
     public void addVillageToList(PlayerVillage village) {
         villages.add(village);
+        savePlayerVillages();
     }
 
     // EVENTS
-
-
 
     // COMMAND
     @Override
@@ -283,7 +282,7 @@ public class VillageManager implements Listener, CommandExecutor {
 
     private boolean searchForVillage(final Player player, String searchQuery) { return this.searchForVillage(player, searchQuery.split(" ")); }
 
-    public boolean checkForVillageAvailability(String query) {
+    public boolean isVillageAvailable(String query) {
         boolean found = false;
         for(final PlayerVillage village : villages) {
             if(village == null) continue;
@@ -292,7 +291,7 @@ public class VillageManager implements Listener, CommandExecutor {
                 break;
             }
         }
-        return found;
+        return !found;
     }
 
     // OTHER
@@ -532,6 +531,54 @@ public class VillageManager implements Listener, CommandExecutor {
             }
         });
 
+        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§2Verotusmäärä", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Voit määritellä, kuinka paljon",
+                " §7haluat verottaa asukkailtasi.",
+                " §7Otathan huomioon, että sinä olet myös",
+                " §7itse verovelvollinen asukas!",
+                "",
+                " §7Saatavilla olevat verotusmäärät:",
+                " §7- " + (village.getTaxRate() == 1250 ? "§e§l1250€" : "§e1250€"),
+                " §7- " + (village.getTaxRate() == 600 ? "§e§l600€" : "§e600€"),
+                " §7- " + (village.getTaxRate() == 250 ? "§e§l250€" : "§e250€"),
+                " §7- " + (village.getTaxRate() == 250 ? "§e§l0€" : "§e§l0€"),
+                " ",
+                " §7Verotus tapahtuu §a2 viikon §7välein!",
+                " ",
+                " §aKlikkaa vaihtaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                int taxRate = village.getTaxRate();
+                if(taxRate == 1250) taxRate = 600;
+                else if(taxRate == 600) taxRate = 250;
+                else if(taxRate == 250) taxRate = 0;
+                else if(taxRate == 0) taxRate = 1250;
+                village.setTaxRate(taxRate);
+                openVillageSettings(clicker, village);
+            }
+        });
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.IRON_INGOT, 1, "§2Luottamushenkilöt", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Voit asettaa luottamushenkilöitä",
+                " §7kylääsi. Näillä henkilöillä on korkeat oikeudet",
+                " §7muokkaamaan kylää. Luottamushenkilöt",
+                " §7näkyvät kylän pääsivulla.",
+                " ",
+                " §aKlikkaa muokkaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                openChangeCoLeaderMenu(player, village);
+            }
+        });
+
         gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.BARRIER, 1, "§cPoista kylä", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §aKlikkaa minua§7, jos haluat poistaa",
@@ -625,6 +672,27 @@ public class VillageManager implements Listener, CommandExecutor {
             gui.open(player);
 
         }
+
+    }
+
+    private void openChangeCoLeaderMenu(Player player, final PlayerVillage village) {
+
+        int size = 54;
+        final Gui gui = new Gui("Lisää luottohenkilöitä", size);
+
+        for(int i = 0; i < 9; i++) {
+            if(gui.getItem(i) != null) continue;
+            if(gui.getButton(i) != null) continue;
+            gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1), i);
+        }
+
+        for(int i = 45; i < 54; i++) {
+            if(gui.getItem(i) != null) continue;
+            if(gui.getButton(i) != null) continue;
+            gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1), i);
+        }
+
+        gui.open(player);
 
     }
 

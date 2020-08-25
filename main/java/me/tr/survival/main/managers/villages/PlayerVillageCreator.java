@@ -65,7 +65,7 @@ public class PlayerVillageCreator implements Listener {
 
                     if(step == 0) {
 
-                        if(!Main.getVillageManager().checkForVillageAvailability(givenValue)) {
+                        if(!Main.getVillageManager().isVillageAvailable(givenValue)) {
                             Chat.sendMessage(player, "Valitettavasti nimi §a" + givenValue + " §7on jo käytössä... Yritä jotain toista nimeä!");
                             return;
                         }

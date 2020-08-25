@@ -315,6 +315,8 @@ public final class Main extends JavaPlugin implements Listener {
             }
             Sorsa.logColored("§a[Database] Saved the data of " + times_saved + " players!");
 
+            Main.getVillageManager().savePlayerVillages();
+
             // Fetch Balances...
             new Balance().fetchTopBalance();
 
@@ -387,6 +389,7 @@ public final class Main extends JavaPlugin implements Listener {
 
         Main.getEndManager().saveEndConfig();
         Main.getVillageManager().savePlayerVillages();
+
         Sorsa.logColored(" §aClosing Database Connection...");
         SQL.source.close();
         Sorsa.logColored("§a Disabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
