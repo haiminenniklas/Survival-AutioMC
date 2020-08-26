@@ -119,6 +119,10 @@ public class Util {
         return dtf.format(now);
     }
 
+    public static String formatDate(Calendar calendar) {
+        return calendar.get(Calendar.DAY_OF_MONTH) + "." + (calendar.get(Calendar.MONTH)+1) + "." + calendar.get(Calendar.YEAR);
+    }
+
     public static int roundInt(int value){
         return (int) (Math.rint((double) value / 10) * 10);
     }

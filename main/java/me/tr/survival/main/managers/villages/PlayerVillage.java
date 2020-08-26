@@ -1,13 +1,16 @@
 package me.tr.survival.main.managers.villages;
 
 import me.tr.survival.main.Sorsa;
+import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.other.Ranks;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.UUID;
+import java.time.ZoneId;
+import java.util.*;
 
 public class PlayerVillage {
 
@@ -26,7 +29,11 @@ public class PlayerVillage {
 
     private List<String> tags;
 
-    public PlayerVillage(UUID uuid, String title, UUID leader, List<UUID> coLeaders, List<UUID> citizens, int taxRate, Location spawn, int maxPlayers, boolean closed, List<String> tags) {
+    private double balance;
+    private double totalMoneyGathered;
+
+    public PlayerVillage(UUID uuid, String title, UUID leader, List<UUID> coLeaders, List<UUID> citizens, int taxRate,
+                         Location spawn, int maxPlayers, boolean closed, List<String> tags, double balance, double totalMoneyGathered) {
 
         this.uuid = uuid;
         this.title = title;
@@ -41,12 +48,19 @@ public class PlayerVillage {
         this.closed = closed;
         this.tags = tags;
 
+        this.balance = balance;
+        this.totalMoneyGathered = totalMoneyGathered;
+
     }
 
     public void addTag(String tag) { if(!tags.contains(tag)) tags.add(tag); }
 
     public void addCoLeader(UUID uuid) {
         if(!this.getCoLeaders().contains(uuid)) this.getCoLeaders().add(uuid);
+    }
+
+    public void removeCoLeader(UUID uuid) {
+        this.getCoLeaders().remove(uuid);
     }
 
     public void join(Player player) {
@@ -69,6 +83,54 @@ public class PlayerVillage {
         if(Ranks.isStaff(uuid)) return true;
         if(this.getCoLeaders().contains(uuid)) return true;
         return false;
+    }
+
+    public boolean ownsVillage(UUID uuid) {
+        if(this.getLeader().equals(uuid)) return true;
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if(player.isOp()) return true;
+        return false;
+    }
+
+    public void taxPlayers() {
+        double totalTaxation = 0d;
+        for(UUID memberUUID : this.getCitizens()) {
+            totalTaxation += this.taxPlayer(memberUUID);
+        }
+
+        double totalCuts = 0d;
+        for(UUID coLeaderUUID : this.getCoLeaders()) {
+            double cut = totalTaxation * 0.05;
+            Balance.add(coLeaderUUID, cut);
+            totalCuts += cut;
+        }
+
+        double moneyToAddToBalance = totalTaxation - totalCuts;
+        this.addBalance(moneyToAddToBalance);
+
+    }
+
+    public double taxPlayer(UUID uuid) {
+        double moneyToRemove = this.taxRate;
+        if(!Balance.canRemove(uuid, moneyToRemove)) {
+            moneyToRemove = Balance.get(uuid);
+        }
+        Balance.remove(uuid, moneyToRemove);
+        return moneyToRemove;
+    }
+
+    public void addBalance(double amount) {
+        this.balance += amount;
+        this.totalMoneyGathered += amount;
+    }
+
+    public void removeBalance(double amount) {
+        this.balance -= amount;
+        if(this.balance < 0) this.balance = 0;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     public UUID getUniqueId() {
@@ -101,20 +163,21 @@ public class PlayerVillage {
         return spawn;
     }
 
+    public double getBalance() {
+        return balance;
+    }
+
+    public double getTotalMoneyGathered() {
+        return totalMoneyGathered;
+    }
+
     public boolean isClosed() { return closed; }
-
     public void setClosed(boolean closed) { this.closed = closed; }
-
     public void setLeader(UUID leader) { this.leader = leader; }
-
     public void setMaxPlayers(int maxPlayers) { this.maxPlayers = maxPlayers; }
-
     public void setSpawn(Location spawn) { this.spawn = spawn; }
-
     public void setTaxRate(int taxRate) { this.taxRate = taxRate; }
-
     public void setTitle(String title) { this.title = title; }
-
     public List<String> getTags() { return tags; }
 
     public boolean isFull() {

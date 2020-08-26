@@ -369,6 +369,11 @@ public final class Main extends JavaPlugin implements Listener {
 
         started = System.currentTimeMillis();
 
+        // Tax the player villages
+        if(villageManager.isTaxationDay()) {
+            villageManager.initTaxForVillages();
+        }
+
     }
 
     @Override

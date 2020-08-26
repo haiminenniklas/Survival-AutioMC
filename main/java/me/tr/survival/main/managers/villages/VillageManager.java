@@ -3,6 +3,7 @@ package me.tr.survival.main.managers.villages;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.managers.Chat;
+import me.tr.survival.main.managers.Profile;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.Util;
@@ -18,8 +19,11 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -32,10 +36,13 @@ public class VillageManager implements Listener, CommandExecutor {
     private boolean ENABLED = false;
 
     private final List<PlayerVillage> villages = new ArrayList<>();
+    private final int[] taxationDates = { 1, 7, 14, 21, 28 };
 
     // File Management
     private File villageFile;
     private FileConfiguration villageConfig;
+
+    private final List<UUID> searchVillageMode = new ArrayList<>();
 
     public synchronized void loadVillagesFromFile() {
 
@@ -68,6 +75,12 @@ public class VillageManager implements Listener, CommandExecutor {
 
         // Return null, if no villages were found
         return null;
+    }
+
+    public void removeVillage(PlayerVillage village) {
+        villages.remove(village);
+        villageConfig.set(village.getUniqueId().toString(), "");
+        saveVillageConfig();
     }
 
     public boolean hasJoinedVillage(UUID uuid) { return findVillageByPlayer(uuid) != null; }
@@ -108,31 +121,32 @@ public class VillageManager implements Listener, CommandExecutor {
     public PlayerVillage findVillage(final String uuid) {
 
         final FileConfiguration config = this.getVillageConfig();
-        final ConfigurationSection villagesSection = config.getConfigurationSection("villages");
 
-        if(villagesSection.get(uuid) != null) {
+        if(config.contains("villages." + uuid)) {
 
             try {
-                final String title = villagesSection.getString(uuid + ".title");
-                final UUID leader = UUID.fromString(villagesSection.getString(uuid + ".leader"));
-                final int taxRate = villagesSection.getInt(uuid + ".tax-rate");
-                final int maxPlayers = villagesSection.getInt(uuid + ".max-players");
-                final Location spawn = Util.textToLocation(villagesSection.getString(uuid + ".spawn"));
-                final boolean closed = villagesSection.getBoolean(uuid + ".closed");
+                final String title = config.getString("villages." + uuid + ".title");
+                final UUID leader = UUID.fromString(config.getString("villages." + uuid + ".leader"));
+                final int taxRate = config.getInt("villages." + uuid + ".tax-rate");
+                final int maxPlayers = config.getInt("villages." + uuid + ".max-players");
+                final Location spawn = Util.textToLocation(config.getString("villages." + uuid + ".spawn"));
+                final boolean closed = config.getBoolean("villages." + uuid + ".closed");
+                final double balance = config.getDouble("villages." + uuid + ".balance");
+                final double totalMoneyGathered = config.getDouble("villages." + uuid + ".total-money-gathered");
 
                 final List<UUID> citizens = new ArrayList<>();
-                for(String citizen : villagesSection.getStringList(uuid + ".citizens")) {
+                for(String citizen : config.getStringList("villages." + uuid + ".citizens")) {
                     citizens.add(UUID.fromString(citizen));
                 }
 
                 final List<UUID> coLeaders = new ArrayList<>();
-                for(String coLeader : villagesSection.getStringList(uuid + ".co-leaders")) {
+                for(String coLeader : config.getStringList("villages." + uuid + ".co-leaders")) {
                     coLeaders.add(UUID.fromString(coLeader));
                 }
 
-                final List<String> tags = villagesSection.getStringList(uuid + ".tags");
+                final List<String> tags = config.getStringList("villages." + uuid + ".tags");
 
-                return new PlayerVillage(UUID.fromString(uuid), title, leader, coLeaders, citizens, taxRate, spawn, maxPlayers, closed, tags);
+                return new PlayerVillage(UUID.fromString(uuid), title, leader, coLeaders, citizens, taxRate, spawn, maxPlayers, closed, tags, balance, totalMoneyGathered);
 
             } catch (Exception ex) {
 
@@ -146,12 +160,43 @@ public class VillageManager implements Listener, CommandExecutor {
 
     public PlayerVillage findVillage(UUID uuid) { return findVillage(uuid.toString()); }
 
-    public synchronized void savePlayerVillages() {
+    public PlayerVillage createVillage(UUID creatorUUID) {
+
+        OfflinePlayer creator = Bukkit.getOfflinePlayer(creatorUUID);
+        if(this.hasJoinedVillage(creator.getUniqueId())) return null;
+
+        final List<String> tags = new ArrayList<>();
+        final List<UUID> citizens = new ArrayList<>();
+
+        citizens.add(creator.getUniqueId());
+
+        final PlayerVillage village = new PlayerVillage(
+                UUID.randomUUID(),
+                creator.getName()+ ":n uusi kylä!",
+                creator.getUniqueId(),
+                new ArrayList<>(),
+                citizens,
+                0,
+                Sorsa.getSpawn(),
+                8,
+                true,
+                tags,
+                0,
+                0
+        );
+
+        Main.getVillageManager().addVillageToList(village);
+        return village;
+    }
+
+    public void savePlayerVillages() {
 
         Sorsa.logColored("§a[PlayerVillages] Saving " + villages.size() + " villages...");
 
         final FileConfiguration config = this.getVillageConfig();
-        final ConfigurationSection villagesSection = config.getConfigurationSection("villages");
+        ConfigurationSection villagesSection = config.getConfigurationSection("villages");
+        if(villagesSection == null) villagesSection = config.createSection("villages");
+
 
         int amountSaved = 0;
 
@@ -159,16 +204,18 @@ public class VillageManager implements Listener, CommandExecutor {
 
             final UUID uuid = village.getUniqueId();
 
-            villagesSection.set(uuid + ".id", uuid.toString());
-            villagesSection.set(uuid + ".title", village.getTitle());
-            villagesSection.set(uuid + ".leader", village.getUniqueId().toString());
-            villagesSection.set(uuid + ".tax-rate", village.getTaxRate());
-            villagesSection.set(uuid + ".spawn", Util.locationToText(village.getSpawn()));
-            villagesSection.set(uuid + ".max-players", village.getMaxPlayers());
-            villagesSection.set(uuid + ".closed", village.isClosed());
+            config.set("villages." + uuid + ".id", uuid.toString());
+            config.set("villages." + uuid + ".title", village.getTitle());
+            config.set("villages." + uuid + ".leader", village.getUniqueId().toString());
+            config.set("villages." + uuid + ".tax-rate", village.getTaxRate());
+            config.set("villages." + uuid + ".spawn", Util.locationToText(village.getSpawn()));
+            config.set("villages." + uuid + ".max-players", village.getMaxPlayers());
+            config.set("villages." + uuid + ".closed", village.isClosed());
+            config.set("villages." + uuid + ".balance", village.getBalance());
+            config.set("villages." + uuid + ".total-money-gathered", village.getTotalMoneyGathered());
 
-            villagesSection.set(uuid + ".co-leaders", Util.toStringList(village.getCoLeaders()));
-            villagesSection.set(uuid + ".citizens", Util.toStringList(village.getCitizens()));
+            config.set("villages." + uuid + ".co-leaders", Util.toStringList(village.getCoLeaders()));
+            config.set("villages." + uuid + ".citizens", Util.toStringList(village.getCitizens()));
 
             amountSaved += 1;
 
@@ -213,6 +260,25 @@ public class VillageManager implements Listener, CommandExecutor {
 
     // EVENTS
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onAsyncChat(AsyncPlayerChatEvent e) {
+
+        final Player player = e.getPlayer();
+        if(searchVillageMode.contains(player.getUniqueId())) {
+
+            e.setCancelled(true);
+
+            final String input = e.getMessage();
+            if(input.equalsIgnoreCase("lopeta")) {
+                searchVillageMode.remove(player.getUniqueId());
+                Chat.sendMessage(player, "Lopetit kylähaun!");
+                this.mainGui(player);
+            } else this.searchForVillage(player, input);
+
+        }
+
+    }
+
     // COMMAND
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -256,6 +322,21 @@ public class VillageManager implements Listener, CommandExecutor {
         return true;
     }
 
+    public boolean isTaxationDay() {
+        final Calendar calendar = Calendar.getInstance(new Locale("fi", "FI"));
+        boolean isTaxationDate = false;
+        for(int taxationDate : taxationDates) {
+            if(taxationDate == calendar.get(Calendar.DAY_OF_MONTH)) isTaxationDate = true;
+        }
+        return isTaxationDate;
+    }
+
+    public void initTaxForVillages() {
+        for(PlayerVillage village : villages) {
+            village.taxPlayers();
+        }
+    }
+
     private boolean searchForVillage(final Player player, String[] args) {
         String searchQuery = "";
         for(int i = 0; i < args.length; i++) { searchQuery = searchQuery.concat(args[i] + " "); }
@@ -277,6 +358,22 @@ public class VillageManager implements Listener, CommandExecutor {
         } else openVillageView(player, foundVillage, true);
 
         return found;
+
+    }
+
+    public Calendar getNextTaxationDate() {
+
+        final Calendar calendar = Calendar.getInstance(new Locale("fi", "FI"));
+        final int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        final int monthMaxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        if(dayOfMonth >= 28) {
+            calendar.add(Calendar.DAY_OF_YEAR, (monthMaxDays - dayOfMonth) + 1);
+            return calendar;
+        } else {
+            calendar.add(Calendar.DAY_OF_YEAR, 7);
+            return calendar;
+        }
 
     }
 
@@ -325,10 +422,10 @@ public class VillageManager implements Listener, CommandExecutor {
         }
         villageLore.add(" ");
         villageLore.add(" §7Jäsenet: §a" + village.getCitizens().size() + "/" + village.getMaxPlayers());
+        villageLore.add(" §7Rahatilanne: §e" + village.getBalance());
+        villageLore.add(" §7Yhteensä kerätty raha: §e" + village.getTotalMoneyGathered());
 
         villageLore.add(" ");
-        villageLore.add(" §7Tägit: §a" + StringUtils.join(village.getTags(), "§7, §a"));
-
         if(!village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
             villageLore.add(" ");
             villageLore.add(" §aKlikkaa liittyäksesi!");
@@ -419,12 +516,13 @@ public class VillageManager implements Listener, CommandExecutor {
                 villageLore.add("§7  - §a§o" + coLeader.getName());
             }
         }
-
-        villageLore.add(" ");
-        villageLore.add(" §7Tägit: §a" + StringUtils.join(village.getTags(), "§7, §a"));
-
         villageLore.add(" ");
         villageLore.add(" §7Jäsenet: §a" + village.getCitizens().size() + "/" + village.getMaxPlayers());
+        if(village.getTaxRate() > 0) {
+            villageLore.add(" §7Seuraava verotuspäivä: §a" + Util.formatDate(this.getNextTaxationDate()));
+        }
+        villageLore.add(" §7Rahatilanne: §e" + village.getBalance());
+        villageLore.add(" §7Yhteensä kerätty raha: §e" + village.getTotalMoneyGathered());
         villageLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
         gui.addItem(1, ItemUtil.makeItem(Material.IRON_DOOR, 1, "§2" + village.getTitle(), villageLore), 11);
@@ -486,7 +584,9 @@ public class VillageManager implements Listener, CommandExecutor {
             return;
         }
 
-        int size = 26;
+        final UUID uuid = player.getUniqueId();
+
+        int size = 27;
         final Gui gui = new Gui("Hallitse kylää", size);
 
         // 11,12,13,14,15
@@ -539,12 +639,13 @@ public class VillageManager implements Listener, CommandExecutor {
                 " §7itse verovelvollinen asukas!",
                 "",
                 " §7Saatavilla olevat verotusmäärät:",
-                " §7- " + (village.getTaxRate() == 1250 ? "§e§l1250€" : "§e1250€"),
-                " §7- " + (village.getTaxRate() == 600 ? "§e§l600€" : "§e600€"),
-                " §7- " + (village.getTaxRate() == 250 ? "§e§l250€" : "§e250€"),
-                " §7- " + (village.getTaxRate() == 250 ? "§e§l0€" : "§e§l0€"),
+                " §7- " + (village.getTaxRate() == 1250 ? "§a§l1250€" : "§e1250€"),
+                " §7- " + (village.getTaxRate() == 600 ? "§a§l600€" : "§e600€"),
+                " §7- " + (village.getTaxRate() == 250 ? "§a§l250€" : "§e250€"),
+                " §7- " + (village.getTaxRate() == 0 ? "§a§l0€" : "§e0€"),
                 " ",
-                " §7Verotus tapahtuu §a2 viikon §7välein!",
+                " §7Verotus tapahtuu kuun §e1.§7, §e7.§7,",
+                " §e14.§7, §e21.§7 ja §e28. §7päivä!",
                 " ",
                 " §aKlikkaa vaihtaaksesi!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
@@ -569,28 +670,45 @@ public class VillageManager implements Listener, CommandExecutor {
                 " §7muokkaamaan kylää. Luottamushenkilöt",
                 " §7näkyvät kylän pääsivulla.",
                 " ",
-                " §aKlikkaa muokkaaksesi!",
+                " §7Huomioithan, että kylä on velvollinen",
+                " §7maksamaan §e5% §7joka verotussummasta kaikille",
+                " §7luottamushenkilöille!",
+                " ",
+                (village.ownsVillage(uuid) ? " §aKlikkaa muokkaaksesi!" : " §cEi oikeuksia!"),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                gui.close(clicker);
-                openChangeCoLeaderMenu(player, village);
+                if(village.ownsVillage(uuid)) {
+                    gui.close(clicker);
+                    openChangeCoLeaderMenu(player, village);
+                }
             }
         });
 
-        gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.BARRIER, 1, "§cPoista kylä", Arrays.asList(
-                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                " §aKlikkaa minua§7, jos haluat poistaa",
-                " §7kyläsi!",
-                " ",
-                " §cPäätös on lopullinen!",
-                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-        ))) {
+
+        if(village.ownsVillage(uuid)) {
+            gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.BARRIER, 1, "§cPoista kylä", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §aKlikkaa minua§7, jos haluat poistaa",
+                    " §7kyläsi!",
+                    " ",
+                    " §cPäätös on lopullinen!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    openVillageRemovalConifrmationMenu(clicker, village);
+                }
+            });
+        }
+
+        gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                openVillageRemovalConifrmationMenu(clicker, village);
+                openPersonalVillage(player, village);
             }
         });
 
@@ -637,8 +755,9 @@ public class VillageManager implements Listener, CommandExecutor {
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    Main.getPlayerVillageCreator().startCreatingProcess(clicker);
                     gui.close(clicker);
+                    PlayerVillage village = createVillage(player.getUniqueId());
+                    openVillageView(clicker, village, false);
                 }
             });
 
@@ -657,8 +776,26 @@ public class VillageManager implements Listener, CommandExecutor {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
+                    Chat.sendMessage(player, "§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+                    Chat.sendMessage(player, " ");
+                    Chat.sendCenteredMessage(player, " §a§lEtsi pelaajakylä!");
+                    Chat.sendMessage(player, " ");
+                    Chat.sendCenteredMessage(player, " §7Kirjoita chattiin hakutermi, jolla haluat etsiä kyliä!");
+                    Chat.sendCenteredMessage(player, " §7Jos haluat lopettaa tämän toiminnon, kirjoita chattiin §alopeta§7!");
+                    player.sendMessage(" ");
+                    Chat.sendMessage(player, "§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+                    searchVillageMode.add(clicker.getUniqueId());
                 }
             });
+
+            gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    Profile.openProfile(clicker, clicker.getUniqueId());
+                }
+            });
+
 
             final int[] glassSlots = { 11, 13, 15 };
             for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.RED_STAINED_GLASS_PANE, 1), slot); }
@@ -679,6 +816,63 @@ public class VillageManager implements Listener, CommandExecutor {
 
         int size = 54;
         final Gui gui = new Gui("Lisää luottohenkilöitä", size);
+
+        int slotToAddHead = 9;
+        List<UUID> members = village.getCitizens();
+        for(final UUID memberUUID : members) {
+
+            if(slotToAddHead >= 45) break;
+
+            if(village.getLeader().equals(memberUUID)) continue;
+
+            OfflinePlayer member = Bukkit.getOfflinePlayer(memberUUID);
+            if(village.canModify(memberUUID)) {
+                gui.addButton(new Button(1, slotToAddHead, ItemUtil.makeSkullItem(member, 1, "§a" + member.getName(), Arrays.asList(
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                        " §7Klikkaa minua lisätäksesi",
+                        " §7henkilön §e" + member.getName(),
+                        " §7luottamushenkilöksi!",
+                        " ",
+                        " §aKlikkaa lisätäksesi!",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                ))) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(player);
+                        village.addCoLeader(memberUUID);
+                        openChangeCoLeaderMenu(player, village);
+                    }
+                });
+            } else {
+                gui.addButton(new Button(1, slotToAddHead, ItemUtil.makeSkullItem(member, 1, "§c" + member.getName(), Arrays.asList(
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                        " §7Klikkaa minua poistaaksesi",
+                        " §7henkilön §e" + member.getName(),
+                        " §7luottamusasemasta!",
+                        " ",
+                        " §cKlikkaa poistaaksesi!",
+                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                ))) {
+                    @Override
+                    public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(player);
+                        village.removeCoLeader(memberUUID);
+                        openChangeCoLeaderMenu(player, village);
+                    }
+                });
+            }
+
+            slotToAddHead += 1;
+
+        }
+
+        gui.addButton(new Button(1, 49, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                openVillageView(player, village, false);
+            }
+        });
 
         for(int i = 0; i < 9; i++) {
             if(gui.getItem(i) != null) continue;
@@ -713,7 +907,8 @@ public class VillageManager implements Listener, CommandExecutor {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-
+                removeVillage(village);
+                Chat.sendMessage(player, "Poistit kyläsi... Harmillista... ");
             }
         });
 

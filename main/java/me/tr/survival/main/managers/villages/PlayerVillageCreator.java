@@ -38,13 +38,12 @@ public class PlayerVillageCreator implements Listener {
              * The steps to creating a player village:
              * 1. Title
              * 2. Private
-             * 3. Tags
              *
              * Other settings can be changed later
              */
 
             if(step < 0) this.cancelCreation(uuid);
-            else if(step > 2) this.finishCreation(uuid);
+            else if(step > 1) this.finishCreation(uuid);
             else {
                 String givenValue = e.getMessage().trim();
                 if(givenValue.equalsIgnoreCase("takaisin") || givenValue.equalsIgnoreCase("back")) {
@@ -80,28 +79,16 @@ public class PlayerVillageCreator implements Listener {
                         } else if(givenValue.equalsIgnoreCase("ei") || givenValue.equalsIgnoreCase("no") || givenValue.equalsIgnoreCase("false")) {
                             currentValues.put(1, "false");
                             Chat.sendMessage(player, "Kyläsi on yksityinen! Eli vain kutsutut voivat liittyä! Jos olet varma tästä, kirjoita §ajatka §7chattiin!");
-                        } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Kirjoita arvo §a'kyllä' §7tai §c'ei' §7tähän asetukseen!");
-
-                    } else if(step == 2) {
-
-                        String[] rawTags = givenValue.split(",");
-                        final List<String> tags = new ArrayList<>();
-                        if(rawTags.length < 1) {
-                            currentValues.put(2, "");
-                            Chat.sendMessage(player, "Et lisännyt yhtään tägiä... Oletko varma? Jatka prosessia kirjoittamalla §ajatka §7chattiin!");
+                        } else {
+                            Chat.sendMessage(player, Chat.Prefix.ERROR, "Kirjoita arvo §a'kyllä' §7tai §c'ei' §7tähän asetukseen!");
                             return;
                         }
-                        for(String rawTag : rawTags) tags.add(rawTag.trim());
-
-                        String tagsAsString = StringUtils.join(tags, ", ");
-                        currentValues.put(2, tagsAsString);
-                        Chat.sendMessage(player, "Asetit tageiksi: §a" + tagsAsString + "§7! Jos olet tästä varma, kirjoita §avalmis §7chattiin! §c§lHuom! " +
-                                "§7olet nyt viimeisellä askeleella kylän luontia! Jos haluat muuttaa jotain, käytä §atakaisin §7ja §ajatka §7viestejä chatissa!");
 
                     }
-
                     // Update values to the main map
-                    createValues.put(uuid, currentValues);
+                    if(createValues.containsKey(uuid)) {
+                        createValues.replace(uuid, currentValues);
+                    } else createValues.put(uuid, currentValues);
                 }
             }
         }
@@ -110,17 +97,17 @@ public class PlayerVillageCreator implements Listener {
 
     public void startCreatingProcess(Player player) {
         createProcess.put(player.getUniqueId(), 0);
-        Chat.sendMessage(player, "§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
-        Chat.sendMessage(player, " ");
+        player.sendMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+        player.sendMessage(" ");
         Chat.sendCenteredMessage(player, " §a§lPelaajakylän luominen");
-        Chat.sendMessage(player, " ");
+        player.sendMessage(" ");
         Chat.sendCenteredMessage(player, " §7Pystyt luomaan oman yhteisösi, kerätä veroja, tienata rahaa ");
         Chat.sendCenteredMessage(player, " §7tehdä yhteistyötä, kauppaa ja vaikka mitä pelaajakylien avulla!");
-        Chat.sendMessage(player, " ");
+        player.sendMessage(" ");
         Chat.sendCenteredMessage(player, "§7Aloita luominen kirjoittamalla kyläsi nimen!");
-        Chat.sendMessage(player, " ");
+        player.sendMessage(" ");
         Chat.sendCenteredMessage(player, " §7Lopeta luominen kirjoittamalla §alopeta §7chattiin!");
-        Chat.sendMessage(player, "§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+        player.sendMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
     }
 
     private void updateCreationState(Player player) {
@@ -129,7 +116,7 @@ public class PlayerVillageCreator implements Listener {
         final int step = createProcess.get(uuid);
 
         if(step < 0) this.cancelCreation(uuid);
-        else if(step > 2) this.finishCreation(uuid);
+        else if(step > 1) this.finishCreation(uuid);
         else {
             player.sendMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
             player.sendMessage(" ");
@@ -143,9 +130,6 @@ public class PlayerVillageCreator implements Listener {
                 Chat.sendCenteredMessage(player, " §7Aseta kyläsi joko §cyksityiseksi §7tai §ajulkiseksi§7. ");
                 Chat.sendCenteredMessage(player, " §7Kirjoita §akyllä §7tai §aei§7, mikäli haluat kyläsi julkiseksi!");
                 Chat.sendCenteredMessage(player, " §7Jatka seuraavaan steppiin kirjoittamalla §ajatka§7!");
-            } else if(step == 2) {
-                Chat.sendCenteredMessage(player, " §7Aseta kyläsi tägit!");
-                Chat.sendCenteredMessage(player, " §7Kirjoita tägit alle, pilkulla erotettuna ja kun olet valmis kirjoita §ajatka§7!");
             }
 
             player.sendMessage(" ");
@@ -174,31 +158,12 @@ public class PlayerVillageCreator implements Listener {
 
                 final String title = currentValues.get(0);
                 final boolean isPrivate = Boolean.parseBoolean(currentValues.get(1));
-
                 final List<String> tags = new ArrayList<>();
-                for(String rawTag : currentValues.get(2).split(",")) tags.add(rawTag.trim());
-
                 final List<UUID> citizens = new ArrayList<>();
                 citizens.add(uuid);
 
 
-                final PlayerVillage village = new PlayerVillage(
-                        UUID.randomUUID(),
-                        title,
-                        uuid,
-                        new ArrayList<>(),
-                        citizens,
-                        150,
-                        Sorsa.getSpawn(),
-                        8,
-                        isPrivate,
-                        tags
-                );
 
-                this.createProcess.remove(uuid);
-                this.createValues.remove(uuid);
-
-                Main.getVillageManager().addVillageToList(village);
 
                 player.sendMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
                 player.sendMessage(" ");
