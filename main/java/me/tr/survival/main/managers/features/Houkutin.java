@@ -241,9 +241,10 @@ public class Houkutin implements CommandExecutor {
                 block.setType(Material.SPAWNER);
                 final BlockState state = block.getState();
                 final CreatureSpawner spawner = (CreatureSpawner) state;
-                spawner.setSpawnCount(4);
+                spawner.setSpawnCount(8);
                 spawner.setSpawnedType(entityType);
                 spawner.setDelay(2);
+                spawner.setMaxNearbyEntities(100);
                 spawner.update();
             }
         }
