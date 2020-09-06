@@ -71,6 +71,12 @@ public class RTP {
         if(newZ >= 14000) newZ = 14000;
         else if(newZ <= -14000) newZ = -14000;
 
+        // Add negative coordinates support...
+        if(Math.random() > 0.5) {
+            newX = newX * -1;
+            newZ = newZ * -1;
+        }
+
         int newY = world.getHighestBlockYAt(newX, newZ);
         Location loc = new Location(world, (double) newX + 0.5, newY, (double) newZ + 0.5);
 

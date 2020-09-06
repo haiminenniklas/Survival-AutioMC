@@ -343,7 +343,12 @@ public class TradeManager implements CommandExecutor, Listener {
                 else if(clickedSlot == 49) {
                     // This is the new cancel button when confirming is on.
                     if(e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR) {
-                        if(trade.getState() == Trade.TradeState.CONFIRMING) trade.deny();
+                        long now = System.currentTimeMillis();
+                        long confirmStarted = trade.getConfirmingStarted();
+                        // You can cancel in the confirmation stage when 1 second has passed
+                        if((now - confirmStarted) > 1000) {
+                            if(trade.getState() == Trade.TradeState.CONFIRMING) trade.deny();
+                        }
                     }
                 }
             } else {

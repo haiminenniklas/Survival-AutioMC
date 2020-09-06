@@ -12,6 +12,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.*;
 
+@Deprecated
 public class PlayerVillageCreator implements Listener {
 
     private final Map<UUID, Integer> createProcess = new HashMap<>();

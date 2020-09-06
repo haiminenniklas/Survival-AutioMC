@@ -25,6 +25,7 @@ public class Trade {
     private Map<UUID, Boolean> accepted;
     private Inventory inv;
     private int[][] playerSlots;
+    private long confirmingStarted;
 
     private final InventoryAction[] illegalActions;
 
@@ -186,12 +187,18 @@ public class Trade {
         return false;
     }
 
+    public long getConfirmingStarted() {
+        return confirmingStarted;
+    }
+
     private void confirm() {
 
         Chat.sendMessage("Vaihtokauppa hyväksyttiin! Teillä molemmilla on §c10 sekuntia §7aikaa kieltäytyä vielä!", this.sender, this.target);
         this.setState(TradeState.CONFIRMING);
 
         this.updateGui(); // Just in case..?
+
+        this.confirmingStarted = System.currentTimeMillis();
 
         new BukkitRunnable() {
             int counter = 11;

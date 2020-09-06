@@ -2,6 +2,7 @@ package me.tr.survival.main.managers.villages;
 
 import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
+import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.managers.Profile;
 import me.tr.survival.main.other.Ranks;
@@ -160,9 +161,44 @@ public class VillageManager implements Listener, CommandExecutor {
 
     public PlayerVillage findVillage(UUID uuid) { return findVillage(uuid.toString()); }
 
+    public void openVillageCreationConfirmationMenu(Player player) {
+
+        final Gui gui = new Gui("Kylän luonnin varmistus", 27);
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa kyläsi luominen!",
+                " §7Tämä maksaa §e50 000€§7!",
+                " ",
+                " §aKlikkaa asettaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                PlayerVillage village = createVillage(clicker.getUniqueId());
+                openPersonalVillage(clicker, village);
+            }
+        });
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa peruuttaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+            }
+        });
+
+        gui.open(player);
+    }
+
     public PlayerVillage createVillage(UUID creatorUUID) {
 
         OfflinePlayer creator = Bukkit.getOfflinePlayer(creatorUUID);
+        Balance.remove(creatorUUID, 50000);
         if(this.hasJoinedVillage(creator.getUniqueId())) return null;
 
         final List<String> tags = new ArrayList<>();
@@ -750,14 +786,17 @@ public class VillageManager implements Listener, CommandExecutor {
                     " §7mihinkään kylään! Voit luoda uuden",
                     " §ePelaajakylän §7painamalla minua!",
                     " ",
-                    " §aKlikkaa luodaksesi!",
+                    " §7Kylän luominen maksaa §a50 000€§7!",
+                    " ",
+                    (Balance.get(player.getUniqueId()) >= 50000) ? "§aKlikkaa luodaksesi!" : "§cEi varaa...",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
-                    PlayerVillage village = createVillage(player.getUniqueId());
-                    openVillageView(clicker, village, false);
+                    if(Balance.get(clicker.getUniqueId()) >= 50000) {
+                        gui.close(clicker);
+                        openVillageCreationConfirmationMenu(clicker);
+                    }
                 }
             });
 
