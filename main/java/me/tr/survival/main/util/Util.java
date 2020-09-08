@@ -46,6 +46,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
@@ -280,6 +282,22 @@ public class Util {
         return item;
     }
 
+    public static String createRegexFromGlob(String glob) {
+        StringBuilder out = new StringBuilder("^");
+        for(int i = 0; i < glob.length(); ++i) {
+            final char c = glob.charAt(i);
+            switch(c) {
+                case '*': out.append(".*"); break;
+                case '?': out.append('.'); break;
+                case '.': out.append("\\."); break;
+                case '\\': out.append("\\\\"); break;
+                default: out.append(c);
+            }
+        }
+        out.append('$');
+        return out.toString();
+    }
+
     public static ItemStack makeEnchanted(Material mat, int amount, String displayName, List<String> lore, Enchant... enchantments){
         ItemStack item = new ItemStack(mat, amount);
         ItemMeta meta = item.getItemMeta();
@@ -290,6 +308,14 @@ public class Util {
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(Double.toString(value));
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     public static void replaceItem(Player player, Material mat1, ItemStack item2, boolean first) {

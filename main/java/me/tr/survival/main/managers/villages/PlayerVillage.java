@@ -4,6 +4,7 @@ import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.other.Ranks;
+import me.tr.survival.main.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -63,6 +64,14 @@ public class PlayerVillage {
         this.getCoLeaders().remove(uuid);
     }
 
+    public void removePlayer(UUID uuid) {
+        this.citizens.remove(uuid);
+        final Player player = Bukkit.getPlayer(uuid);
+        if(player != null) {
+            Chat.sendMessage(player, "Sinut potkittiin juuri kylästä... Harmillista!");
+        }
+    }
+
     public void join(Player player) {
         this.getCitizens().add(player.getUniqueId());
     }
@@ -93,21 +102,47 @@ public class PlayerVillage {
     }
 
     public void taxPlayers() {
-        double totalTaxation = 0d;
-        for(UUID memberUUID : this.getCitizens()) {
-            totalTaxation += this.taxPlayer(memberUUID);
+
+        if(this.getTaxRate() > 0) {
+
+            double returnTaxAmountPerPlayer = 0d;
+
+            if(this.getBalance() > 100) {
+                returnTaxAmountPerPlayer = Util.round((this.getBalance() / this.getCitizens().size()) * .2, 2);
+            }
+
+            double totalTaxation = 0d;
+            for(UUID memberUUID : this.getCitizens()) {
+                double taxPayed = this.taxPlayer(memberUUID);
+                if(returnTaxAmountPerPlayer > 0 && taxPayed >= this.getTaxRate()) {
+                    Balance.add(memberUUID, returnTaxAmountPerPlayer);
+                    this.removeBalance(returnTaxAmountPerPlayer);
+                }
+                totalTaxation += taxPayed;
+            }
+
+            double totalCuts = 0d;
+            for(UUID coLeaderUUID : this.getCoLeaders()) {
+                double cut = totalTaxation * 0.1;
+                Balance.add(coLeaderUUID, cut);
+                totalCuts += cut;
+            }
+
+            double leadersPay = totalTaxation * 0.1;
+            totalCuts += leadersPay;
+
+            Balance.add(this.getLeader(), leadersPay);
+
+            double moneyToAddToBalance = totalTaxation - totalCuts;
+            this.addBalance(moneyToAddToBalance);
+
+
         }
+    }
 
-        double totalCuts = 0d;
-        for(UUID coLeaderUUID : this.getCoLeaders()) {
-            double cut = totalTaxation * 0.05;
-            Balance.add(coLeaderUUID, cut);
-            totalCuts += cut;
-        }
-
-        double moneyToAddToBalance = totalTaxation - totalCuts;
-        this.addBalance(moneyToAddToBalance);
-
+    public boolean hasDefaultName() {
+        OfflinePlayer leader = Bukkit.getOfflinePlayer(this.getLeader());
+        return this.getTitle().equalsIgnoreCase(leader.getName() + ":n uusi kylä!");
     }
 
     public double taxPlayer(UUID uuid) {
@@ -130,7 +165,7 @@ public class PlayerVillage {
     }
 
     public void setBalance(double balance) {
-        this.balance = balance;
+        this.balance = Util.round(balance, 2);
     }
 
     public UUID getUniqueId() {
@@ -147,6 +182,10 @@ public class PlayerVillage {
 
     public List<UUID> getCitizens() {
         return citizens;
+    }
+
+    public int getMaxCoLeaders() {
+        return 3;
     }
 
     public List<UUID> getCoLeaders() {

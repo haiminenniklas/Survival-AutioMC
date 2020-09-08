@@ -302,7 +302,7 @@ public class PlayerData {
             for(int i = 0; i < updateQueries.length; i++) {
 
                 String update = updateQueries[i];
-                Sorsa.log("[Database] Executing Database update query: " + update);
+                //Sorsa.log("[Database] Executing Database update query: " + update);
                 if(!SQL.update(update)) {
                     Sorsa.log("[Database] Could not execute update query " + update + " trying to execute the equivalent save query: " + saveQueries[i]);
                     if(SQL.update(saveQueries[i])) {

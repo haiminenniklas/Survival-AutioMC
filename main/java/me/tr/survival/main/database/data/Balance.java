@@ -3,6 +3,7 @@ package me.tr.survival.main.database.data;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.SQL;
+import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -23,12 +24,12 @@ public class Balance {
             return 0.0;
         }
 
-        return (double) PlayerData.getValue(player, "money");
+        return Util.round((double) PlayerData.getValue(player, "money"),2);
     }
 
     public static void add(UUID player, double value) {
-            double current = get(player);
-            PlayerData.set(player, "money", current + value);
+        double current = get(player);
+        PlayerData.set(player, "money", current + value);
     }
 
     public static void remove(UUID player, double value) {
@@ -38,6 +39,7 @@ public class Balance {
     }
 
     public static void set(UUID player, double value) {
+        value = Util.round(value, 2);
         PlayerData.set(player, "money", value);
         Sorsa.logColored("§a[Balance] The balance of " + player + " (" + Bukkit.getOfflinePlayer(player).getName() + ") was set to " + value + "!");
     }
