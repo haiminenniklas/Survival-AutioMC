@@ -825,11 +825,11 @@ public class VillageManager implements Listener, CommandExecutor {
                 " §7näkyvät kylän pääsivulla.",
                 " ",
                 " §7Huomioithan, että kylä on velvollinen",
-                " §7maksamaan §e5% §7joka verotussummasta",
+                " §7maksamaan §e10% §7joka verotussummasta",
                 " §7kaikille luottamushenkilöille!",
                 " ",
                 " §7Tämän hetkinen luottamushenkilön",
-                " §7palkka: §e" + Util.formatDecimals((village.getTaxRate() * 0.05)) + " €",
+                " §7palkka: §e" + Util.formatDecimals((village.getTaxRate() * 0.1)) + " €",
                 " ",
                 " " + addCoLeaderText,
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
