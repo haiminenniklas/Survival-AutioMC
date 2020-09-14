@@ -236,7 +236,7 @@ public class PlayerData {
 
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         if(!isLoaded(uuid)) {
-            loadNull(uuid, true);
+            return;
         }
 
         HashMap<String, Object> data = player_data.get(uuid);
