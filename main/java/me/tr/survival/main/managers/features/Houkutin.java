@@ -259,6 +259,8 @@ public class Houkutin implements CommandExecutor {
         if(world != null) {
             for(final double[] coordinates : this.spawnCoordinates) {
                 final Block block = world.getBlockAt((int) coordinates[0], (int) coordinates[1], (int) coordinates[2]);
+                block.getState().setType(Material.AIR);
+                block.getState().update();
                 block.setType(Material.AIR);
             }
         }

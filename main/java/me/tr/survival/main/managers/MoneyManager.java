@@ -39,6 +39,8 @@ public class MoneyManager implements CommandExecutor, Listener {
     private final List<UUID> inChequeConfirmal = new ArrayList<>();
     private final HashMap<UUID, Long> lastChequeWithdrawal = new HashMap<>();
 
+    private final int MAX_CHEQUE_AMOUNT = 50000;
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -75,17 +77,25 @@ public class MoneyManager implements CommandExecutor, Listener {
                     int value;
                     try { value = Integer.parseInt(args[0]);
                     } catch (NumberFormatException ex) {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytä oikeita numeroita!");
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Et kirjoittanut numeroasi oikein..." +
+                                " Muistathan, että ei negatiivisia numeroita, desimaaleja tai muuta tyhmää!");
                         return true;
                     }
 
                     if(value < 1) {
-                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita, tai nolla!");
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita, tai nollaa!");
+                        return true;
+                    }
+
+                    if(value > MAX_CHEQUE_AMOUNT) {
+                        Chat.sendMessage(player, Chat.Prefix.ERROR, "Hei hei hei! Shekkien suurin määrä voi " +
+                                "olla vain §e" + Util.formatDecimals(MAX_CHEQUE_AMOUNT) + "€§7! Yritätkö esittää jotain?");
                         return true;
                     }
 
                     if(Balance.canRemove(player.getUniqueId(), value)) writeCheque(player, value);
-                    else Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän!");
+                    else Chat.sendMessage(player, Chat.Prefix.ERROR, "Mitä yrität oikein tehdä? " +
+                            "Huijata? Sinulla ei ole rahaa kirjoittaa näin suuria shekkejä...");
                 }
             }
         }
@@ -150,52 +160,7 @@ public class MoneyManager implements CommandExecutor, Listener {
     private void cheques(Player player) {
 
         Gui.openGui(player, "Kirjoita shekkejä", 27, (gui) -> {
-            gui.addButton(new Button(1, 11, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a50€", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Tämä kirjoittaa sinulle",
-                    " §7shekin, joka sisältää §a50€§7!",
-                    " ",
-                    " §aKlikkaa kirjoittaaksesi!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            )))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
-                    writeCheque(clicker, 50);
-                }
-            });
-
-            gui.addButton(new Button(1, 12, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a100€", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Tämä kirjoittaa sinulle",
-                    " §7shekin, joka sisältää §a100€§7!",
-                    " ",
-                    " §aKlikkaa kirjoittaaksesi!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            )))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
-                    writeCheque(clicker, 100);
-                }
-            });
-
-            gui.addButton(new Button(1, 13, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a250€", Arrays.asList(
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                    " §7Tämä kirjoittaa sinulle",
-                    " §7shekin, joka sisältää §a250€§7!",
-                    " ",
-                    " §aKlikkaa kirjoittaaksesi!",
-                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
-            )))) {
-                @Override
-                public void onClick(Player clicker, ClickType clickType) {
-                    gui.close(clicker);
-                    writeCheque(clicker, 250);
-                }
-            });
-
-            gui.addButton(new Button(1, 14, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a1 000€", Arrays.asList(
+            gui.addButton(new Button(1, 11, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a1 000€", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Tämä kirjoittaa sinulle",
                     " §7shekin, joka sisältää",
@@ -207,15 +172,15 @@ public class MoneyManager implements CommandExecutor, Listener {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    writeCheque(clicker, 1000);
+                    writeCheque(clicker, 50);
                 }
             });
 
-            gui.addButton(new Button(1, 15, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a2 500€", Arrays.asList(
+            gui.addButton(new Button(1, 12, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a5 000€", Arrays.asList(
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Tämä kirjoittaa sinulle",
                     " §7shekin, joka sisältää",
-                    " §a2 500€§7!",
+                    " §a5 000€§7!",
                     " ",
                     " §aKlikkaa kirjoittaaksesi!",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
@@ -223,7 +188,55 @@ public class MoneyManager implements CommandExecutor, Listener {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    writeCheque(clicker, 2500);
+                    writeCheque(clicker, 100);
+                }
+            });
+
+            gui.addButton(new Button(1, 13, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a10 000€", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Tämä kirjoittaa sinulle",
+                    " §7shekin, joka sisältää",
+                    " §a10 000€§7!",
+                    " ",
+                    " §aKlikkaa kirjoittaaksesi!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            )))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    writeCheque(clicker, 10000);
+                }
+            });
+
+            gui.addButton(new Button(1, 14, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a25 000€", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Tämä kirjoittaa sinulle",
+                    " §7shekin, joka sisältää",
+                    " §a25 000€§7!",
+                    " ",
+                    " §aKlikkaa kirjoittaaksesi!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            )))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    writeCheque(clicker, 25000);
+                }
+            });
+
+            gui.addButton(new Button(1, 15, Util.makeEnchanted(ItemUtil.makeItem(Material.PAPER, 1, "§a" + Util.formatDecimals(MAX_CHEQUE_AMOUNT) + "€", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Tämä kirjoittaa sinulle",
+                    " §7shekin, joka sisältää",
+                    " §a" + Util.formatDecimals(MAX_CHEQUE_AMOUNT) + "€§7!",
+                    " ",
+                    " §aKlikkaa kirjoittaaksesi!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            )))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    writeCheque(clicker, MAX_CHEQUE_AMOUNT);
                 }
             });
 
@@ -287,6 +300,8 @@ public class MoneyManager implements CommandExecutor, Listener {
             return;
         }
 
+        if(amount > MAX_CHEQUE_AMOUNT) return;
+
         Balance.remove(player.getUniqueId(), amount);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
@@ -314,6 +329,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                 " §7Voit antaa tämän myös kaverillesi",
                 " §7pienenä §dlahjoituksena§7!",
                 " ",
+                " §7Shekin kirjoittanut: §a" + player.getName(),
                 " §7Shekki kirjoitettu: §e" + today
         ));
 
@@ -325,9 +341,11 @@ public class MoneyManager implements CommandExecutor, Listener {
             itemMeta.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "write-time"), PersistentDataType.LONG, now);
             UUID createdUUID = UUID.randomUUID();
             itemMeta.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "uuid"), PersistentDataType.STRING, createdUUID.toString());
+            itemMeta.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "writer"), PersistentDataType.STRING, player.getName());
             item.setItemMeta(itemMeta);
 
             Sorsa.logColored(" §6[Cheques] Player '" + player.getName() + "' (" + player.getUniqueId() + ") wrote or was given by the plugin a cheque worth of " + Util.formatDecimals(amount) + "! Date: " + today + " UUID: " + createdUUID);
+
 
             HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(Util.makeEnchanted(item));
             for(Map.Entry<Integer, ItemStack> entry : unadded.entrySet()) { player.getWorld().dropItemNaturally(player.getLocation(), entry.getValue()); }
@@ -399,6 +417,7 @@ public class MoneyManager implements CommandExecutor, Listener {
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "cheque-amount");
         NamespacedKey uuidKey = new NamespacedKey(Main.getInstance(), "uuid");
+        NamespacedKey writerKey = new NamespacedKey(Main.getInstance(), "writer");
         ItemMeta itemMeta = cheque.getItemMeta();
         if(itemMeta != null) {
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
@@ -436,11 +455,17 @@ public class MoneyManager implements CommandExecutor, Listener {
 
                 int foundValue = container.get(key, PersistentDataType.INTEGER);
 
-                if(foundValue > 50000) {
+                if(foundValue > MAX_CHEQUE_AMOUNT) {
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                    Chat.sendMessage(player, "Et yksin pysty nostamaan yli §a50 000€ §7shekkejä... Sinun " +
-                            "täytyy pyytää ylläpidoltamme apua tämän nostamiseen!");
+                    Chat.sendMessage(player, "Et yksin pysty nostamaan yli §e50 000€ §7shekkejä... Sinun " +
+                            "täytyy pyytää ylläpidoltamme apua tämän nostamiseen! Tee apulipuke meidän Discord-palvelimellamme! " +
+                            "§9/discord§7!");
                     return;
+                }
+
+                String writer = "No writer found";
+                if(container.has(writerKey, PersistentDataType.STRING)) {
+                    writer = container.get(writerKey, PersistentDataType.STRING);
                 }
 
                 Balance.add(player.getUniqueId(), foundValue);
@@ -449,7 +474,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                 if(cheque.getAmount() < 1) player.getInventory().remove(cheque);
                 player.updateInventory();
                 Chat.sendMessage(player, "Nostit shekin, joka sisälsi §e" + foundValue + "€§7! Shekkejä voit kirjoittaa komennolla §a/valuutta§7!");
-                Sorsa.logColored(" §6[Cheques] Player '" + player.getName() + "' (" + player.getUniqueId() + ") withdrew a cheque worth " + Util.formatDecimals(foundValue) + "! Date: " + Util.getToday());
+                Sorsa.logColored(" §6[Cheques] Player '" + player.getName() + "' (" + player.getUniqueId() + ") withdrew a cheque worth " + Util.formatDecimals(foundValue) + "! Date: " + Util.getToday() + ", Writer: " + writer);
                 this.lastChequeWithdrawal.put(player.getUniqueId(), System.currentTimeMillis());
                 if(foundValue >= 10000) {
                     for(Player online : Bukkit.getOnlinePlayers()) {
@@ -473,6 +498,14 @@ public class MoneyManager implements CommandExecutor, Listener {
 
         if (container.has(key, PersistentDataType.INTEGER)) {
             int foundValue = container.get(key, PersistentDataType.INTEGER);
+
+            if(foundValue > MAX_CHEQUE_AMOUNT) {
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                Chat.sendMessage(player, "Et yksin pysty nostamaan yli §e50 000€ §7shekkejä... Sinun " +
+                        "täytyy pyytää ylläpidoltamme apua tämän nostamiseen! Tee apulipuke meidän Discord-palvelimellamme! " +
+                        "§9/discord§7!");
+                return;
+            }
 
             if(!containsUUID(cheque)) {
                 Chat.sendMessage(player, "Shekissäsi oli ongelma, joka piti korjata. Yritä uudelleen shekin nostamista!");

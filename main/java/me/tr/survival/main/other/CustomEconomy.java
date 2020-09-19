@@ -1,5 +1,7 @@
 package me.tr.survival.main.other;
 
+import me.tr.survival.main.Sorsa;
+import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.database.data.Balance;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -94,11 +96,15 @@ public class CustomEconomy implements Economy {
 
     @Override
     public boolean has(String playerName, double amount) {
-        return Balance.canRemove(Bukkit.getOfflinePlayer(playerName).getUniqueId(), amount);
+        return this.has(Bukkit.getOfflinePlayer(playerName), amount);
     }
 
     @Override
     public boolean has(OfflinePlayer player, double amount) {
+        if(!PlayerData.isLoaded(player.getUniqueId())) {
+            Sorsa.async(() -> PlayerData.loadPlayer(player.getUniqueId(), r -> {}));
+            return false;
+        }
         return Balance.canRemove(player.getUniqueId(),amount);
     }
 
@@ -113,19 +119,18 @@ public class CustomEconomy implements Economy {
     }
 
     @Override
+    @Deprecated
     public EconomyResponse withdrawPlayer(String playerName, double amount) {
-
-        if(has(playerName, amount)) {
-            Balance.remove(Bukkit.getOfflinePlayer(playerName).getUniqueId(), amount);
-            return new EconomyResponse(amount, getBalance(playerName), EconomyResponse.ResponseType.SUCCESS, "");
-        } else {
-            return new EconomyResponse(amount, getBalance(playerName), EconomyResponse.ResponseType.FAILURE, "Cannot afford");
-        }
-
+        return this.withdrawPlayer(Bukkit.getOfflinePlayer(playerName), amount);
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
+
+        if(!PlayerData.isLoaded(player.getUniqueId())) {
+            Sorsa.async(() -> PlayerData.loadPlayer(player.getUniqueId(), r -> {}));
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Player is not loaded into database...");
+        }
 
         if(has(player, amount)) {
             Balance.remove(player.getUniqueId(), amount);
@@ -137,25 +142,31 @@ public class CustomEconomy implements Economy {
     }
 
     @Override
+    @Deprecated
     public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
         return withdrawPlayer(playerName, amount);
     }
 
     @Override
+    @Deprecated
     public EconomyResponse withdrawPlayer(OfflinePlayer player, String worldName, double amount) {
         return withdrawPlayer(player, amount);
     }
 
     @Override
+    @Deprecated
     public EconomyResponse depositPlayer(String playerName, double amount) {
-
-        Balance.add(Bukkit.getOfflinePlayer(playerName).getUniqueId(), amount);
-        return new EconomyResponse(amount, getBalance(playerName), EconomyResponse.ResponseType.SUCCESS, "");
-
+        return this.depositPlayer(Bukkit.getOfflinePlayer(playerName), amount);
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
+
+        if(!PlayerData.isLoaded(player.getUniqueId())) {
+            Sorsa.async(() -> PlayerData.loadPlayer(player.getUniqueId(), r -> {}));
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Player is not loaded into database...");
+        }
+
         Balance.add(player.getUniqueId(), amount);
         return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "");
     }

@@ -863,6 +863,7 @@ public final class Main extends JavaPlugin implements Listener {
                         Chat.sendMessage(player, "/debug autobroadcast");
                         Chat.sendMessage(player, "/debug resetData [player] §cOle varovainen tän kaa!");
                         Chat.sendMessage(player, "/debug setSlots <amount>");
+                        Chat.sendMessage(player, "/debug unload <player>");
                     } else {
                         if(args.length >= 1) {
                             if(args[0].equalsIgnoreCase("mode")) {
@@ -932,6 +933,13 @@ public final class Main extends JavaPlugin implements Listener {
                                         else Chat.sendMessage(player, Chat.Prefix.DEBUG, "Tietoja ei ollut olemassa, ladattiin nollatiedot.");
                                     }));
                                 Chat.sendMessage(player, Chat.Prefix.DEBUG, "Haettu ja ladattu!");
+                            } else if(args[0].equalsIgnoreCase("unload")) {
+                                if(target.isOnline()) {
+                                    Chat.sendMessage(player, "Et voi tehdä tätä, jos kyseinen pelaaja on paikalla....");
+                                } else {
+                                    Chat.sendMessage(player, "Poistetaan pelaaja " + target.getName() + " välimuistista...");
+                                    PlayerData.unloadPlayer(target.getUniqueId());
+                                }
                             } else if(args[0].equalsIgnoreCase("resetData")) {
                                 Sorsa.async(() -> {
                                     PlayerData.loadNull(target.getUniqueId(), true);

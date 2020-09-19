@@ -290,7 +290,7 @@ public class Homes {
                         " §6VIP§7§o-arvolla tai ostamalla sen!",
                         " §7§oLisätietoa VIP-arvoista §a/kauppa",
                         " ",
-                        " §7Hinta: §e" + getHomePrice(homePos) + "€",
+                        " §7Hinta: §e" + Util.formatDecimals(getHomePrice(homePos)) + "€",
                         " ",
                         " §aKlikkaa avataksesi!",
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"

@@ -225,6 +225,19 @@ public class PlayerData {
 
     }
 
+    public static void unloadPlayer(UUID uuid) {
+
+        if(!isLoaded(uuid)) return;
+
+        Sorsa.async(() -> {
+
+            savePlayer(uuid);
+            player_data.remove(uuid);
+
+        });
+
+    }
+
     public static HashMap<String, Object> getData(UUID uuid) {
         if(!isLoaded(uuid)) {
             loadNull(uuid, false);
@@ -363,7 +376,10 @@ public class PlayerData {
     public static Object getValue(UUID uuid, String key) {
 
         if(!isLoaded(uuid)) {
-            loadNull(uuid, false);
+            Sorsa.async(() -> {
+                PlayerData.loadPlayer(uuid, (result) -> { });
+            });
+            return null;
         }
 
         HashMap<String, Object> data = player_data.get(uuid);
@@ -377,68 +393,66 @@ public class PlayerData {
 
     public static void set(final UUID uuid, final String key, final Object value) {
         if(!isLoaded(uuid)) {
-            Sorsa.async(() ->
-                    PlayerData.loadPlayer(uuid, (result) -> {
-                        if(result) set(uuid, key, value);
-                        savePlayer(uuid);
-                    }));
+            Sorsa.async(() -> {
+                PlayerData.loadPlayer(uuid, (result) -> {
+                    if(result) set(uuid, key, value);
+                });
+            });
             return;
+        } else {
+
+
+            HashMap<String, Object> data = player_data.get(uuid);
+            if(!data.containsKey(key)) {
+                return;
+            }
+
+            data.put(key, value);
+            player_data.put(uuid, data);
+
+
         }
-
-        HashMap<String, Object> data = player_data.get(uuid);
-        if(!data.containsKey(key)) {
-            return;
-        }
-
-        data.put(key, value);
-        player_data.put(uuid, data);
-
     }
 
     public static void add(UUID uuid, String key, int value) {
         if(!isLoaded(uuid)) {
-            if(!isLoaded(uuid)) {
-                Sorsa.async(() ->
-                        PlayerData.loadPlayer(uuid, (result) -> {
-                            if(result) add(uuid, key, value);
-                            savePlayer(uuid);
-                        }));
+                Sorsa.async(() -> {
+                    PlayerData.loadPlayer(uuid, (result) -> {
+                        if(result) add(uuid, key, value);
+                    });
+                });
+        } else {
+
+            // Try to prevent some nasty things
+            if(key.equalsIgnoreCase("money")) {
+                add(uuid, "money", (double) value);
                 return;
             }
-        }
 
-        // Try to prevent some nasty things
-        if(key.equalsIgnoreCase("money")) {
-            add(uuid, "money", (double) value);
-            return;
-        }
+            HashMap<String, Object> data = player_data.get(uuid);
+            if(!data.containsKey(key)) {
+                return;
+            }
 
-        HashMap<String, Object> data = player_data.get(uuid);
-        if(!data.containsKey(key)) {
-            return;
-        }
-
-        try {
-            int obj = (int) data.get(key);
-            int newVal = obj + value;
-            data.put(key, newVal);
-            player_data.put(uuid, data);
-        } catch(NumberFormatException ex) {
-            ex.printStackTrace();
+            try {
+                int obj = (int) data.get(key);
+                int newVal = obj + value;
+                data.put(key, newVal);
+                player_data.put(uuid, data);
+            } catch(NumberFormatException ex) {
+                ex.printStackTrace();
+            }
         }
 
     }
 
     public static void add(UUID uuid, String key, double value) {
         if(!isLoaded(uuid)) {
-            if(!isLoaded(uuid)) {
-                Sorsa.async(() ->
-                        PlayerData.loadPlayer(uuid, (result) -> {
-                            if(result) add(uuid, key, value);
-                            savePlayer(uuid);
-                        }));
-                return;
-            }
+            Sorsa.async(() ->
+                    PlayerData.loadPlayer(uuid, (result) -> {
+                        if(result) add(uuid, key, value);
+                    }));
+            return;
         }
 
         HashMap<String, Object> data = player_data.get(uuid);
