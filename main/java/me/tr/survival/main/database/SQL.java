@@ -59,7 +59,7 @@ public class SQL {
         String database = "autiomc";
         if(Main.getInstance().getConfig().getString("mysql.database") != null)
             database = Main.getInstance().getConfig().getString("mysql.database");
-        source.setJdbcUrl("jdbc:mysql://localhost:3306/" + database);
+        source.setJdbcUrl("jdbc:mysql://172.18.0.1:3306/" + database);
         source.setMaximumPoolSize(10);
         source.addDataSourceProperty("user", "survival");
         source.addDataSourceProperty("password", "uu4L3Ks3EhBMfP8u");
