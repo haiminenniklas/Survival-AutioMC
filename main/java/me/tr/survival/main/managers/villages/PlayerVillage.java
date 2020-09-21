@@ -21,6 +21,8 @@ public class PlayerVillage {
     private UUID leader;
     private List<UUID> coLeaders;
     private List<UUID> citizens;
+    private List<UUID> invited;
+    private List<UUID> requested;
 
     private int taxRate;
     private int maxPlayers;
@@ -34,7 +36,8 @@ public class PlayerVillage {
     private double totalMoneyGathered;
 
     public PlayerVillage(UUID uuid, String title, UUID leader, List<UUID> coLeaders, List<UUID> citizens, int taxRate,
-                         Location spawn, int maxPlayers, boolean closed, List<String> tags, double balance, double totalMoneyGathered) {
+                         Location spawn, int maxPlayers, boolean closed, List<String> tags, double balance,
+                         double totalMoneyGathered, List<UUID> invited, List<UUID> requested) {
 
         this.uuid = uuid;
         this.title = title;
@@ -52,6 +55,44 @@ public class PlayerVillage {
         this.balance = balance;
         this.totalMoneyGathered = totalMoneyGathered;
 
+        this.invited = invited;
+        this.requested = requested;
+
+    }
+
+    public void invite(UUID uuid) {
+        if(!this.isInvited(uuid)) {
+            this.invited.add(uuid);
+            Player invitedPlayer = Bukkit.getPlayer(uuid);
+            if(invitedPlayer != null) {
+                Chat.sendMessage(invitedPlayer, "Sinut on kutsuttu kylään §a" + this.getTitle() + "§7!");
+            }
+        }
+    }
+
+    public void requestToJoin(Player requester) {
+        if(!this.hasRequested(requester.getUniqueId())) {
+            if(this.isClosed()) {
+                this.requested.add(requester.getUniqueId());
+                Chat.sendMessage(requester, "Kysyit liittymislupaa kylään §a" + this.getTitle() + "§7!");
+            }
+        }
+    }
+
+    public List<UUID> getInvited() {
+        return invited;
+    }
+
+    public List<UUID> getRequested() {
+        return requested;
+    }
+
+    public boolean isInvited(UUID uuid) {
+        return this.invited.contains(uuid);
+    }
+
+    public boolean hasRequested(UUID uuid) {
+        return this.requested.contains(uuid);
     }
 
     public void addTag(String tag) { if(!tags.contains(tag)) tags.add(tag); }

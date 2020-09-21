@@ -145,9 +145,20 @@ public class VillageManager implements Listener, CommandExecutor {
                     coLeaders.add(UUID.fromString(coLeader));
                 }
 
+                final List<UUID> invited = new ArrayList<>();
+                for(String invitedPlayer : config.getStringList("villages." + uuid + ".invited")) {
+                    invited.add(UUID.fromString(invitedPlayer));
+                }
+
+                final List<UUID> requested = new ArrayList<>();
+                for(String playerWhoRequested : config.getStringList("villages." + uuid + ".requested")) {
+                    requested.add(UUID.fromString(playerWhoRequested));
+                }
+
                 final List<String> tags = config.getStringList("villages." + uuid + ".tags");
 
-                return new PlayerVillage(UUID.fromString(uuid), title, leader, coLeaders, citizens, taxRate, spawn, maxPlayers, closed, tags, balance, totalMoneyGathered);
+                return new PlayerVillage(UUID.fromString(uuid), title, leader, coLeaders, citizens, taxRate, spawn,
+                        maxPlayers, closed, tags, balance, totalMoneyGathered, invited, requested);
 
             } catch (Exception ex) {
 
@@ -218,7 +229,9 @@ public class VillageManager implements Listener, CommandExecutor {
                 true,
                 tags,
                 0,
-                0
+                0,
+                new ArrayList<>(),
+                new ArrayList<>()
         );
 
         Main.getVillageManager().addVillageToList(village);
@@ -252,6 +265,8 @@ public class VillageManager implements Listener, CommandExecutor {
 
             config.set("villages." + uuid + ".co-leaders", Util.toStringList(village.getCoLeaders()));
             config.set("villages." + uuid + ".citizens", Util.toStringList(village.getCitizens()));
+            config.set("villages." + uuid + ".invited", Util.toStringList(village.getInvited()));
+            config.set("villages." + uuid + ".requested", Util.toStringList(village.getRequested()));
 
             amountSaved += 1;
 
