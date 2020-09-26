@@ -79,6 +79,10 @@ public class PlayerVillage {
         }
     }
 
+    public boolean isLeader(UUID uuid) {
+        return this.getLeader().equals(uuid);
+    }
+
     public List<UUID> getInvited() {
         return invited;
     }
@@ -113,7 +117,7 @@ public class PlayerVillage {
         }
     }
 
-    public void join(Player player) {
+    public void join(OfflinePlayer player) {
         this.getCitizens().add(player.getUniqueId());
     }
 

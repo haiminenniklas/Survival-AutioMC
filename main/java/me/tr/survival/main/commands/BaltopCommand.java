@@ -139,6 +139,21 @@ public class BaltopCommand implements CommandExecutor {
                         }
                     });
 
+                    gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§eRikkaimmat kylät", Arrays.asList(
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                            " §7Katso miten eri pelaajakylät",
+                            " §7sijoittuvat listalle rahallisesti",
+                            " ",
+                            " §aKlikkaa minua!",
+                            "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                    ))) {
+                        @Override
+                        public void onClick(Player clicker, ClickType clickType) {
+                            gui.close(clicker);
+                            Main.getVillageManager().openTopBalanceMenu(clicker);
+                        }
+                    });
+
                     //System.out.println("[/Baltop] Adding Glass Panes... ");
                     for (int slot : yellowGlassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot); }
                     for (int j = 0; j < 54; j++) {
