@@ -132,11 +132,17 @@ public class PlayerVillage {
 
     public boolean isMember(UUID uuid) { return this.citizens.contains(uuid); }
 
-    public boolean canModify(UUID uuid) {
+    public boolean canModify(UUID uuid, boolean checkForStaff) {
         if(this.getLeader().equals(uuid)) return true;
-        if(Ranks.isStaff(uuid)) return true;
+        if(checkForStaff) {
+            if(Ranks.isStaff(uuid)) return true;
+        }
         if(this.getCoLeaders().contains(uuid)) return true;
         return false;
+    }
+
+    public boolean canModify(UUID uuid) {
+        return this.canModify(uuid, false);
     }
 
     public boolean ownsVillage(UUID uuid) {

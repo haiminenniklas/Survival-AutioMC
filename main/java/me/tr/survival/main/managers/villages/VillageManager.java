@@ -74,7 +74,6 @@ public class VillageManager implements Listener, CommandExecutor {
         for(PlayerVillage village : villages) {
             if(village.getLeader().equals(uuid)) return village;
         }
-
         // Return null, if no villages were found
         return null;
     }
@@ -366,6 +365,23 @@ public class VillageManager implements Listener, CommandExecutor {
                             }
                         }
 
+                    } else if(args[0].equalsIgnoreCase("kutsu")) {
+
+                        if(args.length >= 2) {
+
+                            if(ownsVillage(uuid)) {
+
+                                PlayerVillage village = findVillageByLeader(uuid);
+                                OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+                                village.invite(target.getUniqueId());
+                                Chat.sendMessage(player, "Kutsuit pelaajan §a" + target.getName() + " §7liittymään kylääsi!");
+
+                            } else {
+                                Chat.sendMessage(player, "Et omista kylää!");
+                            }
+
+                        }
+
                     } else if(args[0].equalsIgnoreCase("top")) {
                         openTopBalanceMenu(player);
                     } else if(args[0].equalsIgnoreCase("verota")) {
@@ -469,14 +485,14 @@ public class VillageManager implements Listener, CommandExecutor {
                     break;
                 }
 
-                if(title.matches(Util.createRegexFromGlob("*" + searchQuery + "*"))) {
+                if(title.matches(Util.createRegexFromGlob("*" + searchQuery.toLowerCase() + "*"))) {
                     openVillageView(player, village, true);
                     found = true;
                     break;
                 }
 
             }
-            if(!found) Chat.sendMessage(player, Chat.Prefix.ERROR, "Emme löytäneet yhtään kylää hakusanalla: §c" + searchQuery.toLowerCase() + "§7... Yritäthän pian uudestaan uudella hakutermillä!");
+            if(!found) Chat.sendMessage(player, Chat.Prefix.ERROR, "Emme löytäneet yhtään kylää hakusanalla: §c" + searchQuery + "§7... Yritäthän pian uudestaan uudella hakutermillä!");
 
         } else openVillageView(player, foundVillage, true);
 
@@ -599,11 +615,25 @@ public class VillageManager implements Listener, CommandExecutor {
         villageLore.add(" ");
         if(!village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
             villageLore.add(" ");
-            villageLore.add(" §aKlikkaa liittyäksesi!");
+            villageLore.add(" §aPyydä liittymistä!");
+        } else if(village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
+            villageLore.add(" ");
+            villageLore.add(" §aPyydä liittymistä!");
         }
         villageLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-        gui.addItem(1, ItemUtil.makeItem(Material.IRON_DOOR, 1, "§2" + village.getTitle(), villageLore), 12);
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.IRON_DOOR, 1, "§2" + village.getTitle(), villageLore)) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                if(!village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
+                    gui.close(clicker);
+                    village.requestToJoin(clicker);
+                } else if(village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
+                    gui.close(clicker);
+                    village.requestToJoin(clicker);
+                }
+            }
+        });
 
         gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.MAP, 1, "§2Vieraile", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -650,6 +680,21 @@ public class VillageManager implements Listener, CommandExecutor {
                 }
             });
         }
+
+        gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eRikkaimmat kylät", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Katso miten kylä sijoittuu",
+                " §erikkaimpien kylien §7joukossa!",
+                " ",
+                " §aKlikkaa minua!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                Main.getVillageManager().openTopBalanceMenu(clicker);
+            }
+        });
 
         final int[] glassSlots = { 11,13,15 };
         for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE, 1), slot); }
@@ -792,6 +837,8 @@ public class VillageManager implements Listener, CommandExecutor {
         }
 
         final UUID uuid = player.getUniqueId();
+
+        if(!village.canModify(uuid, true)) return;
 
         int size = 36;
         final Gui gui = new Gui("Hallitse kylää", size);
@@ -1102,6 +1149,21 @@ public class VillageManager implements Listener, CommandExecutor {
                 }
             });
 
+            gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.SUNFLOWER, 1, "§eRikkaimmat kylät", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Katso miten kylät sijouittuvat",
+                    " §erikkaimpien §7joukossa!",
+                    " ",
+                    " §aKlikkaa minua!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    Main.getVillageManager().openTopBalanceMenu(clicker);
+                }
+            });
+
             gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
@@ -1156,8 +1218,8 @@ public class VillageManager implements Listener, CommandExecutor {
 
                 gui.addButton(new Button(1, slotToAddHead, ItemUtil.makeSkullItem(rPlayer, 1, "§a" + rPlayer.getName(), Arrays.asList(
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                        " §aOikea-klikkaa §7hyväksyäksesi!",
-                        " §6Vasen-klikkaa §7kieltäytyäksesi!",
+                        " §aVasen-klikkaa §7hyväksyäksesi!",
+                        " §cOikea-klikkaa §7kieltäytyäksesi!",
                         " ",
                         " §7Jos klikkaat väärin, ja päästät pelaajan",
                         " §7vahingossa kylään, niin voit potkia hänet",
@@ -1168,7 +1230,7 @@ public class VillageManager implements Listener, CommandExecutor {
                     public void onClick(Player clicker, ClickType clickType) {
                         gui.close(clicker);
                         village.getRequested().remove(rUUID);
-                        if(clickType == ClickType.RIGHT) {
+                        if(clickType == ClickType.LEFT) {
                             village.join(rPlayer);
                         }
                         openRequestedPlayersMenu(clicker, village);
@@ -1197,7 +1259,7 @@ public class VillageManager implements Listener, CommandExecutor {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
-                openVillageSettings(player, village);
+                openVillageView(player, village, false);
             }
         });
 
@@ -1512,6 +1574,23 @@ public class VillageManager implements Listener, CommandExecutor {
            final int[] yellowGlassSlots = new int[]{20, 29, 38, 22, 31, 40, 24, 33, 42};
            final int[] villageSlots = new int[]{19, 28, 37, 21, 30, 39, 23, 32, 41, 25, 34, 43};
 
+           if(this.hasJoinedVillage(player.getUniqueId())) {
+               gui.addButton(new Button(1, 8, ItemUtil.makeItem(Material.SPRUCE_DOOR, 1, "§2Sinun kyläsi", Arrays.asList(
+                       "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                       " §7Klikkaa päästäksesi katsomaan",
+                       " §7ja hallinnoimaan omaa kylääsi!",
+                       " ",
+                       " §aKlikkaa avataksesi!",
+                       "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+               ))) {
+                   @Override
+                   public void onClick(Player clicker, ClickType clickType) {
+                       gui.close(clicker);
+                       mainGui(clicker);
+                   }
+               });
+           }
+
            int i= 0;
            for(PlayerVillage village : topVillages) {
 
@@ -1529,8 +1608,8 @@ public class VillageManager implements Listener, CommandExecutor {
 
                gui.addButton(new Button(1, slot, ItemUtil.makeSkullItem(leader, 1, "§a" +village.getTitle(), Arrays.asList(
                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                       " §7Rahatilanne: §e" + Util.formatDecimals(village.getBalance()),
-                       " §7Yhteensä kerätty raha: §e" + Util.formatDecimals(village.getTotalMoneyGathered()),
+                       " §7Rahatilanne: §e" + Util.formatDecimals(village.getBalance()) + "€",
+                       " §7Yhteensä kerätty raha: §e" + Util.formatDecimals(village.getTotalMoneyGathered()) + "€",
                        " ",
                        " §aKlikkaa nähdäksesi lisätietoja!",
                        "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"

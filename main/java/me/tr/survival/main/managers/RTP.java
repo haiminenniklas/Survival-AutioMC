@@ -5,6 +5,8 @@ import me.tr.survival.main.Main;
 import me.tr.survival.main.util.Util;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -47,7 +49,10 @@ public class RTP {
                 double y = world.getHighestBlockYAt(loc);
                 final Location newLoc = new Location(world, loc.getX(), y + 2, loc.getZ());
 
-                Sorsa.task(() -> player.teleport(newLoc));
+                Sorsa.task(() -> {
+                    Util.teleportHorse(player, newLoc);
+                    player.teleport(newLoc);
+                });
                 Util.sendNotification(player, "§7Sinut vietiin §aErämaahan§7!");
 
                 Sorsa.logColored("§a[RTP] Sent player '" + player.getName() + "' (" + player.getUniqueId() + ") to a random location: " + Util.formatLocation(newLoc) + " in '" + newLoc.getWorld().getName() + "'!");

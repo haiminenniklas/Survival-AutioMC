@@ -2,6 +2,7 @@ package me.tr.survival.main.managers.warps;
 
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.database.SQL;
+import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.callback.TypedCallback;
@@ -61,7 +62,9 @@ public class Warps {
                         ChatColor.translateAlternateColorCodes('&', warp.getDisplayName()), lore)) {
                     @Override
                     public void onClick(Player clicker, ClickType clickType) {
-                        warp.teleport(player);
+
+                        Chat.sendMessage(clicker, "Warpit ovat poissa käytöstä... Jos haluat kauppaan, käytä §a/sorsastore");
+
                     }
                 });
                 added.add(warp);

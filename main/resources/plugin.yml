@@ -126,6 +126,10 @@ commands:
     description: Valuutta-asiat
   shekki:
     description: Kirjoita shekkejä
+  craft:
+    description: Kannettava crafting table
+  sorsastore:
+    description: Teleporttaa spawnin kauppaan
 #  stop:
 #    description: Stop the server
 #    aliases: [shutdown, restart]
@@ -176,6 +180,7 @@ commands:
     aliases: [kylä]
   cbc:
     description: Claimblock kupongit
+    aliases: [valtaus, suojaus, suojauskupongit]
   dummy:
     description: Lorem ipsum
   report:

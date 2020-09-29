@@ -75,6 +75,7 @@ public class Home {
         Sorsa.after(3, () -> {
             Util.sendNotification(player, "§7Teleportataan...", true);
             Sorsa.logColored("§6[Homes] Player " + player.getName() + " (" + player.getUniqueId() + ") teleported to their home at " + Util.formatLocation(loc) + "!");
+            Util.teleportHorse(player, loc);
             player.teleport(loc);
         });
     }

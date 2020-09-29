@@ -42,6 +42,7 @@ public class Sorsa {
 
     public static void teleportToSpawn(Player player) {
         Location loc = getSpawn();
+        Util.teleportHorse(player, loc);
         player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
         Sorsa.logColored("§e[TeleportManager] Player " + player.getName() + " teleported to spawn!");
         if(Boosters.isActive(Boosters.Booster.EXTRA_HEARTS)) {

@@ -26,6 +26,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
@@ -808,6 +809,14 @@ public class Util {
 
         return new Location(world, x, y, z, yaw, pitch);
 
+    }
+
+    public static void teleportHorse(Player player, Location loc) {
+        if(player.getVehicle() != null) {
+            Entity vehicle = player.getVehicle();
+            vehicle.eject();
+            vehicle.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        }
     }
 
     public static List<String> toStringList(List<?> list) {

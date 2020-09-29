@@ -359,12 +359,9 @@ public class Houkutin implements CommandExecutor {
     }
 
     private long getTimeLeftMillis() {
-        if(activator != null && entityType != null) {
-            long now = System.currentTimeMillis();
-            long shouldEnd = started + durationMillis;
-            return shouldEnd - now;
-        }
-        return 0L;
+        long now = System.currentTimeMillis();
+        long shouldEnd = started + durationMillis;
+        return shouldEnd - now;
     }
 
     private String getTimeLeft() {

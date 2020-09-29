@@ -25,10 +25,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFactory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.inventory.meta.tags.ItemTagType;
@@ -39,6 +36,7 @@ import java.util.*;
 public class Essentials implements CommandExecutor, Listener {
 
     private Map<UUID, UUID> inInvsee = new HashMap<>();
+    private Map<UUID, Long> spawnStoreTeleport = new HashMap<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -126,6 +124,37 @@ public class Essentials implements CommandExecutor, Listener {
                     }
 
                 } else Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei oikeuksia!");
+
+            } else if(cmd.getLabel().equalsIgnoreCase("sorsastore")) {
+
+                if(spawnStoreTeleport.containsKey(uuid)) {
+                    long now = System.currentTimeMillis();
+                    long didTeleport = spawnStoreTeleport.get(uuid);
+                    long shouldBeAbleToTeleport = didTeleport + (1000 * 60 * 5); // 5 minutes
+                    if(now < shouldBeAbleToTeleport) {
+                        long timeLeftSeconds = (shouldBeAbleToTeleport - now) / 1000;
+                        long minutes = (int) timeLeftSeconds / 60;
+                        long seconds = timeLeftSeconds - (60 * minutes);
+                        String timeLeft = Util.formatTime((int) minutes, (int) seconds, true);
+                        Chat.sendMessage(player, "Et voi vielä päästä tällä komennolla kauppaan... Löydät kaupan §a/spawn§7! Odota vielä §c" + timeLeft + "§7...");
+                        return true;
+                    }
+                }
+
+                Chat.sendMessage(player, "Sinut viedään kauppaan §a3 sekunnin §7kuluttua...");
+                Sorsa.after(3, () -> {
+                    spawnStoreTeleport.put(uuid, System.currentTimeMillis());
+                    player.teleport(new Location(Sorsa.getSpawn().getWorld(), -1.5, 57.0, -27.5, 180f, -1.5f));
+                    Chat.sendMessage(player, "Sinut vietiin kauppaan!");
+                });
+
+            } else if(cmd.getLabel().equalsIgnoreCase("craft")) {
+
+                if(Ranks.hasRank(uuid, "premiumplus") || Ranks.hasRank(uuid, "sorsa") || Ranks.isStaff(uuid)) {
+                    player.openWorkbench(null, true);
+                } else {
+                    Chat.sendMessage(player, "Tämä toiminto on vain §6§lPremium§f+ §7ja ylemmille!");
+                }
 
             }
         }

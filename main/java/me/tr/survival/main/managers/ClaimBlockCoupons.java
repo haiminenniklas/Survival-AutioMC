@@ -2,6 +2,7 @@ package me.tr.survival.main.managers;
 
 import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
+import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.gui.Button;
@@ -43,42 +44,112 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
 
             final Player player = (Player) sender;
             if(args.length < 1) {
-                Chat.sendMessage(player, "/cbc generate <amount>");
-                Chat.sendMessage(player, "/cbc (enable | disable)");
+                if(player.isOp()) {
+                    Chat.sendMessage(player, "/cbc generate <amount>");
+                    Chat.sendMessage(player, "/cbc (enable | disable)");
+                }
+                Chat.sendMessage(player, "Käytä §a/valtaus <määrä> §7niin voit ostaa itsellesi valtaustilaa! Yksi palikka maksaa §e10€§7!");
             } else {
 
                 if(args[0].equalsIgnoreCase("help")) {
-                    Chat.sendMessage(player, "/cbc generate <amount>");
-                    Chat.sendMessage(player, "/cbc (enable | disable)");
+                    if(player.isOp()) {
+                        Chat.sendMessage(player, "/cbc generate <amount>");
+                        Chat.sendMessage(player, "/cbc (enable | disable)");
+                    }
                 } else if(args[0].equalsIgnoreCase("enable")) {
 
-                    this.ENABLED = true;
-                    Chat.sendMessage(player, "ClaimBlock-kupongit käytössä!");
-
+                    if(player.isOp()) {
+                        this.ENABLED = true;
+                        Chat.sendMessage(player, "ClaimBlock-kupongit käytössä!");
+                    }
                 } else if(args[0].equalsIgnoreCase("disable")) {
-                    this.ENABLED = false;
-                    Chat.sendMessage(player, "ClaimBlock-kupongit poissa käytöstä!");
+                    if(player.isOp()) {
+                        this.ENABLED = false;
+                        Chat.sendMessage(player, "ClaimBlock-kupongit poissa käytöstä!");
+                    }
                 } else if(args[0].equalsIgnoreCase("generate")) {
 
-                    if(args.length >= 2) {
-                        int amount;
-                        try {
-                            amount = Integer.parseInt(args[1]);
-                        } catch (NumberFormatException ex) {
-                            Chat.sendMessage(player, "Käytä oikeita numeroita!");
-                            return true;
-                        }
+                    if(player.isOp()) {
+                        if(args.length >= 2) {
+                            int amount;
+                            try {
+                                amount = Integer.parseInt(args[1]);
+                            } catch (NumberFormatException ex) {
+                                Chat.sendMessage(player, "Käytä oikeita numeroita!");
+                                return true;
+                            }
 
-                        if(amount < 0) {
-                            Chat.sendMessage(player, "Ei negatiivisia numeroita!");
-                            return true;
-                        }
-                        giveCoupon(player, amount);
-                    } else Chat.sendMessage(player, "/cbc generate <amount>");
+                            if(amount < 0) {
+                                Chat.sendMessage(player, "Ei negatiivisia numeroita!");
+                                return true;
+                            }
+                            giveCoupon(player, amount);
+                        } else Chat.sendMessage(player, "/cbc generate <amount>");
+                    }
+
+                } else {
+                    int amount;
+                    try {
+                        amount = Integer.parseInt(args[0]);
+                    } catch (NumberFormatException ex) {
+                        Chat.sendMessage(player, "Käytä vain positiivisia kokonaislukuja! Eli ykkösestä ylöspäin! Ei desimaaleja!");
+                        return true;
+                    }
+
+                    if(amount < 0) {
+                        Chat.sendMessage(player, "Ei negatiivisia numeroita!");
+                        return true;
+                    }
+
+                    this.confirmCouponCreation(player, amount);
+
                 }
             }
         }
         return true;
+    }
+
+    private void confirmCouponCreation(Player player, int amount) {
+
+        Gui gui = new Gui("Varmista valtauskupongin luonti", 27);
+
+        final int totalPrice = amount * 10;
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Vahvista saadaksesi itsellesi",
+                " §b" + amount + " suojauspalikkaa§7!",
+                " ",
+                " §7Suojauspalikat maksavat: §e" + Util.formatDecimals(totalPrice) + "€",
+                " ",
+                " §aKlikkaa vahvistaaksesi",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                if(Balance.canRemove(clicker.getUniqueId(), totalPrice)) {
+                    Balance.remove(clicker.getUniqueId(), totalPrice);
+                    giveCoupon(clicker, amount);
+                } else {
+                    Chat.sendMessage(player, "Sinulla ei ole varaa tähän... Tämä toimenpide maksaa §e" + Util.formatDecimals(totalPrice) + "€");
+                }
+            }
+        });
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa peruuttaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+            }
+        });
+
+        gui.open(player);
+
     }
 
     private ItemStack registerCoupon(int claimBlocks) {

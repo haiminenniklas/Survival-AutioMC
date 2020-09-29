@@ -130,6 +130,7 @@ public class ActionEvents implements Listener {
     public void onTeleport(PlayerTeleportEvent e) {
 
         Player player = e.getPlayer();
+
         if(e.getTo().getWorld().getEnvironment() == World.Environment.NETHER) {
             if(!Main.getStaffManager().hasStaffMode(player)) {
                 player.setFlying(false);

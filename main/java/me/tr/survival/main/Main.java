@@ -270,6 +270,8 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("world").setExecutor(essentials);
         getCommand("clear").setExecutor(essentials);
         getCommand("invsee").setExecutor(essentials);
+        getCommand("craft").setExecutor(essentials);
+        getCommand("sorsastore").setExecutor(essentials);
 
 
         getCommand("bal").setExecutor(moneyCommand);
@@ -404,6 +406,8 @@ public final class Main extends JavaPlugin implements Listener {
 
     }
 
+    private Map<UUID, Long> netherSpawnCooldown = new HashMap<>();
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -478,7 +482,25 @@ public final class Main extends JavaPlugin implements Listener {
            } else if(command.getLabel().equalsIgnoreCase("spawn")) {
                 if(args.length < 1) {
                     if(player.getWorld().getEnvironment() == World.Environment.NETHER && !Main.getStaffManager().hasStaffMode(player)) {
-                        Chat.sendMessage(player, "§7Tämä ei toimi §cNetherissä§7!");
+                        if(netherSpawnCooldown.containsKey(uuid)) {
+                            long now = System.currentTimeMillis();
+                            long didTeleport = netherSpawnCooldown.get(uuid);
+                            long shouldBeAbleToTeleport = didTeleport + (1000 * 60 * 30); // 30 minutes
+                            if(now < shouldBeAbleToTeleport) {
+                                long timeLeftSeconds = (shouldBeAbleToTeleport - now) / 1000;
+                                long minutes = (int) timeLeftSeconds / 60;
+                                long seconds = timeLeftSeconds - (60 * minutes);
+                                String timeLeft = Util.formatTime((int) minutes, (int) seconds, true);
+                                Chat.sendMessage(player, "Tämä komento on sinulla jäähyllä... Etsi §cNetherin §7spawni tai odota §c" + timeLeft);
+                                return true;
+                            }
+                        }
+                        Chat.sendMessage(player, "Sinut viedään §cNetherin §7spawnille §a15 sekunnin §7kuluttua...");
+                        Sorsa.after(15, () -> {
+                            netherSpawnCooldown.put(uuid, System.currentTimeMillis());
+                            Sorsa.teleportToNether(player);
+                            Chat.sendMessage(player, "Sinut vietiin §cNetherin §7spawnille!");
+                        });
                         return true;
                     }
                     if(spawnCommandDelay.containsKey(uuid)) {
