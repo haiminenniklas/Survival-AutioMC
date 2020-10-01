@@ -420,14 +420,20 @@ public class HelpCommand implements CommandExecutor {
                         }
 
                     });
-                } else if(args[0].equalsIgnoreCase("kylät")) {
+                } else if(args[0].equalsIgnoreCase("kylät") || args[0].equalsIgnoreCase("kylä")
+                        || args[0].equalsIgnoreCase("pelaajakylät") || args[0].equalsIgnoreCase("pelaajakylä")) {
 
                     Gui.openGui(player, "Apua (Pelaajakylät)", 27, (gui) -> {
-                        gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitkä kylät?", Arrays.asList(
+                        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.BOOK, 1, "§2Mitkä kylät?", Arrays.asList(
                                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                                " §7",
+                                " §ePelaajakylät §7ovat tapa luoda yhteisöjä",
+                                " §7ja tapa tienata rahaa yhdessä helposti!",
+                                " §7Pystytte perustamaan yhteisen julkisen",
+                                " §atorin §7ja myydä esineitä, sekä maksaa",
+                                " §7myöhemmin §everoja §7yhteen pussiin ja",
+                                " §7tulla suurimmaksi yhteisöksi koko palvelimella!",
                                 " ",
-                                " §7Lisätietoa §a/kylä§7!",
+                                " §7Lisätietoa §a/kylä§7! Tai §apaina minua§7!",
                                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                         ))) {
                             @Override
@@ -437,7 +443,18 @@ public class HelpCommand implements CommandExecutor {
                             }
                         });
 
-                        int[] glass = new int[] { 11,12, 14,15  };
+                        gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§2Hyödylliset komennot", Arrays.asList(
+                                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                " §a/kylä §7Pää näkymä",
+                                " §a/kylä top §7Rikkaimmat kylät",
+                                " §a/kylä poistu §7Poistu kylästä",
+                                " §a/kylä nimi <uusi nimi> §7Nimeä kyläsi uudelleen",
+                                " §a/kylä kutsu <pelaaja> §7Kutsu pelaaja kylääsi",
+                                " §a/kylä <hakutermi> §7Etsi kyliä",
+                                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                        )), 14);
+
+                        int[] glass = new int[] { 11, 15  };
                         for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }
 
                         for(int i = 0; i < 27; i++) {

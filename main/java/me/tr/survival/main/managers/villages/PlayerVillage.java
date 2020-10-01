@@ -110,6 +110,7 @@ public class PlayerVillage {
     }
 
     public void removePlayer(UUID uuid) {
+        this.coLeaders.remove(uuid);
         this.citizens.remove(uuid);
         final Player player = Bukkit.getPlayer(uuid);
         if(player != null) {
@@ -118,6 +119,8 @@ public class PlayerVillage {
     }
 
     public void join(OfflinePlayer player) {
+        this.getRequested().remove(player.getUniqueId());
+        this.getInvited().remove(player.getUniqueId());
         this.getCitizens().add(player.getUniqueId());
     }
 

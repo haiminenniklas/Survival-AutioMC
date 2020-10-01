@@ -10,6 +10,7 @@ import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -80,8 +81,9 @@ public class VillageManager implements Listener, CommandExecutor {
 
     public void removeVillage(PlayerVillage village) {
         villages.remove(village);
-        villageConfig.set(village.getUniqueId().toString(), "");
+        villageConfig.set(village.getUniqueId().toString(), null);
         saveVillageConfig();
+        loadVillagesFromFile();
     }
 
     public boolean hasJoinedVillage(UUID uuid) { return findVillageByPlayer(uuid) != null; }
@@ -347,9 +349,14 @@ public class VillageManager implements Listener, CommandExecutor {
             else {
                 if(!Ranks.isStaff(uuid)) this.searchForVillage(player, args);
                 else {
-                    if(args[0].equalsIgnoreCase("help")) {
+                    if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("apua")) {
 
-                        Chat.sendMessage(player, "/kylä (enable | disable)");
+                        if(player.isOp()) {
+                            Chat.sendMessage(player, "/kylä (enable | disable)");
+                        } else {
+                            player.performCommand("/apua kylä");
+                        }
+
 
                     } else if(args[0].equalsIgnoreCase("enable") || args[0].equalsIgnoreCase("disable")) {
 
@@ -365,7 +372,7 @@ public class VillageManager implements Listener, CommandExecutor {
                             }
                         }
 
-                    } else if(args[0].equalsIgnoreCase("kutsu")) {
+                    } else if(args[0].equalsIgnoreCase("kutsu") || args[0].equalsIgnoreCase("invite")) {
 
                         if(args.length >= 2) {
 
@@ -395,6 +402,8 @@ public class VillageManager implements Listener, CommandExecutor {
                            }
                        }
 
+                    } else if(args[0].equalsIgnoreCase("poistu")) {
+                        this.leaveCurrentVillage(player);
                     } else if(args[0].equalsIgnoreCase("nimi")) {
 
                         if(args.length >= 2) {
@@ -420,7 +429,9 @@ public class VillageManager implements Listener, CommandExecutor {
                                                 "vittu",
                                                 "saatana",
                                                 "top",
-                                                "enable"
+                                                "enable",
+                                                "poistu",
+
                                         };
 
                                         boolean cannotCreate = false;
@@ -453,6 +464,21 @@ public class VillageManager implements Listener, CommandExecutor {
         return true;
     }
 
+    public void leaveCurrentVillage(Player player) {
+        if(hasJoinedVillage(player.getUniqueId())) {
+
+            PlayerVillage village = findVillageByPlayer(player.getUniqueId());
+            if(village.isLeader(player.getUniqueId())) {
+                removeVillage(village);
+            } else {
+                village.removePlayer(player.getUniqueId());
+            }
+
+        } else {
+            Chat.sendMessage(player, "Et ole kylässä.. Miten kuvittelet poistuvasi sieltä?");
+        }
+    }
+
     public boolean isTaxationDay() {
         final Calendar calendar = Calendar.getInstance(new Locale("fi", "FI"));
         boolean isTaxationDate = false;
@@ -468,36 +494,46 @@ public class VillageManager implements Listener, CommandExecutor {
         }
     }
 
-    private boolean searchForVillage(final Player player, String[] args) {
-        String searchQuery = "";
-        for(int i = 0; i < args.length; i++) { searchQuery = searchQuery.concat(args[i] + " "); }
-        OfflinePlayer searchedLeader = Bukkit.getOfflinePlayer(searchQuery);
-        PlayerVillage foundVillage = this.findVillageByPlayer(searchedLeader.getUniqueId());
-        boolean found = false;
-        // First, we try to check if the user wrote
-        if(foundVillage == null) {
-            for(final PlayerVillage village : villages) {
-                if(village == null) continue;
-                String title = village.getTitle().toLowerCase().trim();
-                if(title.equalsIgnoreCase(searchQuery.toLowerCase().trim())) {
-                    openVillageView(player, village, true);
-                    found = true;
-                    break;
-                }
+    private void searchForVillage(final Player player, String[] args) {
+        Sorsa.async(() -> {
 
-                if(title.matches(Util.createRegexFromGlob("*" + searchQuery.toLowerCase() + "*"))) {
-                    openVillageView(player, village, true);
-                    found = true;
-                    break;
-                }
+            // First, search by Player
+            OfflinePlayer searchedPlayer = Bukkit.getOfflinePlayer(args[0]);
 
+            PlayerVillage villageSearchedByPlayer = findVillageByPlayer(searchedPlayer.getUniqueId());
+            if(villageSearchedByPlayer == null) {
+
+                // Join the arguments in to a string
+                final String query = String.join(" ", args).toLowerCase().trim();
+
+                for(PlayerVillage village : villages) {
+                    if(village == null) continue;
+
+                    // Change to lowercase and remove whitespace
+                    String title = village.getTitle().toLowerCase().trim();
+
+                    // First check if the query and title are equal
+                    if(title.equalsIgnoreCase(query)) {
+                        Sorsa.task(() -> openVillageView(player, village, true));
+                        break;
+                    } else {
+
+                        // If not, check if the title contains the query...
+                        if(title.contains(query)) {
+                            Sorsa.task(() -> openVillageView(player, village, true));
+                            break;
+                        } else {
+                            // Let's give up, no villages were found
+                            Sorsa.task(() -> Chat.sendMessage(player, "Kyliä ei löydetty hakutermillä §c" + query + "§7..."));
+                        }
+                    }
+                }
+            } else {
+                // Open the village view
+                Sorsa.task(() -> openVillageView(player, villageSearchedByPlayer, true));
             }
-            if(!found) Chat.sendMessage(player, Chat.Prefix.ERROR, "Emme löytäneet yhtään kylää hakusanalla: §c" + searchQuery + "§7... Yritäthän pian uudestaan uudella hakutermillä!");
 
-        } else openVillageView(player, foundVillage, true);
-
-        return found;
-
+        });
     }
 
     public Calendar getNextTaxationDate() {
@@ -516,7 +552,7 @@ public class VillageManager implements Listener, CommandExecutor {
 
     }
 
-    private boolean searchForVillage(final Player player, String searchQuery) { return this.searchForVillage(player, searchQuery.split(" ")); }
+    private void searchForVillage(final Player player, String searchQuery) { this.searchForVillage(player, searchQuery.split(" ")); }
 
     public boolean isVillageAvailable(String query) {
         boolean found = false;
@@ -816,6 +852,19 @@ public class VillageManager implements Listener, CommandExecutor {
             }
         });
 
+        gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.PRISMARINE_SHARD, 1, "§cPoistu kylästä", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa minua §cpoistuaksesi",
+                " §7tästä kylästä! Tätä ei voi perua!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                leaveCurrentVillage(clicker);
+            }
+        });
+
         final int[] glassSlots = { 10,12,14,16 };
         for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE, 1), slot); }
 
@@ -1046,6 +1095,23 @@ public class VillageManager implements Listener, CommandExecutor {
             public void onClick(Player clicker, ClickType clickType) { }
         });
 
+        gui.addButton(new Button(1, 23, ItemUtil.makeItem(Material.GOLDEN_CARROT, 1, "§2Kutsumispyynnöt", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Hallinnoi niitä liittymiskutsuja",
+                " §7mitä olet eri pelaajille lähettänyt",
+                " ",
+                " §aKlikkaa minua avataksesi",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                if(village.canModify(clicker.getUniqueId())) {
+                    gui.close(clicker);
+                    openInvitationMenu(player, village);
+                }
+            }
+        });
+
         gui.addButton(new Button(1, 27, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
@@ -1088,7 +1154,23 @@ public class VillageManager implements Listener, CommandExecutor {
     public void mainGui(final Player player) {
 
         if(!ENABLED && !player.isOp()) {
-            Chat.sendMessage(player, Chat.Prefix.ERROR, "Tämä toiminto on toistaiseksi poissa käytöstä!");
+
+            Gui gui = new Gui("Mitä etsit?", 27);
+
+            gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§cTulossa pian...", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Pelaajakylät eivät ole vielä",
+                    " §7käytössä, mutta tulevat toimintaan",
+                    " §7pikimmiten! Pahoittelut häiriöstä!",
+                    " ",
+                    " §7Pistäkää se §cTeamRaiderz §7takaisin",
+                    " §7töihin!!!",
+                    " ",
+                    " §7Lisätietoa: §9/discord",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            )), 13);
+
+            gui.open(player);
             return;
         }
 
@@ -1294,6 +1376,9 @@ public class VillageManager implements Listener, CommandExecutor {
 
             OfflinePlayer member = Bukkit.getOfflinePlayer(memberUUID);
             if(village.canModify(memberUUID) && village.getCoLeaders().size() < village.getMaxCoLeaders()) {
+
+                if(!village.getCoLeaders().contains(member.getUniqueId())) continue;
+
                 gui.addButton(new Button(1, slotToAddHead, ItemUtil.makeSkullItem(member, 1, "§a" + member.getName(), Arrays.asList(
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                         " §7Klikkaa minua lisätäksesi",
@@ -1359,6 +1444,76 @@ public class VillageManager implements Listener, CommandExecutor {
 
     }
 
+    private void openInvitationMenu(Player player, final PlayerVillage village) {
+        int size = 54;
+        final Gui gui = new Gui("Kylän Liittymispyynnöt", size);
+
+        int slotToAddHead = 9;
+        List<UUID> requested = village.getRequested();
+        int added = 0;
+        for(final UUID rUUID : requested) {
+
+            if(slotToAddHead >= 45) break;
+
+            if(village.getLeader().equals(rUUID)) continue;
+            if(village.getCitizens().contains(rUUID)) continue;
+
+            OfflinePlayer rPlayer = Bukkit.getOfflinePlayer(rUUID);
+
+            gui.addButton(new Button(1, slotToAddHead, ItemUtil.makeSkullItem(rPlayer, 1, "§a" + rPlayer.getName(), Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §cKlikkaa §7poistaaksesi pyynnön!",
+                    " ",
+                    " §7Poistä tämä pyyntö ja pelaaja ei voi",
+                    " §7enää liittyä tähän kylään.",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    village.getInvited().remove(rPlayer.getUniqueId());
+                    openInvitationMenu(clicker, village);
+                }
+            });
+
+            added += 1;
+            slotToAddHead += 1;
+
+        }
+
+        if(added == 36 && requested.size() >= 36) {
+            int leftOver = requested.size() - 35; // 35, because we're removing the last item (pos 44)...
+            gui.addItem(1, ItemUtil.makeItem(Material.PAPER, 1, "§eLisää löytyy...", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Poistettavia kutsuja on",
+                    " §7vielä §a" + leftOver + " §7jäljellä...",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            )), 44);
+        }
+
+        gui.addButton(new Button(1, 49, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                openVillageSettings(player, village);
+            }
+        });
+
+        for(int i = 0; i < 9; i++) {
+            if(gui.getItem(i) != null) continue;
+            if(gui.getButton(i) != null) continue;
+            gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1), i);
+        }
+
+        for(int i = 45; i < 54; i++) {
+            if(gui.getItem(i) != null) continue;
+            if(gui.getButton(i) != null) continue;
+            gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1), i);
+        }
+
+        gui.open(player);
+    }
+
     private void openVillagePlayerKickMenu(Player player, final PlayerVillage village) {
 
         int size = 54;
@@ -1373,7 +1528,7 @@ public class VillageManager implements Listener, CommandExecutor {
             if(village.getLeader().equals(memberUUID)) continue;
 
             OfflinePlayer member = Bukkit.getOfflinePlayer(memberUUID);
-            if(village.canModify(memberUUID)) {
+            if(village.canModify(memberUUID) && village.getCoLeaders().contains(memberUUID)) {
                 continue;
             } else {
                 gui.addButton(new Button(1, slotToAddHead, ItemUtil.makeSkullItem(member, 1, "§c" + member.getName(), Arrays.asList(
