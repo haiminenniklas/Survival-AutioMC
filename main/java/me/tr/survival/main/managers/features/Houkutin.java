@@ -260,8 +260,9 @@ public class Houkutin implements CommandExecutor {
             for(final double[] coordinates : this.spawnCoordinates) {
                 final Block block = world.getBlockAt((int) coordinates[0], (int) coordinates[1], (int) coordinates[2]);
                 block.getState().setType(Material.AIR);
-                block.getState().update();
                 block.setType(Material.AIR);
+                block.getState().update();
+                block.breakNaturally();
             }
         }
     }
@@ -288,9 +289,8 @@ public class Houkutin implements CommandExecutor {
                         Bukkit.broadcastMessage(" §aHoukutin löytyy Spawnilta! /spawn");
                         Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
-                        deactivate();
-
                     }
+                    Sorsa.task(Houkutin.this::deactivate);
                 }
 
             }

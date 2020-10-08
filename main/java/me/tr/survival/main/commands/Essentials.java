@@ -5,6 +5,7 @@ import de.tr7zw.changeme.nbtapi.NBTCompoundList;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import de.tr7zw.changeme.nbtapi.data.NBTData;
 import me.tr.survival.main.Sorsa;
+import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.Main;
 import me.tr.survival.main.managers.Settings;
@@ -14,6 +15,7 @@ import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
 import me.tr.survival.main.managers.StaffManager;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,6 +31,7 @@ import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.inventory.meta.tags.ItemTagType;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.util.*;
@@ -156,9 +159,118 @@ public class Essentials implements CommandExecutor, Listener {
                     Chat.sendMessage(player, "Tämä toiminto on vain §6§lPremium§f+ §7ja ylemmille!");
                 }
 
+            } else if(cmd.getLabel().equalsIgnoreCase("nimeä") || cmd.getName().equalsIgnoreCase("rename")) {
+
+                if(Ranks.hasRank(uuid, "premiumplus") || Ranks.hasRank(uuid, "sorsa") || Ranks.isStaff(uuid)) {
+
+                    if(args.length < 1) {
+
+                        Chat.sendMessage(player, "Käytä §a/nimeä <nimi> §7§o(Värikoodeja saa käyttää => §a§o/apua värikoodit§7§o) §c§lHUOM! §7Jos käytät rumia nimiä, niin tämä tavara voidaan poistaa sinulta.");
+
+                    } else {
+
+                        final ItemStack item = player.getInventory().getItemInMainHand();
+                        if(item.getType() != Material.AIR) {
+
+                            String givenName = StringUtils.join(args);
+
+                            String[] blackListedWords = {
+                                    "neekeri",
+                                    "homo",
+                                    "huora",
+                                    "paska",
+                                    "vittu",
+                            };
+
+                            // Check for bad names
+                            for(String blacklistedWord : blackListedWords) {
+                                String parsedName = givenName.replace("4", "a")
+                                                             .replace("0", "o")
+                                                             .replace("3", "e")
+                                                             .replace("1", "i")
+                                                             .toLowerCase();
+
+                                if(parsedName.contains(blacklistedWord)) {
+                                    Chat.sendMessage(player, "No tuohan on varsin ruma nimi... Kai ymmärrät, että tuo on todella hirvittävää käytöstä?");
+                                    return true;
+                                }
+                            }
+
+                            // Color correct
+                            givenName = ChatColor.translateAlternateColorCodes('&', givenName);
+                            this.openItemRenameConfirmal(player, item, givenName);
+                        }
+                    }
+
+                } else {
+                    Chat.sendMessage(player, "Tämä toiminto on vain §6§lPremium§f+ §7ja ylemmille!");
+                }
+
             }
         }
         return true;
+    }
+
+    private void openItemRenameConfirmal(Player player, final ItemStack itemToChange, String givenName) {
+
+        Gui gui = new Gui("Tavaran nimen vaihdos", 27);
+
+        final int price = 1000;
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Haluat siis vaihtaa tavarasi",
+                " §animen§7? Ei hätää! Maksa",
+                " §7vain §e" + Util.formatDecimals(price) + "€§7,",
+                " §7niin vaihdan tavarasi nimen!",
+                " ",
+                " §7Olet vaihtamassa tavaran nimeksi:",
+                "   "  + givenName,
+                " ",
+                " §aKlikkaa vahvistaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(player);
+
+                if(Balance.canRemove(player.getUniqueId(), price)) {
+
+                    ItemMeta meta = itemToChange.getItemMeta();
+                    meta.setDisplayName(givenName);
+                    itemToChange.setItemMeta(meta);
+
+                    player.updateInventory();
+
+                    Chat.sendMessage(player, "Nimen vaihdos tehty! Onnittelut!");
+                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+
+                    Balance.remove(player.getUniqueId(), price);
+
+                } else {
+                    Chat.sendMessage(player, Chat.Prefix.ERROR, "Sinulla ei ole varaa tähän senkin hölmö!");
+                }
+
+            }
+        });
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Jäitkö aristamaan? Ei hätää!",
+                " §7Voit kyllä vielä peruuttaa",
+                " §7tämän toiminnon!",
+                " ",
+                " §cKlikkaa peruuttaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+            }
+        });
+
+        gui.open(player);
+
     }
 
     private void invsee(Player opener, OfflinePlayer target) {

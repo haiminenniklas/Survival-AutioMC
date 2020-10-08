@@ -38,6 +38,8 @@ public class VillageManager implements Listener, CommandExecutor {
 
     private boolean ENABLED = false;
 
+    public final int VILLAGE_PURCHASE_PRICE = 35000;
+
     private final List<PlayerVillage> villages = new ArrayList<>();
     private final int[] taxationDates = { 1, 7, 14, 21, 28 };
 
@@ -81,7 +83,7 @@ public class VillageManager implements Listener, CommandExecutor {
 
     public void removeVillage(PlayerVillage village) {
         villages.remove(village);
-        villageConfig.set(village.getUniqueId().toString(), null);
+        villageConfig.set("villages." + village.getUniqueId().toString(), "");
         saveVillageConfig();
         loadVillagesFromFile();
     }
@@ -157,10 +159,12 @@ public class VillageManager implements Listener, CommandExecutor {
                     requested.add(UUID.fromString(playerWhoRequested));
                 }
 
+                long created = config.getLong("villages." + uuid + ".created");
+
                 final List<String> tags = config.getStringList("villages." + uuid + ".tags");
 
                 return new PlayerVillage(UUID.fromString(uuid), title, leader, coLeaders, citizens, taxRate, spawn,
-                        maxPlayers, closed, tags, balance, totalMoneyGathered, invited, requested);
+                        maxPlayers, closed, tags, balance, totalMoneyGathered, invited, requested, created);
 
             } catch (Exception ex) {
 
@@ -181,7 +185,7 @@ public class VillageManager implements Listener, CommandExecutor {
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Klikkaa kyläsi luominen!",
-                " §7Tämä maksaa §e50 000€§7!",
+                " §7Tämä maksaa §e" + Util.formatDecimals(VILLAGE_PURCHASE_PRICE) + "€§7!",
                 " ",
                 " §aKlikkaa asettaaksesi!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
@@ -211,7 +215,7 @@ public class VillageManager implements Listener, CommandExecutor {
     public PlayerVillage createVillage(UUID creatorUUID) {
 
         OfflinePlayer creator = Bukkit.getOfflinePlayer(creatorUUID);
-        Balance.remove(creatorUUID, 50000);
+        Balance.remove(creatorUUID, VILLAGE_PURCHASE_PRICE);
         if(this.hasJoinedVillage(creator.getUniqueId())) return null;
 
         final List<String> tags = new ArrayList<>();
@@ -233,7 +237,8 @@ public class VillageManager implements Listener, CommandExecutor {
                 0,
                 0,
                 new ArrayList<>(),
-                new ArrayList<>()
+                new ArrayList<>(),
+                System.currentTimeMillis()
         );
 
         Main.getVillageManager().addVillageToList(village);
@@ -357,7 +362,6 @@ public class VillageManager implements Listener, CommandExecutor {
                             player.performCommand("/apua kylä");
                         }
 
-
                     } else if(args[0].equalsIgnoreCase("enable") || args[0].equalsIgnoreCase("disable")) {
 
                         if(player.isOp()) {
@@ -400,6 +404,40 @@ public class VillageManager implements Listener, CommandExecutor {
                                    village.taxPlayers();
                                }
                            }
+                       }
+
+                    } else if(args[0].equalsIgnoreCase("nosta")) {
+
+                       if(hasJoinedVillage(uuid)) {
+
+                           PlayerVillage village = findVillageByPlayer(uuid);
+                           if(village.canModify(uuid)) {
+                               double amount;
+                               try { amount = Double.parseDouble(args[1]);
+                               } catch(NumberFormatException ex) {
+                                   Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytäthän numeroita!");
+                                   return true;
+                               }
+
+                               if(amount < 1) {
+                                   Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita, tai nolla!");
+                                   return true;
+                               }
+
+                               if(village.getBalance() >= amount) {
+
+                                   this.openVillageWithdrawalConfirmation(player, village, amount);
+
+                               } else {
+                                   Chat.sendMessage(player, "Kylällä ei ole tarpeeksi varoja tähän! Suosittelemme, että kylän kaikkia rahoja ei nostettaisi.");
+                               }
+
+                           } else {
+                               Chat.sendMessage(player, "Hei! Sinulla ei ole oikeuksia tehdä tätä sinun kylässäsi! Ole yhteydessä kyläsi luottamushenkilöön tai pormestariin!");
+                           }
+
+                       } else {
+                           Chat.sendMessage(player, "Höpsö! Et ole kylässä!");
                        }
 
                     } else if(args[0].equalsIgnoreCase("poistu")) {
@@ -464,14 +502,64 @@ public class VillageManager implements Listener, CommandExecutor {
         return true;
     }
 
+    private void openVillageWithdrawalConfirmation(Player player, PlayerVillage village, double amount) {
+
+        final Gui gui = new Gui("Kylän rahanoston varmistus", 27);
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Olet nostamassa kyläsi pankki-",
+                " §7tililtä §e" + Util.formatDecimals(amount) + "€§7.",
+                " §7Oletko varma tästä?",
+                " ",
+                " §7Kylän tilille jää: §e" + Util.formatDecimals((village.getBalance() - amount)) + "€",
+                " ",
+                " §aSuosittelemme§7, että kaikkia kylän rahoja",
+                " §7ei nostettaisi ja tilille jätettäisiin",
+                " §7hieman rahaa, esim. §averoja §7varten.",
+                " ",
+                " §aKlikkaa nostaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+
+                village.removeBalance(amount);
+                Balance.add(player.getUniqueId(), amount);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                Chat.sendMessage(player, "§a§lOnnittelut! §7Nostit juuri §e" + Util.formatDecimals(amount) + "€ §7kyläsi pankkitililtä!");
+
+            }
+        });
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa peruuttaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+            }
+        });
+
+        gui.open(player);
+    }
+
     public void leaveCurrentVillage(Player player) {
         if(hasJoinedVillage(player.getUniqueId())) {
 
             PlayerVillage village = findVillageByPlayer(player.getUniqueId());
-            if(village.isLeader(player.getUniqueId())) {
-                removeVillage(village);
+            if(village != null) {
+                if(village.isLeader(player.getUniqueId())) {
+                    openVillageRemovalConifrmationMenu(player, village);
+                } else {
+                    village.removePlayer(player.getUniqueId());
+                    Chat.sendMessage(player, "Poistuit kylästäsi... Jos teit tämän vahingossa, ole vain yhteydessä kylän §epormestariin§7!");
+                }
             } else {
-                village.removePlayer(player.getUniqueId());
+                Chat.sendMessage(player, "Kävi virhe tuota tehdessä... Yritäppä uudelleen...?");
             }
 
         } else {
@@ -514,12 +602,14 @@ public class VillageManager implements Listener, CommandExecutor {
 
                     // First check if the query and title are equal
                     if(title.equalsIgnoreCase(query)) {
+                        searchVillageMode.remove(player.getUniqueId()); // If village found and player was using search mode, deactivate it
                         Sorsa.task(() -> openVillageView(player, village, true));
                         break;
                     } else {
 
                         // If not, check if the title contains the query...
                         if(title.contains(query)) {
+                            searchVillageMode.remove(player.getUniqueId()); // If village found and player was using search mode, deactivate it
                             Sorsa.task(() -> openVillageView(player, village, true));
                             break;
                         } else {
@@ -530,6 +620,7 @@ public class VillageManager implements Listener, CommandExecutor {
                 }
             } else {
                 // Open the village view
+                searchVillageMode.remove(player.getUniqueId()); // If village found and player was using search mode, deactivate it
                 Sorsa.task(() -> openVillageView(player, villageSearchedByPlayer, true));
             }
 
@@ -572,12 +663,14 @@ public class VillageManager implements Listener, CommandExecutor {
 
         final Gui gui = new Gui("Nimen vaihdon varmistus", 27);
 
+        int price = (village.hasDefaultName()) ? 0 : 500;
+
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Varmista kyläsi nimen vaihdos",
                 " §7nimeen: §b" + title + "§7!",
                 " ",
-                " §7Hinta vaihdokseen on: §e500€§7!",
+                " §7Hinta vaihdokseen on: §e" + Util.formatDecimals(price) +  "€§7!",
                 " §7Hinta veloitetaan kylän maksutililtä!",
                 " ",
                 " §aKlikkaa vaihtaaksesi!",
@@ -587,9 +680,9 @@ public class VillageManager implements Listener, CommandExecutor {
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 if(!village.hasDefaultName()) {
-                    if(village.getBalance() >= 500) {
+                    if(village.getBalance() >= price) {
                         village.setTitle(title);
-                        village.removeBalance(500);
+                        village.removeBalance(price);
                         openPersonalVillage(player, village);
                     } else {
                         Chat.sendMessage(clicker, "Kylälläsi ei ole rahaa nimen vaihtamiseen...");
@@ -942,10 +1035,12 @@ public class VillageManager implements Listener, CommandExecutor {
                 " §7itse verovelvollinen asukas!",
                 "",
                 " §7Saatavilla olevat verotusmäärät:",
-                " §7- " + (village.getTaxRate() == 1250 ? "§a§l1250€" : "§e1250€"),
-                " §7- " + (village.getTaxRate() == 600 ? "§a§l600€" : "§e600€"),
-                " §7- " + (village.getTaxRate() == 250 ? "§a§l250€" : "§e250€"),
-                " §7- " + (village.getTaxRate() == 0 ? "§a§l0€ §7§o(Ei verotusta)" : "§e0€ §7§o(Ei verotusta)"),
+                " §7- " + (village.getTaxRate() == 8000 ? "§a§l8 000,00€" : "§e8 000,00€"),
+                " §7- " + (village.getTaxRate() == 3500 ? "§a§l3 500,00€" : "§e3 500,00€"),
+                " §7- " + (village.getTaxRate() == 1250 ? "§a§l1 250,00€" : "§e1 250,00€"),
+                " §7- " + (village.getTaxRate() == 500 ? "§a§l500,00€" : "§e500,00€"),
+                " §7- " + (village.getTaxRate() == 100 ? "§a§l100€,00" : "§e100,00€"),
+                " §7- " + (village.getTaxRate() == 0 ? "§a§l0,00€ §7§o(Ei verotusta)" : "§e0,00€ §7§o(Ei verotusta)"),
                 " ",
                 " §7Verotus tapahtuu §aviikon §7välein!",
                 " ",
@@ -956,10 +1051,12 @@ public class VillageManager implements Listener, CommandExecutor {
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 int taxRate = village.getTaxRate();
-                if(taxRate == 1250) taxRate = 600;
-                else if(taxRate == 600) taxRate = 250;
-                else if(taxRate == 250) taxRate = 0;
-                else if(taxRate == 0) taxRate = 1250;
+                if(taxRate == 8000) taxRate = 3500;
+                else if(taxRate == 3500) taxRate = 1250;
+                else if(taxRate == 1250) taxRate = 500;
+                else if(taxRate == 500) taxRate = 100;
+                else if(taxRate == 100) taxRate = 0;
+                else if(taxRate == 0) taxRate = 8000;
                 village.setTaxRate(taxRate);
                 openVillageSettings(clicker, village);
             }
@@ -975,11 +1072,11 @@ public class VillageManager implements Listener, CommandExecutor {
                 " §7näkyvät kylän pääsivulla.",
                 " ",
                 " §7Huomioithan, että kylä on velvollinen",
-                " §7maksamaan §e10% §7joka verotussummasta",
+                " §7maksamaan §e5% §7joka verotussummasta",
                 " §7kaikille luottamushenkilöille!",
                 " ",
                 " §7Tämän hetkinen luottamushenkilön",
-                " §7palkka: §e" + Util.formatDecimals((village.getTaxRate() * 0.1)) + " €",
+                " §7palkka: §e" + Util.formatDecimals((village.getTaxRate() * 0.05)) + " €",
                 " ",
                 " " + addCoLeaderText,
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
@@ -1027,8 +1124,9 @@ public class VillageManager implements Listener, CommandExecutor {
                 " §7Vaihda kylän nimi komennolla",
                 " §a/kylä nimi <uusi nimi>§7!",
                 " ",
-                " §7Muista! Nimen vaihto maksaa ",
-                " §e500 € §7!",
+                " §7Muista! Nimen vaihto maksaa",
+                " §e500€§7! Vain ensimmäinen §7kerta",
+                " §7on §ailmainen§7!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -1073,7 +1171,7 @@ public class VillageManager implements Listener, CommandExecutor {
             }
         });
 
-        double returnTaxAmount = Util.round((village.getBalance() / village.getCitizens().size()) * .2, 2);
+        double returnTaxAmount = (village.getTaxRate() > 0) ?  Util.round((village.getBalance() / village.getCitizens().size()) * .2, 2) : 0;
 
         gui.addButton(new Button(1, 23, ItemUtil.makeItem(Material.GOLDEN_CARROT, 1, "§2Veronpalautus", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -1085,9 +1183,9 @@ public class VillageManager implements Listener, CommandExecutor {
                 " §7tilanteen perusteella maksaisit",
                 " §7veronpalautusta jokaiselle asukkaalle:",
                 " ",
-                " §a§l" + Util.formatDecimals(returnTaxAmount) + " €",
+                "     §a§l" + Util.formatDecimals(returnTaxAmount) + " €",
                 " ",
-                " §7Huom! Jos asukas ei maksa täyttä",
+                " §cHuom! §7Jos asukas ei maksa täyttä",
                 " §7verotusta, hän ei saa palautustakaan!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
@@ -1095,7 +1193,7 @@ public class VillageManager implements Listener, CommandExecutor {
             public void onClick(Player clicker, ClickType clickType) { }
         });
 
-        gui.addButton(new Button(1, 23, ItemUtil.makeItem(Material.GOLDEN_CARROT, 1, "§2Kutsumispyynnöt", Arrays.asList(
+        gui.addButton(new Button(1, 24, ItemUtil.makeItem(Material.WRITABLE_BOOK, 1, "§2Kutsumispyynnöt", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Hallinnoi niitä liittymiskutsuja",
                 " §7mitä olet eri pelaajille lähettänyt",
@@ -1136,6 +1234,23 @@ public class VillageManager implements Listener, CommandExecutor {
                 }
             });
         }
+
+        gui.addButton(new Button(1, 35, ItemUtil.makeItem(Material.GOLD_NUGGET, 1, "§2Nosta rahaa", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Hyvä muistaa, että voit",
+                " §enostaa rahaa §7kylän pankkitililtä",
+                " §7komennolla §a/kylä nosta <määrä>§7!",
+                " ",
+                " §cHuom! §7Muista nostaa rahaa ",
+                " §7rehellisesti ja kun se on",
+                " §7yhdessä päätetty asukkaiden",
+                " §7kanssa!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+            }
+        });
 
         final int[] glassSlots = { 10,19,16,25 };
         for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE, 1), slot); }
@@ -1192,12 +1307,12 @@ public class VillageManager implements Listener, CommandExecutor {
                     " ",
                     " §7Kylän luominen maksaa §a50 000€§7!",
                     " ",
-                    (Balance.get(player.getUniqueId()) >= 50000) ? "§aKlikkaa luodaksesi!" : "§cEi varaa...",
+                    (Balance.get(player.getUniqueId()) >= VILLAGE_PURCHASE_PRICE) ? "§aKlikkaa luodaksesi!" : "§cEi varaa...",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
-                    if(Balance.get(clicker.getUniqueId()) >= 50000) {
+                    if(Balance.get(clicker.getUniqueId()) >= VILLAGE_PURCHASE_PRICE) {
                         gui.close(clicker);
                         openVillageCreationConfirmationMenu(clicker);
                     }
@@ -1449,7 +1564,7 @@ public class VillageManager implements Listener, CommandExecutor {
         final Gui gui = new Gui("Kylän Liittymispyynnöt", size);
 
         int slotToAddHead = 9;
-        List<UUID> requested = village.getRequested();
+        List<UUID> requested = village.getInvited();
         int added = 0;
         for(final UUID rUUID : requested) {
 

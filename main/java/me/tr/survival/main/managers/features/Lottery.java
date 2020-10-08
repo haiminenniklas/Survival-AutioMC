@@ -62,7 +62,7 @@ public class Lottery {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + player.getName() + " parent set premium");
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "givevip " + player.getName() + " premium");
                         } else {
-                            Chat.sendMessage(player, "Sait parhaimman arvon, mutta");
+                            Chat.sendMessage(player, "Sait (lähes) parhaimman onnen arvasta, mutta sinulla on jo parempi arvo, kuin Premium!");
                         }
                         break;
                     case FOOD:
@@ -104,6 +104,16 @@ public class Lottery {
                         player.getInventory().addItem(
                                 ItemUtil.makeItem(Material.OAK_LOG, 32));
                         break;
+                    case MORE_MONEY:
+                        Main.getMoneyManager().forceWriteCheque(player, 1500);
+                        break;
+                    case SORSA:
+                        if(!Ranks.hasRank(player.getUniqueId(), "sorsa") && !Ranks.isStaff(player.getUniqueId())) {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + player.getName() + " parent set sorsa");
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "givevip " + player.getName() + " sorsa");
+                        } else {
+                            Chat.sendMessage(player, "Sait parhaimman onnen arvasta, mutta sinulla on jo parempi arvo, kuin Premium!");
+                        }
 
                 }
 
@@ -125,15 +135,17 @@ public class Lottery {
         FOOD(33, "§c§lRuokaa"),
         CHICKEN(20, "§6§lKANAA"),
         MONEY(20, "§e§lRahaa"),
+        CLAIMBLOCKS(15, "§9§lClaim Blockeja"),
         MILK(10, "§f§lMaitoa"),
         WOOD(10, "§6§lPUUTA"),
         DIAMONDS(10, "§b§lTimantteja"),
-        CLAIMBLOCKS(15, "§9§lClaim Blockeja"),
+        MORE_MONEY(7, "§e§lLisää Rahaa"),
         NOTCH_APPLES(3, "§d§lKULTA OMENAT"),
         NETHER_INGOT(2, "§7§lNetherite-harkko"),
         MUSIC_DISC(1, "§e§lMusiikkilevy"),
-        WITHER_SKULL(0.5, "§8§lWITHER-KALLO"),
-        VIP(0.01, "§6§lPremium"),
+        WITHER_SKULL(1, "§8§lWITHER-KALLO"),
+        VIP(0.5, "§6§lPremium-arvo!"),
+        SORSA(0.1, "§2§lSORSA-arvo!"),
         ;
 
         private double chance;

@@ -479,7 +479,7 @@ public class MoneyManager implements CommandExecutor, Listener {
                 if(foundValue >= 10000) {
                     for(Player online : Bukkit.getOnlinePlayers()) {
                         if(Main.getStaffManager().hasStaffMode(online)) {
-                            Util.sendClickableText(online, "§8[§e§l⚡§8] §fPelaaja §e" + player.getName() + " §fnosti shekin!", "/dummy", "§7Määrä: §a" + foundValue + "€§7");
+                            Util.sendClickableText(online, "§8[§e§l⚡§8] §fPelaaja §e" + player.getName() + " §fnosti shekin! (§e" + Util.formatDecimals(foundValue) + "€§f)", "/dummy", "§7Määrä: §a" + Util.formatDecimals(foundValue) + "€§7");
                         }
                     }
                 }

@@ -192,3 +192,6 @@ commands:
   kuolemasijainti:
     description: Sijainti jossa kuolit
     aliases: [lastdeath]
+  nimeä:
+    description: Nimeä tavarasi
+    aliases: [rename]

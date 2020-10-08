@@ -450,9 +450,25 @@ public class HelpCommand implements CommandExecutor {
                                 " §a/kylä poistu §7Poistu kylästä",
                                 " §a/kylä nimi <uusi nimi> §7Nimeä kyläsi uudelleen",
                                 " §a/kylä kutsu <pelaaja> §7Kutsu pelaaja kylääsi",
+                                " §a/kylä nosta <määrä> §7nosta rahaa kylästä",
                                 " §a/kylä <hakutermi> §7Etsi kyliä",
                                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
                         )), 14);
+
+                        gui.addButton(new Button(1, 26, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§eRikkaimmat kylät", Arrays.asList(
+                                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                                " §7Katso miten eri pelaajakylät",
+                                " §7sijoittuvat listalle rahallisesti",
+                                " ",
+                                " §aKlikkaa minua!",
+                                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+                        ))) {
+                            @Override
+                            public void onClick(Player clicker, ClickType clickType) {
+                                gui.close(clicker);
+                                Main.getVillageManager().openTopBalanceMenu(clicker);
+                            }
+                        });
 
                         int[] glass = new int[] { 11, 15  };
                         for(int slot : glass) { gui.addItem(1, ItemUtil.makeItem(Material.LIME_STAINED_GLASS_PANE), slot); }

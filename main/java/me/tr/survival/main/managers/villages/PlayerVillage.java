@@ -35,9 +35,11 @@ public class PlayerVillage {
     private double balance;
     private double totalMoneyGathered;
 
+    private long created;
+
     public PlayerVillage(UUID uuid, String title, UUID leader, List<UUID> coLeaders, List<UUID> citizens, int taxRate,
                          Location spawn, int maxPlayers, boolean closed, List<String> tags, double balance,
-                         double totalMoneyGathered, List<UUID> invited, List<UUID> requested) {
+                         double totalMoneyGathered, List<UUID> invited, List<UUID> requested, long created) {
 
         this.uuid = uuid;
         this.title = title;
@@ -58,6 +60,12 @@ public class PlayerVillage {
         this.invited = invited;
         this.requested = requested;
 
+        this.created = created;
+
+    }
+
+    public long getCreated() {
+        return created;
     }
 
     public void invite(UUID uuid) {
@@ -177,7 +185,7 @@ public class PlayerVillage {
 
             double totalCuts = 0d;
             for(UUID coLeaderUUID : this.getCoLeaders()) {
-                double cut = totalTaxation * 0.1;
+                double cut = totalTaxation * 0.05;
                 Balance.add(coLeaderUUID, cut);
                 totalCuts += cut;
             }

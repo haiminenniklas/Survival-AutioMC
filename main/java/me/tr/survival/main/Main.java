@@ -139,6 +139,12 @@ public final class Main extends JavaPlugin implements Listener {
     private static ConnectionEvents connectionEvents;
 
     @Override
+    public void onLoad() {
+        Sorsa.logColored(" §aLoading SorsaSurvival...");
+        super.onLoad();
+    }
+
+    @Override
     public void onEnable() {
         // Setup instances
         Main.instance = this;
@@ -272,6 +278,7 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("invsee").setExecutor(essentials);
         getCommand("craft").setExecutor(essentials);
         getCommand("sorsastore").setExecutor(essentials);
+        getCommand("nimeä").setExecutor(essentials);
 
 
         getCommand("bal").setExecutor(moneyCommand);

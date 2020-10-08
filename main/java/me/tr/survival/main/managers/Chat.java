@@ -263,8 +263,6 @@ public class Chat implements Listener {
         lastMessage.put(uuid, e.getMessage());
         sentMessages.put(uuid, System.currentTimeMillis());
 
-        //e.setFormat(Chat.getFormat(player, e.getMessage()));
-
         String msg = e.getMessage();
 
         for (Player online : Bukkit.getOnlinePlayers()) {
@@ -277,9 +275,9 @@ public class Chat implements Listener {
                 int startIndex = msg.toLowerCase().indexOf(online.getName().toLowerCase());
 
                 if (startIndex > 0 && msg.toLowerCase().charAt(startIndex - 1) == '@')
-                    msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a" + online.getName() + "§r");
+                    msg = msg.replaceAll("@" + online.getName(), "§a@" + online.getName() + "§r");
                 else
-                    msg = msg.toLowerCase().replaceAll(online.getName().toLowerCase(), "§a@" + online.getName() + "§r");
+                    msg = msg.replaceAll(online.getName(), "§a@" + online.getName() + "§r");
 
                 Util.sendNotification(online, "§a" + player.getName() + " §7mainitsi sinut Chatissa!", !Settings.get(online.getUniqueId(), "chat_mentions"));
 
@@ -310,7 +308,7 @@ public class Chat implements Listener {
                 if(other.getLocation().clone().distanceSquared(player.getLocation().clone()) <= square) localPlayers.add(other.getUniqueId());
             }
 
-            if(localPlayers.size() < 1) {
+            if(localPlayers.isEmpty()) {
                 Util.sendClickableText(player, Chat.getPrefix() + " Lähelläsi ei ole pelaajia! Laita viestin eteen '§a!§7' tai vaihda Chat-tilaasi kirjoittaaksesi globaalisti!","/asetukset", "§7Vaihda Chat-tilaasi!");
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 return;
