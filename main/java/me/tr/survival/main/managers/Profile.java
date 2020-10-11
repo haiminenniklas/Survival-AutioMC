@@ -37,7 +37,7 @@ public class Profile {
         Gui gui = new Gui("Sinun profiili", 5 * 9);
         HashMap<String, Object> data = PlayerData.getData(opener.getUniqueId());
 
-        Timestamp lastTimestamp = new Timestamp(opener.getLastPlayed());
+        Timestamp lastTimestamp = new Timestamp(opener.getLastSeen());
         LocalDateTime lastSeen = lastTimestamp.toLocalDateTime();
 
         gui.addItem(1, ItemUtil.makeSkullItem(opener, 1, "§2Profiili", Arrays.asList(
@@ -128,17 +128,17 @@ public class Profile {
 
         gui.addItem(1, ItemUtil.makeItem(Material.IRON_PICKAXE, 1, "§2Tuhotut blockit", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
-                " §7Yhteensä: §e" + Ores.getTotal(targetUUID),
+                " §7Yhteensä: §e" + Util.formatDecimals(Ores.getTotal(targetUUID)),
                 " ",
-                " §7Timantti: §b" + Ores.getDiamonds(targetUUID) + " §7§o(" + diamond_percentage +  "%)",
-                " §7Kulta: §6" + Ores.getGold(targetUUID) + " §7§o(" + gold_percentage +  "%)",
-                " §7Rauta: §f" + Ores.getIron(targetUUID) + " §7§o(" + iron_percentage +  "%)",
-                " §7Hiili: §8" + Ores.getCoal(targetUUID)  +" §7§o(" + coal_percentage +  "%)",
-                " §7Muu: §e" + Ores.getOther(targetUUID) + " §7§o(" + other_percentage +  "%)",
+                " §7Timantti: §b" + Ores.getDiamonds(targetUUID) + " §7§o(" + Util.formatDecimals(diamond_percentage) +  "%)",
+                " §7Kulta: §6" + Util.formatDecimals(Ores.getGold(targetUUID)) + " §7§o(" + Util.formatDecimals(gold_percentage) +  "%)",
+                " §7Rauta: §f" + Util.formatDecimals(Ores.getIron(targetUUID)) + " §7§o(" + Util.formatDecimals(iron_percentage) +  "%)",
+                " §7Hiili: §8" + Util.formatDecimals(Ores.getCoal(targetUUID))  +" §7§o(" + Util.formatDecimals(coal_percentage) +  "%)",
+                " §7Muu: §e" + Util.formatDecimals(Ores.getOther(targetUUID)) + " §7§o(" + Util.formatDecimals(other_percentage) +  "%)",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )), 13);
 
-        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.LEGACY_REDSTONE_COMPARATOR, 1, "§2Asetukset", Arrays.asList(
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.COMPARATOR, 1, "§2Asetukset", Arrays.asList(
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                 " §7Mukauta pelikokemustasi",
                 " §7juuri sinulle sopivaksi",
@@ -322,7 +322,7 @@ public class Profile {
                 " §7Liittynyt: §a" + data.get("joined"),
                 " §7Viimeksi nähty: §a" + lastSeen.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                 " ",
-                " §7Blockeja rikottu: §e" + Ores.getTotal(targetUUID),
+                " §7Blockeja rikottu: §e" + Util.formatDecimals(Ores.getTotal(targetUUID)),
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         )), 13);
 

@@ -61,7 +61,7 @@ public class Mail {
                 "§7 - §a+" + moneyToReceive + "€",
                 "§7 - §f+" + ironToReceive + "kpl rautaa",
                 "§7 - §c+" + foodToReceive + " pihviä",
-                "§7 - §b+" + diamondToReceive + " timanttia",
+                "§7 - §b+" + diamondToReceive + "kpl timanttia",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
@@ -93,6 +93,8 @@ public class Mail {
                         ticketsToGive = 1;
                     }
 
+
+
                     double chance = new Random().nextDouble();
                     if(chance < .20) {
                         ticketsToGive += 1;
@@ -115,6 +117,8 @@ public class Mail {
                     clicker.sendMessage(" §f§l+" + ironToReceive + "kpl rautaa");
                     clicker.getInventory().addItem(ItemUtil.makeItem(Material.COOKED_BEEF, foodToReceive));
                     clicker.sendMessage(" §c§l+" + foodToReceive + " pihviä");
+                    clicker.getInventory().addItem(ItemUtil.makeItem(Material.DIAMOND, diamondToReceive));
+                    clicker.sendMessage(" §b§l+" + diamondToReceive + "kpl timanttia");
                     clicker.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
                     Sorsa.logColored("§6[Mail] The player " + clicker.getName() + " (" + clicker.getUniqueId() + ") opened their Daily package!");
                     Mail.setLastMail(clicker.getUniqueId());

@@ -8,8 +8,12 @@ import me.tr.survival.main.managers.Profile;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.Util;
+import me.tr.survival.main.util.callback.SpigotCallback;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
@@ -194,6 +198,7 @@ public class VillageManager implements Listener, CommandExecutor {
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
                 PlayerVillage village = createVillage(clicker.getUniqueId());
+                clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                 openPersonalVillage(clicker, village);
             }
         });
@@ -206,6 +211,7 @@ public class VillageManager implements Listener, CommandExecutor {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
                 gui.close(clicker);
+                mainGui(clicker);
             }
         });
 
@@ -242,6 +248,27 @@ public class VillageManager implements Listener, CommandExecutor {
         );
 
         Main.getVillageManager().addVillageToList(village);
+
+        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+        Bukkit.broadcastMessage(" ");
+        Bukkit.broadcastMessage(" §a§lUUSI KYLÄ!");
+        Bukkit.broadcastMessage(" ");
+        Bukkit.broadcastMessage(" §7Pelaaja §e" + creator.getName() + "§7loi uuden");
+        Bukkit.broadcastMessage(" §7pelaajakylän! ");
+        Bukkit.broadcastMessage(" ");
+
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            TextComponent openMsg = new TextComponent(TextComponent.fromLegacyText(" §a§lNäytä kylä!"));
+            openMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7Klikkaa avataksesi kylän tiedot!").create()));
+            SpigotCallback.createCommand(
+                    openMsg, opener -> Main.getVillageManager().openVillageView(opener, village, true)
+            );
+            player.spigot().sendMessage(openMsg);
+        }
+
+        Bukkit.broadcastMessage(" ");
+        Bukkit.broadcastMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+        Util.broadcastSound(Sound.ENTITY_ENDER_DRAGON_GROWL);
         return village;
     }
 
@@ -737,29 +764,45 @@ public class VillageManager implements Listener, CommandExecutor {
             }
         }
         villageLore.add(" ");
+
+        villageLore.add(" §7Luotu: §a" + village.getCreationDate());
+        villageLore.add(" §7Seuraava verotuspäivä: §a" + Util.formatDate(this.getNextTaxationDate()));
+
+        villageLore.add(" ");
         villageLore.add(" §7Jäsenet: §a" + village.getCitizens().size() + "/" + village.getMaxPlayers());
         villageLore.add(" §7Rahatilanne: §e" + Util.formatDecimals(village.getBalance()) + " €");
         villageLore.add(" §7Yhteensä kerätty raha: §e" + Util.formatDecimals(village.getTotalMoneyGathered()) + " €");
 
         villageLore.add(" ");
-        if(!village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
+        if(village.isInvited(player.getUniqueId()) && !village.isMember(player.getUniqueId())) {
             villageLore.add(" ");
-            villageLore.add(" §aPyydä liittymistä!");
-        } else if(village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
-            villageLore.add(" ");
-            villageLore.add(" §aPyydä liittymistä!");
+            villageLore.add(" §aLiity kylään!");
+        } else {
+            if(!village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
+                villageLore.add(" ");
+                villageLore.add(" §aPyydä liittymistä!");
+            } else if(village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
+                villageLore.add(" ");
+                villageLore.add(" §aPyydä liittymistä!");
+            }
         }
         villageLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.IRON_DOOR, 1, "§2" + village.getTitle(), villageLore)) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                if(!village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
+
+                if(village.isInvited(player.getUniqueId()) && !village.isMember(player.getUniqueId())) {
                     gui.close(clicker);
-                    village.requestToJoin(clicker);
-                } else if(village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
-                    gui.close(clicker);
-                    village.requestToJoin(clicker);
+                    village.join(player);
+                } else {
+                    if(!village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
+                        gui.close(clicker);
+                        village.requestToJoin(clicker);
+                    } else if(village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
+                        gui.close(clicker);
+                        village.requestToJoin(clicker);
+                    }
                 }
             }
         });
@@ -854,13 +897,15 @@ public class VillageManager implements Listener, CommandExecutor {
         villageLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
         villageLore.add(" §7Nimi: §e" + village.getTitle());
         villageLore.add(" §7Pormestari: §a" + leader.getName());
-        if(village.getCoLeaders().size() >= 1) {
+        if(!village.getCoLeaders().isEmpty()) {
             villageLore.add(" §7Luottamushenkilöt: ");
             for(final UUID coUUID : village.getCoLeaders()) {
                 final OfflinePlayer coLeader = Bukkit.getOfflinePlayer(coUUID);
                 villageLore.add("§7  - §a§o" + coLeader.getName());
             }
         }
+        villageLore.add(" ");
+        villageLore.add(" §7Luotu: §a" + village.getCreationDate());
         villageLore.add(" ");
         villageLore.add(" §7Jäsenet: §a" + village.getCitizens().size() + "/" + village.getMaxPlayers());
         if(village.getTaxRate() > 0) {
@@ -905,7 +950,7 @@ public class VillageManager implements Listener, CommandExecutor {
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                if(!village.canModify(clicker.getUniqueId())) clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                if(!village.canModify(clicker.getUniqueId(), true)) clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 else {
                     gui.close(clicker);
                     openVillageSettings(clicker, village);
@@ -981,6 +1026,14 @@ public class VillageManager implements Listener, CommandExecutor {
         final UUID uuid = player.getUniqueId();
 
         if(!village.canModify(uuid, true)) return;
+
+        // If isn't co leader, but is staff
+        if(!village.getCoLeaders().contains(player.getUniqueId()) && Ranks.isStaff(player.getUniqueId())) {
+            if(!Main.getStaffManager().hasStaffMode(player)) {
+                Util.sendClickableText(player, Chat.getPrefix() + " §7Tämä toimii vain §eStaff§7-tila päällä. (Tee §a/staffmode§7)", "/staffmode", "§7Klikkaa laittaaksesi §eStaff§7-tilan päälle!");
+                return;
+            }
+        }
 
         int size = 36;
         final Gui gui = new Gui("Hallitse kylää", size);
@@ -1307,7 +1360,7 @@ public class VillageManager implements Listener, CommandExecutor {
                     " ",
                     " §7Kylän luominen maksaa §a50 000€§7!",
                     " ",
-                    (Balance.get(player.getUniqueId()) >= VILLAGE_PURCHASE_PRICE) ? "§aKlikkaa luodaksesi!" : "§cEi varaa...",
+                    (Balance.get(player.getUniqueId()) >= VILLAGE_PURCHASE_PRICE) ? " §aKlikkaa luodaksesi!" : " §cEi varaa...",
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
@@ -1315,6 +1368,8 @@ public class VillageManager implements Listener, CommandExecutor {
                     if(Balance.get(clicker.getUniqueId()) >= VILLAGE_PURCHASE_PRICE) {
                         gui.close(clicker);
                         openVillageCreationConfirmationMenu(clicker);
+                    } else {
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     }
                 }
             });
@@ -1490,9 +1545,7 @@ public class VillageManager implements Listener, CommandExecutor {
             if(village.getLeader().equals(memberUUID)) continue;
 
             OfflinePlayer member = Bukkit.getOfflinePlayer(memberUUID);
-            if(village.canModify(memberUUID) && village.getCoLeaders().size() < village.getMaxCoLeaders()) {
-
-                if(!village.getCoLeaders().contains(member.getUniqueId())) continue;
+            if(village.getCoLeaders().contains(member.getUniqueId()) && village.getCoLeaders().size() < village.getMaxCoLeaders()) {
 
                 gui.addButton(new Button(1, slotToAddHead, ItemUtil.makeSkullItem(member, 1, "§a" + member.getName(), Arrays.asList(
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
@@ -1861,15 +1914,15 @@ public class VillageManager implements Listener, CommandExecutor {
                });
            }
 
+           for (int slot : yellowGlassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot); }
+           for (int j = 0; j < 54; j++) {
+               if (gui.getItem(j) != null) continue;
+               if (gui.getButton(j) != null) continue;
+               gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE), j);
+           }
+
            int i= 0;
            for(PlayerVillage village : topVillages) {
-
-               for (int slot : yellowGlassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot); }
-               for (int j = 0; j < 54; j++) {
-                   if (gui.getItem(j) != null) continue;
-                   if (gui.getButton(j) != null) continue;
-                   gui.addItem(1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE), j);
-               }
 
                OfflinePlayer leader = Bukkit.getOfflinePlayer(village.getLeader());
 

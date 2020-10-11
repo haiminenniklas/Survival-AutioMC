@@ -1,16 +1,26 @@
 package me.tr.survival.main.managers.villages;
 
+import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.managers.Chat;
+import me.tr.survival.main.managers.Settings;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.Util;
+import me.tr.survival.main.util.callback.SpigotCallback;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class PlayerVillage {
@@ -68,12 +78,40 @@ public class PlayerVillage {
         return created;
     }
 
+    public String getCreationDate() {
+        return new Timestamp(this.created).
+                toLocalDateTime().
+                format(DateTimeFormatter.
+                        ofPattern("dd.MM.yyyy"));
+    }
+
     public void invite(UUID uuid) {
         if(!this.isInvited(uuid)) {
             this.invited.add(uuid);
             Player invitedPlayer = Bukkit.getPlayer(uuid);
             if(invitedPlayer != null) {
-                Chat.sendMessage(invitedPlayer, "Sinut on kutsuttu kylään §a" + this.getTitle() + "§7!");
+                if(!Settings.get(uuid, "privacy")) {
+                    invitedPlayer.playSound(invitedPlayer.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+
+                    invitedPlayer.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+                    invitedPlayer.sendMessage(" §e§lLiittymispyyntö");
+                    invitedPlayer.sendMessage(" ");
+                    invitedPlayer.sendMessage(" §7Sinua on pyydetty liittymään");
+                    invitedPlayer.sendMessage( "§7pelaajakylään nimeltä:");
+                    invitedPlayer.sendMessage(" §e" + this.getTitle() + "§7!");
+                    invitedPlayer.sendMessage(" ");
+                    TextComponent openMsg = new TextComponent(TextComponent.fromLegacyText(" §a§lNäytä kylä!"));
+                    openMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7Klikkaa avataksesi kylän tiedot!").create()));
+                    SpigotCallback.createCommand(
+                            openMsg, opener -> Main.getVillageManager().openVillageView(opener, this, true)
+                    );
+                    invitedPlayer.spigot().sendMessage(openMsg);
+                    invitedPlayer.sendMessage("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
+
+                } else {
+                    Chat.sendMessage(invitedPlayer, "Sinut on kutsuttu kylään §e" + this.getTitle() + "§7! " +
+                            "Kirjoita chattiin §a/kylä " + this.getTitle() + " §7ja liity! Voit myös ottaa tämän kutsun huomiotta.");
+                }
             }
         }
     }
@@ -82,6 +120,7 @@ public class PlayerVillage {
         if(!this.hasRequested(requester.getUniqueId())) {
             if(this.isClosed()) {
                 this.requested.add(requester.getUniqueId());
+                requester.playSound(requester.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
                 Chat.sendMessage(requester, "Kysyit liittymislupaa kylään §a" + this.getTitle() + "§7!");
             }
         }
@@ -100,10 +139,12 @@ public class PlayerVillage {
     }
 
     public boolean isInvited(UUID uuid) {
+        if(this.isMember(uuid)) return true;
         return this.invited.contains(uuid);
     }
 
     public boolean hasRequested(UUID uuid) {
+        if(this.isMember(uuid)) return true;
         return this.requested.contains(uuid);
     }
 
@@ -127,6 +168,7 @@ public class PlayerVillage {
     }
 
     public void join(OfflinePlayer player) {
+        if(this.isMember(uuid)) return;
         this.getRequested().remove(player.getUniqueId());
         this.getInvited().remove(player.getUniqueId());
         this.getCitizens().add(player.getUniqueId());
