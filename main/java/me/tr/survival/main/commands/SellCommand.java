@@ -326,28 +326,22 @@ public class SellCommand implements CommandExecutor {
                 " " +this.getDisplayNameForMaterial(mat),
                 " §7" + amount + " kpl hintaan §e" + Util.formatDecimals(finalPrice) + "€§7!",
                 " ",
-                " " + (Balance.canRemove(player.getUniqueId(), finalPrice) ? "§aKlikkaa hyväksyäksesi!" : "§cEi varaa..."),
+                " §aKlikkaa hyväksyäksesi!" ,
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
-                if(Balance.canRemove(clicker.getUniqueId(), finalPrice)) {
+                clicker.closeInventory();
 
-                    clicker.closeInventory();
+                clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
-                    clicker.playSound(clicker.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                Inventory inv = clicker.getInventory();
+                Util.removeItems(inv, mat, amount);
+                clicker.updateInventory();
 
-                    Inventory inv = clicker.getInventory();
-                    Util.removeItems(inv, mat, amount);
-                    clicker.updateInventory();
+                Balance.add(clicker.getUniqueId(), finalPrice);
 
-                    Balance.remove(clicker.getUniqueId(), finalPrice);
-
-                    Chat.sendMessage(player, "Myit juuri §a" + amount + "kpl §7tavaraa " + getDisplayNameForMaterial(mat) + " §7hintaan §e" + Util.formatDecimals(finalPrice) + "€§7!");
-
-                } else {
-                    clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                }
+                Chat.sendMessage(player, "Myit juuri §a" + amount + "kpl §7tavaraa " + getDisplayNameForMaterial(mat) + " §7hintaan §e" + Util.formatDecimals(finalPrice) + "€§7!");
             }
         });
 

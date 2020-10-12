@@ -1105,6 +1105,13 @@ public final class Main extends JavaPlugin implements Listener {
                             });
                         }
                     } else {
+
+                        if(!player.isOp()) {
+                            Chat.sendMessage(player, "Valitettavasti Warpit ovat otettu pois käytöstä." +
+                                    " Mikäli haluat päästä palvelimen kauppaan, tee komento §a/sorsastore§7!");
+                            return true;
+                        }
+
                         String name = args[0].toLowerCase();
                         Warp warp = Warps.get(name);
                         if(warp == null) {
