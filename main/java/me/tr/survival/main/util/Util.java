@@ -17,6 +17,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -835,6 +836,37 @@ public class Util {
         return total;
     }
 
+    public static int getAmountOfMaterialInInventory(Inventory inv, Material mat) {
+        int amount = 0;
+
+        for(ItemStack item : inv.getContents()) {
+            if(item == null || item.getType() == Material.AIR) continue;
+            if(item.getType() == mat) amount += item.getAmount();
+        }
+
+        return amount;
+    }
+
+    public static void removeItems(Inventory inventory, Material type, int amount) {
+        if (amount <= 0) return;
+        int size = inventory.getSize();
+        for (int slot = 0; slot < size; slot++) {
+            ItemStack is = inventory.getItem(slot);
+            if (is == null) continue;
+            if (type == is.getType()) {
+                int newAmount = is.getAmount() - amount;
+                if (newAmount > 0) {
+                    is.setAmount(newAmount);
+                    break;
+                } else {
+                    inventory.clear(slot);
+                    amount = -newAmount;
+                    if (amount == 0) break;
+                }
+            }
+        }
+    }
+
     public static String translateChatColor(ChatColor color) {
         switch(color) {
             case GREEN:
@@ -858,6 +890,9 @@ public class Util {
         }
     }
 
+    public static String firstLetterCapital(String text) {
+        return StringUtils.capitalize(text);
+    }
 
     public static RegionManager getRegionManager(World world) {
         RegionContainer container = Sorsa.getWorldGuard().getPlatform().getRegionContainer();

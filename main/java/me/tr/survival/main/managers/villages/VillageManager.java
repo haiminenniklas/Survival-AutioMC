@@ -253,7 +253,7 @@ public class VillageManager implements Listener, CommandExecutor {
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(" §a§lUUSI KYLÄ!");
         Bukkit.broadcastMessage(" ");
-        Bukkit.broadcastMessage(" §7Pelaaja §e" + creator.getName() + "§7loi uuden");
+        Bukkit.broadcastMessage(" §7Pelaaja §e" + creator.getName() + " §7loi uuden");
         Bukkit.broadcastMessage(" §7pelaajakylän! ");
         Bukkit.broadcastMessage(" ");
 

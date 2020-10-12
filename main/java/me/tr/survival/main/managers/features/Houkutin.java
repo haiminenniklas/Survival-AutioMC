@@ -251,6 +251,7 @@ public class Houkutin implements CommandExecutor {
     }
 
     public void deactivate() {
+        if(entityType == null) return;
         final World world = Bukkit.getWorld("world");
         Sorsa.logColored("§6[Houkutin] Houkutin was deactivated! Entity: " + this.entityType);
         activator = null;

@@ -121,6 +121,9 @@ public final class Main extends JavaPlugin implements Listener {
     private static PlayerVillageCreator playerVillageCreator;
     public static PlayerVillageCreator getPlayerVillageCreator() { return playerVillageCreator; }
 
+    private static SellCommand sellCommand;
+    public static SellCommand getSellCommand() { return sellCommand; }
+
     // Other instances
     private static TpaCommand tpaCommand;
     private static Essentials essentials;
@@ -172,6 +175,7 @@ public final class Main extends JavaPlugin implements Listener {
         Main.moneyCommand = new MoneyCommand();
         Main.stopCommand = new StopCommand();
         Main.vipCommand = new VipCommand();
+        Main.sellCommand = new SellCommand();
 
         // Listeners
         Main.events = new Events();
@@ -302,6 +306,8 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("home").setExecutor(new HomeCommand());
         getCommand("baltop").setExecutor(new BaltopCommand());
         getCommand("apua").setExecutor(new HelpCommand());
+
+        getCommand("sell").setExecutor(new SellCommand());
 
         // Autosave code...
 
@@ -1073,6 +1079,13 @@ public final class Main extends JavaPlugin implements Listener {
                                 });
                             }
                         } else {
+
+                            if(!player.isOp()) {
+                                Chat.sendMessage(player, "Valitettavasti Warpit ovat otettu pois käytöstä." +
+                                        " Mikäli haluat päästä palvelimen kauppaan, tee komento §a/sorsastore§7!");
+                                return true;
+                            }
+
                             String name = args[1].toLowerCase();
                             Warp warp = Warps.get(name);
                             if(warp == null) {

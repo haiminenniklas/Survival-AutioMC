@@ -87,12 +87,6 @@ public class RTP {
 
         Block block = loc.clone().add(0d, -1d, 0d).getBlock();
         if(block.isLiquid()) return randomLocation(world);
-
-        /*Material[] applicableTypes = { Material.GRASS_BLOCK, Material.SAND, Material.RED_SAND, Material.SANDSTONE, Material.STONE, Material.GRAVEL, Material.GRASS_PATH };
-        block = loc.clone().add(0d,-1d, 0d).getBlock();
-        for(Material type : applicableTypes) {
-            if(block.getType() != type) return randomLocation(world);
-        } */
         return loc;
     }
 
