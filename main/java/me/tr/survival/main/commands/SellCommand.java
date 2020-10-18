@@ -57,7 +57,7 @@ public class SellCommand implements CommandExecutor {
 
     public String getDisplayNameForMaterial(Material mat) {
 
-        switch(mat) {
+        switch( mat) {
 
             case DIAMOND:
                 return "§bTimantti";

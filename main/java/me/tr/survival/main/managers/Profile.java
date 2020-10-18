@@ -98,7 +98,7 @@ public class Profile {
                 " §7Vuokraa ja hallinnoi",
                 " §7pelaajakyliäsi!",
                 " ",
-                " §eTulossa pian...",
+                " §aKlikkaa minua!",
                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
         ))) {
             @Override
