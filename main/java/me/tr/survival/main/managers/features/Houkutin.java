@@ -21,7 +21,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -39,7 +38,7 @@ public class Houkutin implements CommandExecutor {
     private static boolean ENABLED = true;
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand( CommandSender sender,  Command command,  String label,  String[] args) {
 
         if(args.length < 1) {
             if(sender instanceof Player) panel((Player) sender);

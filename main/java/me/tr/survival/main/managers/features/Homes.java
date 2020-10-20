@@ -4,6 +4,7 @@ import me.tr.survival.main.Main;
 import me.tr.survival.main.Sorsa;
 import me.tr.survival.main.database.data.Balance;
 import me.tr.survival.main.managers.Chat;
+import me.tr.survival.main.managers.StaffManager;
 import me.tr.survival.main.other.Home;
 import me.tr.survival.main.managers.Profile;
 import me.tr.survival.main.database.PlayerData;
@@ -216,6 +217,11 @@ public class Homes {
     }
 
     public static void panel(Player opener, final OfflinePlayer target) {
+
+        if(Sorsa.isInPvPWorld(opener) && !Main.getStaffManager().hasStaffMode(opener)) {
+            Chat.sendMessage(opener, "Tämä ei toimi tässä maailmassa. Tee §a/spawn §7päästäksesi tavalliseen maailmaan!");
+            return;
+        }
 
         final UUID uuid = target.getUniqueId();
         Homes homeList = new Homes(target);

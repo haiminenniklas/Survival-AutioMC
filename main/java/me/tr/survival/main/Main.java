@@ -124,6 +124,8 @@ public final class Main extends JavaPlugin implements Listener {
     private static SellCommand sellCommand;
     public static SellCommand getSellCommand() { return sellCommand; }
 
+    public static Essentials getEssentials() { return essentials; }
+
     // Other instances
     private static TpaCommand tpaCommand;
     private static Essentials essentials;
@@ -221,7 +223,7 @@ public final class Main extends JavaPlugin implements Listener {
 
         // Managers
         pm.registerEvents(new Chat(), this);
-        pm.registerEvents(new AntiCheat(), this);
+       // pm.registerEvents(new AntiCheat(), this);
        // pm.registerEvents(new ChairEvents(), this);
 
         pm.registerEvents(staffManager, this);
@@ -516,6 +518,7 @@ public final class Main extends JavaPlugin implements Listener {
                         });
                         return true;
                     }
+
                     if(spawnCommandDelay.containsKey(uuid)) {
                         long shouldSpawn = spawnCommandDelay.get(uuid);
                         if(System.currentTimeMillis() < shouldSpawn) {
@@ -527,16 +530,29 @@ public final class Main extends JavaPlugin implements Listener {
 
                     if(!Main.getStaffManager().hasStaffMode(player)) {
                         spawnCommandDelay.put(uuid, System.currentTimeMillis() + (1000 * 60));
-                        Chat.sendMessage(player, "Sinut viedään spawnille §c5s §7päästä!");
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                Sorsa.teleportToSpawn(player);
-                                cancel();
-                            }
-                        }.runTaskLater(Main.getInstance(), 20 * 5);
+                        if(Sorsa.isInPvPWorld(player)) {
+                            Chat.sendMessage(player, "Sinut viedään spawnille §c15s §7päästä!");
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    Sorsa.teleportToSpawn(player);
+                                    cancel();
+                                }
+                            }.runTaskLater(Main.getInstance(), 20 * 15);
+                        } else {
+                            Chat.sendMessage(player, "Sinut viedään spawnille §c5s §7päästä!");
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    Sorsa.teleportToSpawn(player);
+                                    cancel();
+                                }
+                            }.runTaskLater(Main.getInstance(), 20 * 5);
+                        }
                         return true;
                     }
+
+
 
                     Chat.sendMessage(player, "Sinut viedään nyt spawnille!");
                     Sorsa.teleportToSpawn(player);
@@ -1201,7 +1217,7 @@ public final class Main extends JavaPlugin implements Listener {
                         Chat.sendMessage(player, "En löytänyt tuota pelaajaa");
                         return true;
                     }
-                    player.openInventory(player.getEnderChest());
+                    player.openInventory(target.getEnderChest());
                 }
             } else if(command.getLabel().equalsIgnoreCase("weather")) {
                if(!Main.getStaffManager().hasStaffMode(player)) {

@@ -9,9 +9,7 @@ import me.tr.survival.main.util.Util;
 import me.tr.survival.main.util.ItemUtil;
 import me.tr.survival.main.util.gui.Button;
 import me.tr.survival.main.util.gui.Gui;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -41,16 +39,28 @@ public class TravelManager implements CommandExecutor, Listener {
             return;
         }
 
-        int[] glassSlots = new int[] { 12, 14 };
+        if(Sorsa.isInPvPWorld(player) && !Main.getStaffManager().hasStaffMode(player)) {
+            Chat.sendMessage(player, "Tämä ei toimi tässä maailmassa. Tee §a/spawn §7päästäksesi tavalliseen maailmaan!");
+            return;
+        }
 
-        Gui.openGui(player, "Matkusta", 27, (gui) -> {
+        int[] glassSlots = new int[] { 12, 14, 22 };
+
+        Gui.openGui(player, "Matkusta", 36, (gui) -> {
+
+
+            World netherWorld = Bukkit.getWorld("world_nether3");
 
             gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.NETHERRACK, 1, "§cNether", Arrays.asList(
+
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Klikkaa matkustaaksesi",
                     " §cNetheriin§7! ",
                     " ",
                     " §7Hinta: §a§lILMAINEN",
+                    " ",
+                    " §7Tämänhetkiset pelaajat",
+                    " §7maailmassa: §a" + netherWorld.getPlayerCount(),
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
@@ -61,6 +71,7 @@ public class TravelManager implements CommandExecutor, Listener {
             });
 
             gui.addButton(new Button(1, 13, ItemUtil.makeItem(Material.COMPASS, 1, "§2RTP", Arrays.asList(
+
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Klikkaa matkustaaksesi",
                     " §7satunnaiseen paikkaan",
@@ -78,10 +89,16 @@ public class TravelManager implements CommandExecutor, Listener {
                 }
             });
 
+            World endWorld = Bukkit.getWorld("world_the_end");
+
             gui.addButton(new Button(1, 15, ItemUtil.makeItem(Material.END_STONE, 1, "§5End", Arrays.asList(
+
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
                     " §7Klikkaa matkustaaksesi",
                     " §5Endiin§7! ",
+                    " ",
+                    " §7Tämänhetkiset pelaajat",
+                    " §7maailmassa: §a" + endWorld.getPlayerCount(),
                     "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
             ))) {
                 @Override
@@ -91,7 +108,44 @@ public class TravelManager implements CommandExecutor, Listener {
                 }
             });
 
-            gui.addButton(new Button(1, 18, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
+            World pvpWorld = Bukkit.getWorld("warzone");
+
+            gui.addButton(new Button(1, 21, ItemUtil.makeItem(Material.IRON_SWORD, 1, "§6PvP", Arrays.asList(
+
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Klikkaa matkustaaksesi",
+                    " §ePvP§7-areenalle! ",
+                    " ",
+                    " §7Tämänhetkiset pelaajat",
+                    " §7maailmassa: §a" + pvpWorld.getPlayerCount(),
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    teleportToWarzone(clicker);
+                }
+            });
+
+            gui.addButton(new Button(1, 23, ItemUtil.makeItem(Material.SADDLE, 1, "§eVälietapit", Arrays.asList(
+
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Klikkaa matkustaaksesi",
+                    " §7tärkeisiin paikkoihin ",
+                    " §aSurvival§7-palvelimella!",
+                    " ",
+                    " §aKlikkaa minua!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                    gui.close(clicker);
+                    openWarpMenu(clicker);
+                }
+            });
+
+
+            gui.addButton(new Button(1, 27, ItemUtil.makeItem(Material.ARROW, 1, "§7Takaisin")) {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(player);
@@ -102,12 +156,21 @@ public class TravelManager implements CommandExecutor, Listener {
 
             for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.BLUE_STAINED_GLASS_PANE), slot); }
 
-            for(int i = 0; i < 27; i++) {
+            for(int i = 0; i < 36; i++) {
                 if(gui.getItem(i) != null) continue;
                 if(gui.getButton(i) != null) continue;
                 gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
             }
         });
+    }
+
+    public void teleportToWarzone(Player player) {
+        World pvpWorld = Bukkit.getWorld("warzone");
+        if(pvpWorld != null) {
+            player.teleport(new Location(pvpWorld, 104.5, 39, 299.5, -90f, -1f));
+        } else {
+            Chat.sendMessage(player, "Jotain meni vikaan... Yritä myöhemmin uudelleen!");
+        }
     }
 
     private void nether(Player player) {
@@ -117,6 +180,70 @@ public class TravelManager implements CommandExecutor, Listener {
             Sorsa.logColored("§6[TravelManager] The player '" + player.getName() + "' was teleported to the Nether!");
         }
         else Chat.sendMessage(player, Chat.Prefix.ERROR, "Matkustaminen epäonnistui...");
+    }
+
+    public void openWarpMenu(Player player) {
+
+        Gui gui = new Gui("Välietapit", 27);
+
+        gui.addButton(new Button(1, 11, ItemUtil.makeItem(Material.CHEST, 1, "§2SorsaStore", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa minua viedäksesi",
+                " §7itsesi palvelimen",
+                " §aKauppaan§7!",
+                " ",
+                " §7Toimii myös §a/myy§7!",
+                " ",
+                " §aKlikkaa minua!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                Main.getEssentials().teleportToStore(clicker);
+            }
+        });
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.OAK_DOOR, 1, "§2Pelaajakylät", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa minua viedäksesi",
+                " §7itsesi aulaan, jossa sijaitsee",
+                " §7kaikki palvelimen §akylät!§7!",
+                " ",
+                " §7Toimii myös §a/kylä lista§7!",
+                " ",
+                " §aKlikkaa minua!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+                World spawnWorld = Sorsa.getSpawn().getWorld();
+                clicker.teleport(new Location(spawnWorld, 13.5, 58, -18.5, 42f, 7.5f));
+            }
+        });
+
+        for(int i = 13; i < 16; i++) {
+            gui.addItem(1, ItemUtil.makeItem(Material.OBSIDIAN, 1, "§2Tulossa...", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Tähän kohtaan ei olla",
+                    " §7keksitty vielä yhtään",
+                    " §eVälietappia§7...",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            )), i);
+        }
+
+        int[] glassSlots = new int[] { 10, 16 };
+        for(int slot : glassSlots) { gui.addItem(1, ItemUtil.makeItem(Material.YELLOW_STAINED_GLASS_PANE), slot); }
+
+        for(int i = 0; i < 27; i++) {
+            if(gui.getItem(i) != null) continue;
+            if(gui.getButton(i) != null) continue;
+            gui.addItem(1, ItemUtil.makeItem(Material.GRAY_STAINED_GLASS_PANE), i);
+        }
+
+        gui.open(player);
+
     }
 
     @Deprecated

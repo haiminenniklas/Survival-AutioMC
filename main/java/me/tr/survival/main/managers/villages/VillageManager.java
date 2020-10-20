@@ -645,6 +645,7 @@ public class VillageManager implements Listener, CommandExecutor {
                             // Let's give up, no villages were found
                             Sorsa.task(() -> Chat.sendMessage(player, "Kyliä ei löydetty hakutermillä §c" + query +
                                     "§7... Mikäli et halua enää etsiä kyliä, kirjoita chattiin §alopeta§7!"));
+                            break;
                         }
                     }
                 }
@@ -752,11 +753,28 @@ public class VillageManager implements Listener, CommandExecutor {
             openPersonalVillage(player, village);
             return;
         }
-
         int size = 27;
         final OfflinePlayer leader = Bukkit.getOfflinePlayer(village.getLeader());
 
         final Gui gui = new Gui("Pelaajakylä (" + village.getTitle() + ")", size);
+
+        if(player.isOp()) {
+            gui.addButton(new Button(1, 0, ItemUtil.makeItem(Material.COMPARATOR, 1, "§2Asetukset", Arrays.asList(
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                    " §7Klikkaa minua avataksesi",
+                    " §7tämän kylän §aasetukset§7!",
+                    " ",
+                    " §aKlikkaa minua!",
+                    "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+            ))) {
+                @Override
+                public void onClick(Player clicker, ClickType clickType) {
+                        gui.close(clicker);
+                        openVillageSettings(clicker, village);
+                }
+            });
+        }
+
 
         List<String> villageLore = new ArrayList<>();
         villageLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
@@ -1409,14 +1427,14 @@ public class VillageManager implements Listener, CommandExecutor {
                 @Override
                 public void onClick(Player clicker, ClickType clickType) {
                     gui.close(clicker);
-                    Chat.sendMessage(player, "§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
-                    Chat.sendMessage(player, " ");
+                    clicker.sendMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+                    clicker.sendMessage(" ");
                     Chat.sendCenteredMessage(player, " §a§lEtsi pelaajakylä!");
-                    Chat.sendMessage(player, " ");
+                    clicker.sendMessage(" ");
                     Chat.sendCenteredMessage(player, " §7Kirjoita chattiin hakutermi, jolla haluat etsiä kyliä!");
                     Chat.sendCenteredMessage(player, " §7Jos haluat lopettaa tämän toiminnon, kirjoita chattiin §alopeta§7!");
                     player.sendMessage(" ");
-                    Chat.sendMessage(player, "§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
+                    clicker.sendMessage("§7[§a!§7]§f§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤§7[§a!§7]");
                     searchVillageMode.add(clicker.getUniqueId());
                 }
             });
@@ -1753,7 +1771,7 @@ public class VillageManager implements Listener, CommandExecutor {
             if(village.getLeader().equals(memberUUID)) continue;
 
             OfflinePlayer member = Bukkit.getOfflinePlayer(memberUUID);
-            if(village.getCoLeaders().contains(member.getUniqueId()) && village.getCoLeaders().size() < village.getMaxCoLeaders()) {
+            if(!village.getCoLeaders().contains(member.getUniqueId())) {
 
                 gui.addButton(new Button(1, slotToAddHead, ItemUtil.makeSkullItem(member, 1, "§a" + member.getName(), Arrays.asList(
                         "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",

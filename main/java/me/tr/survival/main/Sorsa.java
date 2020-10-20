@@ -99,6 +99,22 @@ public class Sorsa {
 
     public static void everyAsync(int seconds, Runnable task) { Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), task, 20, (long) getCurrentTPS() * seconds); }
 
+    public static boolean isInFreeWorld(Player player) {
+        World world = player.getWorld();
+        if(world.getName().equals("world") || world.getName().equals("world_the_end")) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isInPvPWorld(Player player) {
+        World world = player.getWorld();
+        if(world.getName().equals("warzone")) {
+            return true;
+        }
+        return false;
+    }
+
     public static double getCurrentTPS() {
         double average;
         try {

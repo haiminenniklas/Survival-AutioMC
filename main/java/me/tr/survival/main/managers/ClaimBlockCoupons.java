@@ -26,7 +26,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -38,7 +37,7 @@ public class ClaimBlockCoupons implements CommandExecutor, Listener {
     private final HashMap<UUID, Long> lastChequeWithdrawal = new HashMap<>();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull  String[] args) {
+    public boolean onCommand( CommandSender sender,  Command command,  String label,   String[] args) {
 
         if(sender instanceof Player) {
 

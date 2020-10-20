@@ -130,26 +130,7 @@ public class Essentials implements CommandExecutor, Listener {
 
             } else if(cmd.getLabel().equalsIgnoreCase("sorsastore")) {
 
-                if(spawnStoreTeleport.containsKey(uuid)) {
-                    long now = System.currentTimeMillis();
-                    long didTeleport = spawnStoreTeleport.get(uuid);
-                    long shouldBeAbleToTeleport = didTeleport + (1000 * 60 * 5); // 5 minutes
-                    if(now < shouldBeAbleToTeleport) {
-                        long timeLeftSeconds = (shouldBeAbleToTeleport - now) / 1000;
-                        long minutes = (int) timeLeftSeconds / 60;
-                        long seconds = timeLeftSeconds - (60 * minutes);
-                        String timeLeft = Util.formatTime((int) minutes, (int) seconds, true);
-                        Chat.sendMessage(player, "Et voi vielä päästä tällä komennolla kauppaan... Löydät kaupan §a/spawn§7! Odota vielä §c" + timeLeft + "§7...");
-                        return true;
-                    }
-                }
-
-                Chat.sendMessage(player, "Sinut viedään kauppaan §a3 sekunnin §7kuluttua...");
-                Sorsa.after(3, () -> {
-                    spawnStoreTeleport.put(uuid, System.currentTimeMillis());
-                    player.teleport(new Location(Sorsa.getSpawn().getWorld(), -1.5, 57.0, -27.5, 180f, -1.5f));
-                    Chat.sendMessage(player, "Sinut vietiin kauppaan!");
-                });
+                teleportToStore(player);
 
             } else if(cmd.getLabel().equalsIgnoreCase("craft")) {
 
@@ -271,6 +252,37 @@ public class Essentials implements CommandExecutor, Listener {
 
         gui.open(player);
 
+    }
+
+    public void teleportToStore(Player player) {
+
+        UUID uuid = player.getUniqueId();
+
+        if(!Sorsa.isInFreeWorld(player)) {
+            Chat.sendMessage(player, "Tämä komento ei toimi §cNetherissä§7, eikä §6PvP-maailmasssa§7! Käytä komentoa §a/spawn§7!");
+            return;
+        }
+
+        if(spawnStoreTeleport.containsKey(uuid)) {
+            long now = System.currentTimeMillis();
+            long didTeleport = spawnStoreTeleport.get(uuid);
+            long shouldBeAbleToTeleport = didTeleport + (1000 * 60 * 5); // 5 minutes
+            if(now < shouldBeAbleToTeleport) {
+                long timeLeftSeconds = (shouldBeAbleToTeleport - now) / 1000;
+                long minutes = (int) timeLeftSeconds / 60;
+                long seconds = timeLeftSeconds - (60 * minutes);
+                String timeLeft = Util.formatTime((int) minutes, (int) seconds, true);
+                Chat.sendMessage(player, "Et voi vielä päästä tällä komennolla kauppaan... Löydät kaupan §a/spawn§7! Odota vielä §c" + timeLeft + "§7...");
+                return;
+            }
+        }
+
+        Chat.sendMessage(player, "Sinut viedään kauppaan §a3 sekunnin §7kuluttua...");
+        Sorsa.after(3, () -> {
+            spawnStoreTeleport.put(uuid, System.currentTimeMillis());
+            player.teleport(new Location(Sorsa.getSpawn().getWorld(), -1.5, 57.0, -27.5, 180f, -1.5f));
+            Chat.sendMessage(player, "Sinut vietiin kauppaan!");
+        });
     }
 
     private void invsee(Player opener, OfflinePlayer target) {
