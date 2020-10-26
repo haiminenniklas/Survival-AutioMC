@@ -451,6 +451,7 @@ public class HelpCommand implements CommandExecutor {
                                 " §a/kylä nimi <uusi nimi> §7Nimeä kyläsi uudelleen",
                                 " §a/kylä kutsu <pelaaja> §7Kutsu pelaaja kylääsi",
                                 " §a/kylä nosta <määrä> §7nosta rahaa kylästä",
+                                " §a/kylä talleta <määrä> §7talleta kylääsi rahaa!",
                                 " §a/kylä <hakutermi> §7Etsi kyliä",
                                 " §a/kylä lista §7Kaikki palvelimen kylät!",
                                 "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"

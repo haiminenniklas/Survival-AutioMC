@@ -296,6 +296,7 @@ public class VillageManager implements Listener, CommandExecutor {
             config.set("villages." + uuid + ".closed", village.isClosed());
             config.set("villages." + uuid + ".balance", village.getBalance());
             config.set("villages." + uuid + ".total-money-gathered", village.getTotalMoneyGathered());
+            config.set("villages." + uuid + ".created", village.getCreated());
 
             config.set("villages." + uuid + ".co-leaders", Util.toStringList(village.getCoLeaders()));
             config.set("villages." + uuid + ".citizens", Util.toStringList(village.getCitizens()));
@@ -377,158 +378,238 @@ public class VillageManager implements Listener, CommandExecutor {
                 return true;
             }
 
-            if(args.length < 1) this.mainGui(player);
-            else {
-                if(!Ranks.isStaff(uuid)) this.searchForVillage(player, args);
-                else {
-                    if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("apua")) {
+            if(args.length < 1) {
 
-                        if(player.isOp()) {
-                            Chat.sendMessage(player, "/kylä (enable | disable)");
+                this.mainGui(player);
+
+            } else {
+                if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("apua")) {
+
+                    if(player.isOp()) {
+                        Chat.sendMessage(player, "/kylä (enable | disable)");
+                    } else {
+                        player.performCommand("/apua kylä");
+                    }
+
+                } else if(args[0].equalsIgnoreCase("enable") || args[0].equalsIgnoreCase("disable")) {
+
+                    if(player.isOp()) {
+                        if(args[0].equalsIgnoreCase("enable")) {
+                            ENABLED = true;
+                            Chat.sendMessage(player, "Pelaajakylät ovat nyt päällä!");
+                            return true;
                         } else {
-                            player.performCommand("/apua kylä");
+                            ENABLED = false;
+                            Chat.sendMessage(player, "Pelaajakylät ovat nyt poissa päältä!");
+                            return true;
                         }
+                    }
 
-                    } else if(args[0].equalsIgnoreCase("enable") || args[0].equalsIgnoreCase("disable")) {
+                } else if(args[0].equalsIgnoreCase("kutsu") || args[0].equalsIgnoreCase("invite")) {
 
-                        if(player.isOp()) {
-                            if(args[0].equalsIgnoreCase("enable")) {
-                                ENABLED = true;
-                                Chat.sendMessage(player, "Pelaajakylät ovat nyt päällä!");
-                                return true;
-                            } else {
-                                ENABLED = false;
-                                Chat.sendMessage(player, "Pelaajakylät ovat nyt poissa päältä!");
-                                return true;
-                            }
+                    if(args.length >= 2) {
+
+                        if(ownsVillage(uuid)) {
+
+                            PlayerVillage village = findVillageByLeader(uuid);
+                            OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+                            village.invite(target.getUniqueId());
+                            Chat.sendMessage(player, "Kutsuit pelaajan §a" + target.getName() + " §7liittymään kylääsi!");
+
+                        } else {
+                            Chat.sendMessage(player, "Et omista kylää!");
                         }
-
-                    } else if(args[0].equalsIgnoreCase("kutsu") || args[0].equalsIgnoreCase("invite")) {
-
-                        if(args.length >= 2) {
-
-                            if(ownsVillage(uuid)) {
-
-                                PlayerVillage village = findVillageByLeader(uuid);
-                                OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
-                                village.invite(target.getUniqueId());
-                                Chat.sendMessage(player, "Kutsuit pelaajan §a" + target.getName() + " §7liittymään kylääsi!");
-
-                            } else {
-                                Chat.sendMessage(player, "Et omista kylää!");
-                            }
-
-                        }
-
-                    } else if(args[0].equalsIgnoreCase("lista") || args[0].equalsIgnoreCase("kaikki")) {
-                        openListAllVillagesMenu(player);
-                    } else if(args[0].equalsIgnoreCase("top")) {
-                        openTopBalanceMenu(player);
-                    } else if(args[0].equalsIgnoreCase("verota")) {
-
-                       if(player.isOp()) {
-                           if(ownsVillage(uuid)) {
-                               PlayerVillage village = findVillageByLeader(uuid);
-                               if(village != null) {
-                                   village.taxPlayers();
-                               }
-                           }
-                       }
-
-                    } else if(args[0].equalsIgnoreCase("nosta")) {
-
-                       if(hasJoinedVillage(uuid)) {
-
-                           PlayerVillage village = findVillageByPlayer(uuid);
-                           if(village.canModify(uuid)) {
-                               double amount;
-                               try { amount = Double.parseDouble(args[1]);
-                               } catch(NumberFormatException ex) {
-                                   Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytäthän numeroita!");
-                                   return true;
-                               }
-
-                               if(amount < 1) {
-                                   Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita, tai nolla!");
-                                   return true;
-                               }
-
-                               if(village.getBalance() >= amount) {
-
-                                   this.openVillageWithdrawalConfirmation(player, village, amount);
-
-                               } else {
-                                   Chat.sendMessage(player, "Kylällä ei ole tarpeeksi varoja tähän! Suosittelemme, että kylän kaikkia rahoja ei nostettaisi.");
-                               }
-
-                           } else {
-                               Chat.sendMessage(player, "Hei! Sinulla ei ole oikeuksia tehdä tätä sinun kylässäsi! Ole yhteydessä kyläsi luottamushenkilöön tai pormestariin!");
-                           }
-
-                       } else {
-                           Chat.sendMessage(player, "Höpsö! Et ole kylässä!");
-                       }
-
-                    } else if(args[0].equalsIgnoreCase("poistu")) {
-                        this.leaveCurrentVillage(player);
-                    } else if(args[0].equalsIgnoreCase("nimi")) {
-
-                        if(args.length >= 2) {
-
-                            if(this.hasJoinedVillage(uuid)) {
-
-                                PlayerVillage village = findVillageByPlayer(uuid);
-                                if(village != null) {
-
-                                    if(village.canModify(uuid)) {
-
-                                        StringBuilder sb = new StringBuilder();
-                                        for(int i = 1; i < args.length; i++) {
-                                            sb.append(args[i] + " ");
-                                        }
-
-                                        String newTitle = sb.toString().trim();
-
-                                        String[] blacklistedWords = {
-                                                "paska",
-                                                "neekeri",
-                                                "huora",
-                                                "vittu",
-                                                "saatana",
-                                                "top",
-                                                "enable",
-                                                "poistu",
-
-                                        };
-
-                                        boolean cannotCreate = false;
-
-                                        for(String blacklistedWord : blacklistedWords) {
-                                            if(newTitle.toLowerCase().contains(blacklistedWord)) {
-                                                cannotCreate = true;
-                                            }
-                                        }
-
-                                        if(cannotCreate) {
-                                            Chat.sendMessage(player, "Tuohan on nyt varsin tuhma nimi... Kokeile jotain toista");
-                                        } else {
-                                            openChangeNameConfirmation(player, village, newTitle);
-                                        }
-
-                                    } else Chat.sendMessage(player, "Ei oikeuksia! Sinun tulee olla luottamushenkilö, niin voit muokata kylän nimeä!");
-
-                                } else Chat.sendMessage(player, "Jotain meni vikaan.. Yritäppä uudelleen!");
-
-                            } else Chat.sendMessage(player, "Et ole kylässä....");
-
-                        } else Chat.sendMessage(player, "Käytä: §a/kylä nimi <uusi nimi>");
 
                     }
-                    else searchForVillage(player, args);
+
+                } else if(args[0].equalsIgnoreCase("lista") || args[0].equalsIgnoreCase("kaikki")) {
+                    openListAllVillagesMenu(player);
+                } else if(args[0].equalsIgnoreCase("top")) {
+                    openTopBalanceMenu(player);
+                } else if(args[0].equalsIgnoreCase("verota")) {
+
+                    if(player.isOp()) {
+                        if(ownsVillage(uuid)) {
+                            PlayerVillage village = findVillageByLeader(uuid);
+                            if(village != null) {
+                                village.taxPlayers();
+                            }
+                        }
+                    }
+
+                } else if(args[0].equalsIgnoreCase("talleta")) {
+                    if(hasJoinedVillage(uuid)) {
+
+                        PlayerVillage village = findVillageByPlayer(uuid);
+                        if(village.canModify(uuid)) {
+                            double amount;
+                            try { amount = Double.parseDouble(args[1]);
+                            } catch(NumberFormatException ex) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytäthän numeroita!");
+                                return true;
+                            }
+
+                            if(amount < 1) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita, tai nollaa!");
+                                return true;
+                            }
+
+                            if(Balance.canRemove(uuid, amount)) {
+
+                                this.openVillageDepositConfirmal(player, village, amount);
+
+                            } else {
+                                Chat.sendMessage(player, "Hei! Sinulla ei ole tarpeeksi rahaa tällaiseen!!?!");
+                            }
+
+                        } else {
+                            Chat.sendMessage(player, "Hei! Sinulla ei ole oikeuksia tehdä tätä sinun kylässäsi! Ole yhteydessä kyläsi luottamushenkilöön tai pormestariin!");
+                        }
+
+                    } else {
+                        Chat.sendMessage(player, "Höpsö! Et ole kylässä!");
+                    }
                 }
+                else if(args[0].equalsIgnoreCase("nosta")) {
+
+                    if(hasJoinedVillage(uuid)) {
+
+                        PlayerVillage village = findVillageByPlayer(uuid);
+                        if(village.canModify(uuid)) {
+                            double amount;
+                            try { amount = Double.parseDouble(args[1]);
+                            } catch(NumberFormatException ex) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Käytäthän numeroita!");
+                                return true;
+                            }
+
+                            if(amount < 1) {
+                                Chat.sendMessage(player, Chat.Prefix.ERROR, "Ei negatiivisia numeroita, tai nolla!");
+                                return true;
+                            }
+
+                            if(village.getBalance() >= amount) {
+
+                                this.openVillageWithdrawalConfirmation(player, village, amount);
+
+                            } else {
+                                Chat.sendMessage(player, "Kylällä ei ole tarpeeksi varoja tähän! Suosittelemme, että kylän kaikkia rahoja ei nostettaisi.");
+                            }
+
+                        } else {
+                            Chat.sendMessage(player, "Hei! Sinulla ei ole oikeuksia tehdä tätä sinun kylässäsi! Ole yhteydessä kyläsi luottamushenkilöön tai pormestariin!");
+                        }
+
+                    } else {
+                        Chat.sendMessage(player, "Höpsö! Et ole kylässä!");
+                    }
+
+                } else if(args[0].equalsIgnoreCase("poistu")) {
+                    this.leaveCurrentVillage(player);
+                } else if(args[0].equalsIgnoreCase("nimi")) {
+
+                    if(args.length >= 2) {
+
+                        if(this.hasJoinedVillage(uuid)) {
+
+                            PlayerVillage village = findVillageByPlayer(uuid);
+                            if(village != null) {
+
+                                if(village.canModify(uuid)) {
+
+                                    StringBuilder sb = new StringBuilder();
+                                    for(int i = 1; i < args.length; i++) {
+                                        sb.append(args[i] + " ");
+                                    }
+
+                                    String newTitle = sb.toString().trim();
+
+                                    String[] blacklistedWords = {
+                                            "paska",
+                                            "neekeri",
+                                            "huora",
+                                            "vittu",
+                                            "saatana",
+                                            "top",
+                                            "enable",
+                                            "poistu",
+
+                                    };
+
+                                    boolean cannotCreate = false;
+
+                                    for(String blacklistedWord : blacklistedWords) {
+                                        if(newTitle.toLowerCase().contains(blacklistedWord)) {
+                                            cannotCreate = true;
+                                        }
+                                    }
+
+                                    if(cannotCreate) {
+                                        Chat.sendMessage(player, "Tuohan on nyt varsin tuhma nimi... Kokeile jotain toista");
+                                    } else {
+                                        openChangeNameConfirmation(player, village, newTitle);
+                                    }
+
+                                } else Chat.sendMessage(player, "Ei oikeuksia! Sinun tulee olla luottamushenkilö, niin voit muokata kylän nimeä!");
+
+                            } else Chat.sendMessage(player, "Jotain meni vikaan.. Yritäppä uudelleen!");
+
+                        } else Chat.sendMessage(player, "Et ole kylässä....");
+
+                    } else Chat.sendMessage(player, "Käytä: §a/kylä nimi <uusi nimi>");
+
+                }
+                else searchForVillage(player, args);
             }
+
         }
         return true;
+    }
+
+    private void openVillageDepositConfirmal(Player player, final PlayerVillage village, final double amount) {
+
+        final Gui gui = new Gui("Kylän rahatalletus varmistus", 27);
+
+        gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.GREEN_CONCRETE, 1, "§a§lVahvista", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Olet tallettamassa kylääsi",
+                " §e" + Util.formatDecimals(amount) + "€§7!",
+                " ",
+                " §7Kylän rahatilanne nyt: §a" + Util.formatDecimals(village.getBalance()) + "€",
+                " §7Kylän rahatilanne talletuksen jälkeen:",
+                " §a" + Util.formatDecimals(village.getBalance() + amount) + "€§7!",
+                " ",
+                " §aKlikkaa tallettaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+
+                village.addBalance(amount);
+                Balance.remove(player.getUniqueId(), amount);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+
+                Chat.sendMessage(player, "Talletit kylääsi §a" + Util.formatDecimals(amount) + "€§7! " +
+                        "Sinun rahatilanteesti nyt: §e" + Util.formatDecimals(Balance.get(player.getUniqueId())) + "€§7!");
+
+            }
+        });
+
+        gui.addButton(new Button(1, 14, ItemUtil.makeItem(Material.RED_CONCRETE, 1, "§c§lPeruuta", Arrays.asList(
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤",
+                " §7Klikkaa peruuttaaksesi!",
+                "§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤"
+        ))) {
+            @Override
+            public void onClick(Player clicker, ClickType clickType) {
+                gui.close(clicker);
+            }
+        });
+
+        gui.open(player);
+
+
     }
 
     private void openVillageWithdrawalConfirmation(Player player, PlayerVillage village, double amount) {
@@ -609,6 +690,7 @@ public class VillageManager implements Listener, CommandExecutor {
         for(PlayerVillage village : villages) {
             village.taxPlayers();
         }
+        this.savePlayerVillages();
     }
 
     private void searchForVillage(final Player player, String[] args) {
@@ -621,7 +703,14 @@ public class VillageManager implements Listener, CommandExecutor {
             if(villageSearchedByPlayer == null) {
 
                 // Join the arguments in to a string
-                final String query = String.join(" ", args).toLowerCase().trim();
+                final String query;
+                if(args.length == 1) {
+                    query = args[0].toLowerCase().trim();
+                } else {
+                    query = String.join(" ", args).toLowerCase().trim();
+                }
+
+                boolean villageFound = false;
 
                 for(PlayerVillage village : villages) {
                     if(village == null) continue;
@@ -630,25 +719,19 @@ public class VillageManager implements Listener, CommandExecutor {
                     String title = village.getTitle().toLowerCase().trim();
 
                     // First check if the query and title are equal
-                    if(title.equalsIgnoreCase(query)) {
+                    if(title.equalsIgnoreCase(query) || title.contains(query) || query.contains(title)) {
                         searchVillageMode.remove(player.getUniqueId()); // If village found and player was using search mode, deactivate it
                         Sorsa.task(() -> openVillageView(player, village, true));
-                        break;
-                    } else {
-
-                        // If not, check if the title contains the query...
-                        if(title.contains(query)) {
-                            searchVillageMode.remove(player.getUniqueId()); // If village found and player was using search mode, deactivate it
-                            Sorsa.task(() -> openVillageView(player, village, true));
-                            break;
-                        } else {
-                            // Let's give up, no villages were found
-                            Sorsa.task(() -> Chat.sendMessage(player, "Kyliä ei löydetty hakutermillä §c" + query +
-                                    "§7... Mikäli et halua enää etsiä kyliä, kirjoita chattiin §alopeta§7!"));
-                            break;
-                        }
+                        villageFound = true;
                     }
                 }
+
+                if(!villageFound) {
+                    // Let's give up, no villages were found
+                    Sorsa.task(() -> Chat.sendMessage(player, "Kyliä ei löydetty hakutermillä §c" + query +
+                            "§7... Mikäli et halua enää etsiä kyliä, kirjoita chattiin §alopeta§7!"));
+                }
+
             } else {
                 // Open the village view
                 searchVillageMode.remove(player.getUniqueId()); // If village found and player was using search mode, deactivate it
@@ -797,34 +880,50 @@ public class VillageManager implements Listener, CommandExecutor {
         villageLore.add(" §7Yhteensä kerätty raha: §e" + Util.formatDecimals(village.getTotalMoneyGathered()) + " €");
 
         villageLore.add(" ");
-        if(village.isInvited(player.getUniqueId()) && !village.isMember(player.getUniqueId())) {
-            villageLore.add(" ");
-            villageLore.add(" §aLiity kylään!");
-        } else {
-            if(!village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
+
+        if(!village.isMember(player.getUniqueId())) {
+            if(village.isClosed()) {
                 villageLore.add(" ");
-                villageLore.add(" §aPyydä liittymistä!");
-            } else if(village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
-                villageLore.add(" ");
-                villageLore.add(" §aPyydä liittymistä!");
+                villageLore.add(" §cKylä on yksityinen...");
+            } else {
+                if(village.isFull()) {
+                    villageLore.add(" ");
+                    villageLore.add(" §cKylä on täynnä...");
+                } else {
+
+                    if(village.isInvited(player.getUniqueId())) {
+                        villageLore.add(" ");
+                        villageLore.add(" §aLiity kylään!");
+                    } else {
+                        villageLore.add(" ");
+                        villageLore.add(" §aPyydä liittymistä!");
+                    }
+
+                }
             }
         }
+
         villageLore.add("§7§m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤");
 
         gui.addButton(new Button(1, 12, ItemUtil.makeItem(Material.IRON_DOOR, 1, "§2" + village.getTitle(), villageLore)) {
             @Override
             public void onClick(Player clicker, ClickType clickType) {
+                if(!village.isMember(clicker.getUniqueId())) {
+                    if(village.isClosed()) {
+                        clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    } else {
+                        if(village.isFull()) {
+                            clicker.playSound(clicker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                        } else {
+                            if(village.isInvited(clicker.getUniqueId())) {
+                                gui.close(clicker);
+                                village.join(clicker);
+                            } else {
+                                gui.close(clicker);
+                                village.requestToJoin(clicker);
+                            }
 
-                if(village.isInvited(player.getUniqueId()) && !village.isMember(player.getUniqueId())) {
-                    gui.close(clicker);
-                    village.join(player);
-                } else {
-                    if(!village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
-                        gui.close(clicker);
-                        village.requestToJoin(clicker);
-                    } else if(village.isClosed() && !village.isFull() && !village.isMember(player.getUniqueId())) {
-                        gui.close(clicker);
-                        village.requestToJoin(clicker);
+                        }
                     }
                 }
             }

@@ -8,6 +8,7 @@ import me.tr.survival.main.util.callback.TypedCallback;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,15 +28,24 @@ public class Balance {
         return Util.round((double) PlayerData.getValue(player, "money"),2);
     }
 
+    public static void getAsync(UUID uuid, TypedCallback<Double> cb) {
+        if(PlayerData.isLoaded(uuid)) {
+            cb.execute( Util.round((double) PlayerData.getValue(uuid, "money"),2));
+        } else {
+            Sorsa.async(() -> {
+                PlayerData.loadPlayer(uuid, (r) -> {
+                    cb.execute( Util.round((double) PlayerData.getValue(uuid, "money"),2));
+                });
+            });
+        }
+    }
+
     public static void add(UUID player, double value) {
-        double current = get(player);
-        PlayerData.set(player, "money", current + value);
+        PlayerData.add(player, "money", value);
     }
 
     public static void remove(UUID player, double value) {
-        double current = get(player);
-        if(current - value < 0) PlayerData.set(player, "money", 0d);
-        else PlayerData.set(player, "money", current - value);
+        PlayerData.remove(player, "money", value);
     }
 
     public static void set(UUID player, double value) {

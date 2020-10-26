@@ -144,8 +144,8 @@ public class Lottery {
         NETHER_INGOT(2, "§7§lNetherite-harkko"),
         MUSIC_DISC(1, "§e§lMusiikkilevy"),
         WITHER_SKULL(1, "§8§lWITHER-KALLO"),
-        VIP(0.5, "§6§lPremium-arvo!"),
-        SORSA(0.1, "§2§lSORSA-arvo!"),
+        VIP(0.1, "§6§lPremium-arvo!"),
+        SORSA(0.01, "§2§lSORSA-arvo!"),
         ;
 
         private double chance;

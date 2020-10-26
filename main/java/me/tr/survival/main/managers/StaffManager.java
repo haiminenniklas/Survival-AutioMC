@@ -391,8 +391,42 @@ public class StaffManager implements Listener, CommandExecutor {
                             else if(block.getType() == Material.EMERALD_ORE) blockName = "emeraldia";
                             else if(block.getType() == Material.ANCIENT_DEBRIS) blockName = "netheriittiä";
 
+                            if(block.getType() == Material.DIAMOND_ORE && block.getLocation().getY() > 15) {
+                                return;
+                            }
+
                             if(Settings.get(staff.getUniqueId(), "chat")) {
                                 TextComponent msg = new TextComponent(TextComponent.fromLegacyText("§8[§e§l⚡§8] §fPelaaja §e" + player.getName() + " §flöysi §e" + blockName + "§f! "));
+
+                                if(block.getType() == Material.DIAMOND_ORE) {
+
+                                    final Location bLoc = block.getLocation();
+                                    final World world = bLoc.getWorld();
+                                    int x = bLoc.getBlockX();
+                                    int z = bLoc.getBlockZ();
+
+                                    boolean hasAirOrLiquidSurrounding = false;
+
+                                    for(int i = x-1; i < x + 1; i++) {
+                                        Block neighbour = world.getBlockAt(i, bLoc.getBlockY(), z);
+                                        if(neighbour.isEmpty() || neighbour.isLiquid()) {
+                                            hasAirOrLiquidSurrounding = true;
+                                        }
+                                    }
+
+                                    for(int i = z-1; i < z+1; i++) {
+                                        Block neighbour = world.getBlockAt(x, bLoc.getBlockY(), i);
+                                        if(neighbour.isEmpty() || neighbour.isLiquid()) {
+                                            hasAirOrLiquidSurrounding = true;
+                                        }
+                                    }
+
+                                    if(hasAirOrLiquidSurrounding)
+                                        msg = new TextComponent(TextComponent.fromLegacyText("§8[§e§l⚡§8] §cPelaaja §e" + player.getName() + " §clöysi §e" + blockName + "§c!"));
+
+
+                                }
+
                                 TextComponent tpMsg = new TextComponent();
                                 tpMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Klikkaa teleportataksi pelaajan §c" + player.getName() + " §7luo!")));
                                 SpigotCallback.createCommand(tpMsg, (clicker) -> {

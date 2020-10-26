@@ -9,6 +9,7 @@ import me.tr.survival.main.database.PlayerData;
 import me.tr.survival.main.managers.Chat;
 import me.tr.survival.main.managers.Mail;
 import me.tr.survival.main.managers.StaffManager;
+import me.tr.survival.main.managers.travel.TravelManager;
 import me.tr.survival.main.other.Ranks;
 import me.tr.survival.main.util.Util;
 import me.tr.survival.main.managers.features.Boosters;
@@ -184,10 +185,15 @@ public class Events implements Listener {
         if(!Boosters.isActive(Boosters.Booster.EXTRA_HEARTS))
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20d);
 
-        final Location bedSpawn = player.getBedSpawnLocation();
-        if(bedSpawn != null) {
-            player.teleport(bedSpawn);
-        } else Sorsa.teleportToSpawn(player);
+        final World world = player.getWorld();
+        if(world.getName().equals("warzone")) {
+            Main.getTravelManager().teleportToWarzone(player);
+        } else {
+            final Location bedSpawn = player.getBedSpawnLocation();
+            if(bedSpawn != null) {
+                player.teleport(bedSpawn);
+            } else Sorsa.teleportToSpawn(player);
+        }
 
 
     }

@@ -230,8 +230,8 @@ public class Chat implements Listener {
             String last = lastMessage.get(uuid);
             if (!last.equalsIgnoreCase(e.getMessage())) {
 
-                double similiarity = Util.similarity(e.getMessage(), last);
-                if (similiarity >= 0.75 && !Ranks.isStaff(uuid)) {
+                double similarity = Util.similarity(e.getMessage(), last);
+                if (similarity >= 0.75 && !Ranks.isStaff(uuid)) {
                     e.setCancelled(true);
                     Chat.sendMessage(player, Prefix.ERROR, "Viestisi muistuttaa liikaa vanhaa viestiäsi!");
                     return;
@@ -293,6 +293,11 @@ public class Chat implements Listener {
             if(msg.startsWith("!")) {
                 msg = msg.substring(1);
                 e.setMessage(msg);
+                if(msg.length() < 1) {
+                    e.setCancelled(true);
+                    Chat.sendMessage(player, "Sinun pitää kirjoittaa jotain chattiin!");
+                    return;
+                }
             }
             e.setFormat((ChatColor.translateAlternateColorCodes('&', Sorsa.getPrefix(player) + name).trim()) + "§r: %2$s");
         } else {

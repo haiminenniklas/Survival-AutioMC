@@ -394,11 +394,11 @@ public class PlayerData {
     public static void set(final UUID uuid, final String key, final Object value) {
         if(!isLoaded(uuid)) {
             Sorsa.async(() -> {
-                PlayerData.loadPlayer(uuid, (result) -> {
-                    if(result) set(uuid, key, value);
+                PlayerData.loadPlayer(uuid, result -> {
+                    set(uuid, key, value);
+                    PlayerData.savePlayer(uuid);
                 });
             });
-            return;
         } else {
 
 
@@ -418,7 +418,8 @@ public class PlayerData {
         if(!isLoaded(uuid)) {
                 Sorsa.async(() -> {
                     PlayerData.loadPlayer(uuid, (result) -> {
-                        if(result) add(uuid, key, value);
+                        add(uuid, key, value);
+                        PlayerData.savePlayer(uuid);
                     });
                 });
         } else {
@@ -446,11 +447,36 @@ public class PlayerData {
 
     }
 
+    public static void remove(UUID uuid, String key, double value) {
+        if(!isLoaded(uuid)) {
+            Sorsa.async(() ->
+                    PlayerData.loadPlayer(uuid, (result) -> {
+                        remove(uuid, key, value);
+                        PlayerData.savePlayer(uuid);
+                    }));
+            return;
+        }
+
+        HashMap<String, Object> data = player_data.get(uuid);
+        if(!data.containsKey(key)) {
+            return;
+        }
+
+        try {
+            double obj = (double) data.get(key);
+            double newVal = obj - value;
+            data.put(key, (newVal < 1) ? 0 : newVal);
+            player_data.put(uuid, data);
+        } catch(NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void add(UUID uuid, String key, double value) {
         if(!isLoaded(uuid)) {
             Sorsa.async(() ->
                     PlayerData.loadPlayer(uuid, (result) -> {
-                        if(result) add(uuid, key, value);
+                        add(uuid, key, value);
                     }));
             return;
         }
