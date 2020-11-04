@@ -32,9 +32,19 @@ public class ConnectionEvents implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onLogin(PlayerLoginEvent e) {
         final Player player = e.getPlayer();
+
+        long uptime = System.currentTimeMillis() - Main.getInstance().started;
+        if(uptime < (3 * 60) && !player.isOp()) {
+            e.disallow(PlayerLoginEvent.Result.KICK_OTHER, "§7Palvelin ei ole vielä täysin käynnistynyt..." +
+                    " Odota hetki, kunnes voit liittyä!");
+            return;
+        }
+
         if(e.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
             if(player.hasPermission("server.join.full")) e.allow();
-            else e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän, sinun täytyy omistaa vähintään §e§lPremium§7-arvo!");
+            else e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7Palvelin täynnä! Mikäli haluat ohittaa tämän," +
+                    " sinun täytyy omistaa vähintään §e§lPremium§7-arvo! Katso lisää verkkokaupastamme " +
+                    "§ahttps://kauppa.sorsamc.fi§7!");
         }
     }
 

@@ -176,6 +176,11 @@ public class PlayerVillage {
 
     public void teleport(final Player player) {
 
+        if(!player.getWorld().getName().equals("world")) {
+            Chat.sendMessage(player, "§7Tämä toimii vain tavallisessa maailmassa!");
+            return;
+        }
+
         Chat.sendMessage(player, "Sinut viedään kylälle §a" + this.title + " §e3 sekunnin §7kuluttua!");
         Sorsa.after(3, () -> {
             player.teleport(this.spawn);

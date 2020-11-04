@@ -95,12 +95,6 @@ public class TradeManager implements CommandExecutor, Listener {
                 return true;
             }
 
-            if(!getTradesForPlayer(player).isEmpty()) {
-                Chat.sendMessage(player, Chat.Prefix.ERROR,
-                        "Sinulle on lähetetty pyyntöjä jo, tai olet itse lähettänyt niitä. Vastaa niihin, tai odota että ne umpeutuvat.");
-                return true;
-            }
-
             if(args.length < 1) Chat.sendMessage(player, "Käytä: §a/trade <pelaaja>");
             else {
                 if(args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("hyväksy")) {

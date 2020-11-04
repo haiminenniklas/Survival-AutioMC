@@ -76,7 +76,7 @@ public final class Main extends JavaPlugin implements Listener {
     }
     private static Map<UUID, Long> spawnCommandDelay = new HashMap<>();
 
-    private long started = 0L;
+    public long started = 0L;
 
     // Instances for Managers
     private static Backpack backpack ;
@@ -154,6 +154,7 @@ public final class Main extends JavaPlugin implements Listener {
         // Setup instances
         Main.instance = this;
         Main.luckPerms = LuckPermsProvider.get();
+        started = System.currentTimeMillis();
 
         // Managers
         Main.backpack = new Backpack();
@@ -383,8 +384,6 @@ public final class Main extends JavaPlugin implements Listener {
         Sorsa.logColored("§a Enabled SorsaSurvival! (It took " + (System.currentTimeMillis() - start) +
                 "ms / " + ((System.currentTimeMillis() - start) / 1000.0f) + "s)");
         Sorsa.logColored("§a---------------------------");
-
-        started = System.currentTimeMillis();
 
         // Tax the player villages
         if(villageManager.isTaxationDay()) {
