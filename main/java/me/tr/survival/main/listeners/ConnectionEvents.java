@@ -33,6 +33,8 @@ public class ConnectionEvents implements Listener {
     public void onLogin(PlayerLoginEvent e) {
         final Player player = e.getPlayer();
 
+        // Don't allow players in for at least 3 minutes since
+        // the server started to prevent problems with data
         long uptime = System.currentTimeMillis() - Main.getInstance().started;
         if(uptime < (3 * 60) && !player.isOp()) {
             e.disallow(PlayerLoginEvent.Result.KICK_OTHER, "§7Palvelin ei ole vielä täysin käynnistynyt..." +
@@ -53,7 +55,12 @@ public class ConnectionEvents implements Listener {
         final UUID uuid = e.getUniqueId();
         if(e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
             if(!PlayerData.isLoaded(uuid)) {
-                PlayerData.loadPlayer(uuid, r -> {});
+                PlayerData.loadPlayer(uuid, success -> {
+                    if(!Boolean.TRUE.equals(success))
+                        e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§7Kävi virhe ladattaessa dataasi." +
+                                " Yritä uudelleen hetken kuluttua...");
+
+                });
             }
         }
     }
